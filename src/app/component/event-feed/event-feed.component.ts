@@ -15,7 +15,6 @@ export class EventFeedComponent {
   events:Set<NDKEvent>|undefined;
 
   ngOnInit() {
-    console.log("oninit")
     this.getEvents();
   }
 

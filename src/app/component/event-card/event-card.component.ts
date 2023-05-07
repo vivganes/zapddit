@@ -6,7 +6,6 @@ import * as linkify from "linkifyjs";
 import linkifyHtml from "linkify-html";
 import "linkify-plugin-hashtag";
 
-
 @Component({
   selector: 'app-event-card',
   templateUrl: './event-card.component.html',

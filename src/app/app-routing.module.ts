@@ -3,7 +3,7 @@ import { RouterModule, type Routes } from '@angular/router'
 import { EventFeedComponent } from './component/event-feed/event-feed.component'
 
 const routes: Routes = [
-  { path: 't', component: EventFeedComponent },
+  { path: 't/:topic', component: EventFeedComponent },
   { path: '**', component: EventFeedComponent }
 ]
 

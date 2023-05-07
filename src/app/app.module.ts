@@ -9,7 +9,7 @@ import { ClarityModule } from '@clr/angular'
 import { UserprofileComponent } from './component/userprofile/userprofile.component'
 import { Nip07LoginComponent } from './component/nip07-login/nip07-login.component';
 import { EventFeedComponent } from './component/event-feed/event-feed.component';
-import { EventCardComponent } from './component/event-card/event-card.component'
+import { EventCardComponent } from './component/event-card/event-card.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +17,7 @@ import { EventCardComponent } from './component/event-card/event-card.component'
     UserprofileComponent,
     Nip07LoginComponent,
     EventFeedComponent,
-    EventCardComponent
+    EventCardComponent,
   ],
   imports: [
     BrowserModule,

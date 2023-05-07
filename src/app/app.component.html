@@ -21,16 +21,26 @@
     </div>
 </clr-header>
 <div class="content-container">
+  <clr-vertical-nav [clr-nav-level]="2">
+      <a clrVerticalNavLink  *ngFor="let topic of followedTopics"
+          href="/t/{{topic}}">#{{topic}}</a>    
+      <div class="nav-divider"></div>
+      <a clrVerticalNavLink  routerLink="./credit" routerLinkActive="active">Credit</a>
+  </clr-vertical-nav>
       <div class="content-area">
         <div *ngIf="isLoggedIn()">
-          <h3 align="center">#{{currentlyShowingTag}}</h3>
+          <h3 align="center">#{{currentlyShowingTag}}
+          <ng-template [ngIf]="!isTopicFollowed(currentlyShowingTag)" [ngIfElse]="elseBlock">                         
+              <button class="btn btn-primary btn-icon" (click)="followTopic(currentlyShowingTag)"><cds-icon shape="plus-circle" solid></cds-icon> Follow</button>           
+          </ng-template>
+          <ng-template #elseBlock>              
+            <button class="btn btn-warning btn-icon" (click)="followTopic(currentlyShowingTag)"><cds-icon shape="logout" solid></cds-icon> Unfollow</button>           
+          </ng-template>
+        </h3>
+          
           <app-event-feed tag={{currentlyShowingTag}}/>
         </div>
    </div>
-      <clr-vertical-nav [clr-nav-level]="2">
-        <section class="sidenav-content">
-          sidenav
-          </section>        
-      </clr-vertical-nav>
+   
   </div>
 </clr-main-container>
