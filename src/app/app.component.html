@@ -1,31 +1,32 @@
-<div class="main-container">
+<clr-main-container>
 
-  <clr-alerts>
-    <clr-alert [clrAlertType]="'info'" [clrAlertAppLevel]="true">
-        <clr-alert-item>
-        <span class="alert-text">
-
-        </span>
-        <div class="alert-actions">
-            <button class="btn alert-action">Fix</button>
-        </div>
-    </clr-alert-item>
-    </clr-alert>    
-</clr-alerts>
-  <header class="header header-6">
-    <app-userprofile></app-userprofile>
-  </header>
-  <nav class="subnav">
-      ...
-  </nav>
-  <div class="content-container">
+  <clr-header class="header-6">
+    <div class="branding">
+        <a href="javascript://" class="nav-link">
+            <cds-icon shape="bolt" solid></cds-icon>
+            <span class="title">zappedit</span>
+        </a>
+    </div>
+    <form class="search">
+      <label for="search-input-sidenav-ng">
+        <input id="search-input-sidenav-ng" type="text" placeholder="Search for keywords..." />
+      </label>
+    </form>
+    <div class="header-actions">
+      <app-nip07-login/>
+        <a href="javascript://" class="nav-link nav-icon-text">          
+          <cds-icon shape="user"></cds-icon>            
+            <span class="nav-text"><app-userprofile/></span>
+        </a>
+    </div>
+</clr-header>
+<div class="content-container">
       <div class="content-area">
-        <app-nip07-login/>
-
    </div>
-      <clr-vertical-nav>
-         ...
-        
+      <clr-vertical-nav [clr-nav-level]="2">
+        <section class="sidenav-content">
+          sidenav
+          </section>        
       </clr-vertical-nav>
   </div>
-</div>
+</clr-main-container>
