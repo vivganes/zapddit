@@ -12,7 +12,7 @@ ClarityIcons.addIcons(userIcon, boltIcon, childArrowIcon);
 })
 export class AppComponent {
   title = 'zappedit'
-  currentlyShowingTag: string = 'foodstr'
+  currentlyShowingTag: string = window.location.href.split("/").at(-1) || 'foodstr'
 
   private ndkProvider: NdkproviderService;
 
@@ -26,7 +26,7 @@ export class AppComponent {
 
   search(){
     let tag =  (<HTMLInputElement>document.getElementById("search-input-sidenav-ng")).value;
-    this.currentlyShowingTag = tag;
+    window.location.href = '/t/'+tag;
   }
   
 

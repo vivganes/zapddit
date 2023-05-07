@@ -7,8 +7,8 @@
                     <span class="card-media-text break-words-overflow"> {{formatTimestamp(event?.created_at)}} </span>
                 </div>
             </div>
-            <div class="card-text break-words-overflow">
-                {{event?.content}}
+            <div class="card-text break-words-overflow" [innerHTML]="linkifyContent()">
+                
             </div>
         </div>
         <div class="card-footer">

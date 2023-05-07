@@ -2,6 +2,10 @@ import { Component, Input } from '@angular/core';
 import { NDKEvent, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as moment from 'moment';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
+import * as linkify from "linkifyjs";
+import linkifyHtml from "linkify-html";
+import "linkify-plugin-hashtag";
+
 
 @Component({
   selector: 'app-event-card',
@@ -38,6 +42,18 @@ export class EventCardComponent {
     } else {
       return "Unknown time"
     }
+  }
+
+  linkifyContent(): string{
+    const options = { defaultProtocol: "https",
+    formatHref: {
+      hashtag: (href: string) => "/t/" + href.substring(1),
+    }, 
+    };
+    return linkifyHtml(
+      this.event?.content || '',
+      options
+    );
   }
 
 
