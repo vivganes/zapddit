@@ -13,13 +13,27 @@ export class NdkproviderService {
   }
 
   attemptLogin () {
+    if(localStorage.getItem('nip07ExtensionExists')==="true"){
+      try{
+      this.initializeClientWithSigner(new NDKNip07Signer())
+      }catch(err){
+        this.resolveNip07Extension();
+      }
+    } else {
+      this.resolveNip07Extension();
+    }    
+  }
+
+  private resolveNip07Extension() {
     (async () => {
+      localStorage.removeItem('nip07ExtensionExists')
       console.log('waiting for window.nostr')
       while (!window.hasOwnProperty('nostr')) // define the condition as you like
-      { await new Promise(resolve => setTimeout(resolve, 1000)) }
+      { await new Promise(resolve => setTimeout(resolve, 1000))} 
 
       // do this after window.nostr is available
       this.initializeClientWithSigner(new NDKNip07Signer())
+      localStorage.setItem('nip07ExtensionExists', "true")
     })()
   }
 
@@ -65,4 +79,6 @@ export class NdkproviderService {
    const filter: NDKFilter = { kinds: [1], "#t": [tag], limit: 25 };
     return this.ndk?.fetchEvents(filter);
   }
+
+  
 }

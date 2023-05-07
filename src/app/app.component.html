@@ -13,7 +13,7 @@
       </label>
     </form>
     <div class="header-actions">
-      <app-nip07-login/>
+      
         <a href="javascript://" class="nav-link nav-icon-text">          
           <cds-icon shape="user"></cds-icon>            
             <span class="nav-text"><app-userprofile/></span>
@@ -28,18 +28,29 @@
       <a clrVerticalNavLink  routerLink="./credit" routerLinkActive="active">Credit</a>
   </clr-vertical-nav>
       <div class="content-area">
-        <div *ngIf="isLoggedIn()">
+        <div *ngIf="isLoggedIn(); else notloggedin">
           <h3 align="center">#{{currentlyShowingTag}}
-          <ng-template [ngIf]="!isTopicFollowed(currentlyShowingTag)" [ngIfElse]="elseBlock">                         
-              <button class="btn btn-primary btn-icon" (click)="followTopic(currentlyShowingTag)"><cds-icon shape="plus-circle" solid></cds-icon> Follow</button>           
-          </ng-template>
-          <ng-template #elseBlock>              
-            <button class="btn btn-warning btn-icon" (click)="followTopic(currentlyShowingTag)"><cds-icon shape="logout" solid></cds-icon> Unfollow</button>           
-          </ng-template>
-        </h3>
-          
+            <ng-template [ngIf]="!isTopicFollowed(currentlyShowingTag)" [ngIfElse]="elseBlock">                         
+                <button class="btn btn-primary btn-icon" (click)="followTopic(currentlyShowingTag)"><cds-icon shape="plus-circle" solid></cds-icon> Follow</button>           
+            </ng-template>
+            <ng-template #elseBlock>              
+              <button class="btn btn-warning btn-icon" (click)="unfollowTopic(currentlyShowingTag)"><cds-icon shape="logout" solid></cds-icon> Unfollow</button>           
+            </ng-template>
+          </h3>          
           <app-event-feed tag={{currentlyShowingTag}}/>
         </div>
+        <ng-template #notloggedin> 
+          
+        <div align="center">
+          <span class="spinner">
+          </span>
+          <div>
+            <h3>Loading...</h3>
+            <p>Don't have a NIP-07 plugin? Refer <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank">this page</a></p>
+          </div>
+
+        </div>
+        </ng-template>
    </div>
    
   </div>

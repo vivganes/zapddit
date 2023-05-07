@@ -7,8 +7,13 @@
                     <span class="card-media-text break-words-overflow"> {{formatTimestamp(event?.created_at)}} </span>
                 </div>
             </div>
-            <div class="card-text break-words-overflow" [innerHTML]="linkifyContent()">
-                
+            <div class="card-text break-words-overflow" [innerHTML]="linkifyContent()">              
+            </div>
+           
+            <div *ngFor="let imageSrc of getImageUrls()" class="clr-row">
+                <div class="clr-col-6">
+                    <img alt="image" class="note-image" src={{imageSrc}}/>
+                </div>
             </div>
         </div>
         <div class="card-footer">

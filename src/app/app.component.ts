@@ -46,6 +46,15 @@ export class AppComponent {
     this.followedTopics = this.topicService.followedTopics.split(',');
   }
 
+  unfollowTopic(topic:string){
+    this.topicService.unfollowTopic(topic);
+    if(this.topicService.followedTopics.length===0){
+      this.followedTopics=[]
+    } else {
+    this.followedTopics = this.topicService.followedTopics.split(',');
+    }
+  }
+
   isTopicFollowed(topic:string):boolean{
     if(this.followedTopics.indexOf(topic)>-1){
       return true;
