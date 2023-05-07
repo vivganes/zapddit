@@ -1,6 +1,7 @@
 import { Component } from '@angular/core'
 import '@cds/core/icon/register.js';
 import { ClarityIcons, userIcon, boltIcon } from '@cds/core/icon';
+import { NdkproviderService } from './service/ndkprovider.service';
 
 ClarityIcons.addIcons(userIcon, boltIcon);
 
@@ -11,4 +12,22 @@ ClarityIcons.addIcons(userIcon, boltIcon);
 })
 export class AppComponent {
   title = 'zappedit'
+
+
+  private ndkProvider: NdkproviderService;
+
+  constructor(ndkProvider: NdkproviderService){
+    this.ndkProvider = ndkProvider;
+  }
+  
+  isLoggedIn (): boolean {
+    return this.ndkProvider.isLoggedIn()
+  }
+  
+
+
+
+
+
+  
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import NDK, { type NDKConstructorParams, NDKNip07Signer, NDKUser, type NDKUserProfile } from '@nostr-dev-kit/ndk'
+import NDK, { type NDKConstructorParams, NDKNip07Signer, NDKUser, type NDKUserProfile, NDKFilter, NDKEvent } from '@nostr-dev-kit/ndk'
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +24,13 @@ export class NdkproviderService {
   }
 
   async getProfileFromNpub (npub: string): Promise<NDKUserProfile | undefined> {
-    const user = this.ndk?.getUser({
-      npub
-    })
+    const user = this.ndk?.getUser({npub})
+    await user?.fetchProfile()
+    return user?.profile
+  }
+
+  async getProfileFromHex (hexpubkey: string): Promise<NDKUserProfile | undefined> {
+    const user = this.ndk?.getUser({hexpubkey})
     await user?.fetchProfile()
     return user?.profile
   }
@@ -55,5 +59,10 @@ export class NdkproviderService {
 
   getCurrentUserProfile (): NDKUserProfile | undefined {
     return this.currentUserProfile
+  }
+
+  async fetchEvents (): Promise<Set<NDKEvent>|undefined> {
+   const filter: NDKFilter = { kinds: [1], "#t": ["foodstr"], limit: 25 };
+    return this.ndk?.fetchEvents(filter);
   }
 }
