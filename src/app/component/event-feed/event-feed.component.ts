@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 
@@ -9,6 +9,8 @@ import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 })
 export class EventFeedComponent {
 
+  @Input()
+  tag: string | undefined;
   private ndkProvider: NdkproviderService;
   events:Set<NDKEvent>|undefined;
 
@@ -17,12 +19,23 @@ export class EventFeedComponent {
     this.getEvents();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    for (let propName in changes) {
+      let chng = changes[propName];
+      let cur  = JSON.stringify(chng.currentValue);
+      let prev = JSON.stringify(chng.previousValue);
+      if(propName === 'tag'){
+        this.getEvents();
+      }
+      console.log(`${propName}: currentValue = ${cur}, previousValue = ${prev}`);
+  }  }
+
   constructor(ndkProvider: NdkproviderService){
     this.ndkProvider = ndkProvider;
   }
 
   async getEvents(){
-    this.events = await this.ndkProvider.fetchEvents();
+    this.events = await this.ndkProvider.fetchEvents(this.tag || "");
   }
 
   isLoggedIn (): boolean {

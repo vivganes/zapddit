@@ -61,8 +61,8 @@ export class NdkproviderService {
     return this.currentUserProfile
   }
 
-  async fetchEvents (): Promise<Set<NDKEvent>|undefined> {
-   const filter: NDKFilter = { kinds: [1], "#t": ["foodstr"], limit: 25 };
+  async fetchEvents (tag: string): Promise<Set<NDKEvent>|undefined> {
+   const filter: NDKFilter = { kinds: [1], "#t": [tag], limit: 25 };
     return this.ndk?.fetchEvents(filter);
   }
 }

@@ -1,7 +1,7 @@
     <div class="card">
         <div class="card-block">
             <div class="card-media-block">
-                <img src="{{author?.image}}" class="card-media-image" />
+                <img alt="Profile picture" src="{{author?.image}}" class="card-media-image" />
                 <div class="card-media-description">
                     <span class="card-media-title break-words-overflow"> {{author?.name}} </span>
                     <span class="card-media-text break-words-overflow"> {{formatTimestamp(event?.created_at)}} </span>
@@ -14,7 +14,7 @@
         <div class="card-footer">
             <button class="btn btn-sm btn-icon btn-link"><cds-icon shape="bolt" direction="down"></cds-icon>Upzap</button>
             <button class="btn btn-sm btn-icon btn-link"><cds-icon shape="bolt" direction="up"></cds-icon>Downzap</button>
-            <clr-dropdown>
+            <!-- <clr-dropdown>
                 <button class="btn btn-outline-primary" clrDropdownTrigger>
                     Dropdown
                     <cds-icon shape="angle" direction="down"></cds-icon>
@@ -38,6 +38,6 @@
                     </clr-dropdown>
                     <div clrDropdownItem>Link 2</div>
                 </clr-dropdown-menu>
-            </clr-dropdown>
+            </clr-dropdown> -->
         </div>
     </div>
