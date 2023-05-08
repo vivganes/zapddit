@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build:prod": "ng build --configuration production --base-href https://vivekganesan.com/zappedit/",
+    "build:prod": "ng build --configuration production --base-href http://zappedit.com/",
     "test:headless": "ng test --watch=false --browsers=ChromeHeadless"
   },
   "private": true,
