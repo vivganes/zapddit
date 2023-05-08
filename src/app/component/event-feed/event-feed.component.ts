@@ -1,6 +1,8 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
+import { TopicService } from 'src/app/service/topic.service';
 
 @Component({
   selector: 'app-event-feed',
@@ -11,34 +13,71 @@ export class EventFeedComponent {
 
   @Input()
   tag: string | undefined;
+
+  @Output()
+  followChanged: EventEmitter<string> = new EventEmitter<string>();
+  
   private ndkProvider: NdkproviderService;
+  private topicService: TopicService;
+  followedTopics: string[]=[]
   events:Set<NDKEvent>|undefined;
 
-  ngOnInit() {
-    this.getEvents();
-  }
+  ngOnInit(){
+    if(this.topicService.followedTopics === ''){
+      this.followedTopics = [];
+    } else {
+      this.followedTopics = this.topicService.followedTopics.split(',');
+    }
+  }  
 
-  ngOnChanges(changes: SimpleChanges) {
-    for (let propName in changes) {
-      let chng = changes[propName];
-      let cur  = JSON.stringify(chng.currentValue);
-      let prev = JSON.stringify(chng.previousValue);
-      if(propName === 'tag'){
-        this.getEvents();
-      }
-      console.log(`${propName}: currentValue = ${cur}, previousValue = ${prev}`);
-  }  }
-
-  constructor(ndkProvider: NdkproviderService){
+  constructor(ndkProvider: NdkproviderService, topicService:TopicService, route: ActivatedRoute){
     this.ndkProvider = ndkProvider;
+    this.topicService = topicService;
+    route.params.subscribe( params => {
+      this.tag = params['topic'];
+      this.getEvents();
+    } );
   }
 
   async getEvents(){
-    this.events = await this.ndkProvider.fetchEvents(this.tag || "");
+    if(this.tag && this.tag !== ''){
+      this.events = await this.ndkProvider.fetchEvents(this.tag || "");
+    } else {
+      this.events = await this.ndkProvider.fetchAllFollowedEvents(this.topicService.followedTopics.split(','));
+    }
   }
 
   isLoggedIn (): boolean {
     return this.ndkProvider.isLoggedIn()
+  }
+
+  followTopic(topic:string|undefined){
+    if(topic){
+    this.topicService.followTopic(topic);
+    this.followChanged.emit();
+    this.followedTopics = this.topicService.followedTopics.split(',');
+    }
+  }
+
+  unfollowTopic(topic:string|undefined){
+    if(topic){
+      this.topicService.unfollowTopic(topic);
+      this.followChanged.emit();
+      if(this.topicService.followedTopics.length===0){
+        this.followedTopics=[]
+      } else {
+      this.followedTopics = this.topicService.followedTopics.split(',');
+      }
+    }
+  }
+
+  isTopicFollowed(topic:string|undefined):boolean{
+    if(topic){
+      if(this.followedTopics.indexOf(topic)>-1){
+        return true;
+      }
+    }
+    return false;
   }
 
   

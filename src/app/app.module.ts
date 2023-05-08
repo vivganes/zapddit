@@ -10,6 +10,7 @@ import { UserprofileComponent } from './component/userprofile/userprofile.compon
 import { Nip07LoginComponent } from './component/nip07-login/nip07-login.component';
 import { EventFeedComponent } from './component/event-feed/event-feed.component';
 import { EventCardComponent } from './component/event-card/event-card.component';
+import { SinglePostComponent } from './component/single-post/single-post.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { EventCardComponent } from './component/event-card/event-card.component'
     Nip07LoginComponent,
     EventFeedComponent,
     EventCardComponent,
+    SinglePostComponent,
   ],
   imports: [
     BrowserModule,

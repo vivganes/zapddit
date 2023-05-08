@@ -10,15 +10,15 @@
             <div class="card-text break-words-overflow" [innerHTML]="linkifyContent()">              
             </div>
            
-            <div *ngFor="let imageSrc of getImageUrls()" class="clr-row">
+            <div *ngFor="let imageSrc of getImageUrls()" class="clr-row  clr-justify-content-center">
                 <div class="clr-col-6">
                     <img alt="image" class="note-image" src={{imageSrc}}/>
                 </div>
             </div>
         </div>
         <div class="card-footer">
-            <button class="btn btn-sm btn-icon btn-link"><cds-icon shape="bolt" direction="down"></cds-icon>Upzap</button>
-            <button class="btn btn-sm btn-icon btn-link"><cds-icon shape="bolt" direction="up"></cds-icon>Downzap</button>
+            <button class="btn btn-sm btn-icon btn-link" (click)="upZap()"><cds-icon shape="bolt" direction="down"></cds-icon>Upzap ({{upZaps.size}})</button>
+            <button class="btn btn-sm btn-icon btn-link" (click)="downZap()"><cds-icon shape="bolt" direction="up"></cds-icon>Downzap ({{downZaps.size}})</button>
             <!-- <clr-dropdown>
                 <button class="btn btn-outline-primary" clrDropdownTrigger>
                     Dropdown
