@@ -1,7 +1,0 @@
-.angular/cache
-.vscode
-
-node_modules
-angular.json
-tsconfig.json
-tsconfig.app.json
