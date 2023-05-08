@@ -24,7 +24,7 @@ ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIco
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'zappedit';
+  title = 'ZappedIt!';
   private topicService: TopicService;
   private router: Router;
   followedTopics: string[] = [];
