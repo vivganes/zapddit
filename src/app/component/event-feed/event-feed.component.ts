@@ -51,12 +51,6 @@ export class EventFeedComponent {
     }
   }
 
-  async getNextPage(){
-    this.until = this.getOldestEventTimestamp();
-
-
-  }
-
   getOldestEventTimestamp():number|undefined{
     let oldestTimestamp:number = 0;
     if(this.events){
@@ -99,8 +93,6 @@ export class EventFeedComponent {
       }
     }
     return false;
-  }
-
-  
+  } 
 
 }

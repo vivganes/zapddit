@@ -1,13 +1,13 @@
 import { Component, ComponentRef } from '@angular/core'
 import '@cds/core/icon/register.js';
-import { ClarityIcons, userIcon, boltIcon, childArrowIcon, plusCircleIcon, logoutIcon } from '@cds/core/icon';
+import { ClarityIcons, userIcon, boltIcon, plusCircleIcon, logoutIcon,hashtagIcon,homeIcon, cogIcon } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { TopicService } from './service/topic.service';
 import { EventFeedComponent } from './component/event-feed/event-feed.component';
 import { Router } from '@angular/router';
 import { NDKUserProfile } from '@nostr-dev-kit/ndk';
 
-ClarityIcons.addIcons(userIcon, boltIcon, childArrowIcon, plusCircleIcon, logoutIcon);
+ClarityIcons.addIcons(userIcon, boltIcon,  plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon);
 
 @Component({
   selector: 'app-root',
@@ -19,8 +19,10 @@ export class AppComponent {
   private topicService:TopicService;
   private router:Router;
   followedTopics:string[] = [];
+  downzapRecipientsError:string|undefined;
+  downzapSetSuccessMessage:string|undefined;
 
-  private ndkProvider: NdkproviderService;
+  ndkProvider: NdkproviderService;
 
   constructor(ndkProvider: NdkproviderService, topicService:TopicService, router:Router){
     this.ndkProvider = ndkProvider;
@@ -29,11 +31,11 @@ export class AppComponent {
   }
 
   ngOnInit(){
-    if(this.topicService.followedTopics === ''){
-      this.followedTopics = []
-    } else {
-      this.followedTopics = this.topicService.followedTopics.split(",");
-    }
+      if(this.topicService.followedTopics === ''){
+        this.followedTopics = []
+      } else {
+        this.followedTopics = this.topicService.followedTopics.split(",");
+      }        
   }
 
   subscribeToEmitter(componentRef: ComponentRef<any>){
@@ -69,6 +71,21 @@ export class AppComponent {
   search(){
     let topic =  (<HTMLInputElement>document.getElementById("search-input-sidenav-ng")).value;
     this.router.navigate(['t',{topic}])
+  }
+
+  async saveDownzapRecipients(){
+    this.downzapRecipientsError = undefined;
+    let recipients =  (<HTMLInputElement>document.getElementById("downzap-recipients")).value;
+    let supposedUser = await this.ndkProvider.getNdkUserFromNpub(recipients);
+    console.log(supposedUser);
+    if(supposedUser !== undefined){
+      console.log("Sending downzaps to "+ recipients);
+      this.ndkProvider.publishAppData(undefined,recipients);
+      this.downzapSetSuccessMessage = 'Sending downzaps to '+ (supposedUser.profile?.displayName?supposedUser.profile?.displayName:supposedUser.profile?.name);
+      this.router.navigateByUrl('/feed');
+    } else {
+      this.downzapRecipientsError = "Invalid npub"
+    }    
   }
 
   

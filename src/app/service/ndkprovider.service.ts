@@ -3,12 +3,22 @@ import NDK, { type NDKConstructorParams, NDKNip07Signer, NDKUser, type NDKUserPr
 import {nip57} from "nostr-tools";
 import {bech32} from '@scure/base';
 
+interface ZappedItAppData{
+  followedTopics:string,
+  downzapRecipients:string
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class NdkproviderService {
   ndk: NDK | undefined
   currentUserProfile: NDKUserProfile | undefined
+  currentUser: NDKUser | undefined
+  appData:ZappedItAppData = {
+    followedTopics:'',
+    downzapRecipients:''
+  }
   loggedIn: boolean = false;
 
   constructor () {
@@ -47,9 +57,16 @@ export class NdkproviderService {
   }
 
   async getNdkUserFromNpub (npub: string): Promise<NDKUser | undefined> {
-    const user = this.ndk?.getUser({npub})
-    await user?.fetchProfile()
-    return user;
+    try{
+      const user =  this.ndk?.getUser({npub})  
+      await user?.fetchProfile()      
+      return user;
+    }  catch(e){
+      console.log(e);
+      return undefined;
+    }
+    
+    
   }
 
   async getProfileFromHex (hexpubkey: string): Promise<NDKUserProfile | undefined> {
@@ -74,6 +91,11 @@ export class NdkproviderService {
         if (user.npub) {
           console.log('Permission granted to read their public key:', user.npub)
           this.currentUserProfile = await this.getProfileFromNpub(user.npub)
+          this.currentUser = await this.getNdkUserFromNpub(user.npub);
+          const relays = this.currentUser?.relayUrls;
+          console.log("fetched user "+ this.currentUser);
+          await this.refreshAppData();
+          //once all setup is done, then only set loggedIn=true to start rendering
           this.loggedIn = true
         } else {
           console.log('Permission not granted')
@@ -104,6 +126,58 @@ export class NdkproviderService {
 
   async zapRequest (event:NDKEvent){
     return await event.zap(1000,"+");
+  }
+
+  async fetchZaps(event: NDKEvent): Promise<Set<NDKEvent>|undefined>{
+    const filter: NDKFilter = { kinds: [9735], "#e": [event.id] };
+    return this.ndk?.fetchEvents(filter);
+  }
+  
+
+  publishAppData(followListCsv?:string, downzapRecipients?:string){
+    const ndkEvent = new NDKEvent(this.ndk);
+    ndkEvent.kind = 30078;
+    ndkEvent.content = (followListCsv||this.appData.followedTopics)+"\n"+(downzapRecipients||this.appData.downzapRecipients);
+    const tag:NDKTag = ['d','zappedit']
+    ndkEvent.tags=[tag];
+    ndkEvent.publish(); // This will trigger the extension to ask the user to confirm signing.
+  }
+
+  fetchLatestAppData(){
+    let authors:string[] = [];
+    if(this.currentUser?.hexpubkey()){
+      authors = [this.currentUser.hexpubkey()]
+    }
+    const filter: NDKFilter = { kinds: [30078], "#d": ['zappedit'], limit:1,authors:authors};
+    return this.ndk?.fetchEvents(filter);
+  }
+
+  async refreshAppData(){
+    console.log("Fetching latest events")
+    const latestEvents:Set<NDKEvent>|undefined = await this.fetchLatestAppData();
+    console.log(latestEvents);
+    if(latestEvents && latestEvents.size>0){
+      const latestEvent:NDKEvent = Array.from(latestEvents)[0];
+      const multiLineAppData = latestEvent.content;
+      const lineWiseAppData = multiLineAppData.split("\n");
+      for(let i = 0; i<lineWiseAppData.length; i++){
+        switch(i){
+          case 0:
+            this.appData.followedTopics = lineWiseAppData[i];
+            break;
+          case 1:
+            this.appData.downzapRecipients = lineWiseAppData[i];
+            break;
+          default:
+            //do nothing. irrelevant data
+        }
+      }    
+      console.log("Latest follow list :"+ this.appData.followedTopics);
+      localStorage.setItem('followedTopics',this.appData.followedTopics);
+
+      console.log("Latest downzap recipients:"+ this.appData.downzapRecipients);
+      localStorage.setItem('downzapRecipients', this.appData.downzapRecipients);
+    }
   }
 
   /*
@@ -196,22 +270,5 @@ export class NdkproviderService {
     }
 
     return zapEndpointCallback;
-}
-
-async fetchZaps(event: NDKEvent): Promise<Set<NDKEvent>|undefined>{
-  const filter: NDKFilter = { kinds: [9735], "#e": [event.id] };
-  return this.ndk?.fetchEvents(filter);
-}
-
-fetchEventsInSubscription(){
-  const tag:string="foodchain"
-  const filter: NDKFilter = { kinds: [1], "#t": [tag] };
-  const subscription:NDKSubscription|undefined = this.ndk?.subscribe(filter)
-  subscription?.on('event',(event)=>{
-    console.log("Event received", event);
-  })
-  subscription?.start()
-}
-
-  
+}  
 }

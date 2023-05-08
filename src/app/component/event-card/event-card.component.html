@@ -19,7 +19,7 @@
         </div>
         <div class="card-footer">
             <button class="btn btn-sm btn-icon btn-link" (click)="upZap()"><cds-icon shape="bolt" direction="down"></cds-icon>Upzap ({{upZaps.size}})</button>
-            <button class="btn btn-sm btn-icon btn-link" (click)="downZap()"><cds-icon shape="bolt" direction="up"></cds-icon>Downzap ({{downZaps.size}})</button>
+            <button class="btn btn-sm btn-icon btn-link" (click)="downZap()" [disabled]="!ndkProvider.appData.downzapRecipients" [title]="(ndkProvider.appData.downzapRecipients)?'This deposits your downzap amounts to the configured Downzap recipients':'Setup your downzap recipient in the sidebar to downzap notes.'"><cds-icon shape="bolt" direction="up"></cds-icon>Downzap ({{downZaps.size}})</button>
             <!-- <clr-dropdown>
                 <button class="btn btn-outline-primary" clrDropdownTrigger>
                     Dropdown

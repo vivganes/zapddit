@@ -21,9 +21,11 @@ export class EventCardComponent {
   zaps: Set<NDKEvent>|undefined
   upZaps: Set<NDKEvent>= new Set<NDKEvent>()
   downZaps: Set<NDKEvent>= new Set<NDKEvent>()
+  @Input()
+  downZapEnabled:boolean|undefined;
   tempAvatar: string = '';
 
-  private ndkProvider:NdkproviderService;
+  ndkProvider:NdkproviderService;
 
   ngOnInit() {
     this.getAuthor();
@@ -74,9 +76,13 @@ export class EventCardComponent {
     }
   }
 
+  isDownzapEnabled():boolean{
+    return (this.ndkProvider.appData.downzapRecipients !== '');
+  }
+
   async downZap(){
     if(this.event){
-      console.log(await this.ndkProvider.downZapRequest(this.event, await this.ndkProvider.getNdkUserFromNpub('npub1yg4uynm45lz535tpm6w04ul3yqv8tnz2wy94wgqwkm60xx3g5m5sa7ytwt'), 1000, "-"));
+      console.log(await this.ndkProvider.downZapRequest(this.event, await this.ndkProvider.getNdkUserFromNpub(this.ndkProvider.appData.downzapRecipients), 1000, "-"));
     }
   }
 
