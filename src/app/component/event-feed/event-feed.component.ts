@@ -10,6 +10,8 @@ import { TopicService } from 'src/app/service/topic.service';
   styleUrls: ['./event-feed.component.scss']
 })
 export class EventFeedComponent {
+  until:number|undefined = Date.now();
+  limit:number|undefined = 25;
 
   @Input()
   tag: string | undefined;
@@ -35,16 +37,35 @@ export class EventFeedComponent {
     this.topicService = topicService;
     route.params.subscribe( params => {
       this.tag = params['topic'];
+      this.until = Date.now();
+      this.limit = 25;
       this.getEvents();
     } );
   }
 
   async getEvents(){
     if(this.tag && this.tag !== ''){
-      this.events = await this.ndkProvider.fetchEvents(this.tag || "");
+      this.events = await this.ndkProvider.fetchEvents(this.tag || "",this.limit, undefined, this.until);
     } else {
-      this.events = await this.ndkProvider.fetchAllFollowedEvents(this.topicService.followedTopics.split(','));
+      this.events = await this.ndkProvider.fetchAllFollowedEvents(this.topicService.followedTopics.split(','), this.limit, undefined, this.until);
     }
+  }
+
+  async getNextPage(){
+    this.until = this.getOldestEventTimestamp();
+
+
+  }
+
+  getOldestEventTimestamp():number|undefined{
+    let oldestTimestamp:number = 0;
+    if(this.events){
+      let timestampsOfEvents:(number|undefined)[] = Array.from(this.events).map((ndkEvent)=> {
+        return ndkEvent.created_at;
+      })
+    return Math.min(...timestampsOfEvents as number[])
+    }
+    return undefined;    
   }
 
   isLoggedIn (): boolean {

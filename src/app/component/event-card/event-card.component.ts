@@ -5,6 +5,8 @@ import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import * as linkify from "linkifyjs";
 import linkifyHtml from "linkify-html";
 import "linkify-plugin-hashtag";
+import { getRandomAvatar } from "@fractalsoftware/random-avatar-generator";
+
 
 @Component({
   selector: 'app-event-card',
@@ -19,12 +21,14 @@ export class EventCardComponent {
   zaps: Set<NDKEvent>|undefined
   upZaps: Set<NDKEvent>= new Set<NDKEvent>()
   downZaps: Set<NDKEvent>= new Set<NDKEvent>()
+  tempAvatar: string = '';
 
   private ndkProvider:NdkproviderService;
 
   ngOnInit() {
     this.getAuthor();
     this.fetchZapsAndSegregate();
+    this.tempAvatar = this.getTempAvatar();
   }
 
   constructor(ndkProvider: NdkproviderService){
@@ -109,6 +113,10 @@ export class EventCardComponent {
       }
    }
    return false;
+  }
+
+  getTempAvatar(): string{
+    return window.btoa(getRandomAvatar(5,'circle'));
   }
 
   

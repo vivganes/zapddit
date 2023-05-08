@@ -21,6 +21,7 @@
     "@cds/core": "^6.4.2",
     "@clr/angular": "^15.3.0",
     "@clr/ui": "^15.3.0",
+    "@fractalsoftware/random-avatar-generator": "^1.0.11",
     "@nostr-dev-kit/ndk": "^0.3.10",
     "linkify-html": "^4.1.1",
     "linkify-plugin-hashtag": "^4.1.1",

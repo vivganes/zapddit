@@ -1,7 +1,8 @@
     <div class="card">
         <div class="card-block">
             <div class="card-media-block">
-                <img alt="Profile picture" src="{{author?.image}}" class="card-media-image" />
+                <img *ngIf="author?.image" alt="Profile picture" src="{{author?.image}}" class="card-media-image" />
+                <img *ngIf="author?.image == undefined" class="card-media-image" src="data:image/svg+xml;base64,{{tempAvatar}}"/>
                 <div class="card-media-description">
                     <span class="card-media-title break-words-overflow"> {{author?.name}} </span>
                     <span class="card-media-text break-words-overflow"> {{formatTimestamp(event?.created_at)}} </span>
