@@ -8,9 +8,8 @@ describe('SinglePostComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SinglePostComponent ]
-    })
-    .compileComponents();
+      declarations: [SinglePostComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SinglePostComponent);
     component = fixture.componentInstance;

@@ -1,100 +1,133 @@
 <clr-main-container>
   <clr-header class="header-6">
     <div class="branding">
-        <a href="javascript://" class="nav-link">
-            <cds-icon shape="bolt" solid></cds-icon>
-            <span class="title">zappedit</span>
-        </a>
+      <a href="javascript://" class="nav-link">
+        <cds-icon shape="bolt" solid></cds-icon>
+        <span class="title">zappedit</span>
+      </a>
     </div>
     <!-- 
     <div class="header-actions">      
        
     </div> -->
-</clr-header>
-<div class="content-container">
-  <clr-vertical-nav [clr-nav-level]="2">
-    <form clrForm class="search" onsubmit="return false;" >      
-      <label for="search-input-sidenav-ng">
-        # <input id="search-input-sidenav-ng" class="search-text-box" type="text" placeholder="Search for any hashtag" (keyup.enter)="search()"/>
-        <!-- <cds-icon shape="child-arrow" solid flip="horizontal"></cds-icon>  -->
-      </label>
-    </form>
+  </clr-header>
+  <div class="content-container">
+    <clr-vertical-nav [clr-nav-level]="2">
+      <form clrForm class="search" onsubmit="return false;">
+        <label for="search-input-sidenav-ng">
+          #
+          <input
+            id="search-input-sidenav-ng"
+            class="search-text-box"
+            type="text"
+            placeholder="Search for any hashtag"
+            (keyup.enter)="search()" />
+          <!-- <cds-icon shape="child-arrow" solid flip="horizontal"></cds-icon>  -->
+        </label>
+      </form>
 
-    <div class="nav-divider"></div>
-    <a clrVerticalNavLink  routerLink="/feed" routerLinkActive="active"><cds-icon shape="home" clrverticalnavicon class="nav-icon"></cds-icon><span class="nav-text">My Feed</span></a> 
-    <div class="nav-divider"></div>     
-      <clr-vertical-nav-group
-              routerLinkActive="active">
-          <cds-icon shape="cog" clrVerticalNavIcon></cds-icon>
-          Settings
-          <clr-vertical-nav-group-children>
-            <form clrForm class="search" onsubmit="return false;" >              
-                npub of the person who will receive the sats for your downzaps:                    
-              <label for="downzap-recipients">
-              <input id="downzap-recipients" class="search-text-box" type="text" placeholder="npub of the recipient" value="{{ndkProvider.appData.downzapRecipients}}"/>
-              </label>
-              <div *ngIf="downzapRecipientsError" class="alert alert-danger" role="alert">
-                <div class="alert-items">
-                    <div class="alert-item static">
-                        <div class="alert-icon-wrapper">
-                            <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
-                        </div>
-                        <span class="alert-text">
-                          {{downzapRecipientsError}}
-                        </span>
-                    </div>
+      <div class="nav-divider"></div>
+      <a clrVerticalNavLink routerLink="/feed" routerLinkActive="active"
+        ><cds-icon shape="home" clrverticalnavicon class="nav-icon"></cds-icon><span class="nav-text">My Feed</span></a
+      >
+      <div class="nav-divider"></div>
+      <clr-vertical-nav-group routerLinkActive="active">
+        <cds-icon shape="cog" clrVerticalNavIcon></cds-icon>
+        Settings
+        <clr-vertical-nav-group-children>
+          <form clrForm class="search" onsubmit="return false;">
+            npub of the person who will receive the sats for your downzaps:
+            <label for="downzap-recipients">
+              <input
+                id="downzap-recipients"
+                class="search-text-box"
+                type="text"
+                placeholder="npub of the recipient"
+                value="{{ ndkProvider.appData.downzapRecipients }}" />
+            </label>
+            <div *ngIf="downzapRecipientsError" class="alert alert-danger" role="alert">
+              <div class="alert-items">
+                <div class="alert-item static">
+                  <div class="alert-icon-wrapper">
+                    <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+                  </div>
+                  <span class="alert-text">
+                    {{ downzapRecipientsError }}
+                  </span>
                 </div>
               </div>
-              <div *ngIf="downzapSetSuccessMessage" class="alert alert-success" role="alert">
-                <div class="alert-items">
-                    <div class="alert-item static">
-                        <div class="alert-icon-wrapper">
-                            <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
-                        </div>
-                        <span class="alert-text">
-                          {{downzapSetSuccessMessage}}
-                        </span>
-                    </div>
+            </div>
+            <div *ngIf="downzapSetSuccessMessage" class="alert alert-success" role="alert">
+              <div class="alert-items">
+                <div class="alert-item static">
+                  <div class="alert-icon-wrapper">
+                    <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
+                  </div>
+                  <span class="alert-text">
+                    {{ downzapSetSuccessMessage }}
+                  </span>
                 </div>
               </div>
-              <!-- <label *ngIf="downzapRecipientsError">{{downzapRecipientsError}}</label>-->
-              <label>             
-              
+            </div>
+            <!-- <label *ngIf="downzapRecipientsError">{{downzapRecipientsError}}</label>-->
+            <label>
               <button class="btn btn-primary" (click)="saveDownzapRecipients()">Save</button>
             </label>
-            </form>              
-          </clr-vertical-nav-group-children>
+          </form>
+          <form clrForm class="search" onsubmit="return false;">
+            Default Sats for Zaps:
+            <label for="sats-for-zaps">
+              <input
+                id="sats-for-zaps"
+                class="search-text-box"
+                type="number"
+                placeholder="sats"
+                value="{{ ndkProvider.defaultSatsForZaps }}" />
+            </label>
+            
+            <label>
+              <button class="btn btn-primary" (click)="setDefaultSats()">Save</button>
+            </label>
+          </form>
+        </clr-vertical-nav-group-children>
       </clr-vertical-nav-group>
 
-  <div class="nav-divider"></div>
-    <label class="nav-header">Followed Topics</label>
-      <a clrVerticalNavLink  *ngFor="let topic of followedTopics"
-      [routerLink]="['/t',topic]" routerLinkActive="active"><cds-icon shape="hashtag" clrverticalnavicon class="nav-icon"></cds-icon><span class="nav-text">{{topic}}</span></a>    
+      <div class="nav-divider"></div>
+      <label class="nav-header">Followed Topics</label>
+      <a clrVerticalNavLink *ngFor="let topic of followedTopics" [routerLink]="['/t', topic]" routerLinkActive="active"
+        ><cds-icon shape="hashtag" clrverticalnavicon class="nav-icon"></cds-icon
+        ><span class="nav-text">{{ topic }}</span></a
+      >
       <div class="nav-divider"></div>
       <label class="nav-header">
-        <img *ngIf="getCurrentUserProfile()?.image" [src]="getCurrentUserProfile()?.image" class="header-profile-image" alt="profile"/>            
-        <span *ngIf="getCurrentUserProfile()?.displayName">{{getCurrentUserProfile()?.displayName}}</span>
-        <span  class="profile-name" *ngIf="getCurrentUserProfile()?.name">@{{getCurrentUserProfile()?.name}}</span>
+        <img
+          *ngIf="getCurrentUserProfile()?.image"
+          [src]="getCurrentUserProfile()?.image"
+          class="header-profile-image"
+          alt="profile" />
+        <span *ngIf="getCurrentUserProfile()?.displayName">{{ getCurrentUserProfile()?.displayName }}</span>
+        <span class="profile-name" *ngIf="getCurrentUserProfile()?.name">@{{ getCurrentUserProfile()?.name }}</span>
       </label>
-  </clr-vertical-nav>
-      <div class="content-area">
-        <div *ngIf="isLoggedIn(); else notloggedin">     
+    </clr-vertical-nav>
+    <div class="content-area">
+      <div *ngIf="isLoggedIn(); else notloggedin">
         <router-outlet (activate)="subscribeToEmitter($event)"></router-outlet>
-        </div>
-        <ng-template #notloggedin>   
-          <div align="center">
-            <span class="spinner">
-            </span>
-            <div>
-              <h3>Loading...</h3>
-              <p>Don't have a NIP-07 plugin? Refer <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank">this page</a></p>
-            </div>
-          
+      </div>
+      <ng-template #notloggedin>
+        <div align="center">
+          <span class="spinner"> </span>
+          <div>
+            <h3>Loading...</h3>
+            <p>
+              Don't have a NIP-07 plugin? Refer
+              <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank"
+                >this page</a
+              >
+            </p>
           </div>
-          </ng-template>
-          <!-- <app-event-feed tag={{currentlyShowingTag}}/> -->
-        
-   </div>
-   
+        </div>
+      </ng-template>
+      <!-- <app-event-feed tag={{currentlyShowingTag}}/> -->
+    </div>
   </div>
 </clr-main-container>
