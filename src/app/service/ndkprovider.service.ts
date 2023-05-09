@@ -14,6 +14,7 @@ import NDK, {
 } from '@nostr-dev-kit/ndk';
 import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
+import { NDKPool } from '@nostr-dev-kit/ndk/lib/src/relay/pool';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -95,17 +96,28 @@ export class NdkproviderService {
   }
 
   private async initializeClientWithSigner(nip07signer: NDKNip07Signer) {
-    const params: NDKConstructorParams = { signer: nip07signer, explicitRelayUrls: ['wss://nos.lol'] };
     try {
-      this.ndk = new NDK(params);
-      await this.ndk.connect();
-
       nip07signer.user().then(async user => {
+        const params: NDKConstructorParams = { signer: nip07signer, explicitRelayUrls: ['wss://nos.lol',
+        'wss://relay.nostr.band',
+        'wss://relay.f7z.io',
+        'wss://relay.damus.io',
+        'wss://nostr.mom',
+        'wss://no.str.cr',] }; //TODO: fix this
+        this.ndk = new NDK(params);
+        await this.ndk.connect(1000);
         if (user.npub) {
           console.log('Permission granted to read their public key:', user.npub);
           this.currentUserProfile = await this.getProfileFromNpub(user.npub);
           this.currentUser = await this.getNdkUserFromNpub(user.npub);
           const relays = this.currentUser?.relayUrls;
+          console.log(relays);
+          if(relays && relays.length>0){
+            const newNDKParams= { signer: nip07signer, explicitRelayUrls: relays };
+            const newNDK = new NDK(newNDKParams);
+            await newNDK.connect();
+            this.ndk = newNDK;
+          }
           await this.refreshAppData();
           //once all setup is done, then only set loggedIn=true to start rendering
           this.loggedIn = true;

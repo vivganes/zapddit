@@ -8,10 +8,6 @@ import 'linkify-plugin-hashtag';
 import { getRandomAvatar } from '@fractalsoftware/random-avatar-generator';
 import QRCodeStyling from 'qr-code-styling';
 
-const linkifyOptions = {
-
-}
-
 @Component({
   selector: 'app-event-card',
   templateUrl: './event-card.component.html',
@@ -35,7 +31,6 @@ export class EventCardComponent {
 
   @Input()
   downZapEnabled: boolean | undefined;
-  tempAvatar: string = '';
 
   ndkProvider: NdkproviderService;
 
@@ -44,7 +39,6 @@ export class EventCardComponent {
     console.log(this.linkifiedContent);
     this.getAuthor();
     this.fetchZapsAndSegregate();
-    this.tempAvatar = this.getTempAvatar();
   }
 
   constructor(ndkProvider: NdkproviderService) {
@@ -199,7 +193,4 @@ export class EventCardComponent {
     return false;
   }
 
-  getTempAvatar(): string {
-    return window.btoa(getRandomAvatar(5, 'circle'));
-  }
 }

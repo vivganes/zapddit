@@ -5,7 +5,7 @@
       <img alt="temp avatar"
         *ngIf="author?.image == undefined"
         class="card-media-image"
-        src="data:image/svg+xml;base64,{{ tempAvatar }}" />
+        src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100" />
       <div class="card-media-description">
         <span class="card-media-title break-words-overflow"> {{ author?.name }} </span>
         <span class="card-media-text break-words-overflow"> {{ formatTimestamp(event?.created_at) }} </span>

@@ -12,6 +12,7 @@ import { TopicService } from 'src/app/service/topic.service';
 export class EventFeedComponent {
   until: number | undefined = Date.now();
   limit: number | undefined = 25;
+  loadingEvents: boolean = false;
 
   @Input()
   tag: string | undefined;
@@ -35,6 +36,7 @@ export class EventFeedComponent {
   constructor(ndkProvider: NdkproviderService, topicService: TopicService, route: ActivatedRoute) {
     this.ndkProvider = ndkProvider;
     this.topicService = topicService;
+    this.loadingEvents = false;
     route.params.subscribe(params => {
       this.tag = params['topic'];
       this.until = Date.now();
@@ -44,8 +46,10 @@ export class EventFeedComponent {
   }
 
   async getEvents() {
+    this.loadingEvents = true;
     if (this.tag && this.tag !== '') {
       this.events = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
+      this.loadingEvents = false;
     } else {
       this.events = await this.ndkProvider.fetchAllFollowedEvents(
         this.topicService.followedTopics.split(','),
@@ -53,6 +57,7 @@ export class EventFeedComponent {
         undefined,
         this.until
       );
+      this.loadingEvents=false;
     }
   }
 

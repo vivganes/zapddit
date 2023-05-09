@@ -2,12 +2,12 @@
   <h3 align="center">
     #{{ tag }}
     <ng-template [ngIf]="!isTopicFollowed(tag)" [ngIfElse]="elseBlock">
-      <button class="btn btn-primary btn-icon" (click)="followTopic(tag)">
+      <button class="btn btn-sm btn-primary btn-icon" (click)="followTopic(tag)">
         <cds-icon shape="plus-circle" solid></cds-icon> Follow
       </button>
     </ng-template>
     <ng-template #elseBlock>
-      <button class="btn btn-warning btn-icon" (click)="unfollowTopic(tag)">
+      <button class="btn btn-sm btn-warning btn-icon" (click)="unfollowTopic(tag)">
         <cds-icon shape="logout" solid></cds-icon> Unfollow
       </button>
     </ng-template>
@@ -19,8 +19,13 @@
 <div *ngIf="events && events.size == 0">
   No notes for you 🥲 May be try following more topics? Like <a href="/t/coffeechain">#coffeechain</a>?
 </div>
+<ng-template [ngIf]="!loadingEvents">
 <div *ngFor="let event of events" class="clr-row clr-justify-content-center">
   <div class="clr-col-9">
     <app-event-card [event]="event" />
   </div>
+</div>
+</ng-template>
+<div *ngIf="loadingEvents" class="event-loading-spinner">
+  <span class="spinner spinner-md">Loading notes...</span>
 </div>
