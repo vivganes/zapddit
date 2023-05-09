@@ -587,6 +587,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
+ngx-dynamic-hooks
+MIT
+
 nostr-tools
 Unlicense
 This is free and unencumbered software released into the public domain.
