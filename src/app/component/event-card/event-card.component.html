@@ -35,14 +35,14 @@
       ">
       <cds-icon shape="bolt" direction="up"></cds-icon>{{ downZapTotalMilliSats/1000 | shortNumber }} Downzap
     </button>
-    <clr-modal [(clrModalOpen)]="showQR">
+    <clr-modal [(clrModalOpen)]="showQR" [clrModalClosable]="false">
       <h3 class="modal-title">Scan this QR using your Lightning Wallet app</h3>
-      <div class="modal-body">
+      <div align="center" class="modal-body">
         <div #canvas></div>
-        <div>{{invoice}}</div>
+        <div class="break-words-overflow">{{invoice}}</div>
       </div>
       <div class="modal-footer">
-          <button type="button" class="btn btn-primary" (click)="showQR = false">Done</button>
+          <button type="button" class="btn btn-primary" (click)="zapDoneClicked()">Done</button>
       </div>
   </clr-modal>
     <!-- <clr-dropdown>

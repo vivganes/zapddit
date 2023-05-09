@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild,  Renderer2 } from '@angular/core';
 import { NDKEvent, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as moment from 'moment';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
@@ -18,8 +18,6 @@ export class EventCardComponent {
   event: NDKEvent | undefined;
   author: NDKUserProfile | undefined;
   zaps: Set<NDKEvent> | undefined;
-  upZaps: Set<NDKEvent> = new Set<NDKEvent>();
-  downZaps: Set<NDKEvent> = new Set<NDKEvent>();
   upZapTotalMilliSats: number = 0
   downZapTotalMilliSats: number = 0
   showQR: boolean= false;
@@ -33,6 +31,7 @@ export class EventCardComponent {
   downZapEnabled: boolean | undefined;
 
   ndkProvider: NdkproviderService;
+  renderer: Renderer2;
 
   ngOnInit() {
     this.linkifiedContent = this.linkifyContent(this.event?.content)
@@ -41,8 +40,9 @@ export class EventCardComponent {
     this.fetchZapsAndSegregate();
   }
 
-  constructor(ndkProvider: NdkproviderService) {
+  constructor(ndkProvider: NdkproviderService, renderer: Renderer2) {
     this.ndkProvider = ndkProvider;
+    this.renderer = renderer;
   }
 
   async getAuthor() {
@@ -60,11 +60,10 @@ export class EventCardComponent {
     }
   }
 
-  linkifyContent(content?:string): string {
-    let hashTagCounter = 0;
-    this.hashTagsMap = new Map<number,string>();
+  linkifyContent(content?:string): string {    
     const options = {
       defaultProtocol: 'https',
+      nl2br: true,
       formatHref: {
         hashtag: (href: string) => '/t/' + href.substring(1).toLowerCase(),
       },
@@ -74,7 +73,7 @@ export class EventCardComponent {
         }
       }
     };
-    const html:string =  linkifyHtml(this.event?.content || '', options);
+    const html:string =  linkifyHtml(content || '', options);
     return html;
   }
 
@@ -86,6 +85,7 @@ export class EventCardComponent {
 
   async upZap() {
     if (this.event) {
+      this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');      
       const invoice = await this.ndkProvider.zapRequest(this.event);
       const qr = new QRCodeStyling({
         width:  256,
@@ -112,6 +112,7 @@ export class EventCardComponent {
 
   async downZap() {
     if (this.event) {
+      this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');      
       const invoice = await this.ndkProvider.downZapRequest(
           this.event,
           await this.ndkProvider.getNdkUserFromNpub(this.ndkProvider.appData.downzapRecipients),
@@ -147,11 +148,9 @@ export class EventCardComponent {
     if (this.zaps) {
       for (let zap of this.zaps) {
         if (this.isDownzap(zap)) {
-          this.downZaps.add(zap);
           const milliSats = this.readMilliSatsFromZap(zap);
           this.downZapTotalMilliSats += milliSats;
         } else {
-          this.upZaps.add(zap);
           const milliSats = this.readMilliSatsFromZap(zap);
           this.upZapTotalMilliSats += milliSats;
         }
@@ -191,6 +190,12 @@ export class EventCardComponent {
       }
     }
     return false;
+  }
+
+  zapDoneClicked(){
+    this.showQR = false;
+    this.downZapTotalMilliSats = this.upZapTotalMilliSats = 0;
+    this.fetchZapsAndSegregate();
   }
 
 }

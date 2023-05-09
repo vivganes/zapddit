@@ -25,6 +25,21 @@
     <app-event-card [event]="event" />
   </div>
 </div>
+<div *ngIf="!reachedEndOfFeed" align="center">
+  <button [clrLoading]="loadingNextEvents" class="btn btn-info-outline" (click)="loadMoreEvents()">Load more</button>
+</div>
+<div *ngIf="reachedEndOfFeed" align="center" class="clr-row clr-justify-content-center">
+  <div class="alert alert-info clr-col-3" role="alert">
+    <div class="alert-items">
+        <div class="alert-item static">
+            <div class="alert-icon-wrapper">
+                <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
+            </div>
+            <span class="alert-text">Yaay! You reached the end of feed 😁</span>
+        </div>
+    </div>
+</div>
+</div>
 </ng-template>
 <div *ngIf="loadingEvents" class="event-loading-spinner">
   <span class="spinner spinner-md">Loading notes...</span>

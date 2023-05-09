@@ -13,6 +13,8 @@ export class EventFeedComponent {
   until: number | undefined = Date.now();
   limit: number | undefined = 25;
   loadingEvents: boolean = false;
+  loadingNextEvents: boolean = false;
+  reachedEndOfFeed : boolean = false;
 
   @Input()
   tag: string | undefined;
@@ -24,7 +26,7 @@ export class EventFeedComponent {
   private topicService: TopicService;
   followedTopics: string[] = [];
   events: Set<NDKEvent> | undefined;
-
+  nextEvents: Set<NDKEvent> | undefined;
   ngOnInit() {
     if (this.topicService.followedTopics === '') {
       this.followedTopics = [];
@@ -36,7 +38,6 @@ export class EventFeedComponent {
   constructor(ndkProvider: NdkproviderService, topicService: TopicService, route: ActivatedRoute) {
     this.ndkProvider = ndkProvider;
     this.topicService = topicService;
-    this.loadingEvents = false;
     route.params.subscribe(params => {
       this.tag = params['topic'];
       this.until = Date.now();
@@ -47,6 +48,7 @@ export class EventFeedComponent {
 
   async getEvents() {
     this.loadingEvents = true;
+    this.reachedEndOfFeed = false;
     if (this.tag && this.tag !== '') {
       this.events = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
       this.loadingEvents = false;
@@ -61,15 +63,47 @@ export class EventFeedComponent {
     }
   }
 
+  async getEventsForNextPage() {
+    this.loadingNextEvents = true;
+    this.reachedEndOfFeed = false;
+    if (this.tag && this.tag !== '') {
+      this.nextEvents = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
+      if(this.nextEvents && this.nextEvents.size>0){
+        if(this.events){
+          this.nextEvents?.forEach(this.events.add,this.events)
+          this.loadingNextEvents = false;
+          this.nextEvents =undefined;
+        }    
+      } else {
+        this.reachedEndOfFeed = true
+      }        
+    } else {
+      this.nextEvents = await this.ndkProvider.fetchAllFollowedEvents(
+        this.topicService.followedTopics.split(','),
+        this.limit,
+        undefined,
+        this.until
+      );
+      if(this.nextEvents && this.nextEvents.size>0){
+        if(this.events){
+          this.nextEvents?.forEach(this.events.add,this.events)
+          this.loadingNextEvents = false;
+          this.nextEvents =undefined;
+        } 
+      } else {
+        this.reachedEndOfFeed = true
+      }
+    }
+  }
+
   getOldestEventTimestamp(): number | undefined {
-    let oldestTimestamp: number = 0;
     if (this.events) {
       let timestampsOfEvents: (number | undefined)[] = Array.from(this.events).map(ndkEvent => {
         return ndkEvent.created_at;
       });
       return Math.min(...(timestampsOfEvents as number[]));
     }
-    return undefined;
+    return Date.now();
   }
 
   isLoggedIn(): boolean {
@@ -103,5 +137,10 @@ export class EventFeedComponent {
       }
     }
     return false;
+  }
+
+  loadMoreEvents(){
+    this.until = this.getOldestEventTimestamp();
+    this.getEventsForNextPage();
   }
 }

@@ -164,9 +164,12 @@ export class NdkproviderService {
   publishAppData(followListCsv?: string, downzapRecipients?: string) {
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 30078;
+    if(this.currentUser){
+      ndkEvent.pubkey = this.currentUser?.hexpubkey()
+    }
     ndkEvent.content =
       (followListCsv || this.appData.followedTopics) + '\n' + (downzapRecipients || this.appData.downzapRecipients);
-    const tag: NDKTag = ['d', 'zappedit'];
+    const tag: NDKTag = ['d', 'zappedit.com'];
     ndkEvent.tags = [tag];
     ndkEvent.publish(); // This will trigger the extension to ask the user to confirm signing.
   }
@@ -176,7 +179,7 @@ export class NdkproviderService {
     if (this.currentUser?.hexpubkey()) {
       authors = [this.currentUser.hexpubkey()];
     }
-    const filter: NDKFilter = { kinds: [30078], '#d': ['zappedit'], limit: 1, authors: authors };
+    const filter: NDKFilter = { kinds: [30078], '#d': ['zappedit.com'], limit: 1, authors: authors };
     return this.ndk?.fetchEvents(filter);
   }
 
