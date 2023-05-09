@@ -14,7 +14,6 @@ import NDK, {
 } from '@nostr-dev-kit/ndk';
 import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
-import { NDKPool } from '@nostr-dev-kit/ndk/lib/src/relay/pool';
 
 interface ZappedItAppData {
   followedTopics: string;
