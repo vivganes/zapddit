@@ -21,7 +21,7 @@
 </div>
 <ng-template [ngIf]="!loadingEvents">
 <div *ngFor="let event of events" class="clr-row clr-justify-content-center">
-  <div class="clr-col-9">
+  <div class="clr-col-12 clr-col-md-8">
     <app-event-card [event]="event" />
   </div>
 </div>

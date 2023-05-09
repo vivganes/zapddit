@@ -78,7 +78,7 @@ export class EventCardComponent {
   }
 
   getImageUrls(): RegExpMatchArray | null | undefined {
-    const urlRegex = /https:.*?\.(?:png|jpg|svg|gif|jpeg)/gi;
+    const urlRegex = /https:.*?\.(?:png|jpg|svg|gif|jpeg|webp)/gi;
     const imgArray = this.event?.content.match(urlRegex);
     return imgArray;
   }

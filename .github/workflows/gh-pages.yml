@@ -22,7 +22,7 @@ jobs:
 
 
     - name: Build
-      run: npm run build:prod && echo 'zappedit.com' > ./dist/zappedit/CNAME
+      run: npm run build:prod && echo 'zappedit.com' > ./dist/zappedit/CNAME && cp ./dist/zappedit/index.html ./dist/zappedit/404.html
 
     - name: Deploy
       if: success()

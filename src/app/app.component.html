@@ -104,8 +104,24 @@
           [src]="getCurrentUserProfile()?.image"
           class="header-profile-image"
           alt="profile" />
+          <img
+          *ngIf="!(getCurrentUserProfile()?.image)"
+          src="https://robohash.org/7OG.png?set=set2&size=150x150"
+          class="header-profile-image"
+          alt="profile" />
         <span *ngIf="getCurrentUserProfile()?.displayName">{{ getCurrentUserProfile()?.displayName }}</span>
         <span class="profile-name" *ngIf="getCurrentUserProfile()?.name">@{{ getCurrentUserProfile()?.name }}</span>
+        
+      </label>
+      <div class="nav-divider"></div>
+      <label class="nav-header">
+      Created by @Vivek
+      </label>
+      <label class="nav-header">
+        NIP-07 👇
+      </label>
+      <label class="nav-header">
+        vivganes@vivekganesan.com
       </label>
     </clr-vertical-nav>
     <div class="content-area">
