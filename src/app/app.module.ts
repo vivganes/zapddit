@@ -12,6 +12,13 @@ import { EventFeedComponent } from './component/event-feed/event-feed.component'
 import { EventCardComponent } from './component/event-card/event-card.component';
 import { SinglePostComponent } from './component/single-post/single-post.component';
 import { ShortNumberPipe } from './pipe/short-number.pipe';
+import { HashtagComponent } from './component/hashtag/hashtag.component';
+import { DynamicHooksModule, HookParserEntry } from 'ngx-dynamic-hooks';
+
+const componentParsers: Array<HookParserEntry> = [
+  {component: HashtagComponent},
+  // ...
+];
 
 @NgModule({
   declarations: [
@@ -21,9 +28,12 @@ import { ShortNumberPipe } from './pipe/short-number.pipe';
     EventFeedComponent,
     EventCardComponent,
     SinglePostComponent,
-    ShortNumberPipe
+    ShortNumberPipe,
+    HashtagComponent
   ],
-  imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule],
+  imports: [DynamicHooksModule.forRoot({
+    globalParsers: componentParsers
+  }),BrowserModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule],
   providers: [],
   bootstrap: [AppComponent],
 })

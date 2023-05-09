@@ -11,7 +11,8 @@
         <span class="card-media-text break-words-overflow"> {{ formatTimestamp(event?.created_at) }} </span>
       </div>
     </div>
-    <div class="card-text break-words-overflow" [innerHTML]="linkifyContent()"></div>
+
+    <ngx-dynamic-hooks *ngIf="linkifiedContent" [content]="linkifiedContent"></ngx-dynamic-hooks>
 
     <div *ngFor="let imageSrc of getImageUrls()" class="clr-row clr-justify-content-center">
       <div class="clr-col-6">

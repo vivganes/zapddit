@@ -8,6 +8,10 @@ import 'linkify-plugin-hashtag';
 import { getRandomAvatar } from '@fractalsoftware/random-avatar-generator';
 import QRCodeStyling from 'qr-code-styling';
 
+const linkifyOptions = {
+
+}
+
 @Component({
   selector: 'app-event-card',
   templateUrl: './event-card.component.html',
@@ -26,6 +30,8 @@ export class EventCardComponent {
   invoice:string|null=null;
   @ViewChild("canvas", { static: true }) 
   canvas: ElementRef | undefined;
+  linkifiedContent:string|undefined;
+  hashTagsMap:Map<number,string> = new Map<number,string>();
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -34,6 +40,8 @@ export class EventCardComponent {
   ndkProvider: NdkproviderService;
 
   ngOnInit() {
+    this.linkifiedContent = this.linkifyContent(this.event?.content)
+    console.log(this.linkifiedContent);
     this.getAuthor();
     this.fetchZapsAndSegregate();
     this.tempAvatar = this.getTempAvatar();
@@ -58,14 +66,22 @@ export class EventCardComponent {
     }
   }
 
-  linkifyContent(): string {
+  linkifyContent(content?:string): string {
+    let hashTagCounter = 0;
+    this.hashTagsMap = new Map<number,string>();
     const options = {
       defaultProtocol: 'https',
       formatHref: {
         hashtag: (href: string) => '/t/' + href.substring(1).toLowerCase(),
       },
+      render:{
+        hashtag: (opts:any) => {
+          return `<app-hashtag topic="${opts.content?.substring(1).toLowerCase()}"></app-hashtag>` 
+        }
+      }
     };
-    return linkifyHtml(this.event?.content || '', options);
+    const html:string =  linkifyHtml(this.event?.content || '', options);
+    return html;
   }
 
   getImageUrls(): RegExpMatchArray | null | undefined {
