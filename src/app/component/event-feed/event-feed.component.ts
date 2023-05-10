@@ -39,7 +39,12 @@ export class EventFeedComponent {
     this.ndkProvider = ndkProvider;
     this.topicService = topicService;
     route.params.subscribe(params => {
-      this.tag = params['topic'];
+      let topic = params['topic'];
+      if(topic){
+      this.tag = topic.toLowerCase();
+      } else {
+        this.tag = undefined;
+      }
       console.log("event received "+ this.tag);
       this.until = Date.now();
       this.limit = 25;

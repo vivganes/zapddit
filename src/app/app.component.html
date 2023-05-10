@@ -28,11 +28,8 @@
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile  && !ndkProvider.currentUserProfile?.displayName && !ndkProvider.currentUserProfile?.name && ndkProvider.currentUserNpub!=null">{{ ndkProvider.currentUserNpub.substring(0,14)+'...' }}</span>
           <span class="profile-name"  *ngIf="ndkProvider.currentUserProfile?.displayName">{{ ndkProvider.currentUserProfile?.displayName }}</span>
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile?.name">@{{ ndkProvider.currentUserProfile?.name }}</span>
-          
-        
       </label>
       <div class="nav-divider"></div>
-
       <form clrForm class="search" onsubmit="return false;">
         <label for="search-input-sidenav-ng">          
           <input
@@ -109,25 +106,17 @@
           </form>
         </clr-vertical-nav-group-children>
       </clr-vertical-nav-group>
-
       <div class="nav-divider"></div>
       <label class="nav-header">Followed Topics</label>
       <a clrVerticalNavLink *ngFor="let topic of followedTopics" [routerLink]="['/t', topic]" routerLinkActive="active"
         ><cds-icon shape="hashtag" clrverticalnavicon class="nav-icon"></cds-icon
         ><span class="nav-text">{{ topic }}</span></a
       >
+     
       <div class="nav-divider"></div>
-      
-      <div class="nav-divider"></div>
-      <label class="nav-header">
-      Created by @Vivek
-      </label>
-      <label class="nav-header">
-        NIP-05 👇
-      </label>
-      <label class="nav-header">
-        vivganes@vivekganesan.com
-      </label>
+      <a><span class="nav-text">Created with 💙 by @vivganes</span></a>
+      <a><span class="nav-text"><b>NIP-05:</b> vivganes@vivekganesan.com</span></a>
+
     </clr-vertical-nav>
     <div class="content-area">
       <div *ngIf="isLoggedIn(); else notloggedin">
@@ -137,9 +126,9 @@
         <div align="center">
           <span class="spinner"> </span>
           <div>
-            <h3>Loading...</h3>
+            <h3>Searching for NIP-07 extension...</h3>
             <p>
-              Don't have a NIP-07 plugin? Refer
+              Zappedit requires a NIP-07 extension to work. Don't have a NIP-07 extension? Refer
               <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank"
                 >this page</a
               >

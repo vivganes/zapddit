@@ -70,7 +70,10 @@ export class EventCardComponent {
         hashtag: (opts:any) => {
           return `<app-hashtag topic="${opts.content?.substring(1).toLowerCase()}"></app-hashtag>` 
         }
-      }
+      },
+      target: {
+        url: "_blank"
+      },
     };
     const html:string =  linkifyHtml(content || '', options);
     return html;

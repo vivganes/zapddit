@@ -78,8 +78,11 @@ export class AppComponent {
   }
 
   search() {
-    let topic = (<HTMLInputElement>document.getElementById('search-input-sidenav-ng')).value;
-    this.router.navigate(['t', { topic }]);
+    let topic = (<HTMLInputElement>document.getElementById('search-input-sidenav-ng')).value;    
+    if(topic && topic !==''){
+      topic = topic.toLowerCase();
+      this.router.navigate(['t', { topic }]);
+    }
   }
 
   setDefaultSats() {
