@@ -24,8 +24,8 @@
           src="https://robohash.org/7OG.png?set=set2&size=150x150"
           class="header-profile-image"
           alt="profile" />
-          <span class="profile-name" *ngIf="!ndkProvider.currentUserProfile && ndkProvider.currentUserNpub!=null">{{ ndkProvider.currentUserNpub?.substring(0,14)+'...' }}</span>
-          <span class="profile-name" *ngIf="ndkProvider.currentUserProfile  && !ndkProvider.currentUserProfile?.displayName && !ndkProvider.currentUserProfile?.name && ndkProvider.currentUserNpub!=null">{{ ndkProvider.currentUserNpub?.substring(0,14)+'...' }}</span>
+          <span class="profile-name" *ngIf="!ndkProvider.currentUserProfile && ndkProvider.currentUserNpub!=null">{{ ndkProvider.currentUserNpub.substring(0,14)+'...' }}</span>
+          <span class="profile-name" *ngIf="ndkProvider.currentUserProfile  && !ndkProvider.currentUserProfile?.displayName && !ndkProvider.currentUserProfile?.name && ndkProvider.currentUserNpub!=null">{{ ndkProvider.currentUserNpub.substring(0,14)+'...' }}</span>
           <span class="profile-name"  *ngIf="ndkProvider.currentUserProfile?.displayName">{{ ndkProvider.currentUserProfile?.displayName }}</span>
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile?.name">@{{ ndkProvider.currentUserProfile?.name }}</span>
           
