@@ -33,9 +33,10 @@
       <form clrForm class="search" onsubmit="return false;">
         <label for="search-input-sidenav-ng">          
           <input
+            (click)="stopPropagatingEvent($event)"
             id="search-input-sidenav-ng"
             class="search-text-box hashtag-search"
-            type="text"
+            type="search  "
             placeholder="#️ Search hashtag ⏎"
             (keyup.enter)="search()" />
           <!-- <cds-icon shape="child-arrow" solid flip="horizontal"></cds-icon>  -->
@@ -55,6 +56,7 @@
             npub of the person who will receive the sats for your downzaps:
             <label for="downzap-recipients">
               <input
+                (click)="stopPropagatingEvent($event)"
                 id="downzap-recipients"
                 class="search-text-box"
                 type="text"
@@ -93,6 +95,7 @@
             Default Sats for Zaps:
             <label for="sats-for-zaps">
               <input
+                (click)="stopPropagatingEvent($event)"
                 id="sats-for-zaps"
                 class="search-text-box"
                 type="number"
