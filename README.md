@@ -1,27 +1,34 @@
 # Zappedit
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.8.
+A reddit-style nostr client
 
-## Development server
+ * [Reddit Vs. Zappedit](#reddit-vs-zappedit)
+ * [Screenshot](#screenshot)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Reddit Vs. Zappedit
 
-## Code scaffolding
+**Reddit** | **ZappedIt**
+---------- | ------------
+Users search for sub-reddits like r/nostr, r/tifu, etc. and follow them. | Users search for hashtags like #coffeechain, #foodstr, etc. and follow them.
+Home feed is filled with posts from their subscribed sub-reddits. |User's feed is filled with recent notes mentioning the followed hashtags, in the reverse-chronological order.
+Users express appreciation through upvotes. | Users express appreciation through Upzaps. Sats in the Upzaps are sent to the **author of the upzapped note**.
+Users express disagreement through downvotes | Users express disagreement through Downzaps.  Sats in the Downzaps are sent to the **Downzap recipient**, who is a nostr user chosen by the down-zapper
+Users see a tally of upvotes vs downvotes for each post | Users see a tally of upzap sats and downzap sats for each note
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Screenshot
+![Screenshot](screenshot.png)
 
-## Build
+## Features Checklist
+  - [x] NIP-07 login
+  - [x] Search hashtag
+  - [x] Follow, Unfollow hashtag
+  - [x] Feed with notes
+  - [x] Hashtags linking
+  - [x] Image display in note
+  - [x] Set a downzap recipient
+  - [x] Upzaps and Downzaps using QR Code
+  - [ ] Show user mentions in notes
+  - [ ] Configure multiple downzap recipients - Exact recipient randomly chosen during the downzap
+  - [ ] Load images only for notes by 'followed' users
+  - [ ] Relay list
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
