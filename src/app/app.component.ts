@@ -110,7 +110,7 @@ export class AppComponent {
   }
 
   stopPropagatingEvent(event:any){
-    console.log(event);
     event.preventDefault();
+    event.stopPropagation();
   }
 }
