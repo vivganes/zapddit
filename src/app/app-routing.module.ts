@@ -6,6 +6,7 @@ import { SinglePostComponent } from './component/single-post/single-post.compone
 const routes: Routes = [
   { path: 't/:topic', component: EventFeedComponent },
   { path: 'n/:eventid', component: SinglePostComponent },
+  { path: '',   redirectTo: '/feed', pathMatch: 'full' }, // redirect to `first-component`
   { path: '**', component: EventFeedComponent },
 ];
 

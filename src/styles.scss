@@ -1,6 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 .break-words-overflow {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+}
+
+.overflow-ellipsis {
+  text-overflow: ellipsis;
+}
+
+.overflow-hidden {
+  overflow:hidden
 }
 
 .note-image {
@@ -49,3 +57,17 @@ a{
   overflow-wrap: anywhere!important
 }
 
+.hashtag-link, .hashtag-link:visited{
+  color: #4aaed9;
+}
+
+.hashtag-search{
+  background: #1A1A1A;
+    border-radius: 1em;
+    border: none;    
+    color: #A2A2A2;
+    font-size: 1.1em;
+    padding-left: 1.5em;    
+    outline: none;
+    box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0px 4px 6px -5px hsl(0, 0%, 2%)
+}

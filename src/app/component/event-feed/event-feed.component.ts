@@ -40,6 +40,7 @@ export class EventFeedComponent {
     this.topicService = topicService;
     route.params.subscribe(params => {
       this.tag = params['topic'];
+      console.log("event received "+ this.tag);
       this.until = Date.now();
       this.limit = 25;
       this.getEvents();
@@ -48,17 +49,20 @@ export class EventFeedComponent {
 
   async getEvents() {
     this.loadingEvents = true;
+    this.loadingNextEvents = false;
     this.reachedEndOfFeed = false;
     if (this.tag && this.tag !== '') {
       this.events = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
       this.loadingEvents = false;
     } else {
-      this.events = await this.ndkProvider.fetchAllFollowedEvents(
-        this.topicService.followedTopics.split(','),
-        this.limit,
-        undefined,
-        this.until
-      );
+      if(this.topicService.followedTopics.length > 0){
+        this.events = await this.ndkProvider.fetchAllFollowedEvents(
+          this.topicService.followedTopics.split(','),
+          this.limit,
+          undefined,
+          this.until
+        );
+      }
       this.loadingEvents=false;
     }
   }
@@ -78,12 +82,14 @@ export class EventFeedComponent {
         this.reachedEndOfFeed = true
       }        
     } else {
-      this.nextEvents = await this.ndkProvider.fetchAllFollowedEvents(
-        this.topicService.followedTopics.split(','),
-        this.limit,
-        undefined,
-        this.until
-      );
+      if(this.followedTopics.length > 0){
+        this.nextEvents = await this.ndkProvider.fetchAllFollowedEvents(
+          this.topicService.followedTopics.split(','),
+          this.limit,
+          undefined,
+          this.until
+        );
+      }
       if(this.nextEvents && this.nextEvents.size>0){
         if(this.events){
           this.nextEvents?.forEach(this.events.add,this.events)

@@ -96,9 +96,7 @@ export class AppComponent {
     this.downzapRecipientsError = undefined;
     let recipients = (<HTMLInputElement>document.getElementById('downzap-recipients')).value;
     let supposedUser = await this.ndkProvider.getNdkUserFromNpub(recipients);
-    console.log(supposedUser);
     if (supposedUser !== undefined) {
-      console.log('Sending downzaps to ' + recipients);
       this.ndkProvider.publishAppData(undefined, recipients);
       this.downzapSetSuccessMessage =
         'Sending downzaps to ' +

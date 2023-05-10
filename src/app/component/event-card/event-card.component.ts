@@ -35,7 +35,6 @@ export class EventCardComponent {
 
   ngOnInit() {
     this.linkifiedContent = this.linkifyContent(this.event?.content)
-    console.log(this.linkifiedContent);
     this.getAuthor();
     this.fetchZapsAndSegregate();
   }
@@ -144,18 +143,22 @@ export class EventCardComponent {
     }
   }
 
-  async segregateZaps() {
+  async segregateZaps() {    
     if (this.zaps) {
       for (let zap of this.zaps) {
-        if (this.isDownzap(zap)) {
-          const milliSats = this.readMilliSatsFromZap(zap);
-          this.downZapTotalMilliSats += milliSats;
-        } else {
-          const milliSats = this.readMilliSatsFromZap(zap);
-          this.upZapTotalMilliSats += milliSats;
+        try{
+          if (this.isDownzap(zap)) {
+            const milliSats = this.readMilliSatsFromZap(zap);
+            this.downZapTotalMilliSats += milliSats;
+          } else {
+            const milliSats = this.readMilliSatsFromZap(zap);
+            this.upZapTotalMilliSats += milliSats;
+          }
+        } catch(e){
+          console.error(e);
         }
       }
-    }
+    }   
   }
 
   readMilliSatsFromZap(zap:NDKEvent):number{

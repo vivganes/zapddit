@@ -27,6 +27,7 @@ export class NdkproviderService {
   ndk: NDK | undefined;
   currentUserProfile: NDKUserProfile | undefined;
   currentUser: NDKUser | undefined;
+  currentUserNpub: string|undefined;
   appData: ZappedItAppData = {
     followedTopics: '',
     downzapRecipients: '',
@@ -107,10 +108,10 @@ export class NdkproviderService {
         await this.ndk.connect(1000);
         if (user.npub) {
           console.log('Permission granted to read their public key:', user.npub);
+          this.currentUserNpub = user.npub;
           this.currentUserProfile = await this.getProfileFromNpub(user.npub);
           this.currentUser = await this.getNdkUserFromNpub(user.npub);
           const relays = this.currentUser?.relayUrls;
-          console.log(relays);
           if(relays && relays.length>0){
             const newNDKParams= { signer: nip07signer, explicitRelayUrls: relays };
             const newNDK = new NDK(newNDKParams);
@@ -184,9 +185,7 @@ export class NdkproviderService {
   }
 
   async refreshAppData() {
-    console.log('Fetching latest events');
     const latestEvents: Set<NDKEvent> | undefined = await this.fetchLatestAppData();
-    console.log(latestEvents);
     if (latestEvents && latestEvents.size > 0) {
       const latestEvent: NDKEvent = Array.from(latestEvents)[0];
       const multiLineAppData = latestEvent.content;

@@ -1,6 +1,6 @@
-<ng-template [ngIf]="tag !== undefined">
+<ng-template [ngIf]="tag !== undefined" [ngIfElse]="homefeedHeader">
   <h3 align="center">
-    #{{ tag }}
+    {{ tag }}   
     <ng-template [ngIf]="!isTopicFollowed(tag)" [ngIfElse]="elseBlock">
       <button class="btn btn-sm btn-primary btn-icon" (click)="followTopic(tag)">
         <cds-icon shape="plus-circle" solid></cds-icon> Follow
@@ -13,33 +13,51 @@
     </ng-template>
   </h3>
 </ng-template>
-<div *ngIf="followedTopics?.length == 0 && !events">
-  No topics followed yet. May be try following more topics? Like <a href="/t/coffeechain">#coffeechain</a>?
-</div>
-<div *ngIf="events && events.size == 0">
-  No notes for you 🥲 May be try following more topics? Like <a href="/t/coffeechain">#coffeechain</a>?
-</div>
-<ng-template [ngIf]="!loadingEvents">
-<div *ngFor="let event of events" class="clr-row clr-justify-content-center">
-  <div class="clr-col-12 clr-col-md-8">
-    <app-event-card [event]="event" />
-  </div>
-</div>
-<div *ngIf="!reachedEndOfFeed" align="center">
-  <button [clrLoading]="loadingNextEvents" class="btn btn-info-outline" (click)="loadMoreEvents()">Load more</button>
-</div>
-<div *ngIf="reachedEndOfFeed" align="center" class="clr-row clr-justify-content-center">
-  <div class="alert alert-info clr-col-3" role="alert">
+<ng-template #homefeedHeader>
+  <h3 align="center">
+    🏡 My Feed
+  </h3>
+  <p align="center">You can see notes from all the topics you followed here 👇</p>
+</ng-template>
+<div *ngIf="(!tag) && followedTopics?.length == 0 && !events" class="clr-row clr-justify-content-center">
+  <div align="center" class="alert alert-info clr-col-4" role="alert">
     <div class="alert-items">
-        <div class="alert-item static">
+        <div class="alert-item static clr-justify-content-center">
             <div class="alert-icon-wrapper">
                 <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
             </div>
-            <span class="alert-text">Yaay! You reached the end of feed 😁</span>
+            <span class="alert-text">No topics followed yet. May be try following some topics? Like <a [routerLink]="['/t', 'coffeechain']">#coffeechain</a>?</span>
         </div>
     </div>
 </div>
+  
 </div>
+<div *ngIf="events && events.size == 0">
+  No notes for you 🥲 May be try following more topics? Like <a [routerLink]="['/t', 'coffeechain']">#coffeechain</a>?
+</div>
+<ng-template [ngIf]="!loadingEvents">
+  <div *ngFor="let event of events" class="clr-row clr-justify-content-center">
+    <div class="clr-col-12 clr-col-md-8">
+      <app-event-card [event]="event" />
+    </div>
+  </div>
+</ng-template>
+<ng-template [ngIf]="!loadingEvents && (tag || followedTopics.length>0)">
+  <div *ngIf="!reachedEndOfFeed" align="center">
+    <button [clrLoading]="loadingNextEvents" class="btn btn-info-outline" (click)="loadMoreEvents()">Load more</button>
+  </div>
+  <div *ngIf="reachedEndOfFeed" align="center" class="clr-row clr-justify-content-center">
+    <div class="alert alert-info clr-col-3" role="alert">
+      <div class="alert-items">
+          <div class="alert-item static">
+              <div class="alert-icon-wrapper">
+                  <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
+              </div>
+              <span class="alert-text">Yaay! You reached the end of feed 😁</span>
+          </div>
+      </div>
+  </div>
+  </div>
 </ng-template>
 <div *ngIf="loadingEvents" class="event-loading-spinner">
   <span class="spinner spinner-md">Loading notes...</span>
