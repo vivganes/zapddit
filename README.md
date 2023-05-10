@@ -27,6 +27,7 @@ Users see a tally of upvotes vs downvotes for each post | Users see a tally of u
   - [x] Image display in note
   - [x] Set a downzap recipient
   - [x] Upzaps and Downzaps using QR Code
+  - [x] Open user profile/post in snort
   - [ ] Show user mentions in notes
   - [ ] Configure multiple downzap recipients - Exact recipient randomly chosen during the downzap
   - [ ] Load images only for notes by 'followed' users
