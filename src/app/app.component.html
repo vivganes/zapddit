@@ -33,6 +33,7 @@
       <form clrForm class="search" onsubmit="return false;">
         <label for="search-input-sidenav-ng">          
           <input
+            removeClippedSubviews="false"
             (click)="stopPropagatingEvent($event)"
             id="search-input-sidenav-ng"
             class="search-text-box hashtag-search"
@@ -56,6 +57,7 @@
             npub of the person who will receive the sats for your downzaps:
             <label for="downzap-recipients">
               <input
+                removeClippedSubviews="false"
                 (click)="stopPropagatingEvent($event)"
                 id="downzap-recipients"
                 class="search-text-box"
@@ -95,6 +97,7 @@
             Default Sats for Zaps:
             <label for="sats-for-zaps">
               <input
+                removeClippedSubviews="false"
                 (click)="stopPropagatingEvent($event)"
                 id="sats-for-zaps"
                 class="search-text-box"
