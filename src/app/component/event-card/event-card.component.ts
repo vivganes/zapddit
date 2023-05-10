@@ -16,7 +16,7 @@ import QRCodeStyling from 'qr-code-styling';
 export class EventCardComponent {
   @Input()
   event: NDKEvent | undefined;
-  author: NDKUserProfile | undefined;
+  authorWithProfile: NDKUser | undefined;
   zaps: Set<NDKEvent> | undefined;
   upZapTotalMilliSats: number = 0
   downZapTotalMilliSats: number = 0
@@ -47,7 +47,7 @@ export class EventCardComponent {
   async getAuthor() {
     let authorPubKey = this.event?.pubkey;
     if (authorPubKey) {
-      this.author = await this.ndkProvider.getProfileFromHex(authorPubKey);
+      this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey);
     }
   }
 
@@ -204,4 +204,11 @@ export class EventCardComponent {
     this.fetchZapsAndSegregate();
   }
 
+  openInSnort(){
+    window.open('https://snort.social/e/'+this.event?.id,'_blank')
+  }
+
+  openAuthorInSnort(){
+    window.open('https://snort.social/p/'+this.authorWithProfile?.npub,'_blank')
+  }
 }

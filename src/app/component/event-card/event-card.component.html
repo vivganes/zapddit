@@ -1,13 +1,16 @@
 <div class="card">
   <div class="card-block">
     <div class="card-media-block">
-      <img *ngIf="author?.image" alt="Profile picture" src="{{ author?.image }}" class="card-media-image" />
+      <img *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" alt="Profile picture" src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" title="Open in Snort"/>
       <img alt="temp avatar"
-        *ngIf="author?.image == undefined"
-        class="card-media-image"
-        src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100" />
+        (click)="openAuthorInSnort()"
+        *ngIf="authorWithProfile?.profile?.image == undefined"
+        class="card-media-image pointer-cursor"
+        src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
+        title="Open in Snort" />
       <div class="card-media-description">
-        <span class="card-media-title break-words-overflow"> {{ author?.name }} </span>
+        <span class="card-media-title break-words-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ authorWithProfile?.profile?.name }} </span>
+        <span *ngIf="!authorWithProfile?.profile?.name" class="card-media-title break-words-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey }} </span>
         <span class="card-media-text break-words-overflow"> {{ formatTimestamp(event?.created_at) }} </span>
       </div>
     </div>
@@ -46,30 +49,14 @@
           <button type="button" class="btn btn-primary" (click)="zapDoneClicked()">Done</button>
       </div>
   </clr-modal>
-    <!-- <clr-dropdown>
-                <button class="btn btn-outline-primary" clrDropdownTrigger>
-                    Dropdown
-                    <cds-icon shape="angle" direction="down"></cds-icon>
-                </button>
-                <clr-dropdown-menu clrPosition="top-left" *clrIfOpen>
-                    <label class="dropdown-header" aria-hidden="true">Dropdown header</label>
-                    <div aria-label="Dropdown header Action 1" clrDropdownItem>Action 1</div>
-                    <div aria-label="Dropdown header Disabled Action" [clrDisabled]="true" clrDropdownItem>Disabled Action</div>
-                    <div class="dropdown-divider" role="separator" aria-hidden="true"></div>
-                    <clr-dropdown>
-                        <button clrDropdownTrigger>Link 1</button>
-                        <clr-dropdown-menu>
-                            <button clrDropdownItem>Foo</button>
-                            <clr-dropdown>
-                                <button clrDropdownTrigger>Bar</button>
-                                <clr-dropdown-menu clrPosition="left-top">
-                                    <button clrDropdownItem>Baz</button>
-                                </clr-dropdown-menu>
-                            </clr-dropdown>
-                        </clr-dropdown-menu>
-                    </clr-dropdown>
-                    <div clrDropdownItem>Link 2</div>
-                </clr-dropdown-menu>
-            </clr-dropdown> -->
+  <clr-dropdown>
+      <button class="btn btn-outline-primary" clrDropdownTrigger>
+          More
+          <cds-icon shape="angle" direction="down"></cds-icon>
+      </button>
+      <clr-dropdown-menu clrPosition="top-left" *clrIfOpen>                    
+          <div clrDropdownItem (click)="openInSnort()">Open in Snort</div>
+      </clr-dropdown-menu>
+  </clr-dropdown>
   </div>
 </div>

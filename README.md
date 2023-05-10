@@ -31,4 +31,5 @@ Users see a tally of upvotes vs downvotes for each post | Users see a tally of u
   - [ ] Configure multiple downzap recipients - Exact recipient randomly chosen during the downzap
   - [ ] Load images only for notes by 'followed' users
   - [ ] Relay list
+  - [ ] Switch light mode/dark mode
 
