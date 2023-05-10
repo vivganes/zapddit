@@ -108,4 +108,9 @@ export class AppComponent {
       this.downzapRecipientsError = 'Invalid npub';
     }
   }
+
+  stopPropagatingEvent(event:any){
+    console.log(event);
+    event.preventDefault();
+  }
 }
