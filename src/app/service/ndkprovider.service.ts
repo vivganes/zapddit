@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import NDK, {
   type NDKConstructorParams,
   NDKNip07Signer,
@@ -20,6 +20,13 @@ interface ZappedItAppData {
   downzapRecipients: string;
 }
 
+const explicitRelayUrls = ['wss://nos.lol',
+'wss://relay.nostr.band',
+'wss://relay.f7z.io',
+'wss://relay.damus.io',
+'wss://nostr.mom',
+'wss://no.str.cr',]; //TODO: fix this
+
 @Injectable({
   providedIn: 'root',
 })
@@ -34,26 +41,33 @@ export class NdkproviderService {
   };
   defaultSatsForZaps:number = 1
   loggedIn: boolean = false;
+  loggingIn: boolean = false;
+  followedTopicsEmitter:EventEmitter<string> = new EventEmitter<string>()
 
-  constructor() {
-    this.attemptLogin();
+  constructor(){
+    const npubFromLocal = localStorage.getItem('npub');
+    if(npubFromLocal && npubFromLocal !== ''){
+      // we can login as the login has already happened using NIP-07
+      this.tryConnectingFromLocallyStoredNpub(npubFromLocal);
+    }
+  }
+
+  async tryConnectingFromLocallyStoredNpub(npubFromLocal: string){
+    this.loggingIn = true;
+    const params: NDKConstructorParams = { signer: new NDKNip07Signer(), explicitRelayUrls: explicitRelayUrls }; 
+    this.ndk = new NDK(params);
+    await this.ndk.assertSigner();
+    await this.ndk.connect(1000);      
+    this.initializeUsingNpub(npubFromLocal)
   }
 
   attemptLogin() {
-    if (localStorage.getItem('nip07ExtensionExists') === 'true') {
-      try {
-        this.initializeClientWithSigner(new NDKNip07Signer());
-      } catch (err) {
-        this.resolveNip07Extension();
-      }
-    } else {
-      this.resolveNip07Extension();
-    }
+    this.loggingIn = true;
+    this.resolveNip07Extension();
   }
 
   private resolveNip07Extension() {
     (async () => {
-      localStorage.removeItem('nip07ExtensionExists');
       console.log('waiting for window.nostr');
       while (!window.hasOwnProperty('nostr')) {
         // define the condition as you like
@@ -61,7 +75,7 @@ export class NdkproviderService {
       }
 
       // do this after window.nostr is available
-      this.initializeClientWithSigner(new NDKNip07Signer());
+      this.initializeClientWithSigner();
       localStorage.setItem('nip07ExtensionExists', 'true');
     })();
   }
@@ -95,32 +109,18 @@ export class NdkproviderService {
     return user;
   }
 
-  private async initializeClientWithSigner(nip07signer: NDKNip07Signer) {
+  private async initializeClientWithSigner() {
     try {
-      nip07signer.user().then(async user => {
-        const params: NDKConstructorParams = { signer: nip07signer, explicitRelayUrls: ['wss://nos.lol',
-        'wss://relay.nostr.band',
-        'wss://relay.f7z.io',
-        'wss://relay.damus.io',
-        'wss://nostr.mom',
-        'wss://no.str.cr',] }; //TODO: fix this
+      const signer:NDKNip07Signer = new NDKNip07Signer();
+      signer.user().then(async user => {
+        const params: NDKConstructorParams = { signer: signer, explicitRelayUrls: explicitRelayUrls }; 
         this.ndk = new NDK(params);
+        await this.ndk.assertSigner();
         await this.ndk.connect(1000);
         if (user.npub) {
           console.log('Permission granted to read their public key:', user.npub);
-          this.currentUserNpub = user.npub;
-          this.currentUserProfile = await this.getProfileFromNpub(user.npub);
-          this.currentUser = await this.getNdkUserFromNpub(user.npub);
-          const relays = this.currentUser?.relayUrls;
-          if(relays && relays.length>0){
-            const newNDKParams= { signer: nip07signer, explicitRelayUrls: relays };
-            const newNDK = new NDK(newNDKParams);
-            await newNDK.connect();
-            this.ndk = newNDK;
-          }
-          await this.refreshAppData();
-          //once all setup is done, then only set loggedIn=true to start rendering
-          this.loggedIn = true;
+          localStorage.setItem('npub',user.npub);
+          await this.initializeUsingNpub(user.npub);
         } else {
           console.log('Permission not granted');
         }
@@ -128,6 +128,28 @@ export class NdkproviderService {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  private async initializeUsingNpub(npub: string) {
+    this.currentUserNpub = npub;
+    this.currentUserProfile = await this.getProfileFromNpub(npub);
+    this.currentUser = await this.getNdkUserFromNpub(npub);
+    const relays = this.currentUser?.relayUrls;
+    if (relays && relays.length > 0) {
+      const newNDKParams = { signer: new NDKNip07Signer(), explicitRelayUrls: relays };
+      const newNDK = new NDK(newNDKParams);
+      await newNDK.assertSigner();
+      try {
+        await newNDK.connect().catch(e => console.log(e));
+        this.ndk = newNDK;
+      } catch (e) {
+        console.log("Error in connecting NDK " + e);
+      }
+    }
+    await this.refreshAppData();
+    this.loggingIn = false;
+    //once all setup is done, then only set loggedIn=true to start rendering
+    this.loggedIn = true;
   }
 
   isLoggedIn(): boolean {
@@ -168,11 +190,17 @@ export class NdkproviderService {
     if(this.currentUser){
       ndkEvent.pubkey = this.currentUser?.hexpubkey()
     }
-    ndkEvent.content =
-      (followListCsv || this.appData.followedTopics) + '\n' + (downzapRecipients || this.appData.downzapRecipients);
+    const followedTopicsToPublish = (followListCsv || this.appData.followedTopics)
+    const downzapRecipientsToPublish = (downzapRecipients || this.appData.downzapRecipients)
+    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish;
     const tag: NDKTag = ['d', 'zappedit.com'];
     ndkEvent.tags = [tag];
     ndkEvent.publish(); // This will trigger the extension to ask the user to confirm signing.
+    this.appData = {
+      followedTopics:followedTopicsToPublish,
+      downzapRecipients:downzapRecipientsToPublish
+    }
+    this.followedTopicsEmitter.emit(followedTopicsToPublish);
   }
 
   fetchLatestAppData() {
@@ -194,6 +222,7 @@ export class NdkproviderService {
         switch (i) {
           case 0:
             this.appData.followedTopics = lineWiseAppData[i];
+            this.followedTopicsEmitter.emit(this.appData.followedTopics);
             break;
           case 1:
             this.appData.downzapRecipients = lineWiseAppData[i];
@@ -222,6 +251,7 @@ export class NdkproviderService {
 
   setDefaultSatsForZaps(sats:number){
     this.defaultSatsForZaps = sats;
+    localStorage.setItem('defaultSatsForZaps', ""+sats)
   }
 
 

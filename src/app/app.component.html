@@ -126,13 +126,12 @@
     </clr-vertical-nav>
     <div class="content-area">
       <div *ngIf="isLoggedIn(); else notloggedin">
-        <router-outlet (activate)="subscribeToEmitter($event)"></router-outlet>
+        <router-outlet></router-outlet>
       </div>
       <ng-template #notloggedin>
         <div align="center">
-          <span class="spinner"> </span>
+          <button *ngIf="!isLoggedIn()"  [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary" (click)="attemptLogin()" >Login with NIP-07</button>
           <div>
-            <h3>Searching for NIP-07 extension...</h3>
             <p>
               Zappedit requires a NIP-07 extension to work. Don't have a NIP-07 extension? Refer
               <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank"

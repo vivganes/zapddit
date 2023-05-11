@@ -24,7 +24,7 @@
     <div class="alert-items">
         <div class="alert-item static clr-justify-content-center">
             <div class="alert-icon-wrapper">
-                <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
+                <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
             </div>
             <span class="alert-text">No topics followed yet. May be try following some topics? Like <a [routerLink]="['/t', 'coffeechain']">#coffeechain</a>?</span>
         </div>
@@ -42,7 +42,7 @@
     </div>
   </div>
 </ng-template>
-<ng-template [ngIf]="!loadingEvents && (tag || followedTopics.length>0)">
+<ng-template [ngIf]="!loadingEvents && (tag || (followedTopics && followedTopics.length>0))">
   <div *ngIf="!reachedEndOfFeed" align="center">
     <button [clrLoading]="loadingNextEvents" class="btn btn-info-outline" (click)="loadMoreEvents()">Load more</button>
   </div>

@@ -40,24 +40,11 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    if (this.topicService.followedTopics === '') {
-      this.followedTopics = [];
-    } else {
-      this.followedTopics = this.topicService.followedTopics.split(',');
-    }
-  }
-
-  subscribeToEmitter(componentRef: ComponentRef<any>) {
-    if (!(componentRef instanceof EventFeedComponent)) {
-      return;
-    }
-
-    const eventFeedComponent: EventFeedComponent = componentRef;
-    eventFeedComponent.followChanged.subscribe(() => {
-      if (this.topicService.followedTopics === '') {
+    this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
+      if (followedTopics === '') {
         this.followedTopics = [];
       } else {
-        this.followedTopics = this.topicService.followedTopics.split(',');
+        this.followedTopics = followedTopics.split(',');
       }
     });
   }
@@ -87,7 +74,6 @@ export class AppComponent {
 
   setDefaultSats() {
     let sats = (<HTMLInputElement>document.getElementById('sats-for-zaps')).value;
-    localStorage.setItem('defaultSatsForZaps', ""+sats)
     try{
       this.ndkProvider.setDefaultSatsForZaps(Number.parseInt(sats));
       }catch(e){
@@ -112,5 +98,13 @@ export class AppComponent {
   stopPropagatingEvent(event:any){
     event.preventDefault();
     event.stopPropagation();
+  }
+
+  attemptLogin(){
+    this.ndkProvider.attemptLogin();
+  }
+
+  isLoggingIn(){
+    return this.ndkProvider.loggingIn;
   }
 }

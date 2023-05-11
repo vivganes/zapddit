@@ -24,20 +24,33 @@ export class EventFeedComponent {
 
   private ndkProvider: NdkproviderService;
   private topicService: TopicService;
-  followedTopics: string[] = [];
+  followedTopics: string[]|undefined;
   events: Set<NDKEvent> | undefined;
   nextEvents: Set<NDKEvent> | undefined;
   ngOnInit() {
-    if (this.topicService.followedTopics === '') {
-      this.followedTopics = [];
-    } else {
-      this.followedTopics = this.topicService.followedTopics.split(',');
-    }
+    this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {      
+      if (followedTopics === '') {
+        this.followedTopics = [];
+      } else {
+        this.followedTopics = followedTopics.split(',');
+      }
+      if(this.tag===undefined){
+        this.until = Date.now();
+        this.limit = 25;
+        this.getEvents();
+      }
+    });
   }
 
   constructor(ndkProvider: NdkproviderService, topicService: TopicService, route: ActivatedRoute) {
     this.ndkProvider = ndkProvider;
     this.topicService = topicService;
+    const followedTopicsByNdk = ndkProvider.appData.followedTopics;
+    if (followedTopicsByNdk === '') {
+      this.followedTopics = [];
+    } else {
+      this.followedTopics = followedTopicsByNdk.split(',');
+    }
     route.params.subscribe(params => {
       let topic = params['topic'];
       if(topic){
@@ -60,9 +73,9 @@ export class EventFeedComponent {
       this.events = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
       this.loadingEvents = false;
     } else {
-      if(this.topicService.followedTopics.length > 0){
+      if(this.ndkProvider.appData.followedTopics.length > 0){
         this.events = await this.ndkProvider.fetchAllFollowedEvents(
-          this.topicService.followedTopics.split(','),
+          this.ndkProvider.appData.followedTopics.split(','),
           this.limit,
           undefined,
           this.until
@@ -87,9 +100,9 @@ export class EventFeedComponent {
         this.reachedEndOfFeed = true
       }        
     } else {
-      if(this.followedTopics.length > 0){
+      if(this.followedTopics && this.followedTopics.length > 0){
         this.nextEvents = await this.ndkProvider.fetchAllFollowedEvents(
-          this.topicService.followedTopics.split(','),
+          this.ndkProvider.appData.followedTopics.split(','),
           this.limit,
           undefined,
           this.until
@@ -124,26 +137,18 @@ export class EventFeedComponent {
   followTopic(topic: string | undefined) {
     if (topic) {
       this.topicService.followTopic(topic);
-      this.followChanged.emit();
-      this.followedTopics = this.topicService.followedTopics.split(',');
     }
   }
 
   unfollowTopic(topic: string | undefined) {
     if (topic) {
-      this.topicService.unfollowTopic(topic);
-      this.followChanged.emit();
-      if (this.topicService.followedTopics.length === 0) {
-        this.followedTopics = [];
-      } else {
-        this.followedTopics = this.topicService.followedTopics.split(',');
-      }
+      this.topicService.unfollowTopic(topic);     
     }
   }
 
   isTopicFollowed(topic: string | undefined): boolean {
     if (topic) {
-      if (this.followedTopics.indexOf(topic) > -1) {
+      if (this.followedTopics && this.followedTopics.indexOf(topic) > -1) {
         return true;
       }
     }
