@@ -71,10 +71,41 @@ a{
 
 .hashtag-search{
     border-radius: 1em;
-    border: none;    
-    color: #1a1a1a;
+    border: none!important;   
     font-size: 1.1em;
-    padding-left: 1.5em;    
+    padding-left: 1.5em!important;  
+    margin-left: 1em!important;
+    background-color: #cdcdcd!important;
+    color:#000!important;
     outline: none;
     box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0px 4px 6px -5px hsl(0, 0%, 2%)
+}
+
+.search_form_mobile{
+  display:none;
+}
+
+@media only screen and (max-width: 768px) { 
+  .search_form{
+    display: none;
+  }
+
+  .hashtag-search{
+    display: none;
+  }
+
+  .search_form_mobile{
+    display:block;
+  }
+
+  .hashtag-search-mobile{
+    border-radius: 1em;
+    border: none!important;   
+    font-size: 1.1em;
+    padding-left: 1.5em!important;  
+    color:#000!important;
+    outline: none;
+    box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0px 4px 6px -5px hsl(0, 0%, 2%)
+  }
+
 }

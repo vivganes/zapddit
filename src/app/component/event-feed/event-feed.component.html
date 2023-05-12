@@ -43,7 +43,7 @@
   </div>
 </ng-template>
 <ng-template [ngIf]="!loadingEvents && (tag || (followedTopics && followedTopics.length>0))">
-  <div *ngIf="!reachedEndOfFeed" align="center">
+  <div *ngIf="events && events.size>0 && !reachedEndOfFeed" align="center">
     <button [clrLoading]="loadingNextEvents" class="btn btn-info-outline" (click)="loadMoreEvents()">Load more</button>
   </div>
   <div *ngIf="reachedEndOfFeed" align="center" class="clr-row clr-justify-content-center">

@@ -6,7 +6,13 @@
         <span class="title main-title-font">ZappedIt!</span>
       </a>
     </div>
-    
+    <div class="search_form">
+    <form *ngIf="isLoggedIn()" class="search"  onsubmit="return false;">
+      <label for="search_input">
+          <input id="search_input" type="text"  class="hashtag-search" placeholder="# Search hashtag ⏎" (keyup.enter)="search()">
+      </label>
+    </form>
+    </div>    
     <div class="header-actions">      
       <a *ngIf="darkTheme" href="javascript://" (click)="switchTheme()" class="nav-link" aria-label="theme">
         <cds-icon shape="sun" solid></cds-icon>
@@ -17,7 +23,7 @@
     </div> 
   </clr-header>
   <div class="content-container">
-    <clr-vertical-nav *ngIf="isLoggedIn()" [clr-nav-level]="2" class="custom-scroll-bar">
+    <clr-vertical-nav *ngIf="isLoggedIn()" [clr-nav-level]="1" class="custom-scroll-bar">
       <label class="nav-header">
         <img
           *ngIf="ndkProvider.currentUserProfile?.image"
@@ -35,21 +41,7 @@
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile?.name">@{{ ndkProvider.currentUserProfile?.name }}</span>
       </label>
       <div class="nav-divider"></div>
-      <form clrForm class="search" onsubmit="return false;">
-        <label for="search-input-sidenav-ng">          
-          <input
-            removeClippedSubviews="false"
-            (click)="stopPropagatingEvent($event)"
-            id="search-input-sidenav-ng"
-            class="search-text-box hashtag-search"
-            type="search  "
-            placeholder="#️ Search hashtag ⏎"
-            (keyup.enter)="search()" />
-          <!-- <cds-icon shape="child-arrow" solid flip="horizontal"></cds-icon>  -->
-        </label>
-      </form>
-
-      <div class="nav-divider"></div>
+      
       <a clrVerticalNavLink routerLink="/feed" routerLinkActive="active">
         <cds-icon shape="home" clrverticalnavicon class="nav-icon"></cds-icon><span class="nav-text">My Feed</span>
       </a>
@@ -129,8 +121,16 @@
       <a><span class="nav-text"><b>NIP-05:</b> vivganes@vivekganesan.com</span></a>
 
     </clr-vertical-nav>
-    <div class="content-area">
+    <div class="content-area">      
       <div *ngIf="isLoggedIn(); else notloggedin">
+        <div class="search_form_mobile">
+          <form *ngIf="isLoggedIn()" class="search"  onsubmit="return false;">
+            <label for="search_input_mobile">
+                <input id="search_input_mobile" type="search"  class="hashtag-search-mobile" placeholder="#️ Search hashtag ⏎" (keyup.enter)="searchFromMobile()">
+                <cds-icon shape="search"></cds-icon>
+            </label>
+          </form>
+          </div>
         <router-outlet></router-outlet>
       </div>
       <ng-template #notloggedin>

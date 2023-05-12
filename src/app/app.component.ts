@@ -10,14 +10,15 @@ import {
   homeIcon,
   cogIcon,
   sunIcon,
-  moonIcon
+  moonIcon,
+  searchIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { TopicService } from './service/topic.service';
 import { Router } from '@angular/router';
 import { NDKUserProfile } from '@nostr-dev-kit/ndk';
 
-ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, sunIcon, moonIcon);
+ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, sunIcon, moonIcon, searchIcon);
 
 @Component({
   selector: 'app-root',
@@ -82,7 +83,15 @@ export class AppComponent {
   }
 
   search() {
-    let topic = (<HTMLInputElement>document.getElementById('search-input-sidenav-ng')).value;    
+    let topic = (<HTMLInputElement>document.getElementById('search_input')).value;    
+    if(topic && topic !==''){
+      topic = topic.toLowerCase();
+      this.router.navigate(['t', { topic }]);
+    }
+  }
+
+  searchFromMobile() {
+    let topic = (<HTMLInputElement>document.getElementById('search_input_mobile')).value;    
     if(topic && topic !==''){
       topic = topic.toLowerCase();
       this.router.navigate(['t', { topic }]);
