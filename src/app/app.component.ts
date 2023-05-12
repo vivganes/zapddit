@@ -14,7 +14,6 @@ import {
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { TopicService } from './service/topic.service';
-import { EventFeedComponent } from './component/event-feed/event-feed.component';
 import { Router } from '@angular/router';
 import { NDKUserProfile } from '@nostr-dev-kit/ndk';
 
@@ -33,6 +32,7 @@ export class AppComponent {
   downzapRecipientsError: string | undefined;
   downzapSetSuccessMessage: string | undefined;
   darkTheme: boolean = true;
+  indexOfDarkModeCss:number|undefined = undefined
 
   ndkProvider: NdkproviderService;
 
@@ -43,10 +43,16 @@ export class AppComponent {
   }
 
   ngOnInit() {
+    var styleSheets = (<any>document).styleSheets;
+    for (let i = 0; i< styleSheets.length;i++){
+      if(styleSheets[i].href.indexOf('dark')>-1){
+        this.indexOfDarkModeCss = i;
+      }
+    }
     var themeFromLocal = localStorage.getItem('darkTheme');
     if(themeFromLocal && themeFromLocal!==null && themeFromLocal!==''){
-      if(themeFromLocal === 'false'){
-        document.styleSheets[1].disabled = true;
+      if(themeFromLocal === 'false' && this.indexOfDarkModeCss){
+        document.styleSheets[this.indexOfDarkModeCss].disabled = true;
         this.darkTheme = false
       }
     }
@@ -120,8 +126,10 @@ export class AppComponent {
   }
 
   switchTheme(){
-    document.styleSheets[1].disabled = !document.styleSheets[1].disabled;
-    this.darkTheme = !this.darkTheme;
-    localStorage.setItem('darkTheme', ''+this.darkTheme);
+    if(this.indexOfDarkModeCss){
+      document.styleSheets[this.indexOfDarkModeCss].disabled = !document.styleSheets[this.indexOfDarkModeCss].disabled;
+      this.darkTheme = !this.darkTheme;
+      localStorage.setItem('darkTheme', ''+this.darkTheme);
+    }
   }
 }
