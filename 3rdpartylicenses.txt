@@ -41,6 +41,9 @@ MIT
 @angular/router
 MIT
 
+@angular/service-worker
+MIT
+
 @babel/runtime
 MIT
 MIT License
