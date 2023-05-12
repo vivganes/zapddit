@@ -6,10 +6,15 @@
         <span class="title main-title-font">ZappedIt!</span>
       </a>
     </div>
-    <!-- 
+    
     <div class="header-actions">      
-       
-    </div> -->
+      <a *ngIf="darkTheme" href="javascript://" (click)="switchTheme()" class="nav-link" aria-label="theme">
+        <cds-icon shape="sun" solid></cds-icon>
+      </a>  
+      <a *ngIf="!darkTheme" href="javascript://" (click)="switchTheme()" class="nav-link" aria-label="theme">
+        <cds-icon shape="moon" solid></cds-icon>
+      </a>  
+    </div> 
   </clr-header>
   <div class="content-container">
     <clr-vertical-nav *ngIf="isLoggedIn()" [clr-nav-level]="2" class="custom-scroll-bar">

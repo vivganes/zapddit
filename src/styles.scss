@@ -61,15 +61,18 @@ a{
   overflow-wrap: anywhere!important
 }
 
+.break-anywhere-overflow{
+  overflow-wrap: anywhere;
+}
+
 .hashtag-link, .hashtag-link:visited{
-  color: #4aaed9;
+  color: var(--clr-link-color)
 }
 
 .hashtag-search{
-  background: #1A1A1A;
     border-radius: 1em;
     border: none;    
-    color: #A2A2A2;
+    color: #1a1a1a;
     font-size: 1.1em;
     padding-left: 1.5em;    
     outline: none;

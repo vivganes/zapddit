@@ -9,6 +9,8 @@ import {
   hashtagIcon,
   homeIcon,
   cogIcon,
+  sunIcon,
+  moonIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { TopicService } from './service/topic.service';
@@ -16,7 +18,7 @@ import { EventFeedComponent } from './component/event-feed/event-feed.component'
 import { Router } from '@angular/router';
 import { NDKUserProfile } from '@nostr-dev-kit/ndk';
 
-ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon);
+ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, sunIcon, moonIcon);
 
 @Component({
   selector: 'app-root',
@@ -30,6 +32,7 @@ export class AppComponent {
   followedTopics: string[] = [];
   downzapRecipientsError: string | undefined;
   downzapSetSuccessMessage: string | undefined;
+  darkTheme: boolean = true;
 
   ndkProvider: NdkproviderService;
 
@@ -40,6 +43,14 @@ export class AppComponent {
   }
 
   ngOnInit() {
+    var themeFromLocal = localStorage.getItem('darkTheme');
+    if(themeFromLocal && themeFromLocal!==null && themeFromLocal!==''){
+      if(themeFromLocal === 'false'){
+        document.styleSheets[1].disabled = true;
+        this.darkTheme = false
+      }
+    }
+
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       if (followedTopics === '') {
         this.followedTopics = [];
@@ -106,5 +117,11 @@ export class AppComponent {
 
   isLoggingIn(){
     return this.ndkProvider.loggingIn;
+  }
+
+  switchTheme(){
+    document.styleSheets[1].disabled = !document.styleSheets[1].disabled;
+    this.darkTheme = !this.darkTheme;
+    localStorage.setItem('darkTheme', ''+this.darkTheme);
   }
 }

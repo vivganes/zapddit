@@ -10,7 +10,7 @@
         title="Open in Snort" />
       <div class="card-media-description">
         <span class="card-media-title break-words-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ authorWithProfile?.profile?.name }} </span>
-        <span *ngIf="!authorWithProfile?.profile?.name" class="card-media-title break-words-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey }} </span>
+        <span *ngIf="!authorWithProfile?.profile?.name" class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey }} </span>
         <span class="card-media-text break-words-overflow"> {{ formatTimestamp(event?.created_at) }} </span>
       </div>
     </div>

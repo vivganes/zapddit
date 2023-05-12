@@ -30,9 +30,17 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/@clr/ui/clr-ui.min.css",
-              "node_modules/@clr/ui/clr-ui-dark.min.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              {
+                "input": "node_modules/@clr/ui/clr-ui.min.css",
+                "inject": false,
+                "bundleName": "clr-ui"
+              },
+              {
+                "input": "node_modules/@clr/ui/clr-ui-dark.min.css",
+                "inject": false,
+                "bundleName": "clr-ui-dark"
+              }
             ],
             "scripts": []
           },
