@@ -45,7 +45,7 @@ export class AppComponent {
   ngOnInit() {
     var styleSheets = (<any>document).styleSheets;
     for (let i = 0; i< styleSheets.length;i++){
-      if(styleSheets[i].href.indexOf('dark')>-1){
+      if(styleSheets[i].href!==null && styleSheets[i].href.indexOf('dark')>-1){
         this.indexOfDarkModeCss = i;
       }
     }
