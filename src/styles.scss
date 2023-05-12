@@ -81,6 +81,10 @@ a{
     box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0px 4px 6px -5px hsl(0, 0%, 2%)
 }
 
+.hashtag-search::placeholder{
+  color:#000!important;
+}
+
 .search_form_mobile{
   display:none;
 }

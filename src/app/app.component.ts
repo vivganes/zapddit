@@ -27,19 +27,16 @@ ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIco
 })
 export class AppComponent {
   title = 'ZappedIt!';
-  private topicService: TopicService;
   private router: Router;
   followedTopics: string[] = [];
-  downzapRecipientsError: string | undefined;
-  downzapSetSuccessMessage: string | undefined;
   darkTheme: boolean = true;
   indexOfDarkModeCss:number|undefined = undefined
 
+
   ndkProvider: NdkproviderService;
 
-  constructor(ndkProvider: NdkproviderService, topicService: TopicService, router: Router) {
+  constructor(ndkProvider: NdkproviderService,router: Router) {
     this.ndkProvider = ndkProvider;
-    this.topicService = topicService;
     this.router = router;
   }
 
@@ -98,33 +95,10 @@ export class AppComponent {
     }
   }
 
-  setDefaultSats() {
-    let sats = (<HTMLInputElement>document.getElementById('sats-for-zaps')).value;
-    try{
-      this.ndkProvider.setDefaultSatsForZaps(Number.parseInt(sats));
-      }catch(e){
-        console.error(e);
-      }
-  }
+  
 
-  async saveDownzapRecipients() {
-    this.downzapRecipientsError = undefined;
-    let recipients = (<HTMLInputElement>document.getElementById('downzap-recipients')).value;
-    let supposedUser = await this.ndkProvider.getNdkUserFromNpub(recipients);
-    if (supposedUser !== undefined) {
-      this.ndkProvider.publishAppData(undefined, recipients);
-      this.downzapSetSuccessMessage =
-        'Sending downzaps to ' +
-        (supposedUser.profile?.displayName ? supposedUser.profile?.displayName : supposedUser.profile?.name);
-    } else {
-      this.downzapRecipientsError = 'Invalid npub';
-    }
-  }
+  
 
-  stopPropagatingEvent(event:any){
-    event.preventDefault();
-    event.stopPropagation();
-  }
 
   attemptLogin(){
     this.ndkProvider.attemptLogin();

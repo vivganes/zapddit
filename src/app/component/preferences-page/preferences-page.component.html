@@ -1,0 +1,60 @@
+<h3 align="center">
+    ⚙️ Preferences
+</h3>
+<h4>
+    Downzap Recipients
+</h4>
+<form clrForm onsubmit="return false;">
+    <clr-textarea-container>
+        <label>Downzap Recipient's npub</label>
+        <textarea clrTextarea
+        cols="50"
+        id="downzap-recipients"
+        placeholder="npub of the recipient" >{{ ndkProvider.appData.downzapRecipients }}</textarea>  
+        <clr-control-helper>npub of the person who will receive the sats for your downzaps</clr-control-helper>   
+    </clr-textarea-container>
+
+    
+    <div *ngIf="downzapRecipientsError" class="alert alert-danger" role="alert">
+      <div class="alert-items">
+        <div class="alert-item static">
+          <div class="alert-icon-wrapper">
+            <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+          </div>
+          <span class="alert-text">
+            {{ downzapRecipientsError }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="downzapSetSuccessMessage" class="alert alert-success" role="alert">
+      <div class="alert-items">
+        <div class="alert-item static">
+          <div class="alert-icon-wrapper">
+            <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
+          </div>
+          <span class="alert-text">
+            {{ downzapSetSuccessMessage }}
+          </span>
+        </div>
+      </div>
+    </div>
+     <button type="submit" class="btn btn-primary" (click)="saveDownzapRecipients()">Save</button>
+
+</form>
+
+<h4>
+    Default sats for Zaps
+</h4>
+<form clrForm onsubmit="return false;">
+    <clr-input-container>
+        <label>No. of sats for Zaps</label>
+        <input clrInput      
+        type="number"  
+        id="sats-for-zaps"
+        value="{{ ndkProvider.defaultSatsForZaps }}" >
+        <clr-control-helper>These many sats will be send when you zap</clr-control-helper>   
+    </clr-input-container>   
+    <button [clrLoading]="settingDefaultSats" type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button>
+
+</form>

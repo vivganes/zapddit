@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -14,6 +14,8 @@ import { SinglePostComponent } from './component/single-post/single-post.compone
 import { ShortNumberPipe } from './pipe/short-number.pipe';
 import { HashtagComponent } from './component/hashtag/hashtag.component';
 import { DynamicHooksModule, HookParserEntry } from 'ngx-dynamic-hooks';
+import { PreferencesPageComponent } from './component/preferences-page/preferences-page.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
@@ -29,11 +31,17 @@ const componentParsers: Array<HookParserEntry> = [
     EventCardComponent,
     SinglePostComponent,
     ShortNumberPipe,
-    HashtagComponent
+    HashtagComponent,
+    PreferencesPageComponent
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers
-  }),BrowserModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule],
+  }),BrowserModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  enabled: !isDevMode(),
+  // Register the ServiceWorker as soon as the application is stable
+  // or after 30 seconds (whichever comes first).
+  registrationStrategy: 'registerWhenStable:30000'
+})],
   providers: [],
   bootstrap: [AppComponent],
 })
