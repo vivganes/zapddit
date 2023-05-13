@@ -47,7 +47,10 @@
       </a>
       <a clrVerticalNavLink routerLink="/preferences" routerLinkActive="active">
         <cds-icon shape="cog" clrVerticalNavIcon></cds-icon><span class="nav-text">Preferences</span>
-      </a>      
+      </a>
+      <a clrVerticalNavLink href="#" (click)="logout()">
+        <cds-icon shape="logout" clrVerticalNavIcon></cds-icon><span class="nav-text">Logout</span>
+      </a>       
       <div class="nav-divider"></div>
       <label class="nav-header">Followed Topics</label>
       <a clrVerticalNavLink *ngFor="let topic of followedTopics" [routerLink]="['/t', topic]" routerLinkActive="active"

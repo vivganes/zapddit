@@ -11,6 +11,8 @@ import NDK, {
   NostrEvent,
   NDKTag,
   NDKSubscription,
+  NDKSigner,
+  NDKPrivateKeySigner,
 } from '@nostr-dev-kit/ndk';
 import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
@@ -43,16 +45,26 @@ export class NdkproviderService {
   loggedIn: boolean = false;
   loggingIn: boolean = false;
   followedTopicsEmitter:EventEmitter<string> = new EventEmitter<string>()
+  isNip07Login : boolean = true;
+  private signer:NDKSigner|undefined = undefined;
 
   constructor(){
     const npubFromLocal = localStorage.getItem('npub');
     if(npubFromLocal && npubFromLocal !== ''){
       // we can login as the login has already happened using NIP-07
-      this.tryConnectingFromLocallyStoredNpub(npubFromLocal);
+      this.tryNip07LoginUsingLocallyStoredNpub(npubFromLocal);
     }
   }
 
-  async tryConnectingFromLocallyStoredNpub(npubFromLocal: string){
+  attemptLoginUsingPrivateKey(privateKey: string){
+     new NDKPrivateKeySigner(privateKey);
+  }
+
+  getSigner(){
+    return this.signer;
+  }
+
+  async tryNip07LoginUsingLocallyStoredNpub(npubFromLocal: string){
     this.loggingIn = true;
     const params: NDKConstructorParams = { signer: new NDKNip07Signer(), explicitRelayUrls: explicitRelayUrls }; 
     this.ndk = new NDK(params);
@@ -252,6 +264,11 @@ export class NdkproviderService {
   setDefaultSatsForZaps(sats:number){
     this.defaultSatsForZaps = sats;
     localStorage.setItem('defaultSatsForZaps', ""+sats)
+  }
+
+  logout(){
+    localStorage.clear();
+    window.location.href="/";
   }
 
 

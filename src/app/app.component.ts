@@ -5,13 +5,13 @@ import {
   userIcon,
   boltIcon,
   plusCircleIcon,
-  logoutIcon,
   hashtagIcon,
   homeIcon,
   cogIcon,
   sunIcon,
   moonIcon,
-  searchIcon
+  searchIcon,
+  logoutIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { TopicService } from './service/topic.service';
@@ -114,5 +114,9 @@ export class AppComponent {
       this.darkTheme = !this.darkTheme;
       localStorage.setItem('darkTheme', ''+this.darkTheme);
     }
+  }
+
+  logout(){
+    this.ndkProvider.logout();
   }
 }
