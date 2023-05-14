@@ -11,7 +11,8 @@ const routes: Routes = [
   { path: 'n/:eventid', component: SinglePostComponent },
   { path: '',   redirectTo: '/feed', pathMatch: 'full' }, // redirect to `first-component`
   { path: 'preferences', component: PreferencesPageComponent},
-  { path: 'feed', component: EventFeedComponent }
+  { path: 'feed', component: EventFeedComponent },
+  { path: '**', component: EventFeedComponent },
 ];
 
 @NgModule({

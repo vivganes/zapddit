@@ -57,10 +57,10 @@ export class NdkproviderService {
       if(privateKey && privateKey !== ''){
         this.signer = new NDKPrivateKeySigner(privateKey);
         this.tryLoginUsingNpub(npubFromLocal);
-      } else {      
+      } else {
         this.signer = new NDKNip07Signer();
         this.tryLoginUsingNpub(npubFromLocal);
-      } 
+      }
     }
   }
 
@@ -84,7 +84,7 @@ export class NdkproviderService {
 
   validateAndGetHexPrivateKey(privateKey:string):string{
     if(!privateKey || privateKey === '' || privateKey == null){
-      throw new Error('Private key is required')      
+      throw new Error('Private key is required')
     }
     return LoginUtil.getHexFromPrivateKey(privateKey);
   }
@@ -92,10 +92,10 @@ export class NdkproviderService {
   async tryLoginUsingNpub(npubFromLocal: string){
     this.loggingIn = true;
     this.loginError = undefined;
-    const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls }; 
+    const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls };
     this.ndk = new NDK(params);
     await this.ndk.assertSigner();
-    await this.ndk.connect(1000);      
+    await this.ndk.connect(1000);
     this.initializeUsingNpub(npubFromLocal)
   }
 
@@ -156,9 +156,9 @@ export class NdkproviderService {
 
   private async initializeClientWithSigner() {
     try {
-      
+
       this.signer?.user().then(async user => {
-        const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls }; 
+        const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls };
         this.ndk = new NDK(params);
         await this.ndk.assertSigner();
         await this.ndk.connect(1000);
@@ -306,7 +306,6 @@ export class NdkproviderService {
           //do nothing. irrelevant data
         }
       }
-      console.log('Latest follow list :' + this.appData.followedTopics);
       console.log('Latest follow list :' + this.appData.followedTopics);
       localStorage.setItem('followedTopics', this.appData.followedTopics);
 

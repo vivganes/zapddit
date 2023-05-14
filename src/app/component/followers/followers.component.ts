@@ -11,7 +11,7 @@ export class FollowersComponent implements OnInit{
 
   userProfiles: (NDKUserProfile | undefined)[] = [];
   event: NDKEvent | undefined;
-  loadingFollowers: boolean = false;
+  loadingPeopleYouFollow: boolean = false;
 
   ndkProvider: NdkproviderService;
 
@@ -20,10 +20,10 @@ export class FollowersComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.loadingFollowers = true;
+    this.loadingPeopleYouFollow = true;
     this.ndkProvider.fetchFollowers().then((userProfiles) =>{
                                                 this.userProfiles = userProfiles.map(profile=>profile)
-                                                this.loadingFollowers = false;
+                                                this.loadingPeopleYouFollow = false;
                                               })
   }
 
@@ -31,10 +31,5 @@ export class FollowersComponent implements OnInit{
     const urlRegex = /https:.*?\.(?:png|jpg|svg|gif|jpeg|webp)/gi;
     const imgArray = this.event?.content.match(urlRegex);
     return imgArray;
-  }
-
-
-  openProfileInSnort(userProfile:NDKUserProfile | undefined){
-    //window.open('https://snort.social/p/'+npub,'_blank')
   }
 }
