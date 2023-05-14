@@ -50,6 +50,8 @@
 .main-title-font{
   font-family: monospace!important;
   font-weight: bold!important;
+  font-size:xx-large!important;
+  overflow-x: visible;
 }
 
 .event-loading-spinner{
@@ -111,5 +113,11 @@ a{
     outline: none;
     box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0px 4px 6px -5px hsl(0, 0%, 2%)
   }
+}
 
+
+@media screen and (max-width: 576px) {
+  .main-container .header .branding {
+    max-width: 12rem;
+  }
 }
