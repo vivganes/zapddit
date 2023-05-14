@@ -58,7 +58,6 @@ export class EventFeedComponent {
       } else {
         this.tag = undefined;
       }
-      console.log("event received "+ this.tag);
       this.until = Date.now();
       this.limit = 25;
       this.getEvents();

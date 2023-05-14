@@ -2,11 +2,9 @@ import { Component, ElementRef, Input, ViewChild,  Renderer2 } from '@angular/co
 import { NDKEvent, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as moment from 'moment';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
-import * as linkify from 'linkifyjs';
 import linkifyHtml from 'linkify-html';
-import 'linkify-plugin-hashtag';
-import { getRandomAvatar } from '@fractalsoftware/random-avatar-generator';
 import QRCodeStyling from 'qr-code-styling';
+import { Router,NavigationEnd  } from '@angular/router';
 
 @Component({
   selector: 'app-event-card',
