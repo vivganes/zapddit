@@ -47,24 +47,20 @@ export class NdkproviderService {
   loggingIn: boolean = false;
   loginError:string|undefined;
   followedTopicsEmitter:EventEmitter<string> = new EventEmitter<string>()
-  isNip07Login : boolean = true;
   private signer:NDKSigner|undefined = undefined;
 
   constructor(){
     const npubFromLocal = localStorage.getItem('npub');
-    const nip07FromLocal = localStorage.getItem('isNip07');
     const privateKey = localStorage.getItem('privateKey');
     if(npubFromLocal && npubFromLocal !== ''){
       // we can login as the login has already happened
-      if(nip07FromLocal === 'true'){
+      if(privateKey && privateKey !== ''){
+        this.signer = new NDKPrivateKeySigner(privateKey);
+        this.tryLoginUsingNpub(npubFromLocal);
+      } else {      
         this.signer = new NDKNip07Signer();
         this.tryLoginUsingNpub(npubFromLocal);
-      } else {
-        if(privateKey && privateKey !== ''){
-          this.signer = new NDKPrivateKeySigner(privateKey);
-          this.tryLoginUsingNpub(npubFromLocal);
-        }
-      }
+      } 
     }
   }
 
@@ -74,9 +70,7 @@ export class NdkproviderService {
       this.loginError = undefined;
       const hexPrivateKey = this.validateAndGetHexPrivateKey(privateKey);
       this.signer = new NDKPrivateKeySigner(hexPrivateKey);
-      this.isNip07Login = false;
       this.signer.user().then((user) => {
-        localStorage.setItem('isNip07', ''+false)
         localStorage.setItem('privateKey', hexPrivateKey)
         localStorage.setItem('npub', user.npub)
         this.tryLoginUsingNpub(user.npub);
