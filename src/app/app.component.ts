@@ -7,6 +7,7 @@ import {
   plusCircleIcon,
   hashtagIcon,
   homeIcon,
+  usersIcon,
   cogIcon,
   sunIcon,
   moonIcon,
@@ -19,8 +20,8 @@ import { NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as linkify from 'linkifyjs';
 import hashtag from './util/IntlHashtagLinkifyPlugin';
 
-ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, sunIcon, moonIcon, searchIcon);
 
+ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -94,7 +95,7 @@ export class AppComponent {
   }
 
   search() {
-    let topic = (<HTMLInputElement>document.getElementById('search_input')).value;    
+    let topic = (<HTMLInputElement>document.getElementById('search_input')).value;
     if(topic && topic !==''){
       topic = topic.toLowerCase();
       this.router.navigate(['t', { topic }]);
@@ -102,7 +103,7 @@ export class AppComponent {
   }
 
   searchFromMobile() {
-    let topic = (<HTMLInputElement>document.getElementById('search_input_mobile')).value;    
+    let topic = (<HTMLInputElement>document.getElementById('search_input_mobile')).value;
     if(topic && topic !==''){
       topic = topic.toLowerCase();
       this.router.navigate(['t', { topic }]);

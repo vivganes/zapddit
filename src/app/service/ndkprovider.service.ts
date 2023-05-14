@@ -63,9 +63,9 @@ export class NdkproviderService {
         //this.signer = new NDKNip07Signer();
         //dont assign a signer now. we need to assign it later only
         this.isNip07 = true;
-        this.tryLoginUsingNpub(npubFromLocal);
-    
+        this.tryLoginUsingNpub(npubFromLocal);    
       } 
+
     }
   }
 
@@ -89,7 +89,7 @@ export class NdkproviderService {
 
   validateAndGetHexPrivateKey(privateKey:string):string{
     if(!privateKey || privateKey === '' || privateKey == null){
-      throw new Error('Private key is required')      
+      throw new Error('Private key is required')
     }
     return LoginUtil.getHexFromPrivateKey(privateKey);
   }
@@ -97,7 +97,6 @@ export class NdkproviderService {
   async tryLoginUsingNpub(npubFromLocal: string){
     this.loggingIn = true;
     this.loginError = undefined;
-
     if(this.isNip07){
       while (!window.hasOwnProperty('nostr')) {
         // define the condition as you like
@@ -137,6 +136,12 @@ export class NdkproviderService {
     const user = this.ndk?.getUser({ npub });
     await user?.fetchProfile();
     return user?.profile;
+  }
+
+  async fetchFollowersFromNpub(npub: string):Promise<Set<NDKUser> | undefined>{
+    const user = this.ndk?.getUser({ npub });
+    const ndkUsers = await user?.follows();
+    return ndkUsers;
   }
 
   async getNdkUserFromNpub(npub: string): Promise<NDKUser | undefined> {
@@ -212,6 +217,36 @@ export class NdkproviderService {
 
   getCurrentUserProfile(): NDKUserProfile | undefined {
     return this.currentUserProfile;
+  }
+
+  async fetchFollowersForCurrentLoggedInUser():Promise<Set<NDKUser> | undefined>{
+    try{
+      if(this.currentUser){
+        return this.fetchFollowersFromNpub(this.currentUser.npub)
+      }
+    } catch(e){
+      console.log(e);
+    }
+      return new Set<NDKUser>;
+  }
+
+  private async fetchFollowersUserProfile(){
+    const ndkUsers = (await this.fetchFollowersForCurrentLoggedInUser());
+    let ndkUsersArray : NDKUser[] = [];
+
+    if(ndkUsers?.values && ndkUsers?.size > 0){
+      ndkUsersArray = Array.from(ndkUsers);
+    }
+
+    return ndkUsersArray.map(async item =>
+      {
+        return await this.getProfileFromNpub(item.npub);
+      });
+  }
+
+  async fetchFollowers(){
+    let followerUserProfilesPromise = await this.fetchFollowersUserProfile();
+    return Promise.all(followerUserProfilesPromise);
   }
 
   async fetchEvents(tag: string, limit?: number, since?: number, until?: number): Promise<Set<NDKEvent> | undefined> {

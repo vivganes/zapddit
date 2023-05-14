@@ -12,15 +12,15 @@
           <input id="search_input" type="text"  class="hashtag-search" placeholder="# Search hashtag ⏎" (keyup.enter)="search()">
       </label>
     </form>
-    </div>    
-    <div class="header-actions">      
+    </div>
+    <div class="header-actions">
       <a *ngIf="darkTheme" href="javascript://" (click)="switchTheme()" class="nav-link" aria-label="theme">
         <cds-icon shape="sun" solid></cds-icon>
-      </a>  
+      </a>
       <a *ngIf="!darkTheme" href="javascript://" (click)="switchTheme()" class="nav-link" aria-label="theme">
         <cds-icon shape="moon" solid></cds-icon>
-      </a>  
-    </div> 
+      </a>
+    </div>
   </clr-header>
   <div class="content-container">
     <clr-vertical-nav *ngIf="isLoggedIn()" [clr-nav-level]="1" class="custom-scroll-bar">
@@ -41,29 +41,32 @@
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile?.name">@{{ ndkProvider.currentUserProfile?.name }}</span>
       </label>
       <div class="nav-divider"></div>
-      
+
       <a clrVerticalNavLink routerLink="/feed" routerLinkActive="active">
         <cds-icon shape="home" clrverticalnavicon class="nav-icon"></cds-icon><span class="nav-text">My Feed</span>
+      </a>
+      <a clrVerticalNavLink routerLink="/followers" routerLinkActive="active">
+        <cds-icon shape="users" clrverticalnavicon class="nav-icon"></cds-icon><span class="nav-text">People I follow</span>
       </a>
       <a clrVerticalNavLink routerLink="/preferences" routerLinkActive="active">
         <cds-icon shape="cog" clrVerticalNavIcon></cds-icon><span class="nav-text">Preferences</span>
       </a>
       <a clrVerticalNavLink href="#" (click)="logout()">
         <cds-icon shape="logout" clrVerticalNavIcon></cds-icon><span class="nav-text">Logout</span>
-      </a>       
+      </a>
       <div class="nav-divider"></div>
       <label class="nav-header">Followed Topics</label>
       <a clrVerticalNavLink *ngFor="let topic of followedTopics" [routerLink]="['/t', topic]" routerLinkActive="active"
         ><cds-icon shape="hashtag" clrverticalnavicon class="nav-icon"></cds-icon
         ><span class="nav-text">{{ topic }}</span></a
       >
-     
+
       <div class="nav-divider"></div>
       <a><span class="nav-text">Created with 💙 by @vivganes</span></a>
       <a><span class="nav-text"><b>NIP-05:</b> vivganes@vivekganesan.com</span></a>
 
     </clr-vertical-nav>
-    <div class="content-area">      
+    <div class="content-area">
       <div *ngIf="isLoggedIn(); else notloggedin">
         <div class="search_form_mobile">
           <form *ngIf="isLoggedIn()" class="search"  onsubmit="return false;">
