@@ -6,24 +6,22 @@
 </div>
 
 <div class="clr-row clr-justify-content-center">
-<div *ngIf="(loadingPeopleYouFollow)" class="clr-row clr-justify-content-center">
-  <div class="alert-items">
-      <div class="alert-item static clr-justify-content-center">
-          <span class="alert-text">Loading people you follow, please wait...</span>
-      </div>
+  <div *ngIf="(loadingPeopleYouFollow)" class="clr-col-12 clr-col-md-8">    
+    <div *ngIf="loadingPeopleYouFollow" class="event-loading-spinner clr-justify-content-center">
+      <span class="spinner spinner-md">Loading people you follow...</span>
+    </div>
   </div>
-</div>
 
-  <div *ngIf="!(loadingPeopleYouFollow) && userProfiles?.length === 0"  class="clr-row clr-justify-content-center">
+  <div *ngIf="!(loadingPeopleYouFollow) && userProfiles?.length === 0"  class="clr-col-12 clr-col-md-8">
     <div class="alert-items">
         <div class="alert-item static clr-justify-content-center">
           <span class="alert-text">Not following anyone yet. May be try following some people? <br/> Like <a href="https://snort.social/p/npub1ltx67888tz7lqnxlrg06x234vjnq349tcfyp52r0lstclp548mcqnuz40t">@vivgan</a>?</span>
         </div>
     </div>
   </div>
-</div>
 
-<div *ngFor="let userProfile of userProfiles">
+
+<div *ngFor="let userProfile of userProfiles" class="clr-col-12 clr-col-md-8">
   <div class="card">
     <div class="card-block">
       <div class="card-media-block">
@@ -31,18 +29,15 @@
         <img alt="temp avatar"
           *ngIf="userProfile?.image === undefined"
           class="card-media-image"
-          src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
+          src="https://robohash.org/{{ userProfile }}.png?size=100x100"
           title="avatar" />
           <div class="card-media-description">
-            <span class="card-media-title break-words-overflow"  title="Name"> <strong>{{ userProfile?.displayName }} </strong></span>
-            <span class="card-media-text break-words-overflow"> {{ userProfile?.about }} </span>
+            <span class="card-media-title break-anywhere-overflow"  title="Name"> <strong>{{ userProfile?.displayName }}</strong> @{{ userProfile?.name }} </span>
+            <span class="card-media-text break-anywhere-overflow"> {{ userProfile?.about }} </span>
           </div>
       </div>
     </div>
   </div>
   </div>
 
-  <div *ngIf="loadingPeopleYouFollow" class="event-loading-spinner clr-justify-content-center">
-    <span class="spinner spinner-md">Loading followers...</span>
-  </div>
-
+</div>
