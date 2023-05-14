@@ -16,6 +16,7 @@ import { DynamicHooksModule, HookParserEntry } from 'ngx-dynamic-hooks';
 import { PreferencesPageComponent } from './component/preferences-page/preferences-page.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { LoginPageComponent } from './page/login-page/login-page.component';
+import { FollowersComponent } from './component/followers/followers.component';
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
@@ -32,7 +33,8 @@ const componentParsers: Array<HookParserEntry> = [
     ShortNumberPipe,
     HashtagComponent,
     PreferencesPageComponent,
-    LoginPageComponent
+    LoginPageComponent,
+    FollowersComponent
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers

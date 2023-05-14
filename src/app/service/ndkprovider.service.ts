@@ -125,6 +125,12 @@ export class NdkproviderService {
     return user?.profile;
   }
 
+  async fetchFollowersFromNpub(npub: string):Promise<Set<NDKUser> | undefined>{
+    const user = this.ndk?.getUser({ npub });
+    const ndkUsers = await user?.follows();
+    return ndkUsers;
+  }
+
   async getNdkUserFromNpub(npub: string): Promise<NDKUser | undefined> {
     try {
       const user = this.ndk?.getUser({ npub });
@@ -199,6 +205,36 @@ export class NdkproviderService {
     return this.currentUserProfile;
   }
 
+  async fetchFollowersForCurrentLoggedInUser():Promise<Set<NDKUser> | undefined>{
+    try{
+      if(this.currentUser){
+        return this.fetchFollowersFromNpub(this.currentUser.npub)
+      }
+    } catch(e){
+      console.log(e);
+    }
+      return new Set<NDKUser>;
+  }
+
+  private async fetchFollowersUserProfile(){
+    const ndkUsers = (await this.fetchFollowersForCurrentLoggedInUser());
+    let ndkUsersArray : NDKUser[] = [];
+
+    if(ndkUsers?.values && ndkUsers?.size > 0){
+      ndkUsersArray = Array.from(ndkUsers);
+    }
+
+    return ndkUsersArray.map(async item =>
+      {
+        return await this.getProfileFromNpub(item.npub);
+      });
+  }
+
+  async fetchFollowers(){
+    let followerUserProfilesPromise = await this.fetchFollowersUserProfile();
+    return Promise.all(followerUserProfilesPromise);
+  }
+
   async fetchEvents(tag: string, limit?: number, since?: number, until?: number): Promise<Set<NDKEvent> | undefined> {
     const filter: NDKFilter = { kinds: [1], '#t': [tag], limit: limit, since: since, until: until };
     return this.ndk?.fetchEvents(filter);
@@ -270,6 +306,7 @@ export class NdkproviderService {
           //do nothing. irrelevant data
         }
       }
+      console.log('Latest follow list :' + this.appData.followedTopics);
       console.log('Latest follow list :' + this.appData.followedTopics);
       localStorage.setItem('followedTopics', this.appData.followedTopics);
 
