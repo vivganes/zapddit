@@ -1,5 +1,5 @@
 <clr-main-container>
-  <clr-header class="header-6">
+  <clr-header class="header-3">
     <div class="branding">
       <a href="javascript://" class="nav-link">
         <cds-icon shape="bolt" solid></cds-icon>
@@ -76,19 +76,7 @@
         <router-outlet></router-outlet>
       </div>
       <ng-template #notloggedin>
-        <div align="center">
-          <button *ngIf="!isLoggedIn()"  [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary" (click)="attemptLogin()" >Login with NIP-07</button>
-          <div>
-            <p>
-              Zappedit requires a NIP-07 extension to work. Don't have a NIP-07 extension? Refer
-              <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank"
-                >this page</a>              
-            </p>            
-            <p>
-              If you are looking to use ZappedIt from your mobile, use a browser that supports a NIP-07 extension, like <a href="https://play.google.com/store/apps/details?id=com.kiwibrowser.browser" target="_blank">kiwi</a>
-            </p>
-          </div>
-        </div>
+        <app-login-page></app-login-page>
       </ng-template>
     </div>
   </div>

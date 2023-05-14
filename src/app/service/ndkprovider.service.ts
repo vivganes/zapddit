@@ -16,6 +16,7 @@ import NDK, {
 } from '@nostr-dev-kit/ndk';
 import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
+import { LoginUtil } from '../util/LoginUtil';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -44,36 +45,67 @@ export class NdkproviderService {
   defaultSatsForZaps:number = 1
   loggedIn: boolean = false;
   loggingIn: boolean = false;
+  loginError:string|undefined;
   followedTopicsEmitter:EventEmitter<string> = new EventEmitter<string>()
   isNip07Login : boolean = true;
   private signer:NDKSigner|undefined = undefined;
 
   constructor(){
     const npubFromLocal = localStorage.getItem('npub');
+    const nip07FromLocal = localStorage.getItem('isNip07');
+    const privateKey = localStorage.getItem('privateKey');
     if(npubFromLocal && npubFromLocal !== ''){
-      // we can login as the login has already happened using NIP-07
-      this.tryNip07LoginUsingLocallyStoredNpub(npubFromLocal);
+      // we can login as the login has already happened
+      if(nip07FromLocal === 'true'){
+        this.signer = new NDKNip07Signer();
+        this.tryLoginUsingNpub(npubFromLocal);
+      } else {
+        if(privateKey && privateKey !== ''){
+          this.signer = new NDKPrivateKeySigner(privateKey);
+          this.tryLoginUsingNpub(npubFromLocal);
+        }
+      }
     }
   }
 
   attemptLoginUsingPrivateKey(privateKey: string){
-     new NDKPrivateKeySigner(privateKey);
+    try{
+      this.loggingIn = true;
+      this.loginError = undefined;
+      const hexPrivateKey = this.validateAndGetHexPrivateKey(privateKey);
+      this.signer = new NDKPrivateKeySigner(hexPrivateKey);
+      this.isNip07Login = false;
+      this.signer.user().then((user) => {
+        localStorage.setItem('isNip07', ''+false)
+        localStorage.setItem('privateKey', hexPrivateKey)
+        localStorage.setItem('npub', user.npub)
+        this.tryLoginUsingNpub(user.npub);
+      })
+    }catch(e:any){
+      console.error(e);
+      this.loginError = e.message;
+      this.loggingIn = false;
+    }
   }
 
-  getSigner(){
-    return this.signer;
+  validateAndGetHexPrivateKey(privateKey:string):string{
+    if(!privateKey || privateKey === '' || privateKey == null){
+      throw new Error('Private key is required')      
+    }
+    return LoginUtil.getHexFromPrivateKey(privateKey);
   }
 
-  async tryNip07LoginUsingLocallyStoredNpub(npubFromLocal: string){
+  async tryLoginUsingNpub(npubFromLocal: string){
     this.loggingIn = true;
-    const params: NDKConstructorParams = { signer: new NDKNip07Signer(), explicitRelayUrls: explicitRelayUrls }; 
+    this.loginError = undefined;
+    const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls }; 
     this.ndk = new NDK(params);
     await this.ndk.assertSigner();
     await this.ndk.connect(1000);      
     this.initializeUsingNpub(npubFromLocal)
   }
 
-  attemptLogin() {
+  attemptLoginWithNip07() {
     this.loggingIn = true;
     this.resolveNip07Extension();
   }
@@ -87,6 +119,7 @@ export class NdkproviderService {
       }
 
       // do this after window.nostr is available
+      this.signer = new NDKNip07Signer();
       this.initializeClientWithSigner();
       localStorage.setItem('nip07ExtensionExists', 'true');
     })();
@@ -123,9 +156,9 @@ export class NdkproviderService {
 
   private async initializeClientWithSigner() {
     try {
-      const signer:NDKNip07Signer = new NDKNip07Signer();
-      signer.user().then(async user => {
-        const params: NDKConstructorParams = { signer: signer, explicitRelayUrls: explicitRelayUrls }; 
+      
+      this.signer?.user().then(async user => {
+        const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls }; 
         this.ndk = new NDK(params);
         await this.ndk.assertSigner();
         await this.ndk.connect(1000);

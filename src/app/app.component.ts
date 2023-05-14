@@ -14,7 +14,6 @@ import {
   logoutIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
-import { TopicService } from './service/topic.service';
 import { Router } from '@angular/router';
 import { NDKUserProfile } from '@nostr-dev-kit/ndk';
 
@@ -29,7 +28,7 @@ export class AppComponent {
   title = 'ZappedIt!';
   private router: Router;
   followedTopics: string[] = [];
-  darkTheme: boolean = true;
+  darkTheme: boolean = false;
   indexOfDarkModeCss:number|undefined = undefined
 
 
@@ -49,7 +48,18 @@ export class AppComponent {
     }
     var themeFromLocal = localStorage.getItem('darkTheme');
     if(themeFromLocal && themeFromLocal!==null && themeFromLocal!==''){
-      if(themeFromLocal === 'false' && this.indexOfDarkModeCss){
+      if(this.indexOfDarkModeCss){
+        if(themeFromLocal === 'false'){
+          document.styleSheets[this.indexOfDarkModeCss].disabled = true;
+          this.darkTheme = false
+        } else {
+          document.styleSheets[this.indexOfDarkModeCss].disabled = false;
+          this.darkTheme = true;
+        }
+      }
+    } else {
+      console.log('no value in localstorage')
+      if(this.indexOfDarkModeCss){
         document.styleSheets[this.indexOfDarkModeCss].disabled = true;
         this.darkTheme = false
       }
@@ -93,15 +103,6 @@ export class AppComponent {
       topic = topic.toLowerCase();
       this.router.navigate(['t', { topic }]);
     }
-  }
-
-  
-
-  
-
-
-  attemptLogin(){
-    this.ndkProvider.attemptLogin();
   }
 
   isLoggingIn(){

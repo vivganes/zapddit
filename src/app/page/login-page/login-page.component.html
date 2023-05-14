@@ -1,0 +1,75 @@
+<div class="clr-row clr-justify-content-center">
+  <div class="clr-col-12 clr-col-md-8">
+  <div class="clr-row">
+    <div class="clr-col-lg-6 clr-col-12">
+      <div class="card">
+        <h3 class="card-header">Secure Login (Recommended)</h3>
+        <div class="card-block">
+          <h4 class="card-title">NIP-07 Extension</h4>
+          <div class="card-text">
+            <p>
+              Secure login to Zappedit requires a NIP-07 extension to work. Don't have a NIP-07 extension? Refer
+              <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank"
+                >this page</a>              
+            </p>            
+            <p>
+              If you are looking to use ZappedIt from your mobile, use a browser that supports a NIP-07 extension, like <a href="https://play.google.com/store/apps/details?id=com.kiwibrowser.browser" target="_blank">kiwi</a>
+            </p>  
+            <button *ngIf="!ndkProvider.loggedIn"  [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary" (click)="attemptLoginWithNip07()" >Login with NIP-07</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="clr-col-lg-6 clr-col-12">
+      <div class="card">
+        <h3 class="card-header">Alternate Login</h3>
+        <div class="card-block">
+          <h4 class="card-title">Private Key Login</h4>
+          <div class="card-text">            
+            <form clrForm onsubmit="return false;">
+              <clr-input-container>
+                  <label>Private Key</label>
+                  <input clrInput  
+                  autocomplete="current-password"    
+                  type="password"  
+                  required
+                  id="pkey">
+                  <clr-control-helper>Key starting with nsec</clr-control-helper>         
+              </clr-input-container> 
+              <div *ngIf="ndkProvider.loginError" class="alert alert-danger" role="alert">
+                <div class="alert-items">
+                  <div class="alert-item static">
+                    <div class="alert-icon-wrapper">
+                      <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+                    </div>
+                    <span class="alert-text">
+                      {{ ndkProvider.loginError }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button [clrLoading]="ndkProvider.loggingIn" type="submit" class="btn btn-primary" (click)="attemptLoginWithPrivateKey()">Login</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+  
+
+    <!-- <div>
+      <p>
+        Zappedit requires a NIP-07 extension to work. Don't have a NIP-07 extension? Refer
+        <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank"
+          >this page</a>              
+      </p>            
+      <p>
+        If you are looking to use ZappedIt from your mobile, use a browser that supports a NIP-07 extension, like <a href="https://play.google.com/store/apps/details?id=com.kiwibrowser.browser" target="_blank">kiwi</a>
+      </p>  
+    </div> -->
+  </div>
+</div>
