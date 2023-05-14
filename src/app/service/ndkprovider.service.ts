@@ -48,6 +48,7 @@ export class NdkproviderService {
   loginError:string|undefined;
   followedTopicsEmitter:EventEmitter<string> = new EventEmitter<string>()
   private signer:NDKSigner|undefined = undefined;
+  isNip07 = false;
 
   constructor(){
     const npubFromLocal = localStorage.getItem('npub');
@@ -55,11 +56,15 @@ export class NdkproviderService {
     if(npubFromLocal && npubFromLocal !== ''){
       // we can login as the login has already happened
       if(privateKey && privateKey !== ''){
+        this.isNip07 = false;
         this.signer = new NDKPrivateKeySigner(privateKey);
         this.tryLoginUsingNpub(npubFromLocal);
       } else {      
-        this.signer = new NDKNip07Signer();
+        //this.signer = new NDKNip07Signer();
+        //dont assign a signer now. we need to assign it later only
+        this.isNip07 = true;
         this.tryLoginUsingNpub(npubFromLocal);
+    
       } 
     }
   }
@@ -92,9 +97,19 @@ export class NdkproviderService {
   async tryLoginUsingNpub(npubFromLocal: string){
     this.loggingIn = true;
     this.loginError = undefined;
+
+    if(this.isNip07){
+      while (!window.hasOwnProperty('nostr')) {
+        // define the condition as you like
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      console.log("Found window nostr")
+      this.signer = new NDKNip07Signer();
+    }
+   
     const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls }; 
     this.ndk = new NDK(params);
-    await this.ndk.assertSigner();
+    
     await this.ndk.connect(1000);      
     this.initializeUsingNpub(npubFromLocal)
   }
@@ -115,7 +130,6 @@ export class NdkproviderService {
       // do this after window.nostr is available
       this.signer = new NDKNip07Signer();
       this.initializeClientWithSigner();
-      localStorage.setItem('nip07ExtensionExists', 'true');
     })();
   }
 
@@ -149,9 +163,8 @@ export class NdkproviderService {
   }
 
   private async initializeClientWithSigner() {
-    try {
-      
-      this.signer?.user().then(async user => {
+    try {      
+        this.signer?.user().then(async user => {
         const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls }; 
         this.ndk = new NDK(params);
         await this.ndk.assertSigner();
@@ -175,9 +188,11 @@ export class NdkproviderService {
     this.currentUser = await this.getNdkUserFromNpub(npub);
     const relays = this.currentUser?.relayUrls;
     if (relays && relays.length > 0) {
-      const newNDKParams = { signer: new NDKNip07Signer(), explicitRelayUrls: relays };
+      const newNDKParams = { signer: this.signer, explicitRelayUrls: relays };
       const newNDK = new NDK(newNDKParams);
-      await newNDK.assertSigner();
+      if(this.isNip07){
+        await newNDK.assertSigner();
+      }
       try {
         await newNDK.connect().catch(e => console.log(e));
         this.ndk = newNDK;

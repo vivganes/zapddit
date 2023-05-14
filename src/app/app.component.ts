@@ -16,6 +16,8 @@ import {
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
 import { NDKUserProfile } from '@nostr-dev-kit/ndk';
+import * as linkify from 'linkifyjs';
+import hashtag from './util/IntlHashtagLinkifyPlugin';
 
 ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, sunIcon, moonIcon, searchIcon);
 
@@ -37,6 +39,8 @@ export class AppComponent {
   constructor(ndkProvider: NdkproviderService,router: Router) {
     this.ndkProvider = ndkProvider;
     this.router = router;
+    linkify.registerPlugin('international-hashtags', hashtag);
+
   }
 
   ngOnInit() {
