@@ -22,7 +22,8 @@ export class FollowersComponent implements OnInit{
   ngOnInit() {
     this.loadingPeopleYouFollow = true;
     this.ndkProvider.fetchFollowers().then((userProfiles) =>{
-                                                this.userProfiles = userProfiles.map(profile=>profile)
+                                                //this.userProfiles = userProfiles.map(profile=>profile)
+                                                this.userProfiles = []
                                                 this.loadingPeopleYouFollow = false;
                                               })
   }
