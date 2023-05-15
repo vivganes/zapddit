@@ -92,6 +92,9 @@ export class AppComponent {
     let topic = (<HTMLInputElement>document.getElementById('search_input')).value;
     if(topic && topic !==''){
       topic = topic.toLowerCase();
+      if(topic.startsWith('#')){
+        topic = topic.slice(1);
+      }
       this.router.navigate(['t', { topic }]);
     }
   }
@@ -100,6 +103,9 @@ export class AppComponent {
     let topic = (<HTMLInputElement>document.getElementById('search_input_mobile')).value;
     if(topic && topic !==''){
       topic = topic.toLowerCase();
+      if(topic.startsWith('#')){
+        topic = topic.slice(1);
+      }
       this.router.navigate(['t', { topic }]);
     }
   }
