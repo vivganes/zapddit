@@ -32,7 +32,6 @@ export class AppComponent {
   private router: Router;
   followedTopics: string[] = [];
   darkTheme: boolean = false;
-  indexOfDarkModeCss:number|undefined = undefined
 
 
   ndkProvider: NdkproviderService;
@@ -44,30 +43,18 @@ export class AppComponent {
 
   }
 
-  ngOnInit() {
-    var styleSheets = (<any>document).styleSheets;
-    for (let i = 0; i< styleSheets.length;i++){
-      if(styleSheets[i].href!==null && styleSheets[i].href.indexOf('clr-ui-dark.css')>-1){
-        this.indexOfDarkModeCss = i;
-      }
-    }
+  ngOnInit() {    
     var themeFromLocal = localStorage.getItem('darkTheme');
     if(themeFromLocal && themeFromLocal!==null && themeFromLocal!==''){
-      if(this.indexOfDarkModeCss){
-        if(themeFromLocal === 'false'){
-          document.styleSheets[this.indexOfDarkModeCss].disabled = true;
-          this.darkTheme = false
-        } else {
-          document.styleSheets[this.indexOfDarkModeCss].disabled = false;
-          this.darkTheme = true;
-        }
+      if(themeFromLocal === 'false'){
+        this.setTheme(false);
+      } else {
+        this.setTheme(true);
       }
-    } else {
+    }
+    else {
       console.log('no value in localstorage')
-      if(this.indexOfDarkModeCss){
-        document.styleSheets[this.indexOfDarkModeCss].disabled = true;
-        this.darkTheme = false
-      }
+      this.setTheme(false);
     }
 
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
@@ -78,6 +65,13 @@ export class AppComponent {
       }
     });
   }
+
+
+  setTheme(dark:boolean){
+    (<any>document.getElementById('zappedit-theme')).href="/assets/clr-ui"+(dark?"-dark":"")+".css";
+  }
+  
+
 
   isTopicFollowed(topic: string): boolean {
     if (this.followedTopics.indexOf(topic) > -1) {
@@ -115,11 +109,8 @@ export class AppComponent {
   }
 
   switchTheme(){
-    if(this.indexOfDarkModeCss){
-      document.styleSheets[this.indexOfDarkModeCss].disabled = !document.styleSheets[this.indexOfDarkModeCss].disabled;
-      this.darkTheme = !this.darkTheme;
-      localStorage.setItem('darkTheme', ''+this.darkTheme);
-    }
+    this.darkTheme =!this.darkTheme;
+    this.setTheme(this.darkTheme);
   }
 
   logout(){

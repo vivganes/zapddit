@@ -68,7 +68,7 @@ a{
 }
 
 .hashtag-link, .hashtag-link:visited{
-  color: var(--clr-link-color) !important
+  color: var(--clr-link-active-color,hsl(198, 65%, 57%)) !important
 }
 
 .hashtag-search{
