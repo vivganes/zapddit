@@ -76,9 +76,6 @@ MIT
 @clr/angular
 MIT
 
-@clr/ui
-MIT
-
 @lit/reactive-element
 BSD-3-Clause
 BSD 3-Clause License
