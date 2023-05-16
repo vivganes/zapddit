@@ -6564,6 +6564,11 @@ h6.card-title {
   flex-direction: column;
   margin: 0 0 0 0.6rem;
 }
+.card-media-block .card-media-meta {
+  display: inline-block;
+  font-size:smaller;
+  color:gray
+}
 .card-media-block .card-media-title {
   display: inline-block;
 }

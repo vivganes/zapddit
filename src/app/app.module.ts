@@ -41,7 +41,7 @@ const componentParsers: Array<HookParserEntry> = [
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers
-  }),BrowserModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  }), BrowserModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ServiceWorkerModule.register('ngsw-worker.js', {
   enabled: !isDevMode(),
   // Register the ServiceWorker as soon as the application is stable
   // or after 30 seconds (whichever comes first).

@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { TopicService } from 'src/app/service/topic.service';
+import { ZappeditdbService } from '../../service/zappeditdb.service';
+import { User } from '../../model/user';
 
 @Component({
   selector: 'app-event-feed',
@@ -22,13 +24,12 @@ export class EventFeedComponent {
   @Output()
   followChanged: EventEmitter<string> = new EventEmitter<string>();
 
-  private ndkProvider: NdkproviderService;
-  private topicService: TopicService;
+  users:User[] = [];
   followedTopics: string[]|undefined;
   events: Set<NDKEvent> | undefined;
   nextEvents: Set<NDKEvent> | undefined;
   ngOnInit() {
-    this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {      
+    this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       if (followedTopics === '') {
         this.followedTopics = [];
       } else {
@@ -42,9 +43,11 @@ export class EventFeedComponent {
     });
   }
 
-  constructor(ndkProvider: NdkproviderService, topicService: TopicService, route: ActivatedRoute) {
-    this.ndkProvider = ndkProvider;
-    this.topicService = topicService;
+  constructor(private ndkProvider: NdkproviderService, private topicService: TopicService,
+    private route: ActivatedRoute) {
+    this.ndkProvider.fetchFollowersFromCache().then(cachedUsers =>
+        this.users = cachedUsers
+    );
     const followedTopicsByNdk = ndkProvider.appData.followedTopics;
     if (followedTopicsByNdk === '') {
       this.followedTopics = [];
@@ -94,10 +97,10 @@ export class EventFeedComponent {
           this.nextEvents?.forEach(this.events.add,this.events)
           this.loadingNextEvents = false;
           this.nextEvents =undefined;
-        }    
+        }
       } else {
         this.reachedEndOfFeed = true
-      }        
+      }
     } else {
       if(this.followedTopics && this.followedTopics.length > 0){
         this.nextEvents = await this.ndkProvider.fetchAllFollowedEvents(
@@ -112,7 +115,7 @@ export class EventFeedComponent {
           this.nextEvents?.forEach(this.events.add,this.events)
           this.loadingNextEvents = false;
           this.nextEvents =undefined;
-        } 
+        }
       } else {
         this.reachedEndOfFeed = true
       }
@@ -141,7 +144,7 @@ export class EventFeedComponent {
 
   unfollowTopic(topic: string | undefined) {
     if (topic) {
-      this.topicService.unfollowTopic(topic);     
+      this.topicService.unfollowTopic(topic);
     }
   }
 
