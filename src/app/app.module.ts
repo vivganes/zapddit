@@ -17,9 +17,11 @@ import { PreferencesPageComponent } from './component/preferences-page/preferenc
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { LoginPageComponent } from './page/login-page/login-page.component';
 import { FollowersComponent } from './component/followers/followers.component';
+import { UserMentionComponent } from './component/user-mention/user-mention.component';
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
+  {component: UserMentionComponent}
   // ...
 ];
 
@@ -34,7 +36,8 @@ const componentParsers: Array<HookParserEntry> = [
     HashtagComponent,
     PreferencesPageComponent,
     LoginPageComponent,
-    FollowersComponent
+    FollowersComponent,
+    UserMentionComponent
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers

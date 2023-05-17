@@ -1,10 +1,12 @@
 import { Component, ElementRef, Input, ViewChild,  Renderer2 } from '@angular/core';
-import { NDKEvent, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKTag, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as moment from 'moment';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import linkifyHtml from 'linkify-html';
 import QRCodeStyling from 'qr-code-styling';
-import { Router,NavigationEnd  } from '@angular/router';
+
+const MENTION_REGEX = /(#\[(\d+)\])/gi;
+const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
 
 @Component({
   selector: 'app-event-card',
@@ -30,17 +32,55 @@ export class EventCardComponent {
 
   ndkProvider: NdkproviderService;
   renderer: Renderer2;
-
-  ngOnInit() {
-    this.linkifiedContent = this.linkifyContent(this.event?.content)
-    this.getAuthor();
-    this.fetchZapsAndSegregate();
-  }
+  displayedContent: string|undefined;
 
   constructor(ndkProvider: NdkproviderService, renderer: Renderer2) {
     this.ndkProvider = ndkProvider;
     this.renderer = renderer;
   }
+
+  ngOnInit() {
+    this.displayedContent = this.replaceHashStyleMentionsWithComponents();
+    this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
+    this.linkifiedContent = this.linkifyContent(this.displayedContent)
+    this.getAuthor();
+    this.fetchZapsAndSegregate();
+  }
+
+  replaceHashStyleMentionsWithComponents(){
+    var returnContent = this.event?.content;
+    if(returnContent){
+      var matches = returnContent.matchAll(MENTION_REGEX);
+      for(let match of matches){
+        try{
+          console.log(match[2]);
+          const hex = this.getNthTag(Number.parseInt(match[2]));
+          returnContent = returnContent.replaceAll(match[0],`<app-user-mention hexKey="${hex}"></app-user-mention>`)
+        } catch(e){
+          console.error(e);
+        }
+      }
+      return returnContent;
+    }
+    return this.event?.content;
+  }
+
+  replaceNpubMentionsWithComponents(content?:string): string|undefined{
+    let displayedContent = content;
+    if(displayedContent){
+      var matches = displayedContent.matchAll(NOSTR_NPUB_REGEX);
+      for(let match of matches){
+        try{
+          console.log(match[1]);
+          let npub = match[1];
+          displayedContent = displayedContent.replaceAll(match[0],`<app-user-mention npub="${npub}"></app-user-mention>`)
+        }catch(e){
+          console.error(e);
+        }
+      }
+    }
+    return displayedContent;        
+  } 
 
   async getAuthor() {
     let authorPubKey = this.event?.pubkey;
@@ -48,6 +88,18 @@ export class EventCardComponent {
       this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey);
     }
   }
+
+  
+
+  getNthTag( n:number):string{
+    const tags:NDKTag[]|undefined = this.event?.tags;
+    if(tags){
+     return tags[n][1];
+    }
+    return '';
+  }
+
+
 
   formatTimestamp(timestamp: number | undefined): string {
     if (timestamp) {
@@ -71,7 +123,7 @@ export class EventCardComponent {
       },
       target: {
         url: "_blank"
-      },
+      }
     };
     const html:string =  linkifyHtml(content || '', options);
     return html;

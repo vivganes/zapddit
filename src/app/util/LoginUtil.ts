@@ -46,4 +46,17 @@ export class LoginUtil{
     static getPublicKey(privKey: string) {
         return secp.utils.bytesToHex(secp.schnorr.getPublicKey(privKey));
     }
+
+    static getNpubFromHex( hex?: string) {
+        if (typeof hex !== "string" || hex.length === 0 || hex.length % 2 !== 0) {
+          return "";
+        }      
+        try {
+            const buf = secp.utils.hexToBytes(hex);
+            return bech32.encode('npub', bech32.toWords(buf));          
+        } catch (e) {
+          console.warn("Invalid hex", hex, e);
+          return "";
+        }
+      }
 }
