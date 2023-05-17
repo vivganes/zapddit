@@ -38,5 +38,9 @@ export class FollowersComponent implements OnInit{
     const imgArray = this.event?.content.match(urlRegex);
     return imgArray;
   }
+
+  openInSnort(item:User){
+    window.open('https://snort.social/p/'+item?.npub,'_blank');
+  }
 }
 

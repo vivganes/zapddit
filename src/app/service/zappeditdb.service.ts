@@ -7,7 +7,7 @@ export const NAME = "ZappedItDB";
 export const VERSION = 1;
 
 const DATASTORE = {
-  users: "++npub, name, displayName, pictureUrl, nip05, hexpubkey, about",
+  users: "++hexPubKey, name, displayName, pictureUrl, nip05, npub, about",
 };
 
 @Injectable({
