@@ -10,11 +10,11 @@
         <textarea clrTextarea
         cols="50"
         id="downzap-recipients"
-        placeholder="npub of the recipient" >{{ ndkProvider.appData.downzapRecipients }}</textarea>  
-        <clr-control-helper>npub of the person who will receive the sats for your downzaps</clr-control-helper>   
+        placeholder="npub of the recipient" >{{ ndkProvider.appData.downzapRecipients }}</textarea>
+        <clr-control-helper>npub of the person who will receive the sats for your downzaps</clr-control-helper>
     </clr-textarea-container>
 
-    
+
     <div *ngIf="downzapRecipientsError" class="alert alert-danger" role="alert">
       <div class="alert-items">
         <div class="alert-item static">
@@ -49,12 +49,12 @@
 <form clrForm onsubmit="return false;">
     <clr-input-container>
         <label>No. of sats for Zaps</label>
-        <input clrInput      
-        type="number"  
+        <input clrInput
+        type="number"
         id="sats-for-zaps"
         value="{{ ndkProvider.defaultSatsForZaps }}" >
-        <clr-control-helper>These many sats will be send when you zap</clr-control-helper>   
-    </clr-input-container>   
+        <clr-control-helper>These many sats will be send when you zap</clr-control-helper>
+    </clr-input-container>
     <button [clrLoading]="settingDefaultSats" type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button>
 
 </form>

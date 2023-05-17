@@ -3,9 +3,6 @@ import { Injectable } from '@angular/core';
 import Dexie, { Table } from 'dexie';
 import { User } from '../model/user';
 
-export const NAME = "ZappedItDB";
-export const VERSION = 1;
-
 const DATASTORE = {
   users: "++hexPubKey, name, displayName, pictureUrl, nip05, npub, about",
 };
@@ -18,22 +15,7 @@ export class ZappeditdbService extends Dexie{
   users!: Table<User>;
 
   constructor() {
-    super(NAME);
-    this.version(VERSION).stores(DATASTORE);
-  }
-
-  isAvailable() {
-    if ("indexedDB" in window) {
-      return new Promise<boolean>(resolve => {
-        const req = window.indexedDB.open("testDB", 1);
-        req.onsuccess = () => {
-          resolve(true);
-        };
-        req.onerror = () => {
-          resolve(false);
-        };
-      });
-    }
-    return Promise.resolve(false);
+    super("ZappedItDB");
+    this.version(1).stores(DATASTORE);
   }
 }

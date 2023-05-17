@@ -45,6 +45,7 @@ export class NdkproviderService {
     followedTopics: '',
     downzapRecipients: '',
   };
+
   defaultSatsForZaps:number = 1
   loggedIn: boolean = false;
   loggingIn: boolean = false;

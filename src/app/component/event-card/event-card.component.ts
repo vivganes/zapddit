@@ -270,4 +270,8 @@ export class EventCardComponent {
   openAuthorInSnort(){
     window.open('https://snort.social/p/'+this.authorWithProfile?.npub,'_blank')
   }
+
+ hasMedia():boolean{
+  return this.imageUrls!=null && this.imageUrls?.length > 0;
+ }
 }
