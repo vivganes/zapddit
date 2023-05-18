@@ -19,7 +19,7 @@ export class EventCardComponent {
   @Input()
   event: NDKEvent | undefined;
   authorWithProfile: NDKUser | undefined;
-  amIFollowingTheAuthor:boolean = false;
+  canLoadMedia:boolean = false;
   imageUrls: RegExpMatchArray | null | undefined;
   zaps: Set<NDKEvent> | undefined;
   upZapTotalMilliSats: number = 0
@@ -88,7 +88,7 @@ export class EventCardComponent {
   async getAuthor() {
     let authorPubKey = this.event?.pubkey;
     if (authorPubKey) {
-      this.amIFollowingTheAuthor = (await this.dbService.users.where({hexPubKey:authorPubKey}).toArray()).length > 0;
+      this.canLoadMedia = (await this.dbService.peopleIFollow.where({hexPubKey:authorPubKey}).toArray()).length > 0;
       this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey);
     }
   }
@@ -141,7 +141,7 @@ export class EventCardComponent {
   }
 
   clickToLoadMedia(){
-    this.amIFollowingTheAuthor = true;
+    this.canLoadMedia = true;
   }
 
   async upZap() {

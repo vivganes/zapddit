@@ -4,7 +4,7 @@ import Dexie, { Table } from 'dexie';
 import { User } from '../model/user';
 
 const DATASTORE = {
-  users: "++hexPubKey, name, displayName, pictureUrl, nip05, npub, about",
+  peopleIFollow: "++hexPubKey, name, displayName, pictureUrl, nip05, npub, about",
 };
 
 @Injectable({
@@ -12,7 +12,7 @@ const DATASTORE = {
 })
 export class ZappeditdbService extends Dexie{
   ready = false;
-  users!: Table<User>;
+  peopleIFollow!: Table<User>;
 
   constructor() {
     super("ZappedItDB");

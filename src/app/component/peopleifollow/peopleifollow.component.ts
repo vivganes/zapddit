@@ -7,12 +7,12 @@ import '@cds/core/button/register.js';
 import { User } from 'src/app/model/user';
 
 @Component({
-  selector: 'app-followers',
-  templateUrl: './followers.component.html',
-  styleUrls: ['./followers.component.scss']
+  selector: 'app-people-i-follow',
+  templateUrl: './peopleifollow.component.html',
+  styleUrls: ['./peopleifollow.component.scss']
 })
 
-export class FollowersComponent implements OnInit{
+export class PeopleIFollowComponent implements OnInit{
 
   users: User[] = [];
   event: NDKEvent | undefined;
@@ -23,14 +23,11 @@ export class FollowersComponent implements OnInit{
 
   ngOnInit() {
     this.loadingPeopleYouFollow = true;
-    this.ndkProvider.fetchFollowersAndCache().then(async ()=>
-      await this.dbService.users.toArray().then(cachedUsers=>
-        {
+    this.ndkProvider.fetchFollowersFromCache().then(cachedUsers =>{
           this.users = cachedUsers;
           this.loadingPeopleYouFollow = false;
           console.log("loaded from cache - "+ cachedUsers?.length);
-        })
-    );
+    });
   }
 
   getImageUrls(): RegExpMatchArray | null | undefined {

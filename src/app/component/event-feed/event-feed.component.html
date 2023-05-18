@@ -1,6 +1,6 @@
 <ng-template [ngIf]="tag !== undefined" [ngIfElse]="homefeedHeader">
   <h3 align="center">
-    #{{ tag }}   
+    #{{ tag }}
     <ng-template [ngIf]="!isTopicFollowed(tag)" [ngIfElse]="elseBlock">
       <button class="btn btn-sm btn-primary btn-icon" (click)="followTopic(tag)">
         <cds-icon shape="plus-circle" solid></cds-icon> Follow
@@ -17,7 +17,7 @@
   <h3 align="center">
     🏡 My Feed
   </h3>
-  <p align="center">You can see notes from all the topics you followed here👇</p>
+  <p align="center">You can see notes from all the topics you followed here 👇</p>
 </ng-template>
 <div *ngIf="(!tag) && followedTopics?.length == 0 && !events" class="clr-row clr-justify-content-center">
   <div align="center" class="alert alert-info clr-col-4" role="alert">
@@ -30,7 +30,7 @@
         </div>
     </div>
 </div>
-  
+
 </div>
 <div *ngIf="events && events.size == 0">
   No notes for you 🥲 May be try following more topics? Like <a [routerLink]="['/t', 'coffeechain']">#coffeechain</a>?

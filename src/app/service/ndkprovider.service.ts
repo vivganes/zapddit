@@ -267,16 +267,16 @@ export class NdkproviderService {
   }
 
   async fetchFollowersFromCache(): Promise<User[]>{
-    var usersFromCache = await this.dbService.users.toArray();
+    var usersFromCache = await this.dbService.peopleIFollow.toArray();
     if(usersFromCache && usersFromCache.length === 0){
       await this.fetchFollowersAndCache();
     }
 
-    return await this.dbService.users.toArray();
+    return await this.dbService.peopleIFollow.toArray();
   }
 
   async addToDb(item: NDKUserProfileWithNpub){
-    this.dbService.users.add({
+    this.dbService.peopleIFollow.add({
       hexPubKey:item.hexPubKey,
       name: item.profile?.name!,
       displayName: item.profile?.displayName!,
