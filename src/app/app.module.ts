@@ -16,7 +16,7 @@ import { DynamicHooksModule, HookParserEntry } from 'ngx-dynamic-hooks';
 import { PreferencesPageComponent } from './component/preferences-page/preferences-page.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { LoginPageComponent } from './page/login-page/login-page.component';
-import { FollowersComponent } from './component/followers/followers.component';
+import { PeopleIFollowComponent } from './component/peopleifollow/peopleifollow.component';
 import { UserMentionComponent } from './component/user-mention/user-mention.component';
 
 const componentParsers: Array<HookParserEntry> = [
@@ -36,12 +36,12 @@ const componentParsers: Array<HookParserEntry> = [
     HashtagComponent,
     PreferencesPageComponent,
     LoginPageComponent,
-    FollowersComponent,
+    PeopleIFollowComponent,
     UserMentionComponent
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers
-  }),BrowserModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  }), BrowserModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ServiceWorkerModule.register('ngsw-worker.js', {
   enabled: !isDevMode(),
   // Register the ServiceWorker as soon as the application is stable
   // or after 30 seconds (whichever comes first).

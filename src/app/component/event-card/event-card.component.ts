@@ -4,6 +4,8 @@ import * as moment from 'moment';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import linkifyHtml from 'linkify-html';
 import QRCodeStyling from 'qr-code-styling';
+import { Router,NavigationEnd  } from '@angular/router';
+import { ZappeditdbService } from '../../service/zappeditdb.service';
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
@@ -17,12 +19,14 @@ export class EventCardComponent {
   @Input()
   event: NDKEvent | undefined;
   authorWithProfile: NDKUser | undefined;
+  canLoadMedia:boolean = false;
+  imageUrls: RegExpMatchArray | null | undefined;
   zaps: Set<NDKEvent> | undefined;
   upZapTotalMilliSats: number = 0
   downZapTotalMilliSats: number = 0
   showQR: boolean= false;
   invoice:string|null=null;
-  @ViewChild("canvas", { static: true }) 
+  @ViewChild("canvas", { static: true })
   canvas: ElementRef | undefined;
   linkifiedContent:string|undefined;
   hashTagsMap:Map<number,string> = new Map<number,string>();
@@ -31,12 +35,10 @@ export class EventCardComponent {
   downZapEnabled: boolean | undefined;
 
   ndkProvider: NdkproviderService;
-  renderer: Renderer2;
   displayedContent: string|undefined;
 
-  constructor(ndkProvider: NdkproviderService, renderer: Renderer2) {
+  constructor(ndkProvider: NdkproviderService, private renderer: Renderer2, private dbService: ZappeditdbService) {
     this.ndkProvider = ndkProvider;
-    this.renderer = renderer;
   }
 
   ngOnInit() {
@@ -45,6 +47,7 @@ export class EventCardComponent {
     this.linkifiedContent = this.linkifyContent(this.displayedContent)
     this.getAuthor();
     this.fetchZapsAndSegregate();
+    this.getImageUrls();
   }
 
   replaceHashStyleMentionsWithComponents(){
@@ -79,17 +82,18 @@ export class EventCardComponent {
         }
       }
     }
-    return displayedContent;        
-  } 
+    return displayedContent;
+  }
 
   async getAuthor() {
     let authorPubKey = this.event?.pubkey;
     if (authorPubKey) {
+      this.canLoadMedia = (await this.dbService.peopleIFollow.where({hexPubKey:authorPubKey}).toArray()).length > 0;
       this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey);
     }
   }
 
-  
+
 
   getNthTag( n:number):string{
     const tags:NDKTag[]|undefined = this.event?.tags;
@@ -109,7 +113,7 @@ export class EventCardComponent {
     }
   }
 
-  linkifyContent(content?:string): string {    
+  linkifyContent(content?:string): string {
     const options = {
       defaultProtocol: 'https',
       nl2br: true,
@@ -118,7 +122,7 @@ export class EventCardComponent {
       },
       render:{
         hashtag: (opts:any) => {
-          return `<app-hashtag topic="${opts.content?.substring(1).toLowerCase()}"></app-hashtag>` 
+          return `<app-hashtag topic="${opts.content?.substring(1).toLowerCase()}"></app-hashtag>`
         }
       },
       target: {
@@ -132,12 +136,17 @@ export class EventCardComponent {
   getImageUrls(): RegExpMatchArray | null | undefined {
     const urlRegex = /https:.*?\.(?:png|jpg|svg|gif|jpeg|webp)/gi;
     const imgArray = this.event?.content.match(urlRegex);
+    this.imageUrls = imgArray
     return imgArray;
+  }
+
+  clickToLoadMedia(){
+    this.canLoadMedia = true;
   }
 
   async upZap() {
     if (this.event) {
-      this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');      
+      this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
       const invoice = await this.ndkProvider.zapRequest(this.event);
       const qr = new QRCodeStyling({
         width:  256,
@@ -164,7 +173,7 @@ export class EventCardComponent {
 
   async downZap() {
     if (this.event) {
-      this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');      
+      this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
       const invoice = await this.ndkProvider.downZapRequest(
           this.event,
           await this.ndkProvider.getNdkUserFromNpub(this.ndkProvider.appData.downzapRecipients),
@@ -196,7 +205,7 @@ export class EventCardComponent {
     }
   }
 
-  async segregateZaps() {    
+  async segregateZaps() {
     if (this.zaps) {
       for (let zap of this.zaps) {
         try{
@@ -211,22 +220,22 @@ export class EventCardComponent {
           console.error(e);
         }
       }
-    }   
+    }
   }
 
   readMilliSatsFromZap(zap:NDKEvent):number{
     if(zap.getMatchingTags('description')[0]){
-      if(zap.getMatchingTags('description')[0][1]){      
+      if(zap.getMatchingTags('description')[0][1]){
         const tags = JSON.parse(zap.getMatchingTags('description')[0][1]).tags;
         if(tags){
           const innerTags = this.getMatchingTags(tags,'amount')
           if( innerTags && innerTags[0] && innerTags[0][1] ){
             return Number.parseInt(innerTags[0][1]);
           }
-        }        
+        }
       }
     }
-    return 0;    
+    return 0;
   }
 
   getMatchingTags(tags:string[],tagName:string) {
@@ -261,4 +270,8 @@ export class EventCardComponent {
   openAuthorInSnort(){
     window.open('https://snort.social/p/'+this.authorWithProfile?.npub,'_blank')
   }
+
+ hasMedia():boolean{
+  return this.imageUrls!=null && this.imageUrls?.length > 0;
+ }
 }

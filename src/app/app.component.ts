@@ -12,7 +12,10 @@ import {
   sunIcon,
   moonIcon,
   searchIcon,
-  logoutIcon
+  logoutIcon,
+  keyIcon,
+  copyIcon,
+  imageIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
@@ -21,7 +24,7 @@ import * as linkify from 'linkifyjs';
 import hashtag from './util/IntlHashtagLinkifyPlugin';
 
 
-ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon);
+ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -43,7 +46,7 @@ export class AppComponent {
 
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     var themeFromLocal = localStorage.getItem('darkTheme');
     if(themeFromLocal && themeFromLocal!==null && themeFromLocal!==''){
       if(themeFromLocal === 'false'){
@@ -70,7 +73,7 @@ export class AppComponent {
   setTheme(dark:boolean){
     (<any>document.getElementById('zappedit-theme')).href="/assets/clr-ui"+(dark?"-dark":"")+".css";
   }
-  
+
 
 
   isTopicFollowed(topic: string): boolean {

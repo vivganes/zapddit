@@ -17,6 +17,9 @@ import NDK, {
 import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
 import { LoginUtil } from '../util/LoginUtil';
+import { ZappeditdbService } from './zappeditdb.service';
+import { NDKUserProfileWithNpub } from '../model/NDKUserProfileWithNpub';
+import { User } from '../model/user';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -42,6 +45,7 @@ export class NdkproviderService {
     followedTopics: '',
     downzapRecipients: '',
   };
+
   defaultSatsForZaps:number = 1
   loggedIn: boolean = false;
   loggingIn: boolean = false;
@@ -50,7 +54,7 @@ export class NdkproviderService {
   private signer:NDKSigner|undefined = undefined;
   isNip07 = false;
 
-  constructor(){
+  constructor(private dbService:ZappeditdbService){
     const npubFromLocal = localStorage.getItem('npub');
     const privateKey = localStorage.getItem('privateKey');
     if(npubFromLocal && npubFromLocal !== ''){
@@ -59,12 +63,12 @@ export class NdkproviderService {
         this.isNip07 = false;
         this.signer = new NDKPrivateKeySigner(privateKey);
         this.tryLoginUsingNpub(npubFromLocal);
-      } else {      
+      } else {
         //this.signer = new NDKNip07Signer();
         //dont assign a signer now. we need to assign it later only
         this.isNip07 = true;
-        this.tryLoginUsingNpub(npubFromLocal);    
-      } 
+        this.tryLoginUsingNpub(npubFromLocal);
+      }
 
     }
   }
@@ -105,11 +109,11 @@ export class NdkproviderService {
       console.log("Found window nostr")
       this.signer = new NDKNip07Signer();
     }
-   
-    const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls }; 
+
+    const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls };
     this.ndk = new NDK(params);
-    
-    await this.ndk.connect(1000);      
+
+    await this.ndk.connect(1000);
     this.initializeUsingNpub(npubFromLocal)
   }
 
@@ -168,9 +172,9 @@ export class NdkproviderService {
   }
 
   private async initializeClientWithSigner() {
-    try {      
+    try {
         this.signer?.user().then(async user => {
-        const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls }; 
+        const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls };
         this.ndk = new NDK(params);
         await this.ndk.assertSigner();
         await this.ndk.connect(1000);
@@ -247,6 +251,40 @@ export class NdkproviderService {
   async fetchFollowers(){
     let followerUserProfilesPromise = await this.fetchFollowersUserProfile();
     return Promise.all(followerUserProfilesPromise);
+  }
+
+  async fetchFollowersAndCache(){
+    this.fetchFollowers().then((userProfiles) =>{
+      userProfiles.forEach(item =>{
+            NDKUser.fromNip05(item?.nip05!).then(async user =>{
+                const itemWithNpub:NDKUserProfileWithNpub = {
+                  profile:item!, npub:user?.npub!, hexPubKey: user?.hexpubkey()!
+                }
+                await this.addToDb(itemWithNpub);
+              })
+      })
+    })
+  }
+
+  async fetchFollowersFromCache(): Promise<User[]>{
+    var usersFromCache = await this.dbService.peopleIFollow.toArray();
+    if(usersFromCache && usersFromCache.length === 0){
+      await this.fetchFollowersAndCache();
+    }
+
+    return await this.dbService.peopleIFollow.toArray();
+  }
+
+  async addToDb(item: NDKUserProfileWithNpub){
+    this.dbService.peopleIFollow.add({
+      hexPubKey:item.hexPubKey,
+      name: item.profile?.name!,
+      displayName: item.profile?.displayName!,
+      nip05: item.profile?.nip05!,
+      npub: item.npub,
+      pictureUrl: item.profile?.image!,
+      about:item.profile?.about!
+    }, item.npub)
   }
 
   async fetchEvents(tag: string, limit?: number, since?: number, until?: number): Promise<Set<NDKEvent> | undefined> {
