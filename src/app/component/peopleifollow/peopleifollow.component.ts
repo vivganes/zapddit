@@ -26,7 +26,6 @@ export class PeopleIFollowComponent implements OnInit{
     this.ndkProvider.fetchFollowersFromCache().then(cachedUsers =>{
           this.users = cachedUsers;
           this.loadingPeopleYouFollow = false;
-          console.log("loaded from cache - "+ cachedUsers?.length);
     });
   }
 

@@ -57,7 +57,6 @@ export class AppComponent {
       }
     }
     else {
-      console.log('no value in localstorage')
       this.setTheme(false);
     }
 

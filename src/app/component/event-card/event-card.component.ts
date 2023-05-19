@@ -56,7 +56,6 @@ export class EventCardComponent {
       var matches = returnContent.matchAll(MENTION_REGEX);
       for(let match of matches){
         try{
-          console.log(match[2]);
           const hex = this.getNthTag(Number.parseInt(match[2]));
           returnContent = returnContent.replaceAll(match[0],`<app-user-mention hexKey="${hex}"></app-user-mention>`)
         } catch(e){
@@ -74,7 +73,6 @@ export class EventCardComponent {
       var matches = displayedContent.matchAll(NOSTR_NPUB_REGEX);
       for(let match of matches){
         try{
-          console.log(match[1]);
           let npub = match[1];
           displayedContent = displayedContent.replaceAll(match[0],`<app-user-mention npub="${npub}"></app-user-mention>`)
         }catch(e){

@@ -29,7 +29,6 @@ export class PreferencesPageComponent {
     this.downzapRecipientsError = undefined;
     let recipients = (<HTMLInputElement>document.getElementById('downzap-recipients')).value;
     let supposedUser = await this.ndkProvider.getNdkUserFromNpub(recipients);
-    console.log(supposedUser)
     if (supposedUser !== undefined) {
       this.ndkProvider.publishAppData(undefined, recipients);
       this.downzapSetSuccessMessage =
