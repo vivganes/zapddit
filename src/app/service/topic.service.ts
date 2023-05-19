@@ -39,4 +39,34 @@ export class TopicService {
     }
     this.ndkProviderService.publishAppData(followedTopics);
   }
+
+  muteTopic(topic:string){
+    let mutedTopics:string = this.ndkProviderService.appData.mutedTopics;
+    if (this.ndkProviderService.appData.mutedTopics === '') {
+      mutedTopics = topic.toLowerCase();
+    } else {
+      //parse current followedTopics as array
+      let mutedTopicsArr: string[] = this.ndkProviderService.appData.mutedTopics.split(',');
+      mutedTopicsArr = mutedTopicsArr.concat(topic);
+      mutedTopicsArr = [...new Set(mutedTopicsArr)]; //remove dupes
+
+      mutedTopics = mutedTopicsArr.join(',');
+    }
+    this.ndkProviderService.publishAppData(undefined, undefined,mutedTopics);
+  }
+
+
+  unmuteTopic(topic: string) { 
+    let mutedTopics:string = this.ndkProviderService.appData.mutedTopics;   
+    if (this.ndkProviderService.appData.mutedTopics.split(',').length === 1) {
+      mutedTopics = '';
+    } else {
+      //parse current followedTopics as array
+      let mutedTopicsArr: string[] = this.ndkProviderService.appData.mutedTopics.split(',');
+      mutedTopicsArr = mutedTopicsArr.filter(item => item !== topic);
+      mutedTopicsArr = [...new Set(mutedTopicsArr)]; //remove dupes
+      mutedTopics = mutedTopicsArr.join(',');
+    }
+    this.ndkProviderService.publishAppData(undefined, undefined,mutedTopics);
+  }
 }

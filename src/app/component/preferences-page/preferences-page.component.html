@@ -1,60 +1,92 @@
 <h3 align="center">
     ⚙️ Preferences
 </h3>
-<h4>
-    Downzap Recipients
-</h4>
-<form clrForm onsubmit="return false;">
-    <clr-textarea-container>
-        <label>Downzap Recipient's npub</label>
-        <textarea clrTextarea
-        cols="50"
-        id="downzap-recipients"
-        placeholder="npub of the recipient" >{{ ndkProvider.appData.downzapRecipients }}</textarea>
-        <clr-control-helper>npub of the person who will receive the sats for your downzaps</clr-control-helper>
-    </clr-textarea-container>
 
-
-    <div *ngIf="downzapRecipientsError" class="alert alert-danger" role="alert">
-      <div class="alert-items">
-        <div class="alert-item static">
-          <div class="alert-icon-wrapper">
-            <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+<clr-accordion [clrAccordionMultiPanel]="true">
+  <clr-accordion-panel>
+    <clr-accordion-title>Downzap Recipients</clr-accordion-title>
+    <clr-accordion-content *clrIfExpanded>
+      <form clrForm onsubmit="return false;">
+        <clr-textarea-container>
+            <label>Downzap Recipient's npub</label>
+            <textarea clrTextarea
+            cols="50"
+            id="downzap-recipients"
+            placeholder="npub of the recipient" >{{ ndkProvider.appData.downzapRecipients }}</textarea>
+            <clr-control-helper>npub of the person who will receive the sats for your downzaps</clr-control-helper>
+        </clr-textarea-container>
+    
+    
+        <div *ngIf="downzapRecipientsError" class="alert alert-danger" role="alert">
+          <div class="alert-items">
+            <div class="alert-item static">
+              <div class="alert-icon-wrapper">
+                <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+              </div>
+              <span class="alert-text">
+                {{ downzapRecipientsError }}
+              </span>
+            </div>
           </div>
-          <span class="alert-text">
-            {{ downzapRecipientsError }}
-          </span>
         </div>
-      </div>
-    </div>
-    <div *ngIf="downzapSetSuccessMessage" class="alert alert-success" role="alert">
-      <div class="alert-items">
-        <div class="alert-item static">
-          <div class="alert-icon-wrapper">
-            <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
+        <div *ngIf="downzapSetSuccessMessage" class="alert alert-success" role="alert">
+          <div class="alert-items">
+            <div class="alert-item static">
+              <div class="alert-icon-wrapper">
+                <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
+              </div>
+              <span class="alert-text">
+                {{ downzapSetSuccessMessage }}
+              </span>
+            </div>
           </div>
-          <span class="alert-text">
-            {{ downzapSetSuccessMessage }}
-          </span>
         </div>
-      </div>
+         <button type="submit" class="btn btn-primary" (click)="saveDownzapRecipients()">Save</button>
+    </form>    
+    </clr-accordion-content>
+  </clr-accordion-panel>
+
+  <clr-accordion-panel>
+    <clr-accordion-title>Default sats for Zaps</clr-accordion-title>
+    <clr-accordion-content *clrIfExpanded>
+      <form clrForm onsubmit="return false;">
+        <clr-input-container>
+            <label>No. of sats for Zaps</label>
+            <input clrInput
+            type="number"
+            id="sats-for-zaps"
+            value="{{ ndkProvider.defaultSatsForZaps }}" >
+            <clr-control-helper>These many sats will be send when you zap</clr-control-helper>
+        </clr-input-container>
+        <button [clrLoading]="settingDefaultSats" type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button> 
+    </form>
+    </clr-accordion-content>
+  </clr-accordion-panel>
+
+  <clr-accordion-panel [clrAccordionPanelOpen]="true">
+    <clr-accordion-title>Muted Topics</clr-accordion-title>
+    <clr-accordion-content *clrIfExpanded>
+      <form clrForm onsubmit="return false;">
+        <clr-input-container>
+            <label>Hashtag to mute</label>
+            <input clrInput
+            type="text"
+            id="topic-to-mute"
+            placeholder="#Hashtag to mute">
+            <clr-control-helper>Any post with this tag will not be shown by Zappedit to you</clr-control-helper>
+        </clr-input-container>
+        <button [clrLoading]="mutingTopic" type="submit" class="btn btn-primary" (click)="muteTopic()">Mute</button>
+    </form>
+    <h4>Muted Topics</h4>
+    <div *ngIf="ndkProvider.appData.mutedTopics && ndkProvider.appData.mutedTopics !== ''">
+      <p *ngFor="let topic of ndkProvider.appData.mutedTopics.split(','); ">
+        #{{ topic }}
+        <cds-icon class="trash-icon" status="danger" size="md" shape="trash"  title="Unmute" (click)="unmuteTopic(topic)"></cds-icon>
+      </p>
     </div>
-     <button type="submit" class="btn btn-primary" (click)="saveDownzapRecipients()">Save</button>
+    <p *ngIf ="!ndkProvider.appData.mutedTopics || ndkProvider.appData.mutedTopics === '' ">No topics muted</p>
 
-</form>
 
-<h4>
-    Default sats for Zaps
-</h4>
-<form clrForm onsubmit="return false;">
-    <clr-input-container>
-        <label>No. of sats for Zaps</label>
-        <input clrInput
-        type="number"
-        id="sats-for-zaps"
-        value="{{ ndkProvider.defaultSatsForZaps }}" >
-        <clr-control-helper>These many sats will be send when you zap</clr-control-helper>
-    </clr-input-container>
-    <button [clrLoading]="settingDefaultSats" type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button>
-
-</form>
+    </clr-accordion-content>
+  </clr-accordion-panel>
+</clr-accordion>

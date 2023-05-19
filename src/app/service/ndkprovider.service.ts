@@ -24,6 +24,7 @@ import { User } from '../model/user';
 interface ZappedItAppData {
   followedTopics: string;
   downzapRecipients: string;
+  mutedTopics:string;
 }
 
 const explicitRelayUrls = ['wss://nos.lol',
@@ -37,6 +38,7 @@ const explicitRelayUrls = ['wss://nos.lol',
   providedIn: 'root',
 })
 export class NdkproviderService {
+ 
   ndk: NDK | undefined;
   currentUserProfile: NDKUserProfile | undefined;
   currentUser: NDKUser | undefined;
@@ -44,6 +46,7 @@ export class NdkproviderService {
   appData: ZappedItAppData = {
     followedTopics: '',
     downzapRecipients: '',
+    mutedTopics:'',
   };
 
   defaultSatsForZaps:number = 1
@@ -53,6 +56,7 @@ export class NdkproviderService {
   followedTopicsEmitter:EventEmitter<string> = new EventEmitter<string>()
   private signer:NDKSigner|undefined = undefined;
   isNip07 = false;
+  mutedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(private dbService:ZappeditdbService){
     const npubFromLocal = localStorage.getItem('npub');
@@ -311,21 +315,40 @@ export class NdkproviderService {
     return this.ndk?.fetchEvents(filter);
   }
 
-  publishAppData(followListCsv?: string, downzapRecipients?: string) {
+  async  muteTopic(topic: string) {
+    throw new Error('Method not implemented.');
+  }
+
+  publishAppData(followListCsv?: string, downzapRecipients?: string, mutedTopics? : string) {
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 30078;
     if(this.currentUser){
       ndkEvent.pubkey = this.currentUser?.hexpubkey()
     }
-    const followedTopicsToPublish = (followListCsv || this.appData.followedTopics)
+    let followedTopicsToPublish = '';
+    if(followListCsv !== undefined){
+      followedTopicsToPublish = followListCsv;
+    } else {
+      followedTopicsToPublish = this.appData.followedTopics;
+    }
+
+    
     const downzapRecipientsToPublish = (downzapRecipients || this.appData.downzapRecipients)
-    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish;
+    let mutedTopicsToPublish = '';
+    if(mutedTopics !== undefined){
+      mutedTopicsToPublish = mutedTopics
+    } else {
+      mutedTopicsToPublish = this.appData.mutedTopics;
+    }
+    
+    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish +"\n"+ mutedTopicsToPublish;
     const tag: NDKTag = ['d', 'zappedit.com'];
     ndkEvent.tags = [tag];
     ndkEvent.publish(); // This will trigger the extension to ask the user to confirm signing.
     this.appData = {
       followedTopics:followedTopicsToPublish,
-      downzapRecipients:downzapRecipientsToPublish
+      downzapRecipients:downzapRecipientsToPublish,
+      mutedTopics: mutedTopicsToPublish
     }
     this.followedTopicsEmitter.emit(followedTopicsToPublish);
   }
@@ -354,6 +377,10 @@ export class NdkproviderService {
           case 1:
             this.appData.downzapRecipients = lineWiseAppData[i];
             break;
+          case 2:
+            this.appData.mutedTopics = lineWiseAppData[i];
+            this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
+            break;
           default:
           //do nothing. irrelevant data
         }
@@ -363,6 +390,10 @@ export class NdkproviderService {
 
       console.log('Latest downzap recipients:' + this.appData.downzapRecipients);
       localStorage.setItem('downzapRecipients', this.appData.downzapRecipients);
+
+      console.log('Latest muted topics:' + this.appData.mutedTopics);
+      localStorage.setItem('mutedTopics', this.appData.mutedTopics);
+      
 
       const satsFromLocalStorage = localStorage.getItem('defaultSatsForZaps');
       if(satsFromLocalStorage){

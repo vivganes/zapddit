@@ -5,6 +5,7 @@ import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { TopicService } from 'src/app/service/topic.service';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
 import { User } from '../../model/user';
+import { HashTagFilter } from 'src/app/filter/HashTagFilter';
 
 @Component({
   selector: 'app-event-feed',
@@ -72,16 +73,30 @@ export class EventFeedComponent {
     this.loadingNextEvents = false;
     this.reachedEndOfFeed = false;
     if (this.tag && this.tag !== '') {
-      this.events = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
+      const fetchedEvents = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
+      if(fetchedEvents){
+        let mutedTopicsArr:string[] = []
+        if(this.ndkProvider.appData.mutedTopics && this.ndkProvider.appData.mutedTopics !== ''){
+          mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
+        }
+        this.events = new Set([...fetchedEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)));
+      }
       this.loadingEvents = false;
     } else {
       if(this.ndkProvider.appData.followedTopics.length > 0){
-        this.events = await this.ndkProvider.fetchAllFollowedEvents(
+        const fetchedEvents = await this.ndkProvider.fetchAllFollowedEvents(
           this.ndkProvider.appData.followedTopics.split(','),
           this.limit,
           undefined,
           this.until
         );
+        if(fetchedEvents){
+          let mutedTopicsArr:string[] = []
+          if(this.ndkProvider.appData.mutedTopics && this.ndkProvider.appData.mutedTopics !== ''){
+            mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
+          }
+          this.events = new Set([...fetchedEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)));
+        }
       }
       this.loadingEvents=false;
     }
@@ -92,15 +107,19 @@ export class EventFeedComponent {
     this.reachedEndOfFeed = false;
     if (this.tag && this.tag !== '') {
       this.nextEvents = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
-      if(this.nextEvents && this.nextEvents.size>0){
-        if(this.events){
-          this.nextEvents?.forEach(this.events.add,this.events)
-          this.loadingNextEvents = false;
-          this.nextEvents =undefined;
-        }
-      } else {
-        this.reachedEndOfFeed = true
-      }
+        if(this.nextEvents && this.nextEvents.size>0){
+          if(this.events){
+            let mutedTopicsArr:string[] = []
+            if(this.ndkProvider.appData.mutedTopics && this.ndkProvider.appData.mutedTopics !== ''){
+              mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
+            }
+            [...this.nextEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)).forEach(this.events.add,this.events)
+            this.loadingNextEvents = false;
+            this.nextEvents =undefined;
+          }
+        } else {
+          this.reachedEndOfFeed = true
+        }      
     } else {
       if(this.followedTopics && this.followedTopics.length > 0){
         this.nextEvents = await this.ndkProvider.fetchAllFollowedEvents(
@@ -112,7 +131,11 @@ export class EventFeedComponent {
       }
       if(this.nextEvents && this.nextEvents.size>0){
         if(this.events){
-          this.nextEvents?.forEach(this.events.add,this.events)
+          let mutedTopicsArr:string[] = []
+          if(this.ndkProvider.appData.mutedTopics && this.ndkProvider.appData.mutedTopics !== ''){
+            mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
+          }
+          [...this.nextEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)).forEach(this.events.add,this.events)
           this.loadingNextEvents = false;
           this.nextEvents =undefined;
         }

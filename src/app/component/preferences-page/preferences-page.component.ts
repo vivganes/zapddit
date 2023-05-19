@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
+import { TopicService } from 'src/app/service/topic.service';
 
 @Component({
   selector: 'app-preferences-page',
@@ -10,12 +11,16 @@ export class PreferencesPageComponent {
 
   downzapRecipientsError: string | undefined;
   downzapSetSuccessMessage: string | undefined;
+  topicService: TopicService;
 
   ndkProvider: NdkproviderService;
   settingDefaultSats:boolean = false;
+  mutingTopic: boolean = false;
 
-  constructor(ndkProvider: NdkproviderService) {
+
+  constructor(ndkProvider: NdkproviderService, topicService: TopicService) {
     this.ndkProvider = ndkProvider;
+    this.topicService = topicService;
   }
 
 
@@ -45,6 +50,29 @@ export class PreferencesPageComponent {
       } finally{
         this.settingDefaultSats = false;
       }
+  }
+
+  muteTopic(){
+    this.mutingTopic = true;
+    let topic =  (<HTMLInputElement>document.getElementById('topic-to-mute')).value;
+    if(topic.startsWith('#')){
+      topic = topic.slice(1);
+    }
+    try{
+      this.topicService.muteTopic(topic);
+    }catch(e){
+      console.error(e);
+    }finally{
+      this.mutingTopic =  false;
+    }
+  }
+
+  unmuteTopic(topic: string){
+    try{
+      this.topicService.unmuteTopic(topic);
+    }catch(e){
+      console.error(e);
+    }
   }
 
 }

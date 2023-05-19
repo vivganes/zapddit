@@ -15,7 +15,8 @@ import {
   logoutIcon,
   keyIcon,
   copyIcon,
-  imageIcon
+  imageIcon,
+  trashIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
@@ -24,7 +25,7 @@ import * as linkify from 'linkifyjs';
 import hashtag from './util/IntlHashtagLinkifyPlugin';
 
 
-ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon);
+ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
