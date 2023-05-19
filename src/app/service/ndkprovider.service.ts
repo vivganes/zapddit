@@ -342,7 +342,7 @@ export class NdkproviderService {
     }
     
     ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish +"\n"+ mutedTopicsToPublish;
-    const tag: NDKTag = ['d', 'zappedit.com'];
+    const tag: NDKTag = ['d', 'zapddit.com'];
     ndkEvent.tags = [tag];
     ndkEvent.publish(); // This will trigger the extension to ask the user to confirm signing.
     this.appData = {
@@ -358,7 +358,7 @@ export class NdkproviderService {
     if (this.currentUser?.hexpubkey()) {
       authors = [this.currentUser.hexpubkey()];
     }
-    const filter: NDKFilter = { kinds: [30078], '#d': ['zappedit.com'], limit: 1, authors: authors };
+    const filter: NDKFilter = { kinds: [30078], '#d': ['zappedit.com', 'zapddit.com'], limit: 1, authors: authors };
     return this.ndk?.fetchEvents(filter);
   }
 
