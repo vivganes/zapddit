@@ -19,11 +19,11 @@
     </div>
 
     <div *ngIf="hasMedia() && canLoadMedia">
-        <div *ngFor="let imageSrc of imageUrls"  class="clr-row clr-justify-content-center">
-          <div class="clr-col-6">
-            <img alt="image" class="note-image" src="{{ imageSrc }}" />
-          </div>
+      <div *ngFor="let imageSrc of imageUrls"  class="clr-row clr-justify-content-center">
+        <div class="clr-col-6">
+          <img alt="image" class="note-image" src="{{ imageSrc }}" />
         </div>
+      </div>
     </div>
     <div class="clr-row clr-justify-content-center pt-10">
       <div class="clr-col-6" *ngIf="hasMedia() && !canLoadMedia" class="click-to-load">
@@ -34,9 +34,12 @@
                   <div class="alert-icon-wrapper">
                       <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
                   </div>
-                  <span class="alert-text">This image is not loaded as you are not following the author.  Click on the image to see it.</span> </div>
+                  <span class="alert-text">Media is not shown as you are not following the author.  Click the above image to see it.</span> 
+                </div>
+              </div>
           </div>
-      </div>
+        </div>
+
     </div>
   </div>
   <div class="card-footer">
