@@ -16,7 +16,7 @@ Users express disagreement through downvotes | Users express disagreement throug
 Users see a tally of upvotes vs downvotes for each post | Users see a tally of upzap sats and downzap sats for each note
 
 ## Screenshot
-![Screenshot](screenshot.png)
+![Screenshot](https://github.com/vivganes/zappedit/assets/2035886/72e75686-cc5f-4982-ad0d-76444db228bb)
 
 ## Features Checklist
   - [x] NIP-07 login
