@@ -6,7 +6,7 @@ import { bech32 } from "bech32";
 Most of this logic is adapted from snort.social repository.  Thanks to them :)
 */
 export class LoginUtil{
-    static getHexFromPrivateKey(key:string):string{ 
+    static getHexFromPrivateOrPubKey(key:string):string{ 
         const hasSubtleCrypto = window.crypto.subtle !== undefined;     
         const insecureMsg = "Can't login with private key on an insecure connection, please use a Nostr key manager (NIP-07) extension instead"  
             

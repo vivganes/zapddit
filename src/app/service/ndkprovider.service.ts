@@ -56,11 +56,13 @@ export class NdkproviderService {
   followedTopicsEmitter:EventEmitter<string> = new EventEmitter<string>()
   private signer:NDKSigner|undefined = undefined;
   isNip07 = false;
+  isLoggedInUsingPubKey = false;
   mutedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(private dbService:ZappeditdbService){
     const npubFromLocal = localStorage.getItem('npub');
     const privateKey = localStorage.getItem('privateKey');
+    const loggedInPubKey = localStorage.getItem('loggedInUsingPubKey');
     if(npubFromLocal && npubFromLocal !== ''){
       // we can login as the login has already happened
       if(privateKey && privateKey !== ''){
@@ -68,26 +70,40 @@ export class NdkproviderService {
         this.signer = new NDKPrivateKeySigner(privateKey);
         this.tryLoginUsingNpub(npubFromLocal);
       } else {
+        if(loggedInPubKey && loggedInPubKey !== ''){
+          this.isNip07 = false;
+          this.isLoggedInUsingPubKey = true;
+        } else {
         //this.signer = new NDKNip07Signer();
         //dont assign a signer now. we need to assign it later only
-        this.isNip07 = true;
+          this.isNip07 = true;
+        }
         this.tryLoginUsingNpub(npubFromLocal);
       }
 
     }
   }
 
-  attemptLoginUsingPrivateKey(privateKey: string){
+  attemptLoginUsingPrivateOrPubKey(enteredKey: string){
     try{
       this.loggingIn = true;
       this.loginError = undefined;
-      const hexPrivateKey = this.validateAndGetHexPrivateKey(privateKey);
+      const hexPrivateKey = this.validateAndGetHexKey(enteredKey);
+      if(enteredKey.startsWith('nsec')){
       this.signer = new NDKPrivateKeySigner(hexPrivateKey);
       this.signer.user().then((user) => {
         localStorage.setItem('privateKey', hexPrivateKey)
         localStorage.setItem('npub', user.npub)
         this.tryLoginUsingNpub(user.npub);
       })
+    } else if(enteredKey.startsWith('npub')) {
+      localStorage.setItem('npub',enteredKey)
+      localStorage.setItem('loggedInUsingPubKey', 'true');
+      this.isLoggedInUsingPubKey = true;
+      this.tryLoginUsingNpub(enteredKey);
+    } else{
+      this.loginError ="Invalid input. Enter either nsec or npub id";
+    } this.loggingIn = false
     }catch(e:any){
       console.error(e);
       this.loginError = e.message;
@@ -95,11 +111,11 @@ export class NdkproviderService {
     }
   }
 
-  validateAndGetHexPrivateKey(privateKey:string):string{
-    if(!privateKey || privateKey === '' || privateKey == null){
-      throw new Error('Private key is required')
+  validateAndGetHexKey(enteredKey:string):string{
+    if(!enteredKey || enteredKey === '' || enteredKey == null){
+      throw new Error('Key to login is required')
     }
-    return LoginUtil.getHexFromPrivateKey(privateKey);
+    return LoginUtil.getHexFromPrivateOrPubKey(enteredKey);
   }
 
   async tryLoginUsingNpub(npubFromLocal: string){

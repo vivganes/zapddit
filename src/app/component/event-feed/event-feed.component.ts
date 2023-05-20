@@ -29,6 +29,8 @@ export class EventFeedComponent {
   followedTopics: string[]|undefined;
   events: Set<NDKEvent> | undefined;
   nextEvents: Set<NDKEvent> | undefined;
+
+  ndkProvider: NdkproviderService;
   ngOnInit() {
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       if (followedTopics === '') {
@@ -44,9 +46,10 @@ export class EventFeedComponent {
     });
   }
 
-  constructor(private ndkProvider: NdkproviderService, private topicService: TopicService,
+  constructor(ndkProvider: NdkproviderService, private topicService: TopicService,
     private route: ActivatedRoute) {
-    this.ndkProvider.fetchFollowersFromCache().then(cachedUsers =>
+    this.ndkProvider = ndkProvider;
+    this.ndkProvider.fetchFollowersFromCache().then((cachedUsers:User[]) =>
         this.users = cachedUsers
     );
     const followedTopicsByNdk = ndkProvider.appData.followedTopics;

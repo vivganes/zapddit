@@ -1,16 +1,18 @@
 <ng-template [ngIf]="tag !== undefined" [ngIfElse]="homefeedHeader">
   <h3 align="center">
     #{{ tag }}
-    <ng-template [ngIf]="!isTopicFollowed(tag)" [ngIfElse]="elseBlock">
-      <button class="btn btn-sm btn-primary btn-icon" (click)="followTopic(tag)">
-        <cds-icon shape="plus-circle" solid></cds-icon> Follow
-      </button>
-    </ng-template>
-    <ng-template #elseBlock>
-      <button class="btn btn-sm btn-warning-outline btn-icon" (click)="unfollowTopic(tag)">
-        <cds-icon shape="logout" solid></cds-icon> Unfollow
-      </button>
-    </ng-template>
+    <ng-template [ngIf]="!ndkProvider.isLoggedInUsingPubKey">
+      <ng-template [ngIf]="!isTopicFollowed(tag)" [ngIfElse]="elseBlock">
+        <button class="btn btn-sm btn-primary btn-icon" (click)="followTopic(tag)">
+          <cds-icon shape="plus-circle" solid></cds-icon> Follow
+        </button>
+      </ng-template>
+      <ng-template #elseBlock>
+        <button class="btn btn-sm btn-warning-outline btn-icon" (click)="unfollowTopic(tag)">
+          <cds-icon shape="logout" solid></cds-icon> Unfollow
+        </button>
+      </ng-template>
+  </ng-template>
   </h3>
 </ng-template>
 <ng-template #homefeedHeader>
