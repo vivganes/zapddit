@@ -120,6 +120,7 @@ export class AppComponent {
   switchTheme(){
     this.darkTheme =!this.darkTheme;
     this.setTheme(this.darkTheme);
+    localStorage.setItem("darkTheme", ""+this.darkTheme);
   }
 
   logout(){
