@@ -18,9 +18,9 @@ export class LoginPageComponent {
     this.ndkProvider.attemptLoginWithNip07();
   }
 
-  attemptLoginWithPrivateKey(){
-    let privateKey = (<HTMLInputElement>document.getElementById('pkey')).value;
-    this.ndkProvider.attemptLoginUsingPrivateKey(privateKey);
+  attemptLoginWithPrivateOrPubKey(){
+    let enteredKey = (<HTMLInputElement>document.getElementById('pkey')).value;
+    this.ndkProvider.attemptLoginUsingPrivateOrPubKey(enteredKey);
   }
 
 

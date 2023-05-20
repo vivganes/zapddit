@@ -33,17 +33,17 @@
       <div class="card">
         <h3 class="card-header">Alternate Login</h3>
         <div class="card-block">
-          <h4 class="card-title">Private Key Login</h4>
+          <h4 class="card-title">Private/Public Key Login</h4>
           <div class="card-text">            
             <form clrForm onsubmit="return false;">
               <clr-input-container>
-                  <label>Private Key</label>
+                  <label>Enter Key</label>
                   <input clrInput  
                   autocomplete="current-password"    
                   type="password"  
                   required
                   id="pkey">
-                  <clr-control-helper>Key starting with nsec</clr-control-helper>         
+                  <clr-control-helper>Key starting with nsec(for read+write) or npub(read-only)</clr-control-helper>         
               </clr-input-container> 
               <div *ngIf="ndkProvider.loginError" class="alert alert-danger" role="alert">
                 <div class="alert-items">
@@ -58,7 +58,7 @@
                 </div>
               </div>
               <div>
-              <button [clrLoading]="ndkProvider.loggingIn" type="submit" class="btn btn-primary" (click)="attemptLoginWithPrivateKey()">Login</button>
+              <button [clrLoading]="ndkProvider.loggingIn" type="submit" class="btn btn-primary" (click)="attemptLoginWithPrivateOrPubKey()">Login</button>
               </div>
             </form>
           </div>
