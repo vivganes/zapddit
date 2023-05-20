@@ -7,6 +7,7 @@ import QRCodeStyling from 'qr-code-styling';
 import { Router,NavigationEnd  } from '@angular/router';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
 
+
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
 
@@ -29,6 +30,7 @@ export class EventCardComponent {
   @ViewChild("canvas", { static: true })
   canvas: ElementRef | undefined;
   linkifiedContent:string|undefined;
+  blurImageId:any = Math.floor(Math.random() * (5)) + 1;; 
   hashTagsMap:Map<number,string> = new Map<number,string>();
 
   @Input()
