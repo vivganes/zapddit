@@ -32,7 +32,7 @@ ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIco
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'ZappedIt!';
+  title = 'zapddit';
   private router: Router;
   followedTopics: string[] = [];
   darkTheme: boolean = false;
@@ -71,7 +71,7 @@ export class AppComponent {
 
 
   setTheme(dark:boolean){
-    (<any>document.getElementById('zappedit-theme')).href="/assets/clr-ui"+(dark?"-dark":"")+".css";
+    (<any>document.getElementById('zapddit-theme')).href="/assets/clr-ui"+(dark?"-dark":"")+".css";
   }
 
 

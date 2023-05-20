@@ -1,13 +1,13 @@
-# Zappedit
+# zapddit
 
 A reddit-style nostr client
 
- * [Reddit Vs. Zappedit](#reddit-vs-zappedit)
+ * [reddit Vs. zapddit](#reddit-vs-zapddit)
  * [Screenshot](#screenshot)
 
-## Reddit Vs. Zappedit
+## reddit Vs. zapddit
 
-**Reddit** | **ZappedIt**
+**reddit** | **zapddit**
 ---------- | ------------
 Users search for sub-reddits like r/nostr, r/tifu, etc. and follow them. | Users search for hashtags like #coffeechain, #foodstr, etc. and follow them.
 Home feed is filled with posts from their subscribed sub-reddits. |User's feed is filled with recent notes mentioning the followed hashtags, in the reverse-chronological order.
