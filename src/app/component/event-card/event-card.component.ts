@@ -47,6 +47,7 @@ export class EventCardComponent {
     this.displayedContent = this.replaceHashStyleMentionsWithComponents();
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.linkifiedContent = this.linkifyContent(this.displayedContent)
+    console.log(this.linkifiedContent);
     this.getAuthor();
     this.fetchZapsAndSegregate();
     this.getImageUrls();
@@ -83,6 +84,15 @@ export class EventCardComponent {
       }
     }
     return displayedContent;
+  }
+
+  async share(){
+    navigator
+    .share({
+        url: "https://zapddit.com/n/"+ this.event?.id
+    })
+    .then(() => console.log('Successful share! 🎉'))
+    .catch(err => console.error(err));
   }
 
   async getAuthor() {

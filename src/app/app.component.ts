@@ -16,16 +16,18 @@ import {
   keyIcon,
   copyIcon,
   imageIcon,
-  trashIcon
+  trashIcon,
+  shareIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
 import { NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as linkify from 'linkifyjs';
 import hashtag from './util/IntlHashtagLinkifyPlugin';
+import { share } from 'rxjs';
 
 
-ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon);
+ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

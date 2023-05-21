@@ -312,6 +312,11 @@ export class NdkproviderService {
     return this.ndk?.fetchEvents(filter);
   }
 
+  async fetchEventFromId(id:string){
+    const filter:NDKFilter = { kinds: [1], ids:[id]}
+    return this.ndk?.fetchEvent(filter);
+  }
+
   async fetchAllFollowedEvents(
     followedTopics: string[],
     limit?: number,

@@ -8,7 +8,7 @@ import { PeopleIFollowComponent } from './component/peopleifollow/peopleifollow.
 const routes: Routes = [
   { path: 't/:topic', component: EventFeedComponent },
   { path: 'followers', component: PeopleIFollowComponent },
-  { path: 'n/:eventid', component: SinglePostComponent },
+  { path: 'n/:noteid', component: SinglePostComponent },
   { path: '',   redirectTo: '/feed', pathMatch: 'full' }, // redirect to `first-component`
   { path: 'preferences', component: PreferencesPageComponent},
   { path: 'feed', component: EventFeedComponent },

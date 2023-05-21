@@ -57,6 +57,9 @@
       ">
       <cds-icon shape="bolt" direction="up"></cds-icon>{{ downZapTotalMilliSats/1000 | shortNumber }} Downzap
     </button>
+    <button class="btn btn-sm btn-icon btn-link"  (click)="share()">
+      <cds-icon shape="share"></cds-icon>Share
+    </button>
     <clr-modal [(clrModalOpen)]="showQR" [clrModalClosable]="false">
       <h3 class="modal-title">Scan this QR using your Lightning Wallet app</h3>
       <div align="center" class="modal-body">
