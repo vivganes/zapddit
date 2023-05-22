@@ -6,6 +6,7 @@ import linkifyHtml from 'linkify-html';
 import QRCodeStyling from 'qr-code-styling';
 import { Router,NavigationEnd  } from '@angular/router';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
+import { Constants } from 'src/app/util/Constants';
 import { Util } from 'src/app/util/Util';
 
 
@@ -31,8 +32,9 @@ export class EventCardComponent {
   @ViewChild("canvas", { static: true })
   canvas: ElementRef | undefined;
   linkifiedContent:string|undefined;
-  blurImageId:any = Math.floor(Math.random() * (5)) + 1;; 
+  blurImageId:any = Math.floor(Math.random() * (5)) + 1;;
   hashTagsMap:Map<number,string> = new Map<number,string>();
+  showMediaFromPeopleIFollow:boolean = true;
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -42,6 +44,10 @@ export class EventCardComponent {
 
   constructor(ndkProvider: NdkproviderService, private renderer: Renderer2, private dbService: ZappeditdbService) {
     this.ndkProvider = ndkProvider;
+    var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
+    if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
+      this.showMediaFromPeopleIFollow = Boolean(JSON.parse(mediaSettings!));
+    }
   }
 
   ngOnInit() {

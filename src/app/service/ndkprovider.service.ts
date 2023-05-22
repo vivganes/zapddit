@@ -20,6 +20,7 @@ import { LoginUtil } from '../util/LoginUtil';
 import { ZappeditdbService } from './zappeditdb.service';
 import { NDKUserProfileWithNpub } from '../model/NDKUserProfileWithNpub';
 import { User } from '../model/user';
+import { Constants } from '../util/Constants';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -38,7 +39,7 @@ const explicitRelayUrls = ['wss://nos.lol',
   providedIn: 'root',
 })
 export class NdkproviderService {
- 
+
   ndk: NDK | undefined;
   currentUserProfile: NDKUserProfile | undefined;
   currentUser: NDKUser | undefined;
@@ -60,9 +61,9 @@ export class NdkproviderService {
   mutedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(private dbService:ZappeditdbService){
-    const npubFromLocal = localStorage.getItem('npub');
-    const privateKey = localStorage.getItem('privateKey');
-    const loggedInPubKey = localStorage.getItem('loggedInUsingPubKey');
+    const npubFromLocal = localStorage.getItem(Constants.NPUB);
+    const privateKey = localStorage.getItem(Constants.PRIVATEKEY);
+    const loggedInPubKey = localStorage.getItem(Constants.LOGGEDINUSINGPUBKEY);
     if(npubFromLocal && npubFromLocal !== ''){
       // we can login as the login has already happened
       if(privateKey && privateKey !== ''){
@@ -92,13 +93,13 @@ export class NdkproviderService {
       if(enteredKey.startsWith('nsec')){
       this.signer = new NDKPrivateKeySigner(hexPrivateKey);
       this.signer.user().then((user) => {
-        localStorage.setItem('privateKey', hexPrivateKey)
-        localStorage.setItem('npub', user.npub)
+        localStorage.setItem(Constants.PRIVATEKEY, hexPrivateKey)
+        localStorage.setItem(Constants.NPUB, user.npub)
         this.tryLoginUsingNpub(user.npub);
       })
     } else if(enteredKey.startsWith('npub')) {
-      localStorage.setItem('npub',enteredKey)
-      localStorage.setItem('loggedInUsingPubKey', 'true');
+      localStorage.setItem(Constants.NPUB,enteredKey)
+      localStorage.setItem(Constants.LOGGEDINUSINGPUBKEY, 'true');
       this.isLoggedInUsingPubKey = true;
       this.tryLoginUsingNpub(enteredKey);
     } else{
@@ -200,7 +201,7 @@ export class NdkproviderService {
         await this.ndk.connect(1000);
         if (user.npub) {
           console.log('Permission granted to read their public key:', user.npub);
-          localStorage.setItem('npub',user.npub);
+          localStorage.setItem(Constants.NPUB,user.npub);
           await this.initializeUsingNpub(user.npub);
         } else {
           console.log('Permission not granted');
@@ -353,7 +354,7 @@ export class NdkproviderService {
       followedTopicsToPublish = this.appData.followedTopics;
     }
 
-    
+
     const downzapRecipientsToPublish = (downzapRecipients || this.appData.downzapRecipients)
     let mutedTopicsToPublish = '';
     if(mutedTopics !== undefined){
@@ -361,7 +362,7 @@ export class NdkproviderService {
     } else {
       mutedTopicsToPublish = this.appData.mutedTopics;
     }
-    
+
     ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish +"\n"+ mutedTopicsToPublish;
     const tag: NDKTag = ['d', 'zapddit.com'];
     ndkEvent.tags = [tag];
@@ -407,16 +408,16 @@ export class NdkproviderService {
         }
       }
       console.log('Latest follow list :' + this.appData.followedTopics);
-      localStorage.setItem('followedTopics', this.appData.followedTopics);
+      localStorage.setItem(Constants.FOLLOWEDTOPICS, this.appData.followedTopics);
 
       console.log('Latest downzap recipients:' + this.appData.downzapRecipients);
-      localStorage.setItem('downzapRecipients', this.appData.downzapRecipients);
+      localStorage.setItem(Constants.DOWNZAPRECIPIENTS, this.appData.downzapRecipients);
 
       console.log('Latest muted topics:' + this.appData.mutedTopics);
-      localStorage.setItem('mutedTopics', this.appData.mutedTopics);
-      
+      localStorage.setItem(Constants.MUTEDTOPICS, this.appData.mutedTopics);
 
-      const satsFromLocalStorage = localStorage.getItem('defaultSatsForZaps');
+
+      const satsFromLocalStorage = localStorage.getItem(Constants.DEFAULTSATSFORZAPS);
       if(satsFromLocalStorage){
         try{
         const numberSats = Number.parseInt(satsFromLocalStorage);
@@ -430,7 +431,7 @@ export class NdkproviderService {
 
   setDefaultSatsForZaps(sats:number){
     this.defaultSatsForZaps = sats;
-    localStorage.setItem('defaultSatsForZaps', ""+sats)
+    localStorage.setItem(Constants.DEFAULTSATSFORZAPS, ""+sats)
   }
 
   logout(){

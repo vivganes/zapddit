@@ -25,6 +25,7 @@ import { NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as linkify from 'linkifyjs';
 import hashtag from './util/IntlHashtagLinkifyPlugin';
 import { share } from 'rxjs';
+import { Constants } from './util/Constants';
 
 
 ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon);
@@ -50,7 +51,11 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    var themeFromLocal = localStorage.getItem('darkTheme');
+    var mediaSetting = localStorage.getItem(Constants.SHOWMEDIA);
+    if(!mediaSetting){
+      localStorage.setItem(Constants.SHOWMEDIA,'true');
+    }
+    var themeFromLocal = localStorage.getItem(Constants.DARKTHEME);
     if(themeFromLocal && themeFromLocal!==null && themeFromLocal!==''){
       if(themeFromLocal === 'false'){
         this.setTheme(false);
@@ -122,7 +127,7 @@ export class AppComponent {
   switchTheme(){
     this.darkTheme =!this.darkTheme;
     this.setTheme(this.darkTheme);
-    localStorage.setItem("darkTheme", ""+this.darkTheme);
+    localStorage.setItem(Constants.DARKTHEME, ""+this.darkTheme);
   }
 
   logout(){

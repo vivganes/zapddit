@@ -16,8 +16,8 @@
             placeholder="npub of the recipient" >{{ ndkProvider.appData.downzapRecipients }}</textarea>
             <clr-control-helper>npub of the person who will receive the sats for your downzaps</clr-control-helper>
         </clr-textarea-container>
-    
-    
+
+
         <div *ngIf="downzapRecipientsError" class="alert alert-danger" role="alert">
           <div class="alert-items">
             <div class="alert-item static">
@@ -44,7 +44,7 @@
         </div>
          <button type="submit" [disabled]="ndkProvider.isLoggedInUsingPubKey"
           class="btn btn-primary" (click)="saveDownzapRecipients()">Save</button>
-    </form>    
+    </form>
     </clr-accordion-content>
   </clr-accordion-panel>
 
@@ -62,12 +62,12 @@
             <clr-control-helper>These many sats will be send when you zap</clr-control-helper>
         </clr-input-container>
         <button [clrLoading]="settingDefaultSats" [disabled]="ndkProvider.isLoggedInUsingPubKey"
-         type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button> 
+         type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button>
     </form>
     </clr-accordion-content>
   </clr-accordion-panel>
 
-  <clr-accordion-panel [clrAccordionPanelOpen]="true">
+  <clr-accordion-panel>
     <clr-accordion-title>Muted Topics</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form *ngIf ="!ndkProvider.isLoggedInUsingPubKey" clrForm onsubmit="return false;">
@@ -91,6 +91,22 @@
     <p *ngIf ="!ndkProvider.appData.mutedTopics || ndkProvider.appData.mutedTopics === '' ">No topics muted</p>
 
 
+    </clr-accordion-content>
+  </clr-accordion-panel>
+
+  <clr-accordion-panel [clrAccordionPanelOpen]="true">
+    <clr-accordion-title>Media Content</clr-accordion-title>
+    <clr-accordion-content *clrIfExpanded>
+      <form *ngIf ="!ndkProvider.isLoggedInUsingPubKey" clrForm onsubmit="return false;">
+        <clr-checkbox-container clrInline>
+          <clr-checkbox-wrapper>
+            <label>Blur media from people I dont follow</label>
+            <input type="checkbox" [(ngModel)]="loadContentFromPeopleIFollow" id="load-media" clrCheckbox
+            placeholder="#Load Media" (ngModelChange)="onMediaSettingChange($event)" name="loadContentFromPeopleIFollow" id="loadContentFromPeopleIFollow">
+          </clr-checkbox-wrapper>
+          <clr-control-helper>Enable this option to show media only from people you follow.</clr-control-helper>
+        </clr-checkbox-container>
+    </form>
     </clr-accordion-content>
   </clr-accordion-panel>
 </clr-accordion>
