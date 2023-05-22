@@ -6,13 +6,11 @@ import NDK, {
   type NDKUserProfile,
   NDKFilter,
   NDKEvent,
-  zapInvoiceFromEvent,
-  NDKZapInvoice,
   NostrEvent,
   NDKTag,
   NDKSubscription,
   NDKSigner,
-  NDKPrivateKeySigner,
+  NDKPrivateKeySigner
 } from '@nostr-dev-kit/ndk';
 import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
@@ -32,8 +30,7 @@ const explicitRelayUrls = ['wss://nos.lol',
 'wss://relay.nostr.band',
 'wss://relay.f7z.io',
 'wss://relay.damus.io',
-'wss://nostr.mom',
-'wss://no.str.cr',]; //TODO: fix this
+'wss://nostr.mom']; //TODO: fix this
 
 @Injectable({
   providedIn: 'root',
@@ -55,6 +52,7 @@ export class NdkproviderService {
   loggingIn: boolean = false;
   loginError:string|undefined;
   followedTopicsEmitter:EventEmitter<string> = new EventEmitter<string>()
+  peopleIFollowEmitter: NDKSubscription | undefined;
   private signer:NDKSigner|undefined = undefined;
   isNip07 = false;
   isLoggedInUsingPubKey = false;
@@ -81,7 +79,6 @@ export class NdkproviderService {
         }
         this.tryLoginUsingNpub(npubFromLocal);
       }
-
     }
   }
 
@@ -244,7 +241,7 @@ export class NdkproviderService {
     return this.currentUserProfile;
   }
 
-  async fetchFollowersForCurrentLoggedInUser():Promise<Set<NDKUser> | undefined>{
+  private async fetchFollowersForCurrentLoggedInUser():Promise<Set<NDKUser> | undefined>{
     try{
       if(this.currentUser){
         return this.fetchFollowersFromNpub(this.currentUser.npub)
@@ -255,7 +252,7 @@ export class NdkproviderService {
       return new Set<NDKUser>;
   }
 
-  private async fetchFollowersUserProfile(){
+  private async getFollowersUserProfile(){
     const ndkUsers = (await this.fetchFollowersForCurrentLoggedInUser());
     let ndkUsersArray : NDKUser[] = [];
 
@@ -270,7 +267,7 @@ export class NdkproviderService {
   }
 
   async fetchFollowers(){
-    let followerUserProfilesPromise = await this.fetchFollowersUserProfile();
+    let followerUserProfilesPromise = await this.getFollowersUserProfile();
     return Promise.all(followerUserProfilesPromise);
   }
 
@@ -289,14 +286,15 @@ export class NdkproviderService {
 
   async fetchFollowersFromCache(): Promise<User[]>{
     var usersFromCache = await this.dbService.peopleIFollow.toArray();
-    if(usersFromCache && usersFromCache.length === 0){
+    if((usersFromCache && usersFromCache.length === 0) ||
+    (usersFromCache && usersFromCache.length !== (await this.fetchFollowersForCurrentLoggedInUser())?.values.length)){
       await this.fetchFollowersAndCache();
     }
 
     return await this.dbService.peopleIFollow.toArray();
   }
 
-  async addToDb(item: NDKUserProfileWithNpub){
+  private async addToDb(item: NDKUserProfileWithNpub){
     this.dbService.peopleIFollow.add({
       hexPubKey:item.hexPubKey,
       name: item.profile?.name!,
@@ -545,3 +543,5 @@ export class NdkproviderService {
     return zapEndpointCallback;
   }
 }
+
+
