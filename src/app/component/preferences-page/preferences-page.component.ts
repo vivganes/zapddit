@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { TopicService } from 'src/app/service/topic.service';
+import '@cds/core/checkbox/register.js';
+import { Constants } from '../../util/Constants';
 
 @Component({
   selector: 'app-preferences-page',
@@ -16,11 +18,15 @@ export class PreferencesPageComponent {
   ndkProvider: NdkproviderService;
   settingDefaultSats:boolean = false;
   mutingTopic: boolean = false;
-
+  loadContentFromPeopleIFollow:boolean = true;
 
   constructor(ndkProvider: NdkproviderService, topicService: TopicService) {
     this.ndkProvider = ndkProvider;
     this.topicService = topicService;
+    var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
+    if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
+      this.loadContentFromPeopleIFollow = Boolean(JSON.parse(mediaSettings!));
+    }
   }
 
 
@@ -74,4 +80,7 @@ export class PreferencesPageComponent {
     }
   }
 
+  onMediaSettingChange(checked:any){
+    localStorage.setItem(Constants.SHOWMEDIA,checked);
+  }
 }
