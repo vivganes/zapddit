@@ -98,15 +98,13 @@
     <clr-accordion-title>Media Content</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form *ngIf ="!ndkProvider.isLoggedInUsingPubKey" clrForm onsubmit="return false;">
-
-
         <clr-checkbox-container clrInline>
           <clr-checkbox-wrapper>
-            <label>Automatically show media content from People I follow</label>
+            <label>Blur images from people I dont follow</label>
             <input type="checkbox" [(ngModel)]="loadContentFromPeopleIFollow" id="load-media" clrCheckbox
             placeholder="#Load Media" (ngModelChange)="onMediaSettingChange($event)" name="loadContentFromPeopleIFollow" id="loadContentFromPeopleIFollow">
           </clr-checkbox-wrapper>
-          <clr-control-helper>Enable this option to load media automatically only for the content from people I follow. You will have entire control of what media content you to want to see.</clr-control-helper>
+          <clr-control-helper>Enable this option to show media only from People I follow.</clr-control-helper>
         </clr-checkbox-container>
     </form>
     </clr-accordion-content>
