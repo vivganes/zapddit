@@ -295,6 +295,7 @@ export class NdkproviderService {
   }
 
   private async addToDb(item: NDKUserProfileWithNpub){
+    if((await this.dbService.peopleIFollow.where("npub").equalsIgnoreCase(item.npub).toArray()).length === 0)
     this.dbService.peopleIFollow.add({
       hexPubKey:item.hexPubKey,
       name: item.profile?.name!,
