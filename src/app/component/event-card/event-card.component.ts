@@ -6,6 +6,7 @@ import linkifyHtml from 'linkify-html';
 import QRCodeStyling from 'qr-code-styling';
 import { Router,NavigationEnd  } from '@angular/router';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
+import { Util } from 'src/app/util/Util';
 
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
@@ -221,10 +222,14 @@ export class EventCardComponent {
         try{
           if (this.isDownzap(zap)) {
             const milliSats = this.readMilliSatsFromZap(zap);
-            this.downZapTotalMilliSats += milliSats;
+            if(milliSats){
+              this.downZapTotalMilliSats += milliSats;
+            }
           } else {
             const milliSats = this.readMilliSatsFromZap(zap);
-            this.upZapTotalMilliSats += milliSats;
+            if(milliSats){
+              this.upZapTotalMilliSats += milliSats;
+            }
           }
         } catch(e){
           console.error(e);
@@ -233,19 +238,13 @@ export class EventCardComponent {
     }
   }
 
-  readMilliSatsFromZap(zap:NDKEvent):number{
-    if(zap.getMatchingTags('description')[0]){
-      if(zap.getMatchingTags('description')[0][1]){
-        const tags = JSON.parse(zap.getMatchingTags('description')[0][1]).tags;
-        if(tags){
-          const innerTags = this.getMatchingTags(tags,'amount')
-          if( innerTags && innerTags[0] && innerTags[0][1] ){
-            return Number.parseInt(innerTags[0][1]);
-          }
-        }
-      }
+  readMilliSatsFromZap(zap:NDKEvent):number|undefined{
+    const invoiceTag = zap.getMatchingTags('bolt11');
+    if(invoiceTag && invoiceTag[0]){
+      const millis = Util.getAmountFromInvoice(invoiceTag[0][1]);
+      return millis;
     }
-    return 0;
+    return 0;    
   }
 
   getMatchingTags(tags:string[],tagName:string) {
