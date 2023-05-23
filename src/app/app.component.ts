@@ -79,6 +79,7 @@ export class AppComponent {
 
   setTheme(dark:boolean){
     (<any>document.getElementById('zapddit-theme')).href="/assets/clr-ui"+(dark?"-dark":"")+".css";
+    this.darkTheme = dark;
   }
 
 
