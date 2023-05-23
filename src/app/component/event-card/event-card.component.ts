@@ -54,7 +54,6 @@ export class EventCardComponent {
     this.displayedContent = this.replaceHashStyleMentionsWithComponents();
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.linkifiedContent = this.linkifyContent(this.displayedContent)
-    console.log(this.linkifiedContent);
     this.getAuthor();
     this.fetchZapsAndSegregate();
     this.getImageUrls();
