@@ -4,7 +4,6 @@ import * as moment from 'moment';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import linkifyHtml from 'linkify-html';
 import QRCodeStyling from 'qr-code-styling';
-import { Router,NavigationEnd  } from '@angular/router';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
 import { Constants } from 'src/app/util/Constants';
 import { Util } from 'src/app/util/Util';
@@ -21,10 +20,14 @@ const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
 export class EventCardComponent {
   @Input()
   event: NDKEvent | undefined;
+
+  @Input()
+  showingComments: boolean = false;
   authorWithProfile: NDKUser | undefined;
   canLoadMedia:boolean = false;
   imageUrls: RegExpMatchArray | null | undefined;
-  zaps: Set<NDKEvent> | undefined;
+  zaps: Set<NDKEvent> = new Set<NDKEvent>();
+  replies: Set<NDKEvent> = new Set<NDKEvent>();
   upZapTotalMilliSats: number = 0
   downZapTotalMilliSats: number = 0
   showQR: boolean= false;
@@ -32,6 +35,7 @@ export class EventCardComponent {
   @ViewChild("canvas", { static: true })
   canvas: ElementRef | undefined;
   linkifiedContent:string|undefined;
+  loadingRelatedEvents:boolean = false;
   blurImageId:any = Math.floor(Math.random() * (5)) + 1;;
   hashTagsMap:Map<number,string> = new Map<number,string>();
   showMediaFromPeopleIFollow:boolean = true;
@@ -55,8 +59,36 @@ export class EventCardComponent {
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.linkifiedContent = this.linkifyContent(this.displayedContent)
     this.getAuthor();
-    this.fetchZapsAndSegregate();
+    this.getRelatedEventsAndSegregate();
     this.getImageUrls();
+  }
+
+  showComments(){
+    this.showingComments = true;
+  }
+
+  hideComments(){
+    this.showingComments = false;
+  }
+
+  async getRelatedEventsAndSegregate(){
+    if(this.event){
+      this.loadingRelatedEvents = true;
+      let relatedEvents = await this.ndkProvider.getRelatedEventsOfNote(this.event);
+      if(relatedEvents){
+        for (let event of relatedEvents) {
+          if(event.kind === 1){
+            this.replies.add(event);
+          } else if (event.kind === 9735){
+            this.zaps.add(event);
+          } else {
+            console.error("This kind of event is unrecognized. Ignoring");
+          }
+        }
+        await this.segregateZaps();
+        this.loadingRelatedEvents = false;
+      }      
+    }
   }
 
   replaceHashStyleMentionsWithComponents(){
@@ -109,8 +141,6 @@ export class EventCardComponent {
     }
   }
 
-
-
   getNthTag( n:number):string{
     const tags:NDKTag[]|undefined = this.event?.tags;
     if(tags){
@@ -118,8 +148,6 @@ export class EventCardComponent {
     }
     return '';
   }
-
-
 
   formatTimestamp(timestamp: number | undefined): string {
     if (timestamp) {
@@ -216,8 +244,11 @@ export class EventCardComponent {
 
   async fetchZapsAndSegregate() {
     if (this.event) {
-      this.zaps = await this.ndkProvider.fetchZaps(this.event);
-      this.segregateZaps();
+      let zaps = await this.ndkProvider.fetchZaps(this.event);
+      if(zaps){
+        this.zaps = zaps;
+        this.segregateZaps();
+      }
     }
   }
 

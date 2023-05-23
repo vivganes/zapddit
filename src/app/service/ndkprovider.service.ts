@@ -331,6 +331,12 @@ export class NdkproviderService {
     return await event.zap(this.defaultSatsForZaps*1000, '+');
   }
 
+  async getRelatedEventsOfNote(event: NDKEvent){
+    const filter: NDKFilter = { kinds: [1,9735], '#e': [event.id] };
+    return this.ndk?.fetchEvents(filter);
+
+  }
+
   async fetchZaps(event: NDKEvent): Promise<Set<NDKEvent> | undefined> {
     const filter: NDKFilter = { kinds: [9735], '#e': [event.id] };
     return this.ndk?.fetchEvents(filter);
