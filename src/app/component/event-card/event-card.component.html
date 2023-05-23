@@ -14,7 +14,7 @@
         <span class="card-media-text break-words-overflow"> {{ formatTimestamp(event?.created_at) }} </span>
       </div>
     </div>
-    <div class="break-words-overflow">
+    <div class="break-words-overflow pointer-cursor" [routerLink]="'/n/'+event?.id">
       <ngx-dynamic-hooks *ngIf="linkifiedContent" [content]="linkifiedContent"></ngx-dynamic-hooks>
     </div>
 

@@ -7,6 +7,7 @@ import QRCodeStyling from 'qr-code-styling';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
 import { Constants } from 'src/app/util/Constants';
 import { Util } from 'src/app/util/Util';
+import { Router } from '@angular/router';
 
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
@@ -46,7 +47,7 @@ export class EventCardComponent {
   ndkProvider: NdkproviderService;
   displayedContent: string|undefined;
 
-  constructor(ndkProvider: NdkproviderService, private renderer: Renderer2, private dbService: ZappeditdbService) {
+  constructor(ndkProvider: NdkproviderService, private renderer: Renderer2, private dbService: ZappeditdbService, private router:Router) {
     this.ndkProvider = ndkProvider;
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
     if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
@@ -61,6 +62,10 @@ export class EventCardComponent {
     this.getAuthor();
     this.getRelatedEventsAndSegregate();
     this.getImageUrls();
+  }
+
+  openAsSingleNote(){
+    this.router.navigate(['n', { noteid: this.event?.id }]);
   }
 
   showComments(){
