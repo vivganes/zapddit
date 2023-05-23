@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
