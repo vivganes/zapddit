@@ -27,7 +27,7 @@ export class EventCardComponent {
   canLoadMedia:boolean = false;
   imageUrls: RegExpMatchArray | null | undefined;
   zaps: Set<NDKEvent> = new Set<NDKEvent>();
-  replies: Set<NDKEvent> = new Set<NDKEvent>();
+  replies: NDKEvent[] = [];
   upZapTotalMilliSats: number = 0
   downZapTotalMilliSats: number = 0
   showQR: boolean= false;
@@ -78,7 +78,7 @@ export class EventCardComponent {
       if(relatedEvents){
         for (let event of relatedEvents) {
           if(event.kind === 1){
-            this.replies.add(event);
+            this.replies = [event, ...this.replies];
           } else if (event.kind === 9735){
             this.zaps.add(event);
           } else {

@@ -65,11 +65,11 @@
       ">
       <cds-icon shape="bolt" direction="up"></cds-icon>{{ downZapTotalMilliSats/1000 | shortNumber }} Downzap
     </button>
-    <button *ngIf="!showingComments" [disabled]="replies && replies.size===0" class="btn btn-sm btn-icon btn-link" title="Show Comments"  (click)="showComments()">
-      <cds-icon  shape="eye"></cds-icon> {{ replies.size }} Comment{{replies.size==1?'':'s'}}
+    <button *ngIf="!showingComments" [disabled]="replies && replies.length===0" class="btn btn-sm btn-icon btn-link" title="Show Comments"  (click)="showComments()">
+      <cds-icon  shape="eye"></cds-icon> {{ replies.length }} Comment{{replies.length==1?'':'s'}}
     </button>
-    <button *ngIf="showingComments" [disabled]="replies && replies.size===0"  class="btn btn-sm btn-icon btn-link" title="Hide Comments" (click)="hideComments()">
-      <cds-icon  shape="eye-hide"></cds-icon> {{ replies.size }} Comment{{replies.size==1?'':'s'}}
+    <button *ngIf="showingComments" [disabled]="replies && replies.length===0"  class="btn btn-sm btn-icon btn-link" title="Hide Comments" (click)="hideComments()">
+      <cds-icon  shape="eye-hide"></cds-icon> {{ replies.length }} Comment{{replies.length==1?'':'s'}}
     </button>    
     <button class="btn btn-sm btn-icon btn-link"  (click)="share()">
       <cds-icon shape="share"></cds-icon> Share
