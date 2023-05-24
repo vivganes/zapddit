@@ -44,7 +44,7 @@ export class EventCardComponent {
   downZapTotalMilliSats: number = 0
   showQR: boolean= false;
   invoice:string|null=null;
-  @ViewChild("canvas", { static: true })
+  @ViewChild("canvas")
   canvas: ElementRef | undefined;
   linkifiedContent:string|undefined;
   loadingRelatedEvents:boolean = false;
