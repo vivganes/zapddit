@@ -14,6 +14,7 @@ export class SinglePostComponent {
 
   constructor(route:ActivatedRoute,private ndkProvider: NdkproviderService){
     route.params.subscribe(async params => {
+      this.event  = undefined;
       let noteid = params['noteid'];
       this.event = await this.getNote(noteid)
     });

@@ -1,1 +1,6 @@
+<div *ngIf="!event">
+    <span class="spinner spinner-inline">
+        Loading event...
+    </span>
+</div>
 <app-event-card *ngIf="event" [event]="event" [showingComments]="true" />

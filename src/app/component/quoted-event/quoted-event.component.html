@@ -1,0 +1,6 @@
+<div *ngIf="!event">
+    <span class="spinner spinner-inline">
+        Loading quoted event...
+    </span>
+</div>
+<app-event-card *ngIf="event" [event]="event" [showingComments]="false" [isQuotedEvent]="true" />

@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
+const NOSTR_NOTE_REGEX = /nostr:(note1[\S]*)/gi;
 
 @Component({
   selector: 'app-event-card',
@@ -24,6 +25,8 @@ export class EventCardComponent {
 
   @Input()
   showingComments: boolean = false;
+  @Input()
+  isQuotedEvent: boolean = false;
   authorWithProfile: NDKUser | undefined;
   canLoadMedia:boolean = false;
   imageUrls: RegExpMatchArray | null | undefined;
@@ -58,14 +61,11 @@ export class EventCardComponent {
   ngOnInit() {
     this.displayedContent = this.replaceHashStyleMentionsWithComponents();
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
+    this.displayedContent = this.replaceNoteMentionsWithComponents(this.displayedContent)
     this.linkifiedContent = this.linkifyContent(this.displayedContent)
     this.getAuthor();
     this.getRelatedEventsAndSegregate();
     this.getImageUrls();
-  }
-
-  openAsSingleNote(){
-    this.router.navigate(['n', { noteid: this.event?.id }]);
   }
 
   showComments(){
@@ -74,6 +74,12 @@ export class EventCardComponent {
 
   hideComments(){
     this.showingComments = false;
+  }
+
+  openQuotedEvent(mouseEvent: any){
+    mouseEvent.stopPropagation();
+    mouseEvent.preventDefault();
+    this.router.navigateByUrl('n/'+this.event?.id)
   }
 
   async getRelatedEventsAndSegregate(){
@@ -121,6 +127,22 @@ export class EventCardComponent {
         try{
           let npub = match[1];
           displayedContent = displayedContent.replaceAll(match[0],`<app-user-mention npub="${npub}"></app-user-mention>`)
+        }catch(e){
+          console.error(e);
+        }
+      }
+    }
+    return displayedContent;
+  }
+
+  replaceNoteMentionsWithComponents(content?:string): string|undefined{
+    let displayedContent = content;
+    if(displayedContent){
+      var matches = displayedContent.matchAll(NOSTR_NOTE_REGEX);
+      for(let match of matches){
+        try{
+          let noteId = match[1];
+          displayedContent = displayedContent.replaceAll(match[0],`<app-quoted-event id="${noteId}"></app-quoted-event>`)
         }catch(e){
           console.error(e);
         }

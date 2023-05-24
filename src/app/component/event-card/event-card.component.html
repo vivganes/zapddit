@@ -14,7 +14,10 @@
         <span class="card-media-text break-words-overflow"> {{ formatTimestamp(event?.created_at) }} </span>
       </div>
     </div>
-    <div class="break-words-overflow pointer-cursor" [routerLink]="'/n/'+event?.id">
+    <div *ngIf="!isQuotedEvent" class="break-words-overflow pointer-cursor" [routerLink]="'/n/'+event?.id">
+      <ngx-dynamic-hooks *ngIf="linkifiedContent" [content]="linkifiedContent"></ngx-dynamic-hooks>
+    </div>
+    <div *ngIf="isQuotedEvent" class="break-words-overflow pointer-cursor" (click)="openQuotedEvent($event)">
       <ngx-dynamic-hooks *ngIf="linkifiedContent" [content]="linkifiedContent"></ngx-dynamic-hooks>
     </div>
 
@@ -50,7 +53,7 @@
         </div>
     </div>    
   </div>
-  <div class="card-footer">
+  <div *ngIf="!isQuotedEvent" class="card-footer">
     <button class="btn btn-sm btn-icon btn-link"  [disabled]="ndkProvider.isLoggedInUsingPubKey"  (click)="upZap()">
       <cds-icon shape="bolt" direction="down"></cds-icon>{{ upZapTotalMilliSats/1000 | shortNumber }} Upzap
     </button>
