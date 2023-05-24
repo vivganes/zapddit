@@ -63,7 +63,7 @@
 
     <div *ngFor="let onlineVideoSrc of onlineVideoUrls"  class="clr-row clr-justify-content-center">
       <div class="clr-col-6 video-center">
-        <iframe class="online-video-size" [src]="sanitiseUrl(onlineVideoSrc)" frameborder="0" allowfullscreen></iframe>
+        <iframe class="online-video-size" loading="lazy" [src]="sanitiseUrl(onlineVideoSrc)" frameborder="0" allowfullscreen></iframe>
       </div>
   </div>
   </div>

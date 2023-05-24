@@ -9,7 +9,7 @@ import { Constants } from 'src/app/util/Constants';
 import { Util } from 'src/app/util/Util';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-
+import { Clipboard } from '@angular/cdk/clipboard';
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
@@ -59,7 +59,7 @@ export class EventCardComponent {
   displayedContent: string|undefined;
 
   constructor(ndkProvider: NdkproviderService, private renderer: Renderer2,
-    private dbService: ZappeditdbService, private router:Router, private domSanitizer:DomSanitizer) {
+    private dbService: ZappeditdbService, private router:Router, private domSanitizer:DomSanitizer, private clipboard: Clipboard) {
     this.ndkProvider = ndkProvider;
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
     if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
@@ -172,20 +172,24 @@ export class EventCardComponent {
   }
 
   async share(){
-    if(navigator.share && navigator.canShare()){
+    var url = "https://zapddit.com/n/"+ this.event?.id
+    if(navigator.share){
       navigator
       .share({
-          url: "https://zapddit.com/n/"+ this.event?.id
+          url: url
       })
       .then(() => console.log('Successful share! 🎉'))
       .catch(err => console.error(err));
+    }else{
+      this.clipboard.copy(url);
+      console.log("copied");
     }
   }
 
   async getAuthor() {
     let authorPubKey = this.event?.pubkey;
     if (authorPubKey) {
-      this.canLoadMedia = (await this.dbService.peopleIFollow.where({hexPubKey:authorPubKey}).toArray()).length > 0;
+      this.canLoadMedia = (await this.dbService.peopleIFollow.where({hexPubKey:authorPubKey.toString()}).toArray()).length > 0;
       this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey);
     }
   }
