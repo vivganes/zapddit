@@ -122,8 +122,31 @@ a{
     outline: none;
     box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0px 4px 6px -5px hsl(0, 0%, 2%)
   }
+
+  .video-center{
+    max-width: 100%;
+  }
+
+  .video-size{
+    width: 350px !important;
+    height:150px !important;
+  }
+
+  .online-video-size{
+    width: 350px !important;
+    height: 250px !important;
+  }
 }
 
+.online-video-size{
+  width: 560px;
+  height: 315px;
+}
+
+.video-size{
+  width: 560px;
+  height: 315px;
+}
 
 @media screen and (max-width: 576px) {
   .main-container .header .branding {

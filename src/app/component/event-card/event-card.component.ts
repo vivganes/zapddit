@@ -8,6 +8,7 @@ import { ZappeditdbService } from '../../service/zappeditdb.service';
 import { Constants } from 'src/app/util/Constants';
 import { Util } from 'src/app/util/Util';
 import { Router } from '@angular/router';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
@@ -20,6 +21,11 @@ const NOSTR_NOTE_REGEX = /nostr:(note1[\S]*)/gi;
   styleUrls: ['./event-card.component.scss'],
 })
 export class EventCardComponent {
+  // Regular expression patterns to match video URLs
+  private readonly youtubeRegex:RegExp = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([\w-]+)/g;
+  private readonly vimeoRegex:RegExp = /(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d+)/g;
+  private readonly dailymotionRegex:RegExp = /(?:https?:\/\/)?(?:www\.)?dailymotion\.com\/video\/([\w-]+)/g;
+
   @Input()
   event: NDKEvent | undefined;
 
@@ -30,6 +36,8 @@ export class EventCardComponent {
   authorWithProfile: NDKUser | undefined;
   canLoadMedia:boolean = false;
   imageUrls: RegExpMatchArray | null | undefined;
+  videoUrls: Map<string,string|undefined> = new Map<string,string|undefined>();
+  onlineVideoUrls:string[] = [];
   zaps: Set<NDKEvent> = new Set<NDKEvent>();
   replies: NDKEvent[] = [];
   upZapTotalMilliSats: number = 0
@@ -50,7 +58,8 @@ export class EventCardComponent {
   ndkProvider: NdkproviderService;
   displayedContent: string|undefined;
 
-  constructor(ndkProvider: NdkproviderService, private renderer: Renderer2, private dbService: ZappeditdbService, private router:Router) {
+  constructor(ndkProvider: NdkproviderService, private renderer: Renderer2,
+    private dbService: ZappeditdbService, private router:Router, private domSanitizer:DomSanitizer) {
     this.ndkProvider = ndkProvider;
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
     if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
@@ -66,6 +75,8 @@ export class EventCardComponent {
     this.getAuthor();
     this.getRelatedEventsAndSegregate();
     this.getImageUrls();
+    this.getVideoUrls();
+    this.getOnlineVideoUrls();
   }
 
   showComments(){
@@ -98,8 +109,17 @@ export class EventCardComponent {
         }
         await this.segregateZaps();
         this.loadingRelatedEvents = false;
-      }      
+      }
     }
+  }
+
+  sanitiseUrl(url:string):SafeUrl{
+    var modifiedUrl = url;
+    if(url.indexOf("youtube.com")>0){
+      modifiedUrl = url.replace("watch?v=", "embed/");
+    }
+
+    return this.domSanitizer.bypassSecurityTrustResourceUrl(modifiedUrl)
   }
 
   replaceHashStyleMentionsWithComponents(){
@@ -152,12 +172,14 @@ export class EventCardComponent {
   }
 
   async share(){
-    navigator
-    .share({
-        url: "https://zapddit.com/n/"+ this.event?.id
-    })
-    .then(() => console.log('Successful share! 🎉'))
-    .catch(err => console.error(err));
+    if(navigator.share && navigator.canShare()){
+      navigator
+      .share({
+          url: "https://zapddit.com/n/"+ this.event?.id
+      })
+      .then(() => console.log('Successful share! 🎉'))
+      .catch(err => console.error(err));
+    }
   }
 
   async getAuthor() {
@@ -209,6 +231,39 @@ export class EventCardComponent {
     const imgArray = this.event?.content.match(urlRegex);
     this.imageUrls = imgArray
     return imgArray;
+  }
+
+  getVideoUrls():RegExpMatchArray | null | undefined {
+    const urlRegex = /https:.*?\.(?:webm|mp4)/gi;
+
+    const videoUrlsArray = this.event?.content.match(urlRegex);
+
+    videoUrlsArray?.forEach(url => {
+      this.videoUrls.set(url, url?.split('.').pop());
+    });
+
+    return videoUrlsArray;
+  }
+
+  getOnlineVideoUrls(){
+    // Extract YouTube watch URLs
+    this.extractUrls(this.event?.content, this.youtubeRegex);
+
+    // Extract Vimeo URLs
+    this.extractUrls(this.event?.content, this.vimeoRegex);
+
+    // Extract Dailymotion URLs
+    this.extractUrls(this.event?.content, this.dailymotionRegex);
+  }
+
+  extractUrls(text: string | undefined, regex: RegExp) {
+    let match: RegExpExecArray | null;
+    while ((match = regex.exec(text!)) !== null) {
+      const videoUrl = match[0];
+      if(videoUrl){
+        this.onlineVideoUrls.push(videoUrl);
+      }
+    }
   }
 
   clickToLoadMedia(){
@@ -307,7 +362,7 @@ export class EventCardComponent {
       const millis = Util.getAmountFromInvoice(invoiceTag[0][1]);
       return millis;
     }
-    return 0;    
+    return 0;
   }
 
   getMatchingTags(tags:string[],tagName:string) {
