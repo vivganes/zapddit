@@ -1,3 +1,4 @@
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -44,7 +45,7 @@ const componentParsers: Array<HookParserEntry> = [
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers
-  }),FormsModule, BrowserModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  }),FormsModule, BrowserModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
   enabled: !isDevMode(),
   // Register the ServiceWorker as soon as the application is stable
   // or after 30 seconds (whichever comes first).
