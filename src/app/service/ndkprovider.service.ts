@@ -241,10 +241,18 @@ export class NdkproviderService {
     return this.currentUserProfile;
   }
 
-  async sendNote(text:string, hashtags?:string[], userMentions?:string[], postMentions?:string[]){
+  async sendNote(text:string, hashtags?:string[], userMentionsHex?:string[], postMentions?:string[]){
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 1;
     ndkEvent.content = text;
+    let tags:NDKTag[] = []
+    if(hashtags){
+      tags.push(...hashtags?.map(hashtag =>  ['t',hashtag.toLocaleLowerCase()]))
+    }
+    if(userMentionsHex){
+      tags.push(...userMentionsHex?.map(userMention => ['p',userMention]));
+    }
+    ndkEvent.tags = tags;
     ndkEvent.publish();
   }
 
