@@ -15,13 +15,15 @@ const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
 export class NoteComposerComponent {
 
   isSendingNote:boolean = false;
+  noteSent:boolean = false;
 
 
   constructor(private ndkProvider: NdkproviderService){
 
   }
 
-  sendNote(){
+  async sendNote(){
+    this.isSendingNote = true;
     let noteText = (<HTMLTextAreaElement>document.getElementById('note-text')).value;
     console.log(noteText);
     let hashTags = this.getHashTagsFromText(noteText);
@@ -29,7 +31,15 @@ export class NoteComposerComponent {
     if(userMentions.length > 0){
       
     }
-    this.ndkProvider.sendNote(noteText,hashTags,userMentions);
+    await this.ndkProvider.sendNote(noteText,hashTags,userMentions);
+    this.isSendingNote = false;
+    (<HTMLTextAreaElement>document.getElementById('note-text')).value='';
+    this.noteSent =true;
+
+      setTimeout(()=>{
+        this.noteSent = false;
+      }, 3000)
+
   }
 
   getHashTagsFromText(text:string){

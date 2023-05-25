@@ -7,7 +7,8 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn btn-primary" (click)="sendNote()">Post</button>
+                <button class="btn btn-primary" [clrLoading]="isSendingNote" (click)="sendNote()">Post</button>
+                <span *ngIf="noteSent">✅ Note posted!</span>
             </div>
         </div>
     </div>
