@@ -51,6 +51,7 @@ export class EventCardComponent {
   blurImageId:any = Math.floor(Math.random() * (5)) + 1;;
   hashTagsMap:Map<number,string> = new Map<number,string>();
   showMediaFromPeopleIFollow:boolean = true;
+  linkCopied:boolean = false;
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -182,7 +183,11 @@ export class EventCardComponent {
       .catch(err => console.error(err));
     }else{
       this.clipboard.copy(url);
-      console.log("copied");
+      this.linkCopied =true;
+
+      setTimeout(()=>{
+        this.linkCopied = false;
+      }, 3000)
     }
   }
 
