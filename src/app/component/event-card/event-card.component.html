@@ -54,18 +54,35 @@
     </div>
 
     <div *ngFor="let videoSrc of videoUrls | keyvalue"  class="clr-row clr-justify-content-center">
-        <div class="clr-col-6 video-center">
-          <video controls class="video-size">
-            <source src="{{ videoSrc.key }}" type="video/{{videoSrc.value}}">
-          </video>
+        <div class="flex">
+          <div class="clr-justify-content">
+            <video controls class="video">
+              <source src="{{ videoSrc.key }}" type="video/{{videoSrc.value}}">
+            </video>
+          </div>
         </div>
     </div>
 
     <div *ngFor="let onlineVideoSrc of onlineVideoUrls"  class="clr-row clr-justify-content-center">
-      <div class="clr-col-6 video-center">
-        <iframe class="online-video-size" loading="lazy" [src]="sanitiseUrl(onlineVideoSrc)" frameborder="0" allowfullscreen></iframe>
+      <div class="flex">
+        <div class="clr-justify-content video">
+          <iframe class="online-video-size" loading="lazy" [src]="sanitiseUrl(onlineVideoSrc)" frameborder="0" allowfullscreen></iframe>
+        </div>
       </div>
   </div>
+
+  <ng-template #name [ngIf]="linkCopied">
+  <div align="center" class="alert alert-success" role="alert">
+    <div class="alert-items">
+        <div class="alert-item static clr-justify-content-center">
+            <div class="alert-icon-wrapper">
+                <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
+            </div>
+            <span class="alert-text">Notes link copied!</span>
+        </div>
+    </div>
+  </div>
+  </ng-template >
   </div>
   <div *ngIf="!isQuotedEvent" class="card-footer">
     <button class="btn btn-sm btn-icon btn-link"  [disabled]="ndkProvider.isLoggedInUsingPubKey"  (click)="upZap()">
