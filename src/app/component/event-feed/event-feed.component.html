@@ -19,7 +19,6 @@
   <h3 align="center">
     🏡 My Feed
   </h3>
-  <p align="center">You can see notes from all the topics you followed here 👇. Mute any topics from Preferences Menu.</p>
 </ng-template>
 <div *ngIf="(!tag) && followedTopics?.length == 0 && !events" class="clr-row clr-justify-content-center">
   <div align="center" class="alert alert-info clr-col-4" role="alert">
@@ -40,6 +39,7 @@
 <div align="center" *ngIf="events && events.size == 0">
   Already following topics? It is possible that you could have muted topics from the preferences menu.
 </div>
+<app-note-composer></app-note-composer>
 <ng-template [ngIf]="!loadingEvents">
   <div *ngFor="let event of events" class="clr-row clr-justify-content-center">
     <div class="clr-col-12 clr-col-md-8">

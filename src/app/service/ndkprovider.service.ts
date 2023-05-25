@@ -241,6 +241,13 @@ export class NdkproviderService {
     return this.currentUserProfile;
   }
 
+  async sendNote(text:string, hashtags?:string[], userMentions?:string[], postMentions?:string[]){
+    const ndkEvent = new NDKEvent(this.ndk);
+    ndkEvent.kind = 1;
+    ndkEvent.content = text;
+    ndkEvent.publish();
+  }
+
   private async fetchFollowersForCurrentLoggedInUser():Promise<Set<NDKUser> | undefined>{
     try{
       if(this.currentUser){
