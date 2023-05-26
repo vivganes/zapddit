@@ -8,7 +8,7 @@
                     class='compose-note' 
                     placeholder="Write something interesting here..." 
                     spellcheck="false" 
-                    [mentionConfig]="{ items: (searchResults$ | async) || [], labelKey: 'name', mentionSelect: formatSelectedUser, disableSearch: true }"
+                    [mentionConfig]="{ items: (searchResults$ | async) || [], labelKey: 'displayName', mentionSelect: formatSelectedUser, disableSearch: true }"
                     [mentionListTemplate]="mentionListTemplate"
                     (searchTerm)="doSearch($event)"
                     ></textarea>
