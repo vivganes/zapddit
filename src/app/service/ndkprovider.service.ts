@@ -19,7 +19,6 @@ import { ZappeditdbService } from './zappeditdb.service';
 import { NDKUserProfileWithNpub } from '../model/NDKUserProfileWithNpub';
 import { User } from '../model/user';
 import { Constants } from '../util/Constants';
-import { forkJoin } from 'rxjs';
 
 interface ZappedItAppData {
   followedTopics: string;

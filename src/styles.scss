@@ -86,6 +86,11 @@ a{
   outline: none;
 }
 
+mention-list > ul{
+  visibility:visible!important;
+}
+
+
 .hashtag-search{
     border-radius: 1em;
     border: none!important;

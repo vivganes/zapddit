@@ -3,8 +3,25 @@
         <div class="card">
             <div class="card-block">
                 <div class="card-text">
-                    <textarea id='note-text' autocomplete="off" class='compose-note' placeholder="Write something interesting here..." spellcheck="false"></textarea>
+                    <div>
+                    <textarea id='note-text' autocomplete="off" 
+                    class='compose-note' 
+                    placeholder="Write something interesting here..." 
+                    spellcheck="false" 
+                    [mentionConfig]="{ items: (searchResults$ | async) || [], labelKey: 'name', mentionSelect: formatSelectedUser, disableSearch: true }"
+                    [mentionListTemplate]="mentionListTemplate"
+                    (searchTerm)="doSearch($event)"
+                    ></textarea>
+                    </div>
                 </div>
+                <ng-template #mentionListTemplate class="color-blue" let-item="item">
+                    <span>{{ item.name }}</span>
+                    &nbsp;
+                    <span>{{ item.displayName }}</span>
+                    &nbsp;
+                    <span>{{ item.npub }} </span>
+                  </ng-template>
+                
             </div>
             <div class="card-footer">
                 <button class="btn btn-primary" [clrLoading]="isSendingNote" (click)="sendNote()">Post</button>
@@ -13,3 +30,4 @@
         </div>
     </div>
 </div>
+
