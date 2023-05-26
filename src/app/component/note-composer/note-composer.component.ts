@@ -33,7 +33,6 @@ export class NoteComposerComponent {
   }
 
   getItems(term:string): Observable<User[]> {
-    console.log('getItems:', term);
     if (!term) {
       // if the search term is empty, return an empty array
       return of([]);
@@ -43,7 +42,6 @@ export class NoteComposerComponent {
   }
 
   doSearch(term: string) {
-    console.log(term);
     this.searchTermStream.next(term);
   }
 
@@ -56,20 +54,17 @@ export class NoteComposerComponent {
       return [];
     }
     let usersFromCache = await this.db.peopleIFollow.toArray()
-    console.log(usersFromCache)
     let filteredUsersFromCache = usersFromCache.filter((user:User)=>{
       return user.displayName?.toLocaleLowerCase().startsWith(term)
       || user.name?.toLocaleLowerCase().startsWith(term) 
       || user.npub?.toLocaleLowerCase().startsWith(term)
     })
-    console.log(filteredUsersFromCache)
     return filteredUsersFromCache;
   }
 
   async sendNote(){
     this.isSendingNote = true;
     let noteText = (<HTMLTextAreaElement>document.getElementById('note-text')).value;
-    console.log(noteText);
     let hashTags = this.getHashTagsFromText(noteText);
     let userMentions = this.getUserMentionsFromText(noteText);
     if(userMentions.length > 0){
