@@ -49,15 +49,17 @@ export class EventFeedComponent {
   constructor(ndkProvider: NdkproviderService, private topicService: TopicService,
     private route: ActivatedRoute) {
     this.ndkProvider = ndkProvider;
-    this.ndkProvider.fetchFollowersFromCache().then((cachedUsers:User[]) =>
-        this.users = cachedUsers
-    );
+
     const followedTopicsByNdk = ndkProvider.appData.followedTopics;
     if (followedTopicsByNdk === '') {
       this.followedTopics = [];
     } else {
       this.followedTopics = followedTopicsByNdk.split(',');
     }
+
+    this.ndkProvider.fetchFollowersFromCache().then((cachedUsers:User[]) =>
+      this.users = cachedUsers
+    );
     route.params.subscribe(params => {
       let topic = params['topic'];
       if(topic){
@@ -122,7 +124,7 @@ export class EventFeedComponent {
           }
         } else {
           this.reachedEndOfFeed = true
-        }      
+        }
     } else {
       if(this.followedTopics && this.followedTopics.length > 0){
         this.nextEvents = await this.ndkProvider.fetchAllFollowedEvents(

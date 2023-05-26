@@ -19,6 +19,7 @@ import { ZappeditdbService } from './zappeditdb.service';
 import { NDKUserProfileWithNpub } from '../model/NDKUserProfileWithNpub';
 import { User } from '../model/user';
 import { Constants } from '../util/Constants';
+import { forkJoin } from 'rxjs';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -267,51 +268,44 @@ export class NdkproviderService {
       return new Set<NDKUser>;
   }
 
-  private async getFollowersUserProfile(){
-    const ndkUsers = (await this.fetchFollowersForCurrentLoggedInUser());
-    let ndkUsersArray : NDKUser[] = [];
+  async fetchFollowersAndCache(peopleIFollowFromRelay:Set<NDKUser> | undefined){
+    if(peopleIFollowFromRelay && peopleIFollowFromRelay?.size>0){
 
-    if(ndkUsers?.values && ndkUsers?.size > 0){
-      ndkUsersArray = Array.from(ndkUsers);
-    }
+      var ndkUsersArray=Array.from(peopleIFollowFromRelay);
 
-    return ndkUsersArray.map(async item =>
-      {
-        return await this.getProfileFromNpub(item.npub);
-      });
-  }
-
-  async fetchFollowers(){
-    let followerUserProfilesPromise = await this.getFollowersUserProfile();
-    return Promise.all(followerUserProfilesPromise);
-  }
-
-  async fetchFollowersAndCache(){
-    this.fetchFollowers().then((userProfiles) =>{
-      userProfiles.forEach(item =>{
-            NDKUser.fromNip05(item?.nip05!).then(async user =>{
-                const itemWithNpub:NDKUserProfileWithNpub = {
-                  profile:item!, npub:user?.npub!, hexPubKey: user?.hexpubkey()!
-                }
-                await this.addToDb(itemWithNpub);
-              })
+      ndkUsersArray.forEach(item =>{
+        item.fetchProfile().then(res=>
+          this.dbService.peopleIFollow.add({
+            hexPubKey:item.hexpubkey(),
+            name: item.profile?.name!,
+            displayName: item.profile?.displayName!,
+            nip05: item.profile?.nip05!,
+            npub: item.npub,
+            pictureUrl: item.profile?.image!,
+            about:item.profile?.about!
+          }, item.npub)
+        )
       })
-    })
+    }
   }
 
   async fetchFollowersFromCache(): Promise<User[]>{
-    var usersFromCache = await this.dbService.peopleIFollow.toArray();
-    if((usersFromCache && usersFromCache.length === 0) ||
-    (usersFromCache && usersFromCache.length !== (await this.fetchFollowersForCurrentLoggedInUser())?.values.length)){
-      await this.fetchFollowersAndCache();
+    var peopleIFollowFromCache = await this.dbService.peopleIFollow.toArray();
+    console.log("PeopleIFollow from cache "+peopleIFollowFromCache?.length);
+
+    var peopleIFollowFromRelay = await this.currentUser?.follows();
+    console.log("PeopleIFollow from relay "+peopleIFollowFromRelay?.size);
+
+    if((peopleIFollowFromCache?.length === 0) || peopleIFollowFromCache?.length !== peopleIFollowFromRelay?.size){
+        await this.fetchFollowersAndCache(peopleIFollowFromRelay);
     }
 
     return await this.dbService.peopleIFollow.toArray();
   }
 
   private async addToDb(item: NDKUserProfileWithNpub){
-    if((await this.dbService.peopleIFollow.where("npub").equalsIgnoreCase(item.npub).toArray()).length === 0)
-    this.dbService.peopleIFollow.add({
+      console.log("adding follower - "+item.profile?.name);
+      this.dbService.peopleIFollow.add({
       hexPubKey:item.hexPubKey,
       name: item.profile?.name!,
       displayName: item.profile?.displayName!,
