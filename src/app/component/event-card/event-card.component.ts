@@ -96,6 +96,7 @@ export class EventCardComponent {
 
   async getRelatedEventsAndSegregate(){
     if(this.event){
+      let currentEvent = this.event;
       this.loadingRelatedEvents = true;
       let relatedEvents = await this.ndkProvider.getRelatedEventsOfNote(this.event);
       if(relatedEvents){
@@ -104,8 +105,8 @@ export class EventCardComponent {
             let eTags:NDKTag[] = event.getMatchingTags('e');
             let replyToThisEvent = false;
             for(let tag of eTags){
-              if(tag.some((values) => (values.length>2 && values[3] !== undefined))){ // if the note uses markers
-                if(tag.some((values) => (values[1] === this.event?.id && values[3]?.toLowerCase() === 'reply')))
+              if(tag.length > 2 && tag[3] !== undefined){ // if the note uses markers
+                if(tag[1] === currentEvent.id && tag[3] === 'reply')
                   {
                     replyToThisEvent = true
                   }
