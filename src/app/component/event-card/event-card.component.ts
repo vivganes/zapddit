@@ -101,7 +101,21 @@ export class EventCardComponent {
       if(relatedEvents){
         for (let event of relatedEvents) {
           if(event.kind === 1){
-            this.replies = [event, ...this.replies];
+            let eTags:NDKTag[] = event.getMatchingTags('e');
+            let replyToThisEvent = false;
+            for(let tag of eTags){
+              if(tag.some((values) => (values[3]?.toLowerCase() === 'reply'))){ // if the note uses 'reply' convention
+                if(tag.some((values) => (values[1] === this.event?.id && values[3]?.toLowerCase() === 'reply')))
+                  {
+                    replyToThisEvent = true
+                  }
+              } else {
+                replyToThisEvent = true
+              }
+            }
+            if(replyToThisEvent){
+              this.replies = [event, ...this.replies];
+            }            
           } else if (event.kind === 9735){
             this.zaps.add(event);
           } else {

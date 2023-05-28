@@ -1,17 +1,16 @@
-<div class="clr-row clr-justify-content-center">
-    <div class="clr-col-md-8 clr-col-12">
+<div class="{{ 'clr-row clr-justify-content-center'+ (isReply? 'clr-row reply-card' : '') }}">
+    <div class="{{ isReply ? 'clr-col-12' :'clr-col-md-8 clr-col-12' }}">
         <div class="card">
             <div class="card-block">
                 <div class="card-text">
                     <div>
-                    <textarea id='note-text' autocomplete="off" 
-                    class='compose-note' 
-                    placeholder="Write something interesting here..." 
-                    spellcheck="false" 
-                    [mentionConfig]="{ items: (searchResults$ | async) || [], labelKey: 'displayName', mentionSelect: formatSelectedUser, disableSearch: true }"
-                    [mentionListTemplate]="mentionListTemplate"
-                    (searchTerm)="doSearch($event)"
-                    ></textarea>
+                        <textarea #noteText id='note-text' autocomplete="off" 
+                        class="{{ isReply? 'compose-reply': 'compose-note' }} clr-textarea"
+                        placeholder="Write something interesting here..." 
+                        [mentionConfig]="{ items: (searchResults$ | async) || [], labelKey: 'displayName', mentionSelect: formatSelectedUser, disableSearch: true }"
+                        [mentionListTemplate]="mentionListTemplate"
+                        (searchTerm)="doSearch($event)"
+                        ></textarea>
                     </div>
                 </div>
                 <ng-template #mentionListTemplate class="color-blue" let-item="item">

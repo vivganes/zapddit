@@ -86,6 +86,24 @@ a{
   outline: none;
 }
 
+.compose-reply{
+  width: 100%;
+  height: 4rem;
+  border: none;
+  outline: none;
+}
+
+.compose-note:focus,
+.compose-reply:focus{
+  outline: none !important;
+}
+
+.reply-container{
+  border-left-style: solid!important;
+  border-left: 1px;
+  border-left-color: var(--clr-btn-primary-border-color,hsl(198, 65%, 57%));
+}
+
 mention-list > ul{
   visibility:visible!important;
 }

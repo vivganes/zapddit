@@ -31,6 +31,7 @@ export class EventFeedComponent {
   nextEvents: Set<NDKEvent> | undefined;
 
   ndkProvider: NdkproviderService;
+
   ngOnInit() {
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       if (followedTopics === '') {
@@ -48,6 +49,7 @@ export class EventFeedComponent {
 
   constructor(ndkProvider: NdkproviderService, private topicService: TopicService,
     private route: ActivatedRoute) {
+    console.log("creating feed component")
     this.ndkProvider = ndkProvider;
 
     const followedTopicsByNdk = ndkProvider.appData.followedTopics;

@@ -241,7 +241,7 @@ export class NdkproviderService {
     return this.currentUserProfile;
   }
 
-  async sendNote(text:string, hashtags?:string[], userMentionsHex?:string[], postMentions?:string[]){
+  async sendNote(text:string, hashtags?:string[], userMentionsHex?:string[], postMentions?:string[], replyingToEvent?:NDKEvent){
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 1;
     ndkEvent.content = text;
@@ -250,7 +250,14 @@ export class NdkproviderService {
       tags.push(...hashtags?.map(hashtag =>  ['t',hashtag.toLocaleLowerCase()]))
     }
     if(userMentionsHex){
-      tags.push(...userMentionsHex?.map(userMention => ['p',userMention]));
+      tags.push(...userMentionsHex?.map(userMention => ['p',userMention]));     
+    }
+    if(postMentions){
+      tags.push(...postMentions?.map(postMention => ['e',postMention,'','mention']));      
+    }
+    if(replyingToEvent){
+      tags.push(...replyingToEvent.getMatchingTags('p'));
+      tags.push(['e',replyingToEvent.id,'','reply']);
     }
     ndkEvent.tags = tags;
     ndkEvent.publish();

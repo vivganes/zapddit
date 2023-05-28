@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Observable, Subject, debounceTime, filter, from, of, switchMap } from 'rxjs';
 import { User } from 'src/app/model/user';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { LoginUtil } from 'src/app/util/LoginUtil';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
+import { NDKEvent } from '@nostr-dev-kit/ndk';
 
 const HASHTAG_REGEX=/(#[^\s!@#$%^&*()=+.\/,\[{\]};:'"?><]+)/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
+
+const NOSTR_NOTE_REGEX = /nostr:(note1[\S]*)/gi;
+
 
 @Component({
   selector: 'app-note-composer',
@@ -16,6 +20,14 @@ const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
 
 export class NoteComposerComponent {
 
+  @Input()
+  isReply:boolean = false;
+
+  @Input()
+  parentEvent?:NDKEvent;
+
+  @ViewChild('noteText') 
+  noteText?: ElementRef<HTMLInputElement>;
   isSendingNote:boolean = false;
   noteSent:boolean = false;
   searchResults$: Observable<any[]> = of([]);
@@ -64,21 +76,21 @@ export class NoteComposerComponent {
 
   async sendNote(){
     this.isSendingNote = true;
-    let noteText = (<HTMLTextAreaElement>document.getElementById('note-text')).value;
+    let noteText =this.noteText?.nativeElement.value;
+    if(noteText){
     let hashTags = this.getHashTagsFromText(noteText);
-    let userMentions = this.getUserMentionsFromText(noteText);
-    if(userMentions.length > 0){
-      
-    }
-    await this.ndkProvider.sendNote(noteText,hashTags,userMentions);
+    let userMentions = this.getUserMentionsFromText(noteText); 
+    let noteMentions = this.getNoteMentionsFromText(noteText);
+    await this.ndkProvider.sendNote(noteText,hashTags,userMentions,noteMentions,this.parentEvent);
     this.isSendingNote = false;
-    (<HTMLTextAreaElement>document.getElementById('note-text')).value='';
+    if(this.noteText){
+      this.noteText.nativeElement.value='';
+    }
     this.noteSent =true;
-
       setTimeout(()=>{
         this.noteSent = false;
       }, 3000)
-
+    }
   }
 
   getHashTagsFromText(text:string){
@@ -92,6 +104,13 @@ export class NoteComposerComponent {
     const userMentionMatches = [...text.matchAll(NOSTR_NPUB_REGEX)];
     return userMentionMatches.map(userMention => {
       return LoginUtil.bech32ToHex(userMention[1])
+    });
+  }
+
+  getNoteMentionsFromText(text:string){
+    const noteMentionMatches = [...text.matchAll(NOSTR_NOTE_REGEX)];
+    return noteMentionMatches.map(noteMention => {
+      return LoginUtil.bech32ToHex(noteMention[1])
     });
   }
 
