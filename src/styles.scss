@@ -75,6 +75,13 @@ a{
   color: var(--clr-link-active-color,hsl(198, 65%, 57%)) !important
 }
 
+.hashtag-link:hover{
+  background-color:var(--clr-link-active-color,hsl(198, 65%, 57%)) !important;
+  color: #fff!important;
+  border-radius: 5px;
+  padding:2px;
+}
+
 .reply-card{
   margin-left:5px;
 }

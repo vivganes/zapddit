@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-hashtag',
@@ -7,6 +8,18 @@ import { Component, Input } from '@angular/core';
 })
 export class HashtagComponent {
 
-@Input()
-topic:string|undefined
+
+  @Input()
+  topic:string|undefined
+
+
+  constructor(private router:Router){
+
+  }
+
+  navigateToNewTopic(mouseEvent:any){
+    mouseEvent.stopImmediatePropagation();
+    mouseEvent.preventDefault();
+    this.router.navigateByUrl('t/'+this.topic)
+  }
 }

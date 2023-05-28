@@ -93,7 +93,7 @@ export class EventCardComponent {
   }
 
   openQuotedEvent(mouseEvent: any){
-    mouseEvent.stopPropagation();
+    mouseEvent.stopImmediatePropagation();
     mouseEvent.preventDefault();
     this.router.navigateByUrl('n/'+this.event?.id)
   }
