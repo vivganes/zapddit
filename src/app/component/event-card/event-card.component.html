@@ -100,7 +100,7 @@
       <cds-icon shape="bolt" direction="up"></cds-icon>{{ downZapTotalMilliSats/1000 | shortNumber }} Downzap
     </button>
     <button *ngIf="!showingComments" class="btn btn-sm btn-icon btn-link" title="Show Comments"  (click)="showComments()">
-      <cds-icon  shape="chat-bubble"></cds-icon> {{ replies.length }} Comment{{replies.length==1?'':'s'}}
+      <cds-icon shape="chat-bubble"></cds-icon> {{ replies.length>0 ? replies.length :'' }} Comment{{replies.length>1?'s':''}}
     </button>
     <button *ngIf="showingComments"  class="btn btn-sm btn-icon btn-link" title="Hide Comments" (click)="hideComments()">
       <cds-icon  shape="eye-hide"></cds-icon> {{ replies.length }} Comment{{replies.length==1?'':'s'}}

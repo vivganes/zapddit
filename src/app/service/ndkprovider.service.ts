@@ -260,7 +260,7 @@ export class NdkproviderService {
       tags.push(['e',replyingToEvent.id,'','reply']);
     }
     ndkEvent.tags = tags;
-    ndkEvent.publish();
+    await ndkEvent.publish();
   }
 
   private async fetchFollowersForCurrentLoggedInUser():Promise<Set<NDKUser> | undefined>{
