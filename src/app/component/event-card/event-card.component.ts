@@ -104,7 +104,7 @@ export class EventCardComponent {
             let eTags:NDKTag[] = event.getMatchingTags('e');
             let replyToThisEvent = false;
             for(let tag of eTags){
-              if(tag.some((values) => (values[3]?.toLowerCase() === 'reply'))){ // if the note uses 'reply' convention
+              if(tag.some((values) => (values.length>2 && values[3] !== undefined))){ // if the note uses markers
                 if(tag.some((values) => (values[1] === this.event?.id && values[3]?.toLowerCase() === 'reply')))
                   {
                     replyToThisEvent = true
