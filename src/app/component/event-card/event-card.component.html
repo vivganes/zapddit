@@ -131,7 +131,7 @@
 </div>
 <ng-template [ngIf]="showingComments">
   <div class="reply-container">
-    <app-note-composer [isReply]="true" [parentEvent]="event"></app-note-composer>
+    <app-note-composer [isReply]="true" [parentEvent]="event" (postedEventEmitter)="addReply($event)"></app-note-composer>
     <ng-template [ngIf]="!loadingRelatedEvents">
       <div *ngFor="let replyEvent of replies" class="clr-row reply-card">
         <div class="clr-col-12 clr-col-md-12">

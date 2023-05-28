@@ -80,6 +80,10 @@ export class EventCardComponent {
     this.getOnlineVideoUrls();
   }
 
+  addReply(reply: NDKEvent){
+    this.replies = [reply, ...this.replies];
+  }
+
   showComments(){
     this.showingComments = true;
   }

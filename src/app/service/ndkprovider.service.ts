@@ -241,7 +241,7 @@ export class NdkproviderService {
     return this.currentUserProfile;
   }
 
-  async sendNote(text:string, hashtags?:string[], userMentionsHex?:string[], postMentions?:string[], replyingToEvent?:NDKEvent){
+  async sendNote(text:string, hashtags?:string[], userMentionsHex?:string[], postMentions?:string[], replyingToEvent?:NDKEvent): Promise<NDKEvent>{
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 1;
     ndkEvent.content = text;
@@ -260,7 +260,11 @@ export class NdkproviderService {
       tags.push(['e',replyingToEvent.id,'','reply']);
     }
     ndkEvent.tags = tags;
+    if(this.currentUser){
+      ndkEvent.pubkey = this.currentUser?.hexpubkey();
+    }
     await ndkEvent.publish();
+    return ndkEvent;
   }
 
   private async fetchFollowersForCurrentLoggedInUser():Promise<Set<NDKUser> | undefined>{

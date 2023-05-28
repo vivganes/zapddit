@@ -82,11 +82,7 @@ export class EventFeedComponent {
     if (this.tag && this.tag !== '') {
       const fetchedEvents = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
       if(fetchedEvents){
-        let mutedTopicsArr:string[] = []
-        if(this.ndkProvider.appData.mutedTopics && this.ndkProvider.appData.mutedTopics !== ''){
-          mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
-        }
-        this.events = new Set([...fetchedEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)));
+        this.removeMutedAndSetEvents(fetchedEvents);
       }
       this.loadingEvents = false;
     } else {
@@ -98,14 +94,26 @@ export class EventFeedComponent {
           this.until
         );
         if(fetchedEvents){
-          let mutedTopicsArr:string[] = []
-          if(this.ndkProvider.appData.mutedTopics && this.ndkProvider.appData.mutedTopics !== ''){
-            mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
-          }
-          this.events = new Set([...fetchedEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)));
+          this.removeMutedAndSetEvents(fetchedEvents);
         }
       }
       this.loadingEvents=false;
+    }
+  }
+
+  private removeMutedAndSetEvents(fetchedEvents: Set<NDKEvent>) {
+    let mutedTopicsArr: string[] = [];
+    if (this.ndkProvider.appData.mutedTopics && this.ndkProvider.appData.mutedTopics !== '') {
+          mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',');
+    }
+    this.events = new Set([...fetchedEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)));
+  }
+
+  addEventToFeed(postedEvent: NDKEvent){
+    if(this.events){
+      this.removeMutedAndSetEvents(new Set([postedEvent].concat(...this.events)));
+    } else {
+      this.removeMutedAndSetEvents(new Set([postedEvent]));
     }
   }
 

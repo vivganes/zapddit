@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Observable, Subject, debounceTime, filter, from, of, switchMap } from 'rxjs';
 import { User } from 'src/app/model/user';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
@@ -25,6 +25,12 @@ export class NoteComposerComponent {
 
   @Input()
   parentEvent?:NDKEvent;
+
+  @Input()
+  currentTag?:string;
+  
+  @Output()
+  postedEventEmitter:  EventEmitter<NDKEvent> = new EventEmitter<NDKEvent>();
 
   @ViewChild('noteText') 
   noteText?: ElementRef<HTMLInputElement>;
@@ -81,10 +87,11 @@ export class NoteComposerComponent {
     let hashTags = this.getHashTagsFromText(noteText);
     let userMentions = this.getUserMentionsFromText(noteText); 
     let noteMentions = this.getNoteMentionsFromText(noteText);
-    await this.ndkProvider.sendNote(noteText,hashTags,userMentions,noteMentions,this.parentEvent);
+    let postedEvent = await this.ndkProvider.sendNote(noteText,hashTags,userMentions,noteMentions,this.parentEvent);
     this.isSendingNote = false;
+    this.postedEventEmitter.emit(postedEvent);
     if(this.noteText){
-      this.noteText.nativeElement.value='';
+      this.noteText.nativeElement.value= this.currentTag? '#'+this.currentTag+' ' : '';
     }
     this.noteSent =true;
       setTimeout(()=>{

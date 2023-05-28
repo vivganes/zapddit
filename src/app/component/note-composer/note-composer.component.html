@@ -10,7 +10,7 @@
                         [mentionConfig]="{ items: (searchResults$ | async) || [], labelKey: 'displayName', mentionSelect: formatSelectedUser, disableSearch: true }"
                         [mentionListTemplate]="mentionListTemplate"
                         (searchTerm)="doSearch($event)"
-                        ></textarea>
+                        >{{ (currentTag ? '#'+currentTag+' ' : '') }}</textarea>
                     </div>
                 </div>
                 <ng-template #mentionListTemplate class="color-blue" let-item="item">
@@ -23,7 +23,7 @@
             </div>
             <div class="card-footer">
                 <button class="btn btn-primary" [disabled]="(!noteText.value) || (noteText.value.trim() === '')" [clrLoading]="isSendingNote" (click)="sendNote()">Post</button>
-                <span *ngIf="noteSent">✅ Note posted!</span>
+                <span *ngIf="noteSent">✅ {{ (isReply? 'Reply' : 'Note')  }} posted!</span>
             </div>
         </div>
     </div>
