@@ -15,6 +15,7 @@ export class ContactCardComponent implements OnInit {
   contact:User | undefined;
   event: NDKEvent | undefined;
   unfollowed:boolean = false;
+  eventInProgress:boolean = false;
 
   @Output()
   contactListUpdated = new EventEmitter<boolean>();
@@ -37,14 +38,18 @@ export class ContactCardComponent implements OnInit {
   }
 
   unFollow(authorHexPubKey?:string){
+    this.eventInProgress = true;
     this.ndkProvider.followUnfollowContact(authorHexPubKey!, false).then(async res => {
       this.dbService.peopleIFollow.where('hexPubKey').equalsIgnoreCase(authorHexPubKey!.toString()).delete().then(()=>{
         console.log("Contact removed");
+        this.eventInProgress = false;
         this.contactListUpdated.emit(true);
       })
     }, err=>{
       console.log(err);
-    }).catch(function(error) {
+      this.eventInProgress = false;
+    }).catch((error) => {
+      this.eventInProgress = false;
       console.error ("Error from unfollow: " + error);
     });
    }

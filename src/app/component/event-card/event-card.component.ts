@@ -54,6 +54,7 @@ export class EventCardComponent {
   showMediaFromPeopleIFollow:boolean = true;
   linkCopied:boolean = false;
   authorHexPubKey:string|undefined ='';
+  eventInProgress:boolean = false;
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -431,31 +432,42 @@ export class EventCardComponent {
  }
 
  follow(){
+  this.eventInProgress = true;
+
   this.ndkProvider.followUnfollowContact(this.authorHexPubKey!, true).then(async res=>{
     // allow the data to be propagated on the relays and then look for the change in local and relay contacts
     setTimeout(async () =>
     {
       this.ndkProvider.fetchFollowersFromCache().then(()=>{
         // wait for the user to be persisted in the db and then re-check to enable the media based on followed/unfollowed state
-        setTimeout(()=>this.getAuthor(),10000);
+        setTimeout(()=>{
+          this.getAuthor()
+          this.eventInProgress = false;
+        },10000);
       })
     },10000);
   }, err=>{
     console.log(err);
-  }).catch(function(error) {
+    this.eventInProgress = false;
+  }).catch((error)=> {
+    this.eventInProgress = false;
     console.error ("Error from follow: " + error);
   });
  }
 
  unFollow(){
+  this.eventInProgress = true;
   this.ndkProvider.followUnfollowContact(this.authorHexPubKey!, false).then(async res => {
     this.dbService.peopleIFollow.where('hexPubKey').equalsIgnoreCase(this.authorHexPubKey!.toString()).delete().then(()=>{
       console.log("Contact removed")
-      this.getAuthor()
+      this.getAuthor();
+      this.eventInProgress = false;
     })
   }, err=>{
     console.log(err);
-  }).catch(function(error) {
+    this.eventInProgress = false;
+  }).catch((error)=> {
+    this.eventInProgress = false;
     console.error ("Error from unfollow: " + error);
   });
  }

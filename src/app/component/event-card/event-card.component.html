@@ -18,12 +18,12 @@
       </div>
       <div class="clr-col-1">
         <ng-template [ngIf]="!amIFollowingtheAuthor">
-          <button class="btn btn-sm"  (click)="follow()">
+          <button class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
           Follow
           </button>
         </ng-template>
         <ng-template [ngIf]="amIFollowingtheAuthor">
-          <button class="btn btn-sm"  (click)="unFollow()">
+          <button class="btn btn-sm" [disabled]="eventInProgress" (click)="unFollow()">
             Unfollow
           </button>
         </ng-template>
