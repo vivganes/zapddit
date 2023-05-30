@@ -18,7 +18,8 @@ import {
   imageIcon,
   trashIcon,
   shareIcon,
-  chatBubbleIcon
+  chatBubbleIcon,
+  paperclipIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
@@ -29,7 +30,7 @@ import { share } from 'rxjs';
 import { Constants } from './util/Constants';
 
 
-ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon);
+ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

@@ -5,6 +5,7 @@ import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { LoginUtil } from 'src/app/util/LoginUtil';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
+import Uploader from 'src/app/util/Uploader';
 
 const HASHTAG_REGEX=/(#[^\s!@#$%^&*()=+.\/,\[{\]};:'"?><]+)/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
@@ -37,6 +38,8 @@ export class NoteComposerComponent {
   isSendingNote:boolean = false;
   noteSent:boolean = false;
   searchResults$: Observable<any[]> = of([]);
+  uploadingNow: boolean = false;
+  uploadError?: string;
   private searchTermStream = new Subject<string>();
 
   constructor(private ndkProvider: NdkproviderService, private db: ZappeditdbService){
@@ -98,6 +101,60 @@ export class NoteComposerComponent {
         this.noteSent = false;
       }, 3000)
     }
+  }
+
+  async attachFile() {
+    try {
+      this.uploadingNow = true;
+      const file = await this.openFile();
+      if (file) {
+        this.uploadFile(file);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error)
+        this.uploadError = error.message;
+      }
+    } finally{
+      this.uploadingNow = false;
+    }
+  }
+
+  async uploadFile(file: File | Blob) {
+    try {
+      if (file) {
+        const uploaderResponse = await Uploader.upload(file);
+        if (uploaderResponse.url) {
+          if(this.noteText){
+            this.noteText.nativeElement.value += '\n '+uploaderResponse.url;
+          }
+        } else if (uploaderResponse?.error) {
+          this.uploadError = uploaderResponse?.error;
+
+        }
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        this.uploadError = error.message;
+      }
+    }
+  }
+
+  async openFile(): Promise<File | undefined> {
+    return new Promise(resolve => {
+      const newElement = document.createElement("input");
+      newElement.type = "file";
+      newElement.accept = "image/*";
+      newElement.onchange = (e: Event) => {
+        const currentElement = e.target as HTMLInputElement;
+        if (currentElement.files) {
+          resolve(currentElement.files[0]);
+        } else {
+          resolve(undefined);
+        }
+      };
+      newElement.click();
+    });
   }
 
   getHashTagsFromText(text:string){
