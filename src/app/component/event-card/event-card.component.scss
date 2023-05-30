@@ -10,3 +10,26 @@
 .p-8{
   padding:8px
 }
+
+.follow-ml8{
+  margin-left:8px
+}
+
+.next{
+  display: flex;
+  flex-direction: row;
+}
+
+@media only screen
+and (max-width : 576px) {
+  .next{
+    display: flex;
+    flex-direction: column;
+  }
+
+
+.follow-ml8{
+  margin-left:0px
+}
+}
+
