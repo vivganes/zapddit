@@ -23,6 +23,7 @@ import { PeopleIFollowComponent } from './component/peopleifollow/peopleifollow.
 import { UserMentionComponent } from './component/user-mention/user-mention.component';
 import { QuotedEventComponent } from './component/quoted-event/quoted-event.component';
 import { NoteComposerComponent } from './component/note-composer/note-composer.component';
+import { ContactCardComponent } from './component/contact-card/contact-card.component';
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
@@ -45,7 +46,8 @@ const componentParsers: Array<HookParserEntry> = [
     PeopleIFollowComponent,
     UserMentionComponent,
     QuotedEventComponent,
-    NoteComposerComponent
+    NoteComposerComponent,
+    ContactCardComponent
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers

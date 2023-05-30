@@ -1,0 +1,22 @@
+<div class="card">
+  <div class="card-block">
+    <div class="card-media-block">
+      <img *ngIf="contact?.pictureUrl"  alt="Profile picture" src="{{ contact?.pictureUrl }}" class="card-media-image pointer-cursor" title="Open in Snort" (click)="openInSnort(contact)"/>
+      <img alt="temp avatar"
+        *ngIf="contact?.pictureUrl=== undefined"
+        class="card-media-image pointer-cursor"
+        src="https://robohash.org/{{ (contact?.name)?(contact?.name):'a' }}.png?size=100x100"
+        title="Open in Snort" (click)="openInSnort(contact)"/>
+        <div class="card-media-description">
+          <div>
+            <span class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openInSnort(contact)"> <strong>{{ contact?.displayName }} </strong>@{{ contact?.name }} </span>
+            <button class="btn btn-sm ml-10" [disabled]="eventInProgress"  (click)="unFollow(contact?.hexPubKey)">
+              {{unfollowed?"Follow":"Unfollow"}}
+            </button>
+          </div>
+          <span class="card-media-meta break-anywhere-overflow"  title="Npub"><cds-icon shape="key" clrverticalnavicon class="nav-icon"></cds-icon> {{ contact?.npub}} </span>
+          <span class="card-media-text break-anywhere-overflow"> {{ contact?.about }} </span>
+        </div>
+    </div>
+  </div>
+</div>

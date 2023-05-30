@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild,  Renderer2 } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter } from '@angular/core';
 import { NDKEvent, NDKTag, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as moment from 'moment';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
@@ -28,13 +28,14 @@ export class EventCardComponent {
 
   @Input()
   event: NDKEvent | undefined;
-
   @Input()
   showingComments: boolean = false;
   @Input()
   isQuotedEvent: boolean = false;
+
   authorWithProfile: NDKUser | undefined;
   canLoadMedia:boolean = false;
+  amIFollowingtheAuthor:boolean  = false;
   imageUrls: RegExpMatchArray | null | undefined;
   videoUrls: Map<string,string|undefined> = new Map<string,string|undefined>();
   onlineVideoUrls:string[] = [];
@@ -52,6 +53,8 @@ export class EventCardComponent {
   hashTagsMap:Map<number,string> = new Map<number,string>();
   showMediaFromPeopleIFollow:boolean = true;
   linkCopied:boolean = false;
+  authorHexPubKey:string|undefined ='';
+  eventInProgress:boolean = false;
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -120,7 +123,7 @@ export class EventCardComponent {
             }
             if(replyToThisEvent){
               this.replies = [event, ...this.replies];
-            }            
+            }
           } else if (event.kind === 9735){
             this.zaps.add(event);
           } else {
@@ -211,10 +214,12 @@ export class EventCardComponent {
   }
 
   async getAuthor() {
-    let authorPubKey = this.event?.pubkey;
+    let authorPubKey = this.authorHexPubKey = this.event?.pubkey;
     if (authorPubKey) {
-      this.canLoadMedia = (await this.dbService.peopleIFollow.where({hexPubKey:authorPubKey.toString()}).toArray()).length > 0;
-      this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey);
+      this.dbService.peopleIFollow.where({hexPubKey:authorPubKey.toString()}).count().then(async count=>{
+          this.amIFollowingtheAuthor = this.canLoadMedia = count > 0;
+          this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey!);
+      })
     }
   }
 
@@ -428,5 +433,46 @@ export class EventCardComponent {
 
  hasMedia():boolean{
   return this.imageUrls!=null && this.imageUrls?.length > 0;
+ }
+
+ follow(){
+  this.eventInProgress = true;
+
+  this.ndkProvider.followUnfollowContact(this.authorHexPubKey!, true).then(async res=>{
+    // allow the data to be propagated on the relays and then look for the change in local and relay contacts
+    setTimeout(async () =>
+    {
+      this.ndkProvider.fetchFollowersFromCache().then(()=>{
+        // wait for the user to be persisted in the db and then re-check to enable the media based on followed/unfollowed state
+        setTimeout(()=>{
+          this.getAuthor()
+          this.eventInProgress = false;
+        },10000);
+      })
+    },10000);
+  }, err=>{
+    console.log(err);
+    this.eventInProgress = false;
+  }).catch((error)=> {
+    this.eventInProgress = false;
+    console.error ("Error from follow: " + error);
+  });
+ }
+
+ unFollow(){
+  this.eventInProgress = true;
+  this.ndkProvider.followUnfollowContact(this.authorHexPubKey!, false).then(async res => {
+    this.dbService.peopleIFollow.where('hexPubKey').equalsIgnoreCase(this.authorHexPubKey!.toString()).delete().then(()=>{
+      console.log("Contact removed")
+      this.getAuthor();
+      this.eventInProgress = false;
+    })
+  }, err=>{
+    console.log(err);
+    this.eventInProgress = false;
+  }).catch((error)=> {
+    this.eventInProgress = false;
+    console.error ("Error from unfollow: " + error);
+  });
  }
 }

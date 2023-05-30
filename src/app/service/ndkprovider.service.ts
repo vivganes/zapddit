@@ -19,6 +19,7 @@ import { ZappeditdbService } from './zappeditdb.service';
 import { NDKUserProfileWithNpub } from '../model/NDKUserProfileWithNpub';
 import { User } from '../model/user';
 import { Constants } from '../util/Constants';
+import * as moment from 'moment';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -250,10 +251,10 @@ export class NdkproviderService {
       tags.push(...hashtags?.map(hashtag =>  ['t',hashtag.toLocaleLowerCase()]))
     }
     if(userMentionsHex){
-      tags.push(...userMentionsHex?.map(userMention => ['p',userMention]));     
+      tags.push(...userMentionsHex?.map(userMention => ['p',userMention]));
     }
     if(postMentions){
-      tags.push(...postMentions?.map(postMention => ['e',postMention,'','mention']));      
+      tags.push(...postMentions?.map(postMention => ['e',postMention,'','mention']));
     }
     if(replyingToEvent){
       tags.push(...replyingToEvent.getMatchingTags('p'));
@@ -285,15 +286,23 @@ export class NdkproviderService {
 
       ndkUsersArray.forEach(item =>{
         item.fetchProfile().then(res=>
-          this.dbService.peopleIFollow.add({
-            hexPubKey:item.hexpubkey(),
-            name: item.profile?.name!,
-            displayName: item.profile?.displayName!,
-            nip05: item.profile?.nip05!,
-            npub: item.npub,
-            pictureUrl: item.profile?.image!,
-            about:item.profile?.about!
-          }, item.npub)
+          this.dbService.peopleIFollow.where('hexPubKey').equalsIgnoreCase(item.hexpubkey())
+          .and(user=>user.displayName !== null && user.displayName !== undefined)
+          .count().then((count)=>{
+            if(count == 0){
+              this.dbService.peopleIFollow.add({
+                hexPubKey:item.hexpubkey(),
+                name: item.profile?.name!,
+                displayName: item.profile?.displayName!,
+                nip05: item.profile?.nip05!,
+                npub: item.npub,
+                pictureUrl: item.profile?.image!,
+                about:item.profile?.about!
+              }, item.npub)
+            }else{
+              console.log("Record already exists")
+            }
+          })
         )
       })
     }
@@ -311,19 +320,6 @@ export class NdkproviderService {
     }
 
     return await this.dbService.peopleIFollow.toArray();
-  }
-
-  private async addToDb(item: NDKUserProfileWithNpub){
-      console.log("adding follower - "+item.profile?.name);
-      this.dbService.peopleIFollow.add({
-      hexPubKey:item.hexPubKey,
-      name: item.profile?.name!,
-      displayName: item.profile?.displayName!,
-      nip05: item.profile?.nip05!,
-      npub: item.npub,
-      pictureUrl: item.profile?.image!,
-      about:item.profile?.about!
-    }, item.npub)
   }
 
   async fetchEvents(tag: string, limit?: number, since?: number, until?: number): Promise<Set<NDKEvent> | undefined> {
@@ -397,6 +393,35 @@ export class NdkproviderService {
       mutedTopics: mutedTopicsToPublish
     }
     this.followedTopicsEmitter.emit(followedTopicsToPublish);
+  }
+
+  async followUnfollowContact(hexPubKeyToFollow:string, follow:boolean){
+    var contactListFromCache = (await this.dbService.peopleIFollow.toArray()).map(item=>item.hexPubKey);
+
+    // if it is a follow event, attach the new contact to the list or else remove from the list if found and publish
+    if(follow){
+      contactListFromCache.push(hexPubKeyToFollow);
+    }else{
+      const index = contactListFromCache.indexOf(hexPubKeyToFollow);
+
+      if (index > -1) {
+        contactListFromCache.splice(index, 1);
+      }
+    }
+
+    var tags:NDKTag[] = contactListFromCache.map((item, index)=>{
+      return ["p", item.toString()]
+    });
+
+    const ndkEvent = new NDKEvent(this.ndk);
+    if(this.currentUser){
+      ndkEvent.pubkey = this.currentUser?.hexpubkey()
+    }
+
+    ndkEvent.tags = tags;
+    ndkEvent.kind = 3;
+    await ndkEvent.sign();
+    return ndkEvent.publish();
   }
 
   fetchLatestAppData() {
