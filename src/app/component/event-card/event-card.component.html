@@ -10,23 +10,25 @@
         src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
         title="Open in Snort" />
       <div class="card-media-description">
-        <div>
-          <span class="card-media-title break-words-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ authorWithProfile?.profile?.name }} </span>
-          <span *ngIf="!authorWithProfile?.profile?.name" class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey }} </span>
-        </div>
-        <span class="card-media-text break-words-overflow"> {{ formatTimestamp(event?.created_at) }} </span>
+        <div class="next">
+          <div>
+            <span class="card-media-title break-words-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ authorWithProfile?.profile?.name }} </span>
+            <span *ngIf="!authorWithProfile?.profile?.name" class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey }} </span>
+          </div>
+          <div class="follow-ml8">
+            <ng-template [ngIf]="!amIFollowingtheAuthor">
+              <button class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
+              Follow
+              </button>
+            </ng-template>
+            <ng-template [ngIf]="amIFollowingtheAuthor">
+              <button class="btn btn-sm" [disabled]="eventInProgress" (click)="unFollow()">
+                Unfollow
+              </button>
+            </ng-template>
+          </div>
       </div>
-      <div class="clr-col-1">
-        <ng-template [ngIf]="!amIFollowingtheAuthor">
-          <button class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
-          Follow
-          </button>
-        </ng-template>
-        <ng-template [ngIf]="amIFollowingtheAuthor">
-          <button class="btn btn-sm" [disabled]="eventInProgress" (click)="unFollow()">
-            Unfollow
-          </button>
-        </ng-template>
+        <span class="card-media-text break-words-overflow"> {{ formatTimestamp(event?.created_at) }} </span>
       </div>
     </div>
     <div *ngIf="!isQuotedEvent" class="break-words-overflow pointer-cursor" [routerLink]="'/n/'+event?.id">
@@ -146,7 +148,7 @@
 </div>
 <ng-template [ngIf]="showingComments">
   <div class="reply-container">
-    <app-note-composer [isReply]="true" [parentEvent]="event" (postedEventEmitter)="addReply($event)"></app-note-composer>
+    <app-note-composer [isReply]="true" [parentEvent]="event"></app-note-composer>
     <ng-template [ngIf]="!loadingRelatedEvents">
       <div *ngFor="let replyEvent of replies" class="clr-row reply-card">
         <div class="clr-col-12 clr-col-md-12">
