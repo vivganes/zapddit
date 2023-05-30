@@ -43,13 +43,16 @@ export class ContactCardComponent implements OnInit {
       this.dbService.peopleIFollow.where('hexPubKey').equalsIgnoreCase(authorHexPubKey!.toString()).delete().then(()=>{
         console.log("Contact removed");
         this.eventInProgress = false;
+        this.unfollowed = true;
         this.contactListUpdated.emit(true);
       })
     }, err=>{
       console.log(err);
       this.eventInProgress = false;
+      this.unfollowed = false;
     }).catch((error) => {
       this.eventInProgress = false;
+      this.unfollowed = false;
       console.error ("Error from unfollow: " + error);
     });
    }

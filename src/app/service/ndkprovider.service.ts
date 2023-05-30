@@ -416,10 +416,7 @@ export class NdkproviderService {
 
     ndkEvent.tags = tags;
     ndkEvent.kind = 3;
-    ndkEvent.content = "{\"wss://nos.lol\":{\"read\":true,\"write\":true}, \"wss://relay.nostr.band\":{\"read\":true,\"write\":true},\"wss://relay.f7z.io\":{\"read\":true,\"write\":true},\"wss://relay.damus.io\":{\"read\":true,\"write\":true},\"wss://nostr.mom\":{\"read\":true,\"write\":true}, \"wss://no.str.cr\":{\"read\":true,\"write\":true}}";
-    //TODO:fix this, generate it from relays array
-    ndkEvent.sign();
-
+    await ndkEvent.sign();
     return ndkEvent.publish();
   }
 
