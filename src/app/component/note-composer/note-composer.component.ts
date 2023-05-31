@@ -123,22 +123,44 @@ export class NoteComposerComponent {
   async uploadFile(file: File | Blob) {
     try {
       if (file) {
+        this.uploadingNow = true;
         const uploaderResponse = await Uploader.upload(file);
         if (uploaderResponse.url) {
           if(this.noteText){
             this.noteText.nativeElement.value += '\n '+uploaderResponse.url;
           }
         } else if (uploaderResponse?.error) {
-          this.uploadError = uploaderResponse?.error;
-
+          this.uploadError = uploaderResponse?.error
         }
       }
     } catch (error) {
       if (error instanceof Error) {
         this.uploadError = error.message;
       }
+    } finally{
+      this.uploadingNow = false;
     }
   }
+
+  handlePaste(evt:ClipboardEvent) {
+    if (evt.clipboardData) {
+      const clipboardItems = evt.clipboardData.items;
+      const items: DataTransferItem[] = Array.from(clipboardItems).filter(function (item: DataTransferItem) {
+        // Filter the image items only
+        return /^image\//.test(item.type);
+      });
+      if (items.length === 0) {
+        return;
+      }
+
+      const item = items[0];
+      const blob = item.getAsFile();
+      if (blob) {
+        this.uploadFile(blob);
+      }
+    }
+  };
+
 
   async openFile(): Promise<File | undefined> {
     return new Promise(resolve => {
