@@ -28,7 +28,7 @@
             </ng-template>
           </div>
       </div>
-        <span class="card-media-text break-words-overflow"> {{ formatTimestamp(event?.created_at) }} </span>
+        <span class="card-media-text break-words-overflow"> {{ event?.created_at | formatTimestamp }} </span>
       </div>
     </div>
     <div *ngIf="!isQuotedEvent" class="break-words-overflow pointer-cursor" [routerLink]="'/n/'+event?.id">
@@ -148,6 +148,7 @@
 </div>
 <ng-template [ngIf]="showingComments">
   <div class="reply-container">
+    <app-note-composer [isReply]="true" [parentEvent]="event"></app-note-composer>
     <ng-template [ngIf]="!loadingRelatedEvents">
       <div *ngFor="let replyEvent of replies" class="clr-row reply-card">
         <div class="clr-col-12 clr-col-md-12">
@@ -155,6 +156,5 @@
         </div>
       </div>
     </ng-template>
-    <app-note-composer [isReply]="true" [parentEvent]="event"></app-note-composer>
   </div>
 </ng-template>

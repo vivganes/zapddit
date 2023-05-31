@@ -24,6 +24,7 @@ import { UserMentionComponent } from './component/user-mention/user-mention.comp
 import { QuotedEventComponent } from './component/quoted-event/quoted-event.component';
 import { NoteComposerComponent } from './component/note-composer/note-composer.component';
 import { ContactCardComponent } from './component/contact-card/contact-card.component';
+import { formatTimestampPipe } from './pipe/formatTimeStamp.pipe';
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
@@ -40,6 +41,7 @@ const componentParsers: Array<HookParserEntry> = [
     EventCardComponent,
     SinglePostComponent,
     ShortNumberPipe,
+    formatTimestampPipe,
     HashtagComponent,
     PreferencesPageComponent,
     LoginPageComponent,

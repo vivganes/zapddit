@@ -1,8 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EventCardComponent } from './event-card.component';
+import { CommonTestingModule } from 'src/app/testing/CommonTestingModule';
 
 describe('EventCardComponent', () => {
+
+  CommonTestingModule.setUpTestBed(EventCardComponent)
+
   let component: EventCardComponent;
   let fixture: ComponentFixture<EventCardComponent>;
 

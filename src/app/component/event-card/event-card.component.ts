@@ -231,14 +231,6 @@ export class EventCardComponent {
     return '';
   }
 
-  formatTimestamp(timestamp: number | undefined): string {
-    if (timestamp) {
-      return moment(timestamp * 1000).fromNow();
-    } else {
-      return 'Unknown time';
-    }
-  }
-
   linkifyContent(content?:string): string {
     const options = {
       defaultProtocol: 'https',

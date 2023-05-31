@@ -1,8 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PreferencesPageComponent } from './preferences-page.component';
+import { CommonTestingModule } from 'src/app/testing/CommonTestingModule';
 
 describe('PreferencesPageComponent', () => {
+
+  CommonTestingModule.setUpTestBed(PreferencesPageComponent)
+
   let component: PreferencesPageComponent;
   let fixture: ComponentFixture<PreferencesPageComponent>;
 
