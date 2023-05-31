@@ -6,7 +6,7 @@
                     <div>
                         <textarea #noteText id='note-text' autocomplete="off" 
                         class="{{ isReply? 'compose-reply': 'compose-note' }} clr-textarea"
-                        placeholder="Write something interesting here..." 
+                        placeholder="{{isReply? 'Comment' : 'Write'}} something interesting here..." 
                         [mentionConfig]="{ items: (searchResults$ | async) || [], labelKey: 'displayName', mentionSelect: formatSelectedUser, disableSearch: true }"
                         [mentionListTemplate]="mentionListTemplate"
                         (searchTerm)="doSearch($event)"
