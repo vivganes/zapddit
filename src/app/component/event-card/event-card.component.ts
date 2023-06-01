@@ -33,6 +33,7 @@ export class EventCardComponent {
   @Input()
   isQuotedEvent: boolean = false;
 
+  mutedAuthor:boolean = false;
   authorWithProfile: NDKUser | undefined;
   canLoadMedia:boolean = false;
   amIFollowingtheAuthor:boolean  = false;
@@ -219,6 +220,10 @@ export class EventCardComponent {
       this.dbService.peopleIFollow.where({hexPubKey:authorPubKey.toString()}).count().then(async count=>{
           this.amIFollowingtheAuthor = this.canLoadMedia = count > 0;
           this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey!);
+      })
+
+      this.dbService.mutedPeople.where({hexPubKey:this.event?.pubkey.toString()}).count().then(count=>{
+        this.mutedAuthor = count > 0;
       })
     }
   }
