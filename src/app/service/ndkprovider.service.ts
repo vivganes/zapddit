@@ -328,6 +328,9 @@ export class NdkproviderService {
   }
 
   async fetchEventFromId(id:string){
+    if(id.startsWith('note1')){
+      id = LoginUtil.bech32ToHex(id);
+    }
     const filter:NDKFilter = { kinds: [1], ids:[id]}
     return this.ndk?.fetchEvent(filter);
   }
