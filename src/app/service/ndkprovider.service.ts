@@ -1,4 +1,6 @@
+
 import { EventEmitter, Injectable, Output } from '@angular/core';
+import { IndexableType, Table } from 'dexie';
 import NDK, {
   type NDKConstructorParams,
   NDKNip07Signer,
@@ -273,29 +275,25 @@ export class NdkproviderService {
     return ndkEvent;
   }
 
-  private async fetchFollowersForCurrentLoggedInUser():Promise<Set<NDKUser> | undefined>{
-    try{
-      if(this.currentUser){
-        return this.fetchFollowersFromNpub(this.currentUser.npub)
-      }
-    } catch(e){
-      console.log(e);
-    }
-      return new Set<NDKUser>;
-  }
-
   async fetchFollowersAndCache(peopleIFollowFromRelay:Set<NDKUser> | undefined){
     if(peopleIFollowFromRelay && peopleIFollowFromRelay?.size>0){
 
       var ndkUsersArray=Array.from(peopleIFollowFromRelay);
 
-      ndkUsersArray.forEach(item =>{
+      for(const item of ndkUsersArray){
         item.fetchProfile().then(res=>
-          this.dbService.peopleIFollow.where('hexPubKey').equalsIgnoreCase(item.hexpubkey())
+            this.addToDB(item, this.dbService.peopleIFollow).then(res=> console.log("user added"))
+        ).catch( e=> console.error("fetchprofile for followers - "+e))
+      }
+    }
+  }
+
+  async addToDB(item:NDKUser, table: Table<User,IndexableType>){
+    table.where('hexPubKey').equalsIgnoreCase(item.hexpubkey())
           .and(user=>user.displayName !== null && user.displayName !== undefined)
-          .count().then((count)=>{
+          .count().then(async (count)=>{
             if(count == 0){
-              this.dbService.peopleIFollow.add({
+              table.add({
                 hexPubKey:item.hexpubkey(),
                 name: item.profile?.name!,
                 displayName: item.profile?.displayName!,
@@ -305,12 +303,46 @@ export class NdkproviderService {
                 about:item.profile?.about!
               }, item.npub)
             }else{
-              console.log("Record already exists")
+              console.log("User already exists")
             }
-          })
-        )
+          }).catch(e=>console.error("db call - "+e))
+  }
+
+  async fetchMutedPeopleAndCache(peopleIMutedFromRelay:(NDKUser|undefined)[]){
+    if(peopleIMutedFromRelay && peopleIMutedFromRelay?.length>0){
+
+      var ndkUsersArray=Array.from(peopleIMutedFromRelay);
+
+      for(const item of ndkUsersArray){
+        if(item){
+          item.fetchProfile().then(res=>
+            this.addToDB(item, this.dbService.mutedPeople).then(res=> console.log("user added"))
+        ).catch( e=> console.error("fetchprofile for followers - "+e))
+      }
+    }
+  }
+}
+
+  async fetchMuteList(hexPubKey:string){
+    //1739d937dc8c0c7370aa27585938c119e25c41f6c441a5d34c6d38503e3136ef
+    //npub1zuuajd7u3sx8xu92yav9jwxpr839cs0kc3q6t56vd5u9q033xmhsk6c2uc - jeffg.fyi
+    const filter: NDKFilter = { kinds: [30000], '#d': ['mute'], authors:[hexPubKey]};
+    var mutedListResult = await this.ndk?.fetchEvents(filter);
+
+    var mutedListEvent:NDKEvent = mutedListResult?.values().next().value;
+
+    var mutedList = mutedListEvent.tags.flat().filter(item=> item!=='d' && item !== 'p' && item!=='mute');
+
+    var mutedNDKUsers:(NDKUser | undefined)[] = [];
+
+    for (const item of mutedList) {
+      this.getNdkUserFromHex(item).then(ndkUser =>{
+        mutedNDKUsers.push(ndkUser);
+        console.log("muted user from relay "+JSON.stringify(ndkUser));
       })
     }
+
+    return mutedNDKUsers;
   }
 
   async fetchFollowersFromCache(): Promise<User[]>{
@@ -325,6 +357,20 @@ export class NdkproviderService {
     }
 
     return await this.dbService.peopleIFollow.toArray();
+  }
+
+  async fetchMutedUsersFromCache(): Promise<User[]>{
+    var peopleIMutedFromCache = await this.dbService.mutedPeople.toArray();
+    console.log("PeopleIMuted from cache "+peopleIMutedFromCache?.length);
+
+    var peopleIMutedFromRelay = await this.fetchMuteList('1739d937dc8c0c7370aa27585938c119e25c41f6c441a5d34c6d38503e3136ef');
+    console.log("PeopleIMuted from relay "+peopleIMutedFromRelay?.length);
+
+    if((peopleIMutedFromCache?.length === 0) || peopleIMutedFromCache?.length !== peopleIMutedFromRelay?.length){
+        await this.fetchMutedPeopleAndCache(peopleIMutedFromRelay);
+    }
+
+    return await this.dbService.mutedPeople.toArray();
   }
 
   async fetchEvents(tag: string, limit?: number, since?: number, until?: number): Promise<Set<NDKEvent> | undefined> {

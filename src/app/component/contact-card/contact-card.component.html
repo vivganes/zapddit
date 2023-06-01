@@ -10,7 +10,7 @@
         <div class="card-media-description">
           <div>
             <span class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openInSnort(contact)"> <strong>{{ contact?.displayName }} </strong>@{{ contact?.name }} </span>
-            <button class="btn btn-sm ml-10" [disabled]="eventInProgress"  (click)="unFollow(contact?.hexPubKey)">
+            <button class="btn btn-sm ml-10" [disabled]="eventInProgress"  (click)="unFollow(contact?.hexPubKey)" *ngIf="showFollow">
               {{unfollowed?"Follow":"Unfollow"}}
             </button>
           </div>
