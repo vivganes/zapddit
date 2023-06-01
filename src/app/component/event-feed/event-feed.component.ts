@@ -79,14 +79,12 @@ export class EventFeedComponent {
   fetchPeopleIFollowList(){
     this.ndkProvider.fetchFollowersFromCache().then((cachedUsers:User[]) =>{
       this.users = cachedUsers
-      console.log("followed users "+JSON.stringify(cachedUsers));
     });
   }
 
   fetchPeopleIMutedList(){
     this.ndkProvider.fetchMutedUsersFromCache().then((cachedUsers:User[]) =>{
       this.mutedUsers = cachedUsers;
-      console.log("muted users "+JSON.stringify(cachedUsers));
     });
   }
 
