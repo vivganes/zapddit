@@ -21,7 +21,7 @@
   </div>
 
   <div *ngFor="let item of users" class="clr-col-12 clr-col-md-8">
-    <app-contact-card [contact]="item" (contactListUpdated)="onContactListChange()"></app-contact-card>
+    <app-contact-card [contact]="item" [showFollow] = "true" (contactListUpdated)="onContactListChange()"></app-contact-card>
   </div>
 
 </div>

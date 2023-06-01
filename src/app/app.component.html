@@ -45,8 +45,8 @@
       <a clrVerticalNavLink routerLink="/feed" routerLinkActive="active">
         <cds-icon shape="home" clrverticalnavicon class="nav-icon"></cds-icon><span class="nav-text">My Feed</span>
       </a>
-      <a clrVerticalNavLink routerLink="/followers" routerLinkActive="active">
-        <cds-icon shape="users" clrverticalnavicon class="nav-icon"></cds-icon><span class="nav-text">People I follow</span>
+      <a clrVerticalNavLink routerLink="/profile" routerLinkActive="active">
+        <cds-icon shape="user" clrVerticalNavIcon></cds-icon><span class="nav-text">Profile</span>
       </a>
       <a clrVerticalNavLink routerLink="/preferences" routerLinkActive="active">
         <cds-icon shape="cog" clrVerticalNavIcon></cds-icon><span class="nav-text">Preferences</span>
@@ -66,7 +66,7 @@
         <a><span class="nav-text">Created with 💙 by <a href="https://snort.social/p/npub1ltx67888tz7lqnxlrg06x234vjnq349tcfyp52r0lstclp548mcqnuz40t">@vivganes</a></span></a>
 
       </div>
-    
+
     </clr-vertical-nav>
     <div class="content-area">
       <div *ngIf="isLoggedIn(); else notloggedin">

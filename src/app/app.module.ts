@@ -1,6 +1,7 @@
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { LayoutModule } from '@angular/cdk/layout';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,6 +26,8 @@ import { QuotedEventComponent } from './component/quoted-event/quoted-event.comp
 import { NoteComposerComponent } from './component/note-composer/note-composer.component';
 import { ContactCardComponent } from './component/contact-card/contact-card.component';
 import { formatTimestampPipe } from './pipe/formatTimeStamp.pipe';
+import { ProfileComponent } from './component/profile/profile.component';
+
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
@@ -49,11 +52,12 @@ const componentParsers: Array<HookParserEntry> = [
     UserMentionComponent,
     QuotedEventComponent,
     NoteComposerComponent,
-    ContactCardComponent
+    ContactCardComponent,
+    ProfileComponent
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers
-  }),BrowserModule, FormsModule,MentionModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  }),BrowserModule, LayoutModule, FormsModule,MentionModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
   enabled: !isDevMode(),
   // Register the ServiceWorker as soon as the application is stable
   // or after 30 seconds (whichever comes first).

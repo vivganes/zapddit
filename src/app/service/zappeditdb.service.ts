@@ -5,17 +5,22 @@ import { User } from '../model/user';
 
 const DATASTORE = {
   peopleIFollow: "++hexPubKey, name, displayName, pictureUrl, nip05, npub, about",
+  mutedPeople:"++hexPubKey, name, displayName, pictureUrl, nip05, npub, about"
 };
-
+const VERSION = 1;
 @Injectable({
   providedIn: 'root'
 })
 export class ZappeditdbService extends Dexie{
   ready = false;
   peopleIFollow!: Table<User>;
+  mutedPeople!: Table<User>;
 
   constructor() {
     super("ZappedItDB");
-    this.version(1).stores(DATASTORE);
+
+    this.version(VERSION).stores(DATASTORE);
+
+    this.version(Math.round(this.verno + 2)).stores({mutedPeople: DATASTORE.mutedPeople});
   }
 }

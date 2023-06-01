@@ -26,6 +26,7 @@ export class EventFeedComponent {
   followChanged: EventEmitter<string> = new EventEmitter<string>();
 
   users:User[] = [];
+  mutedUsers:User[] = [];
   followedTopics: string[]|undefined;
   events: Set<NDKEvent> | undefined;
   nextEvents: Set<NDKEvent> | undefined;
@@ -60,6 +61,7 @@ export class EventFeedComponent {
     }
 
     this.fetchPeopleIFollowList();
+    this.fetchPeopleIMutedList();
 
     route.params.subscribe(params => {
       let topic = params['topic'];
@@ -75,9 +77,17 @@ export class EventFeedComponent {
   }
 
   fetchPeopleIFollowList(){
-    this.ndkProvider.fetchFollowersFromCache().then((cachedUsers:User[]) =>
+    this.ndkProvider.fetchFollowersFromCache().then((cachedUsers:User[]) =>{
       this.users = cachedUsers
-    );
+      console.log("followed users "+JSON.stringify(cachedUsers));
+    });
+  }
+
+  fetchPeopleIMutedList(){
+    this.ndkProvider.fetchMutedUsersFromCache().then((cachedUsers:User[]) =>{
+      this.mutedUsers = cachedUsers;
+      console.log("muted users "+JSON.stringify(cachedUsers));
+    });
   }
 
   async getEvents() {
