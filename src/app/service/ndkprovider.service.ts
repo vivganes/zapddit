@@ -21,6 +21,7 @@ import { NDKUserProfileWithNpub } from '../model/NDKUserProfileWithNpub';
 import { User } from '../model/user';
 import { Constants } from '../util/Constants';
 import * as moment from 'moment';
+import { BehaviorSubject,debounceTime } from 'rxjs';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -54,6 +55,7 @@ export class NdkproviderService {
   loggingIn: boolean = false;
   loginError:string|undefined;
   followedTopicsEmitter:EventEmitter<string> = new EventEmitter<string>()
+  peopleIMuted= new BehaviorSubject<(NDKUser | undefined)[]>([]);
   peopleIFollowEmitter: NDKSubscription | undefined;
   private signer:NDKSigner|undefined = undefined;
   isNip07 = false;
@@ -81,6 +83,13 @@ export class NdkproviderService {
         }
         this.tryLoginUsingNpub(npubFromLocal);
       }
+
+      this.peopleIMuted
+              .asObservable()
+              .pipe(debounceTime(500))
+              .subscribe(value => {
+                this.fetchMutedPeopleAndCache(value)
+              });
     }
   }
 
@@ -233,6 +242,9 @@ export class NdkproviderService {
     this.loggingIn = false;
     //once all setup is done, then only set loggedIn=true to start rendering
     this.loggedIn = true;
+
+    this.fetchFollowersFromCache();
+    this.fetchMutedUsersFromCache();
   }
 
   isLoggedIn(): boolean {
@@ -276,8 +288,8 @@ export class NdkproviderService {
 
       for(const item of ndkUsersArray){
         item.fetchProfile().then(res=>
-            this.addToDB(item, this.dbService.peopleIFollow).then(res=> console.log("user added"))
-        ).catch( e=> console.error("fetchprofile for followers - "+e))
+            this.addToDB(item, this.dbService.peopleIFollow).then(res=>{})
+        ).catch( e => console.error("fetchprofile for followers - "+e))
       }
     }
   }
@@ -296,6 +308,7 @@ export class NdkproviderService {
                 pictureUrl: item.profile?.image!,
                 about:item.profile?.about!
               }, item.npub)
+              console.log("user added to - "+JSON.stringify(table))
             }else{
               console.log("User already exists")
             }
@@ -304,22 +317,21 @@ export class NdkproviderService {
 
   async fetchMutedPeopleAndCache(peopleIMutedFromRelay:(NDKUser|undefined)[]){
     if(peopleIMutedFromRelay && peopleIMutedFromRelay?.length>0){
+      this.dbService.mutedPeople.clear();
 
       var ndkUsersArray=Array.from(peopleIMutedFromRelay);
 
       for(const item of ndkUsersArray){
         if(item){
           item.fetchProfile().then(res=>
-            this.addToDB(item, this.dbService.mutedPeople).then(res=> console.log("user added"))
+            this.addToDB(item, this.dbService.mutedPeople).then(res=> {})
         ).catch( e=> console.error("fetchprofile for followers - "+e))
       }
     }
   }
 }
 
-  async fetchMuteList(hexPubKey:string){
-    //1739d937dc8c0c7370aa27585938c119e25c41f6c441a5d34c6d38503e3136ef
-    //npub1zuuajd7u3sx8xu92yav9jwxpr839cs0kc3q6t56vd5u9q033xmhsk6c2uc - jeffg.fyi
+  private async fetchMuteList(hexPubKey:string){
     const filter: NDKFilter = { kinds: [30000], '#d': ['mute'], authors:[hexPubKey]};
     var mutedListResult = await this.ndk?.fetchEvents(filter);
 
@@ -327,12 +339,16 @@ export class NdkproviderService {
 
     var mutedList = mutedListEvent.tags.flat().filter(item=> item!=='d' && item !== 'p' && item!=='mute');
 
-    var mutedNDKUsers:(NDKUser | undefined)[] = [];
+    var mutedNDKUsers:(NDKUser | undefined)[]=[];
 
-    for (const item of mutedList) {
-      this.getNdkUserFromHex(item).then(ndkUser =>{
+    for (var i=0; i<mutedList.length; i++) {
+      this.getNdkUserFromHex(mutedList[i]).then(ndkUser =>{
+
         mutedNDKUsers.push(ndkUser);
-        console.log("muted user from relay "+JSON.stringify(ndkUser));
+
+        if(mutedNDKUsers.length == i){
+            this.peopleIMuted.next(mutedNDKUsers);
+        }
       })
     }
 
@@ -357,7 +373,7 @@ export class NdkproviderService {
     var peopleIMutedFromCache = await this.dbService.mutedPeople.toArray();
     console.log("PeopleIMuted from cache "+peopleIMutedFromCache?.length);
 
-    var peopleIMutedFromRelay = await this.fetchMuteList('1739d937dc8c0c7370aa27585938c119e25c41f6c441a5d34c6d38503e3136ef');
+    var peopleIMutedFromRelay = await this.fetchMuteList(this.currentUser?.hexpubkey()!);
     console.log("PeopleIMuted from relay "+peopleIMutedFromRelay?.length);
 
     if((peopleIMutedFromCache?.length === 0) || peopleIMutedFromCache?.length !== peopleIMutedFromRelay?.length){

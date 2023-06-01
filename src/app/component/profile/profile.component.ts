@@ -51,7 +51,6 @@ export class ProfileComponent implements OnInit{
   }
 
   constructor(private ndkProvider:NdkproviderService, private breakpointObserver: BreakpointObserver,private changeDetectorRef: ChangeDetectorRef) {
-
     this.fetchPeopleIFollow();
     this.fetchPeopleIMuted();
   }
