@@ -65,7 +65,7 @@
     <div *ngIf="!showMediaFromPeopleIFollow">
         <div *ngFor="let imageSrc of imageUrls"  class="clr-row clr-justify-content-center">
           <div class="clr-col-12 clr-col-md-8">
-            <img alt="image" class="note-image" src="{{ imageSrc }}" />
+            <a href="{{ imageSrc }}" target="_blank"><img alt="image" class="note-image" src="{{ imageSrc }}" /></a>
           </div>
         </div>
     </div>
