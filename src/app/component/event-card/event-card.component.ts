@@ -84,7 +84,7 @@ export class EventCardComponent {
   }
 
   addReply(reply: NDKEvent){
-    this.replies = [reply, ...this.replies];
+    this.replies = [...this.replies, reply];
   }
 
   showComments(){

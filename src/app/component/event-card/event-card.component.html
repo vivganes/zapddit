@@ -155,6 +155,6 @@
         </div>
       </div>
     </ng-template>
-    <app-note-composer [isReply]="true" [parentEvent]="event"></app-note-composer>
+    <app-note-composer [isReply]="true" [parentEvent]="event" (postedEventEmitter)="addReply($event)"></app-note-composer>
   </div>
 </ng-template>
