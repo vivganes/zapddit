@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import NDK, {
   type NDKConstructorParams,
   NDKNip07Signer,
@@ -58,6 +58,8 @@ export class NdkproviderService {
   isNip07 = false;
   isLoggedInUsingPubKey = false;
   mutedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
+  @Output()
+  launchOnboardingWizard:EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(private dbService:ZappeditdbService){
     const npubFromLocal = localStorage.getItem(Constants.NPUB);
@@ -229,6 +231,9 @@ export class NdkproviderService {
       }
     }
     await this.refreshAppData();
+    if(this.appData.followedTopics === ''){
+      this.launchOnboardingWizard.emit(true);
+    }
     this.loggingIn = false;
     //once all setup is done, then only set loggedIn=true to start rendering
     this.loggedIn = true;

@@ -25,6 +25,7 @@ import { QuotedEventComponent } from './component/quoted-event/quoted-event.comp
 import { NoteComposerComponent } from './component/note-composer/note-composer.component';
 import { ContactCardComponent } from './component/contact-card/contact-card.component';
 import { formatTimestampPipe } from './pipe/formatTimeStamp.pipe';
+import { OnboardingWizardComponent } from './component/onboarding-wizard/onboarding-wizard.component';
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
@@ -49,7 +50,8 @@ const componentParsers: Array<HookParserEntry> = [
     UserMentionComponent,
     QuotedEventComponent,
     NoteComposerComponent,
-    ContactCardComponent
+    ContactCardComponent,
+    OnboardingWizardComponent,
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers

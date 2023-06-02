@@ -1,0 +1,112 @@
+<clr-wizard [clrWizardOpen]="open" clrWizardSize="md" [clrWizardClosable]="false" >
+    <clr-wizard-title>Get Started</clr-wizard-title>
+
+    <clr-wizard-button [type]="'cancel'" (click)="markWizardClosed()">Cancel</clr-wizard-button>
+    <clr-wizard-button [type]="'previous'">Back</clr-wizard-button>
+    <clr-wizard-button [type]="'next'">Next</clr-wizard-button>
+    <clr-wizard-button [type]="'finish'" (click)="acceptChoices()">Finish</clr-wizard-button>
+
+    <clr-wizard-page>
+        <ng-template clrPageTitle>Hey there 👋</ng-template>
+
+        <div class="card">
+            <h3 class="card-header">Welcome home 🫂</h3>
+            <div class="card-block">
+                <p>Travel with us, answering a few questions, while we set you up to enjoy the zapddit experience.</p>
+                <p>Click 'Next' to begin.</p>
+            </div>                    
+        </div>
+        
+
+
+    </clr-wizard-page>
+
+    <clr-wizard-page>
+        <ng-template clrPageTitle>Step 1</ng-template>
+        <div class="clr-row">
+            <div class="clr-col-12">
+                <div class="card">
+                    <h3 class="card-header">Who are you?</h3>
+                    <div class="card-block">
+                        <h4 class="card-title">Choose the ones that closely resemble you</h4>
+                        <clr-checkbox-container>
+                            <clr-checkbox-wrapper>
+                                <input type="checkbox" clrCheckbox name="dailyDoseSeeker" [(ngModel)]="dailyDoseSeeker" (change)="updateTopics()" />
+                                <label>I wish to start my day with a daily dose of nostr</label>
+                            </clr-checkbox-wrapper>
+                            <clr-checkbox-wrapper>
+                                <input type="checkbox" clrCheckbox name="btcMaxi" [(ngModel)]="btcMaxi" (change)="updateTopics()"/>
+                                <label>I am an ardent Bitcoin nerd</label>
+                            </clr-checkbox-wrapper>
+                            <clr-checkbox-wrapper>
+                                <input type="checkbox" clrCheckbox name="foodLover" [(ngModel)]="foodLover" (change)="updateTopics()"/>
+                                <label>I ❤️ food pictures</label>
+                            </clr-checkbox-wrapper>
+                            <clr-checkbox-wrapper>
+                                <input type="checkbox" clrCheckbox name="plebLover" [(ngModel)]="plebLover" (change)="updateTopics()"/>
+                                <label>I like welcoming new users</label>
+                            </clr-checkbox-wrapper>
+                            <clr-checkbox-wrapper>
+                                <input type="checkbox" clrCheckbox name="clientsFan" [(ngModel)]="clientsFan" (change)="updateTopics()"/>
+                                <label>I need the hot goss about nostr clients</label>
+                            </clr-checkbox-wrapper>
+                          </clr-checkbox-container>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+
+        
+        
+    </clr-wizard-page>
+
+    <clr-wizard-page>
+        <ng-template clrPageTitle>Step 2</ng-template>
+        <div class="clr-row">
+            <div class="clr-col-12">
+                <div class="card">
+                    <h3 class="card-header">What annoys you?</h3>
+                    <div class="card-block">
+                        <h4 class="card-title">Choose the ones that gravely annoy you</h4>
+                        <div class="card-text">
+                            <clr-checkbox-wrapper>
+                                <input type="checkbox" clrCheckbox name="cryptoRepeller" [(ngModel)]="cryptoRepeller" (change)="updateMuteList()" />
+                                <label>Bitcoin/Crypto Talk</label>
+                            </clr-checkbox-wrapper>
+                            <clr-checkbox-wrapper>
+                                <input type="checkbox" clrCheckbox name="weirdStuffRepeller" [(ngModel)]="weirdStuffRepeller" (change)="updateMuteList()" />
+                                <label>Weird stuff (like feet stuff) </label>
+                            </clr-checkbox-wrapper>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </clr-wizard-page>
+
+    <clr-wizard-page>
+        <ng-template clrPageTitle>Finalise</ng-template>
+        <div class="clr-row">
+            <div class="clr-col-12">
+                <div class="card">
+                    <h3 class="card-header">Suggested Topics to Follow</h3>
+                    <div class="card-block">
+                        <div class="card-text">
+                            <p *ngFor="let topic of suggestedTopics">#{{topic}}</p>
+                        </div>
+                    </div>                    
+                </div>
+
+                <div class="card">
+                    <h3 class="card-header">Suggested Topics to Mute</h3>
+                    <div class="card-block">
+                        <div class="card-text">
+                            <p *ngFor="let topic of muteList">#{{topic}}</p>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </clr-wizard-page>
+
+</clr-wizard>
