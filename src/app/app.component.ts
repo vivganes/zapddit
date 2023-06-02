@@ -19,18 +19,18 @@ import {
   trashIcon,
   shareIcon,
   chatBubbleIcon,
-  paperclipIcon
+  paperclipIcon,
+  wandIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
 import { NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as linkify from 'linkifyjs';
 import hashtag from './util/IntlHashtagLinkifyPlugin';
-import { share } from 'rxjs';
 import { Constants } from './util/Constants';
 
 
-ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon);
+ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -41,6 +41,7 @@ export class AppComponent {
   private router: Router;
   followedTopics: string[] = [];
   darkTheme: boolean = false;
+  wizardIsOpen: boolean = false;
 
 
   ndkProvider: NdkproviderService;
@@ -76,6 +77,10 @@ export class AppComponent {
         this.followedTopics = followedTopics.split(',');
       }
     });
+
+    this.ndkProvider.launchOnboardingWizard.subscribe((launch:boolean)=>{
+      this.wizardIsOpen = launch;
+    })
   }
 
 
@@ -84,7 +89,9 @@ export class AppComponent {
     this.darkTheme = dark;
   }
 
-
+  openWizard(){
+    this.wizardIsOpen = true;
+  }
 
   isTopicFollowed(topic: string): boolean {
     if (this.followedTopics.indexOf(topic) > -1) {

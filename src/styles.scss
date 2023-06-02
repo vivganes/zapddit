@@ -67,6 +67,11 @@ a{
   overflow-wrap: anywhere!important
 }
 
+.onboarding-home-logo{
+  max-width: 200px;
+
+}
+
 .break-anywhere-overflow{
   overflow-wrap: anywhere;
 }
@@ -141,6 +146,10 @@ mention-list > ul{
   height: 295px;
 }
 
+.clr-wizard-stepnav-wrapper{
+  display:none;
+}
+
 @media screen and (max-width: 576px) {
   .main-container .header .branding {
     max-width: 12rem;
@@ -166,7 +175,11 @@ and (max-width : 320px) {
   }
   
   .hashtag-search{
-    display: none;
+    display: none !important;
+  }
+
+  .clr-wizard-stepnav-wrapper{
+    display:none !important;
   }
 
   .search_form_mobile{

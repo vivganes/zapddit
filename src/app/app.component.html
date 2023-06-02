@@ -14,6 +14,9 @@
     </form>
     </div>
     <div class="header-actions">
+      <a href="javascript://" (click)="openWizard()" class="nav-link" aria-label="setup">
+        <cds-icon shape="wand" solid></cds-icon>
+      </a>
       <a *ngIf="darkTheme" href="javascript://" (click)="switchTheme()" class="nav-link" aria-label="theme">
         <cds-icon shape="sun" solid></cds-icon>
       </a>
@@ -23,6 +26,7 @@
     </div>
   </clr-header>
   <div class="content-container">
+    <app-onboarding-wizard [open]="wizardIsOpen" (openChange)="wizardIsOpen = !wizardIsOpen"></app-onboarding-wizard>
     <clr-vertical-nav *ngIf="isLoggedIn()" [clr-nav-level]="1" class="custom-scroll-bar">
       <label class="nav-header">
         <img
