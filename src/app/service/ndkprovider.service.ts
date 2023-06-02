@@ -56,7 +56,9 @@ export class NdkproviderService {
   loggingIn: boolean = false;
   loginError:string|undefined;
   followedTopicsEmitter:EventEmitter<string> = new EventEmitter<string>()
-  peopleIMuted= new BehaviorSubject<(NDKUser | undefined)[]>([]);
+  public $loadingMutedPeople = new BehaviorSubject<boolean>(false);
+  public $loadingPeopleIFollow = new BehaviorSubject<boolean>(false);
+  public $peopleIMutedExternal = new BehaviorSubject<(NDKUser | undefined)[]>([]);
   peopleIFollowEmitter: NDKSubscription | undefined;
   private signer:NDKSigner|undefined = undefined;
   isNip07 = false;
@@ -86,13 +88,6 @@ export class NdkproviderService {
         }
         this.tryLoginUsingNpub(npubFromLocal);
       }
-
-      this.peopleIMuted
-              .asObservable()
-              .pipe(debounceTime(500))
-              .subscribe(value => {
-                this.fetchMutedPeopleAndCache(value)
-              });
     }
   }
 
@@ -322,43 +317,52 @@ export class NdkproviderService {
   }
 
   async fetchMutedPeopleAndCache(peopleIMutedFromRelay:(NDKUser|undefined)[]){
-    if(peopleIMutedFromRelay && peopleIMutedFromRelay?.length>0){
-      this.dbService.mutedPeople.clear();
+    if(peopleIMutedFromRelay){
 
+      this.dbService.mutedPeople.clear();
+      console.log("Muted people db cleared");
+
+      if(peopleIMutedFromRelay.length!=0){
       var ndkUsersArray=Array.from(peopleIMutedFromRelay);
 
-      for(const item of ndkUsersArray){
+      for(var i=0;i<ndkUsersArray.length; i++){
+        var item = ndkUsersArray[i];
         if(item){
-          item.fetchProfile().then(res=>
-            this.addToDB(item, this.dbService.mutedPeople).then(res=> {})
-        ).catch( e=> console.error("fetchprofile for followers - "+e))
+            await this.addToDB(item!, this.dbService.mutedPeople)
+        }
       }
+      this.$loadingMutedPeople.next(false);
+    }else{
+      console.log("mutelist loaded- nothing to load")
+      this.$loadingMutedPeople.next(false);
     }
   }
 }
 
   private async fetchMuteList(hexPubKey:string){
+    this.$loadingMutedPeople.next(true);
+    console.log("mutelist load begin")
+
     const filter: NDKFilter = { kinds: [30000], '#d': ['mute'], authors:[hexPubKey]};
     var mutedListResult = await this.ndk?.fetchEvents(filter);
 
     var mutedListEvent:NDKEvent = mutedListResult?.values().next().value;
 
-    var mutedList = mutedListEvent.tags.flat().filter(item=> item!=='d' && item !== 'p' && item!=='mute');
-
     var mutedNDKUsers:(NDKUser | undefined)[]=[];
 
-    for (var i=0; i<mutedList.length; i++) {
-      this.getNdkUserFromHex(mutedList[i]).then(ndkUser =>{
+    if(mutedListEvent){
+      var mutedList = mutedListEvent?.tags.flat().filter(item=> item!=='d' && item !== 'p' && item!=='mute');
 
+      console.log("mutedList - "+ mutedList.length);
+
+      for (var i=0; i<mutedList.length; i++) {
+        var ndkUser = await this.getNdkUserFromHex(mutedList[i])
         mutedNDKUsers.push(ndkUser);
-
-        if(mutedNDKUsers.length == i){
-            console.log("PeopleIMuted from relay "+ i);
-            this.peopleIMuted.next(mutedNDKUsers);
-        }
-      })
+        console.log("user "+JSON.stringify(ndkUser));
+      }
     }
 
+    console.log("mutelist load ends - "+ mutedNDKUsers.length)
     return mutedNDKUsers;
   }
 

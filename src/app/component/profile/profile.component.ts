@@ -3,6 +3,7 @@ import { Component, OnInit, ChangeDetectorRef,
 import { User } from 'src/app/model/user';
 import { NdkproviderService } from '../../service/ndkprovider.service';
 import { NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
+import { ZappeditdbService } from '../../service/zappeditdb.service';
 import {
   BreakpointObserver,
   BreakpointState
@@ -48,26 +49,31 @@ export class ProfileComponent implements OnInit{
         this.changeDetectorRef.detectChanges();
       }
     });
-  }
 
-  constructor(private ndkProvider:NdkproviderService, private breakpointObserver: BreakpointObserver,private changeDetectorRef: ChangeDetectorRef) {
-    this.fetchPeopleIFollow();
-    this.fetchPeopleIMuted();
-  }
-
-  fetchPeopleIMuted(){
-    this.loadingPeopleYouMuted = true;
-
-    this.ndkProvider.fetchMutedUsersFromCache().then(cachedMutedUsers=>{
-      this.peopleIMuted = cachedMutedUsers;
-      this.loadingPeopleYouMuted = false;
+    this.ndkProvider.$loadingMutedPeople.subscribe((value)=>{
+      if(value){
+        this.fetchPeopleIMuted();
+      }
     });
   }
 
+  constructor(private ndkProvider:NdkproviderService, private breakpointObserver: BreakpointObserver,
+    private changeDetectorRef: ChangeDetectorRef, private dbService:ZappeditdbService) {
+  }
+
+  fetchPeopleIMuted(){
+      this.loadingPeopleYouMuted = true;
+
+      this.dbService.mutedPeople.toArray().then(users=>{
+        this.peopleIMuted.length = 0;
+        this.peopleIMuted.push(...users);
+      }).finally(()=>{
+        this.loadingPeopleYouMuted = false;
+      });
+  }
+
   mutedTabClicked(){
-    if(this.peopleIMuted.length==0){
-      this.fetchPeopleIMuted();
-    }
+    this.fetchPeopleIMuted();
   }
 
   followingTabClicked(){
