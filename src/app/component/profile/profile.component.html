@@ -1,15 +1,25 @@
 <div class="main-container pt-2">
   <clr-tabs #tabs>
   <clr-tab>
-      <button clrTabLink>🤓 Profile Details</button>
+      <button clrTabLink class="large-text">🤓 Profile Details</button>
       <clr-tab-content *clrIfActive>
-        <div class="center-text pb-2">
-          <h1>
-            🤓 Profile Details
-          </h1>
-        </div>
-        <div class="clr-row clr-justify-content-center">
+        <div class="clr-row pt-2">
           <div class="clr-col-lg-6 clr-col-md-8  clr-col-xl-3" >
+            <div class="clr-row profile-field">
+              <div class="clr-col-lg-6 middle"><span class="text-vmiddle"><strong>Avatar</strong></span></div>
+              <div class="clr-col-lg-6">
+              <img
+                *ngIf="user?.pictureUrl"
+                [src]="user?.pictureUrl"
+                class="avatar-image"
+                alt="profile" />
+                <img
+                *ngIf="!(user?.pictureUrl)"
+                src="https://robohash.org/7OG.png?set=set2&size=150x150"
+                class="avatar-image"
+                alt="profile" />
+              </div>
+            </div>
             <div class="clr-row profile-field">
               <div class="clr-col-lg-6"><strong>Name</strong></div>
               <div class="clr-col-lg-6">{{user?.name}}</div>
@@ -19,7 +29,7 @@
               <div class="clr-col-lg-6">{{user?.displayName}}</div>
             </div>
             <div class="clr-row profile-field">
-              <div class="clr-col-lg-6"><strong>Npub</strong></div>
+              <div class="clr-col-lg-6"><strong>npub</strong></div>
               <div class="clr-col-lg-6">{{user?.npub}}</div>
             </div>
             <div class="clr-row profile-field">
@@ -37,15 +47,9 @@
   </clr-tab>
 
   <clr-tab>
-      <button clrTabLink>🕸 People I Follow</button>
-      <clr-tab-content *clrIfActive>
-        <div class="center-text pb-2">
-          <h1>
-            🕸 People I follow
-          </h1>
-          <p align="center">You can see the people you follow here 👇</p>
-        </div>
-        <div class="clr-row clr-justify-content-center">
+      <button clrTabLink class="large-text">🕸 People I Follow</button>
+      <clr-tab-content *clrIfActive (click)="followingTabClicked()">
+        <div class="clr-row clr-justify-content-center pt-2 mb-20">
             <div *ngIf="loadingPeopleYouFollow" class="clr-col-12 clr-col-md-8">
               <div class="event-loading-spinner clr-justify-content-center">
                 <span class="spinner spinner-md">Loading people you follow...</span>
@@ -68,22 +72,16 @@
   </clr-tab>
 
   <clr-tab *ngIf="isMobileScreen">
-    <button clrTabLink [clrTabLinkInOverflow]="true" >🔇 People I Muted</button>
+    <button clrTabLink [clrTabLinkInOverflow]="true" (click)="mutedTabClicked()" class="large-text">🔇 People I Muted</button>
     <clr-tab-content *clrIfActive >
-      <div class="center-text pb-2">
-        <h1>
-          🔇 People I Muted
-        </h1>
-        <p align="center">You can see the people you muted here 👇</p>
-      </div>
-      <div class="clr-row clr-justify-content-center">
-          <div *ngIf="loadingPeopleYouFollow" class="clr-col-12 clr-col-md-8">
+      <div class="clr-row clr-justify-content-center pt-2 mb-20">
+          <div *ngIf="loadingPeopleYouMuted" class="clr-col-12 clr-col-md-8">
             <div class="event-loading-spinner clr-justify-content-center">
               <span class="spinner spinner-md">Loading people you muted...</span>
             </div>
           </div>
 
-          <div *ngIf="!(loadingPeopleYouFollow) && peopleIMuted?.length === 0"  class="clr-row clr-justify-content-center">
+          <div *ngIf="!(loadingPeopleYouMuted) && peopleIMuted?.length === 0"  class="clr-row clr-justify-content-center">
             <div class="alert-items">
                 <div class="alert-item static clr-justify-content-center">
                   <span class="alert-text">Looks like you haven't muted anyone yet.</span>
@@ -98,23 +96,18 @@
     </clr-tab-content>
   </clr-tab>
 
-  <clr-tab *ngIf="!isMobileScreen">
-    <button clrTabLink >🔇 People I Muted</button>
+  <clr-tab *ngIf="!isMobileScreen" >
+    <button clrTabLink (click)="mutedTabClicked()" class="large-text">🔇 People I Muted</button>
     <clr-tab-content *clrIfActive >
-      <div class="center-text pb-2">
-        <h1>
-          🔇 People I Muted
-        </h1>
-        <p align="center">You can see the people you muted here 👇</p>
-      </div>
-      <div class="clr-row clr-justify-content-center">
-          <div *ngIf="loadingPeopleYouFollow" class="clr-col-12 clr-col-md-8">
+
+      <div class="clr-row clr-justify-content-center pt-2 mb-20">
+          <div *ngIf="loadingPeopleYouMuted" class="clr-col-12 clr-col-md-8">
             <div class="event-loading-spinner clr-justify-content-center">
               <span class="spinner spinner-md">Loading people you muted...</span>
             </div>
           </div>
 
-          <div *ngIf="!(loadingPeopleYouFollow) && peopleIMuted?.length === 0"  class="clr-row clr-justify-content-center">
+          <div *ngIf="!(loadingPeopleYouMuted) && peopleIMuted?.length === 0"  class="clr-row clr-justify-content-center">
             <div class="alert-items">
                 <div class="alert-item static clr-justify-content-center">
                   <span class="alert-text">Looks like you haven't muted anyone yet.</span>

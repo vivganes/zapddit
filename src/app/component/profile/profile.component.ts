@@ -56,13 +56,28 @@ export class ProfileComponent implements OnInit{
   }
 
   fetchPeopleIMuted(){
+    this.loadingPeopleYouMuted = true;
+
     this.ndkProvider.fetchMutedUsersFromCache().then(cachedMutedUsers=>{
       this.peopleIMuted = cachedMutedUsers;
       this.loadingPeopleYouMuted = false;
     });
   }
 
+  mutedTabClicked(){
+    if(this.peopleIMuted.length==0){
+      this.fetchPeopleIMuted();
+    }
+  }
+
+  followingTabClicked(){
+    if(this.peopleIFollow.length==0){
+      this.fetchPeopleIFollow();
+    }
+  }
+
   fetchPeopleIFollow(){
+    this.loadingPeopleYouFollow = true;
     this.ndkProvider.fetchFollowersFromCache().then(cachedUsers =>{
       this.peopleIFollow = cachedUsers;
       this.loadingPeopleYouFollow = false;

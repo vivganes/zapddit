@@ -314,7 +314,7 @@ export class NdkproviderService {
                 pictureUrl: item.profile?.image!,
                 about:item.profile?.about!
               }, item.npub)
-              console.log("user added to - "+JSON.stringify(table))
+              console.log("user added to - "+ table.name)
             }else{
               console.log("User already exists")
             }
@@ -353,6 +353,7 @@ export class NdkproviderService {
         mutedNDKUsers.push(ndkUser);
 
         if(mutedNDKUsers.length == i){
+            console.log("PeopleIMuted from relay "+ i);
             this.peopleIMuted.next(mutedNDKUsers);
         }
       })
@@ -380,7 +381,6 @@ export class NdkproviderService {
     console.log("PeopleIMuted from cache "+peopleIMutedFromCache?.length);
 
     var peopleIMutedFromRelay = await this.fetchMuteList(this.currentUser?.hexpubkey()!);
-    console.log("PeopleIMuted from relay "+peopleIMutedFromRelay?.length);
 
     if((peopleIMutedFromCache?.length === 0) || peopleIMutedFromCache?.length !== peopleIMutedFromRelay?.length){
         await this.fetchMutedPeopleAndCache(peopleIMutedFromRelay);
