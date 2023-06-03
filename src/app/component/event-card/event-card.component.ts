@@ -57,6 +57,7 @@ export class EventCardComponent {
   authorHexPubKey:string|undefined ='';
   eventInProgress:boolean = false;
   loggedInWithNsec:boolean =false;
+  notTheLoggedInUser:boolean = false;
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -228,6 +229,8 @@ export class EventCardComponent {
       this.dbService.mutedPeople.where({hexPubKey:this.event?.pubkey.toString()}).count().then(count=>{
         this.mutedAuthor = count > 0;
       })
+
+    this.notTheLoggedInUser = authorPubKey !== this.ndkProvider.currentUser?.hexpubkey();
     }
   }
 

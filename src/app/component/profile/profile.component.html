@@ -11,13 +11,13 @@
               <img
                 *ngIf="user?.pictureUrl"
                 [src]="user?.pictureUrl"
-                class="avatar-image"
-                alt="profile" />
+                class="avatar-image pointer-cursor"
+                alt="profile" (click)="openInSnort()"/>
                 <img
                 *ngIf="!(user?.pictureUrl)"
                 src="https://robohash.org/7OG.png?set=set2&size=150x150"
-                class="avatar-image"
-                alt="profile" />
+                class="avatar-image pointer-cursor"
+                alt="profile" (click)="openInSnort()"/>
               </div>
             </div>
             <div class="clr-row profile-field">

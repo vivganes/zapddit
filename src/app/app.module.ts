@@ -29,7 +29,6 @@ import { formatTimestampPipe } from './pipe/formatTimeStamp.pipe';
 import { OnboardingWizardComponent } from './component/onboarding-wizard/onboarding-wizard.component';
 import { ImageLoaderDirective } from './directive/ImageLoaderDirective';
 import { ProfileComponent } from './component/profile/profile.component';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},

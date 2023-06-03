@@ -35,6 +35,9 @@ export class ProfileComponent implements OnInit{
   reachedEndOfMutedPeople = false;
   showFollowButton = true;
 
+  offsetWhenUnfollowed:number = 0;
+  limitWhenUnfollowed:number = 20;
+
   ngOnInit(): void {
     var userProfile = this.ndkProvider.currentUserProfile;
     var user = this.ndkProvider.currentUser;
@@ -62,12 +65,6 @@ export class ProfileComponent implements OnInit{
       }
     });
 
-    this.ndkProvider.$loadingMutedPeople.subscribe((value)=>{
-      if(value){
-        this.fetchPeopleIMuted();
-      }
-    });
-
     this.showFollowButton = !this.ndkProvider.isLoggedInUsingPubKey
   }
 
@@ -77,19 +74,17 @@ export class ProfileComponent implements OnInit{
 
   async fetchPeopleIMuted(){
       this.loadingPeopleYouMuted = true;
-      this.totalMutedPeople = await this.dbService.mutedPeople.count();
-
       console.log("loading muted people")
 
-      this.dbService.mutedPeople.limit(this.mutedPeopleLimit).offset(this.mutedPeopleOffset).toArray().then(users=>{
-        this.peopleIMuted.length = 0;
-        this.peopleIMuted.push(...users);
-        this.checkIfAllMutedPeopleFetched();
+      var users =await this.dbService.mutedPeople.limit(this.mutedPeopleLimit).offset(this.mutedPeopleOffset).toArray()
+      this.peopleIMuted.length = 0;
+      this.peopleIMuted.push(...users);
+      this.totalMutedPeople = await this.dbService.mutedPeople.count();
+      this.loadingPeopleYouMuted = false;
+      this.checkIfAllMutedPeopleFetched();
 
-      }).finally(()=>{
-        console.log("muted people loaded")
-        this.loadingPeopleYouMuted = false;
-      });
+      this.changeDetectorRef.detectChanges();
+      console.log("muted people loaded")
   }
 
   mutedTabClicked(){
@@ -102,56 +97,51 @@ export class ProfileComponent implements OnInit{
 
   async fetchPeopleIFollow(){
     this.loadingPeopleYouFollow = true;
-    this.totalPeopleIfollow = await this.dbService.peopleIFollow.count();
-
     console.log("loading people i follow")
-    this.dbService.peopleIFollow.limit(this.peopleIFollowLimit).offset(this.peopleIFollowOffset).toArray().then(users=>{
-      this.peopleIFollow.length = 0;
-      this.peopleIFollow.push(...users);
-      this.checkIfAllFetched();
-    }).finally(()=>{
-      console.log("people i follow load done")
-      this.loadingPeopleYouFollow = false;
-    });
+
+    var users = await this.dbService.peopleIFollow.limit(this.peopleIFollowLimit).offset(this.peopleIFollowOffset).toArray();
+    this.peopleIFollow.length = 0;
+    this.peopleIFollow.push(...users);
+    this.totalPeopleIfollow = await this.dbService.peopleIFollow.count();
+    this.loadingPeopleYouFollow = false;
+    this.checkIfAllFetched();
+
+    this.changeDetectorRef.detectChanges();
+    console.log("people i follow load done")
   }
 
-  loadMorePeopleIFollow(){
+  async loadMorePeopleIFollow(){
     this.loadingNextPeopleYouFollow = true;
     var currentLimit = this.peopleIFollowLimit
     this.peopleIFollowOffset = currentLimit;
     this.peopleIFollowLimit = currentLimit + this.count
+
     console.log("loading next people i follow")
 
-    this.dbService.peopleIFollow.limit(currentLimit + this.count).offset(currentLimit).toArray().then(users=>{
-      this.peopleIFollow.push(...users);
-      this.changeDetectorRef.detectChanges();
-      this.loadingNextPeopleYouFollow = false;
+    var users = await this.dbService.peopleIFollow.limit(currentLimit + this.count).offset(currentLimit).toArray()
+    this.peopleIFollow.push(...users);
+    this.checkIfAllFetched();
+    this.loadingNextPeopleYouFollow = false;
 
-      this.checkIfAllFetched();
-    }).finally(()=>{
-      console.log("loading next people i follow done")
-      this.loadingNextPeopleYouFollow = false;
-    });
+    this.changeDetectorRef.detectChanges();
+    console.log("next people I follow loaded")
   }
 
-  loadMoreMutedPeople(){
+  async loadMoreMutedPeople(){
     this.loadingNextMutedPeople = true;
+    console.log("loading next muted list")
+
     var currentLimit = this.mutedPeopleLimit
     this.mutedPeopleOffset = currentLimit;
     this.mutedPeopleLimit = currentLimit + this.count
-    console.log("loading next muted list")
 
-    this.dbService.mutedPeople.limit(currentLimit + this.count).offset(currentLimit).toArray().then(users=>{
-      this.peopleIMuted.push(...users);
-      this.changeDetectorRef.detectChanges();
-      this.loadingNextMutedPeople = false;
+    var users = await this.dbService.mutedPeople.limit(currentLimit + this.count).offset(currentLimit).toArray()
+    this.peopleIMuted.push(...users);
+    this.checkIfAllMutedPeopleFetched();
+    this.loadingNextMutedPeople = false;
 
-      this.checkIfAllMutedPeopleFetched();
-    }).finally(()=>{
-      console.log("loading next muted list")
-      this.loadingNextMutedPeople = false;
-    });
-
+    this.changeDetectorRef.detectChanges();
+    console.log("loaded next muted list")
   }
 
   checkIfAllFetched(){
@@ -170,4 +160,7 @@ export class ProfileComponent implements OnInit{
     this.fetchPeopleIFollow();
   }
 
+  openInSnort(){
+    window.open('https://snort.social/p/'+this.user?.npub,'_blank')
+  }
 }

@@ -56,9 +56,6 @@ export class NdkproviderService {
   loggingIn: boolean = false;
   loginError:string|undefined;
   followedTopicsEmitter:EventEmitter<string> = new EventEmitter<string>()
-  public $loadingMutedPeople = new BehaviorSubject<boolean>(false);
-  public $loadingPeopleIFollow = new BehaviorSubject<boolean>(false);
-  public $peopleIMutedExternal = new BehaviorSubject<(NDKUser | undefined)[]>([]);
   peopleIFollowEmitter: NDKSubscription | undefined;
   private signer:NDKSigner|undefined = undefined;
   isNip07 = false;
@@ -71,6 +68,7 @@ export class NdkproviderService {
     const npubFromLocal = localStorage.getItem(Constants.NPUB);
     const privateKey = localStorage.getItem(Constants.PRIVATEKEY);
     const loggedInPubKey = localStorage.getItem(Constants.LOGGEDINUSINGPUBKEY);
+    localStorage.setItem(Constants.FOLLOWERS_FROM_RELAY,'false');
     if(npubFromLocal && npubFromLocal !== ''){
       // we can login as the login has already happened
       if(privateKey && privateKey !== ''){
@@ -283,15 +281,23 @@ export class NdkproviderService {
   }
 
   async fetchFollowersAndCache(peopleIFollowFromRelay:Set<NDKUser> | undefined){
-    if(peopleIFollowFromRelay && peopleIFollowFromRelay?.size>0){
+    if(peopleIFollowFromRelay){
+      localStorage.setItem(Constants.FOLLOWERS_FROM_RELAY,'true');
+
+      this.dbService.peopleIFollow.clear();
+      console.log("People I follow db cleared");
 
       var ndkUsersArray=Array.from(peopleIFollowFromRelay);
 
       for(const item of ndkUsersArray){
-        item.fetchProfile().then(res=>
-            this.addToDB(item, this.dbService.peopleIFollow).then(res=>{})
-        ).catch( e => console.error("fetchprofile for followers - "+e))
+        await item.fetchProfile();
+        await this.addToDB(item, this.dbService.peopleIFollow)
       }
+
+      localStorage.setItem(Constants.FOLLOWERS_FROM_RELAY,'false');
+      console.log("People I follow loaded")
+    }else{
+      console.log("People I follow loaded - nothing to load")
     }
   }
 
@@ -309,9 +315,9 @@ export class NdkproviderService {
                 pictureUrl: item.profile?.image!,
                 about:item.profile?.about!
               }, item.npub)
-              console.log("user added to - "+ table.name)
+              console.debug("user added to - "+ table.name)
             }else{
-              console.log("User already exists")
+              console.debug("User already exists")
             }
           }).catch(e=>console.error("db call - "+e))
   }
@@ -331,16 +337,15 @@ export class NdkproviderService {
             await this.addToDB(item!, this.dbService.mutedPeople)
         }
       }
-      this.$loadingMutedPeople.next(false);
+
+      console.log("mutelist loaded")
     }else{
-      console.log("mutelist loaded- nothing to load")
-      this.$loadingMutedPeople.next(false);
+      console.log("mutelist loaded - nothing to load")
     }
   }
 }
 
   private async fetchMuteList(hexPubKey:string){
-    this.$loadingMutedPeople.next(true);
     console.log("mutelist load begin")
 
     const filter: NDKFilter = { kinds: [30000], '#d': ['mute'], authors:[hexPubKey]};
@@ -358,7 +363,6 @@ export class NdkproviderService {
       for (var i=0; i<mutedList.length; i++) {
         var ndkUser = await this.getNdkUserFromHex(mutedList[i])
         mutedNDKUsers.push(ndkUser);
-        console.log("user "+JSON.stringify(ndkUser));
       }
     }
 
@@ -373,7 +377,8 @@ export class NdkproviderService {
     var peopleIFollowFromRelay = await this.currentUser?.follows();
     console.log("PeopleIFollow from relay "+peopleIFollowFromRelay?.size);
 
-    if((peopleIFollowFromCache?.length === 0) || peopleIFollowFromCache?.length !== peopleIFollowFromRelay?.size){
+    if((peopleIFollowFromCache?.length === 0) || peopleIFollowFromCache?.length !== peopleIFollowFromRelay?.size
+    && localStorage.getItem(Constants.FOLLOWERS_FROM_RELAY) === 'false'){
         await this.fetchFollowersAndCache(peopleIFollowFromRelay);
     }
 

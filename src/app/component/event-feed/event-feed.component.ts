@@ -58,9 +58,6 @@ export class EventFeedComponent {
       this.followedTopics = followedTopicsByNdk.split(',');
     }
 
-    this.fetchPeopleIFollowList();
-    //this.fetchPeopleIMutedList();
-
     route.params.subscribe(params => {
       let topic = params['topic'];
       if(topic){
@@ -72,14 +69,6 @@ export class EventFeedComponent {
       this.limit = 25;
       this.getEvents();
     });
-  }
-
-  fetchPeopleIFollowList(){
-    this.ndkProvider.fetchFollowersFromCache().then((cachedUsers:User[]) =>{});
-  }
-
-  fetchPeopleIMutedList(){
-    this.ndkProvider.fetchMutedUsersFromCache().then((cachedUsers:User[]) =>{});
   }
 
   async getEvents() {
