@@ -10,9 +10,9 @@
         <ng-template clrPageTitle>Hey there 👋</ng-template>
 
         <div class="card">
-            <h3 class="card-header">Welcome home 🫂</h3>
+            <h3 class="card-header">Welcome onboard 🫂</h3>
             <div class="card-block">
-                <p>Travel with us, answering a few questions, while we set you up to enjoy the zapddit experience.</p>
+                <p>Travel with us, answering a few questions, while we set you up to enjoy the <span class="label label-info">#zapddit</span> experience 🚀</p>
                 <p>Click 'Next' to begin.</p>
             </div>                    
         </div>
@@ -28,36 +28,37 @@
                 <div class="card">
                     <h3 class="card-header">Who are you?</h3>
                     <div class="card-block">
-                        <h4 class="card-title">Choose the ones that closely resemble you</h4>
+                        <h4 class="card-title">Select those that closely resemble you 👇</h4>
                         <clr-checkbox-container>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="dailyDoseSeeker" [(ngModel)]="dailyDoseSeeker" (change)="updateTopics()" />
-                                <label>I wish to start my day with a daily dose of nostr</label>
+                                <label>I wish to start my day with a daily dose of nostr ☕</label>
+                            </clr-checkbox-wrapper>
+                            <clr-checkbox-wrapper>
+                                <input type="checkbox" clrCheckbox name="memeEnjoyer" [(ngModel)]="memeEnjoyer" (change)="updateTopics()" />
+                                <label>I want memes! MEMES! 😆</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="btcMaxi" [(ngModel)]="btcMaxi" (change)="updateTopics()"/>
-                                <label>I am an ardent Bitcoin nerd</label>
+                                <label>I am an ardent Bitcoin nerd 🤓</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="foodLover" [(ngModel)]="foodLover" (change)="updateTopics()"/>
-                                <label>I ❤️ food pictures</label>
+                                <label>I ❤️ food pictures 😋</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="plebLover" [(ngModel)]="plebLover" (change)="updateTopics()"/>
-                                <label>I like welcoming new users</label>
+                                <label>I like welcoming new users 🫂</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="clientsFan" [(ngModel)]="clientsFan" (change)="updateTopics()"/>
-                                <label>I need the hot goss about nostr clients</label>
+                                <label>I need the hot goss about nostr clients 🧑‍💻</label>
                             </clr-checkbox-wrapper>
                           </clr-checkbox-container>
                     </div>                    
                 </div>
             </div>
-        </div>
-
-        
-        
+        </div>  
     </clr-wizard-page>
 
     <clr-wizard-page>
@@ -71,11 +72,19 @@
                         <div class="card-text">
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="cryptoRepeller" [(ngModel)]="cryptoRepeller" (change)="updateMuteList()" />
-                                <label>Bitcoin/Crypto Talk</label>
+                                <label>Bitcoin/Crypto Talk 🪙</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="weirdStuffRepeller" [(ngModel)]="weirdStuffRepeller" (change)="updateMuteList()" />
-                                <label>Weird stuff (like feet stuff) </label>
+                                <label>Weird stuff (like feet stuff) 🦶 </label>
+                            </clr-checkbox-wrapper>
+                            <clr-checkbox-wrapper>
+                                <input type="checkbox" clrCheckbox name="nonSporter" [(ngModel)]="nonSporter" (change)="updateMuteList()" />
+                                <label>Sports ⚽ </label>
+                            </clr-checkbox-wrapper>
+                            <clr-checkbox-wrapper>
+                                <input type="checkbox" clrCheckbox name="twitterHater" [(ngModel)]="twitterHater" (change)="updateMuteList()" />
+                                <label>Twitter / Bird app 🐔 </label>
                             </clr-checkbox-wrapper>
                         </div>
                     </div>                    
@@ -85,23 +94,35 @@
     </clr-wizard-page>
 
     <clr-wizard-page>
-        <ng-template clrPageTitle>Finalise</ng-template>
+        <ng-template clrPageTitle>Launch 🚀</ng-template>
         <div class="clr-row">
             <div class="clr-col-12">
+                <p>You are almost there!</p>
+                <p>Once you click <b>Finish</b>, we will auto-follow the suggested topics below and auto-mute the topics listed at the end.</p>
+                <div class="alert alert-info" role="alert">
+                    <div class="alert-items">
+                        <div class="alert-item static">
+                            <div class="alert-icon-wrapper">
+                                <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+                            </div>
+                            <span class="alert-text">Don't worry! If you already have a zapddit setup, this won't mess it up. We won't unfollow or unmute any topic that you already followed or muted.</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="card">
-                    <h3 class="card-header">Suggested Topics to Follow</h3>
+                    <h4 class="card-header">Topics to Follow</h4>
                     <div class="card-block">
                         <div class="card-text">
-                            <p *ngFor="let topic of suggestedTopics">#{{topic}}</p>
+                            <span class="label label-info" *ngFor="let topic of suggestedTopics">#{{topic}}</span>
                         </div>
                     </div>                    
                 </div>
 
                 <div class="card">
-                    <h3 class="card-header">Suggested Topics to Mute</h3>
+                    <h4 class="card-header">Topics to Mute</h4>
                     <div class="card-block">
                         <div class="card-text">
-                            <p *ngFor="let topic of muteList">#{{topic}}</p>
+                            <span class="label label-info" *ngFor="let topic of muteList">#{{topic}}</span>
                         </div>
                     </div>                    
                 </div>

@@ -14,12 +14,15 @@ export class OnboardingWizardComponent {
   @Output()
   openChange:EventEmitter<boolean> = new EventEmitter<boolean>();
   dailyDoseSeeker:boolean = false;
+  memeEnjoyer:boolean =false;
   btcMaxi:boolean = false;
   foodLover:boolean = false;
   plebLover:boolean = false;
   clientsFan:boolean = false;
   cryptoRepeller:boolean = false;
   weirdStuffRepeller:boolean = false;
+  nonSporter:boolean = false;
+  twitterHater:boolean = false;
   suggestedTopics: string[] = [];
   muteList: string[] = [];
 
@@ -31,6 +34,9 @@ export class OnboardingWizardComponent {
     let newTopics = []
     if(this.dailyDoseSeeker){
       newTopics.push('coffeechain','chaichain','nostr','nostrich','nostriches');
+    }
+    if(this.memeEnjoyer){
+      newTopics.push('memechain','meme','memes')
     }
     if(this.btcMaxi){
       newTopics.push('bitcoin','shitcoin')
@@ -54,6 +60,12 @@ export class OnboardingWizardComponent {
     }
     if(this.weirdStuffRepeller){
       mutedTopics.push('footstr','feetstr','boobstr','nudestr')
+    }
+    if(this.nonSporter){
+      mutedTopics.push('baseball','sports','football','fifa','cricket','nfl','sport')
+    }
+    if(this.twitterHater){
+      mutedTopics.push('twitter','birdapp','elon','elonmusk')
     }
     this.muteList = mutedTopics;
   }

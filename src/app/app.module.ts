@@ -26,6 +26,7 @@ import { NoteComposerComponent } from './component/note-composer/note-composer.c
 import { ContactCardComponent } from './component/contact-card/contact-card.component';
 import { formatTimestampPipe } from './pipe/formatTimeStamp.pipe';
 import { OnboardingWizardComponent } from './component/onboarding-wizard/onboarding-wizard.component';
+import { ImageLoaderDirective } from './directive/ImageLoaderDirective';
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
@@ -52,6 +53,7 @@ const componentParsers: Array<HookParserEntry> = [
     NoteComposerComponent,
     ContactCardComponent,
     OnboardingWizardComponent,
+    ImageLoaderDirective
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers
