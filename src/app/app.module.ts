@@ -28,7 +28,8 @@ import { ContactCardComponent } from './component/contact-card/contact-card.comp
 import { formatTimestampPipe } from './pipe/formatTimeStamp.pipe';
 import { OnboardingWizardComponent } from './component/onboarding-wizard/onboarding-wizard.component';
 import { ImageLoaderDirective } from './directive/ImageLoaderDirective';
-import { ProfileComponent } from './component/profile/profile.component';)
+import { ProfileComponent } from './component/profile/profile.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
@@ -60,7 +61,7 @@ const componentParsers: Array<HookParserEntry> = [
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers
-  }),BrowserModule, LayoutModule, FormsModule,MentionModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  }), BrowserModule, LayoutModule, FormsModule,MentionModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
   enabled: !isDevMode(),
   // Register the ServiceWorker as soon as the application is stable
   // or after 30 seconds (whichever comes first).

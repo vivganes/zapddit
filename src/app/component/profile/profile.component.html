@@ -47,8 +47,8 @@
   </clr-tab>
 
   <clr-tab>
-      <button clrTabLink class="large-text">🕸 People I Follow</button>
-      <clr-tab-content *clrIfActive (click)="followingTabClicked()">
+      <button clrTabLink class="large-text" (click)="followingTabClicked()">🕸 People I Follow</button>
+      <clr-tab-content *clrIfActive >
         <div class="clr-row clr-justify-content-center pt-2 mb-20">
             <div *ngIf="loadingPeopleYouFollow" class="clr-col-12 clr-col-md-8">
               <div class="event-loading-spinner clr-justify-content-center">
@@ -64,8 +64,28 @@
               </div>
             </div>
 
-            <div *ngFor="let item of peopleIFollow" class="clr-col-12 clr-col-md-8">
-              <app-contact-card [contact]="item" [showFollow] = "true" (contactListUpdated)="onContactListChange()"></app-contact-card>
+            <div *ngIf="!loadingPeopleYouFollow" class="clr-col-12 clr-col-md-8">
+              <div  *ngFor="let item of peopleIFollow" >
+                <app-contact-card [contact]="item" [showFollow] = "showFollowButton" (contactListUpdated)="onContactListChange()"></app-contact-card>
+              </div>
+            </div>
+            <div *ngIf="!loadingPeopleYouFollow && (peopleIFollow && peopleIFollow.length>0)" class="clr-col-12 clr-col-md-8">
+              <div *ngIf="peopleIFollow && peopleIFollow.length>0 && !reachedEndOfPeopleIFollow" align="center">
+                <button class="btn btn-info-outline" (click)="loadMorePeopleIFollow()">Load
+                  more</button>
+              </div>
+              <div *ngIf="reachedEndOfPeopleIFollow" align="center" class="clr-row clr-justify-content-center">
+                <div class="alert alert-info clr-col-3" role="alert">
+                  <div class="alert-items">
+                    <div class="alert-item static">
+                      <div class="alert-icon-wrapper">
+                        <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
+                      </div>
+                      <span class="alert-text">That's all!</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
         </div>
       </clr-tab-content>
@@ -89,8 +109,28 @@
             </div>
           </div>
 
-          <div *ngFor="let item of peopleIMuted" class="clr-col-12 clr-col-md-8">
-            <app-contact-card [contact]="item" [showFollow] = "false" (contactListUpdated)="onContactListChange()"></app-contact-card>
+          <div *ngIf="!loadingPeopleYouMuted" class="clr-col-12 clr-col-md-8">
+            <div *ngFor="let item of peopleIMuted">
+              <app-contact-card [contact]="item" [showFollow] = "false" (contactListUpdated)="onContactListChange()"></app-contact-card>
+            </div>
+          </div>
+          <div *ngIf="!loadingPeopleYouMuted && (peopleIMuted && peopleIMuted.length>0)" class="clr-col-12 clr-col-md-8">
+            <div *ngIf="peopleIMuted && peopleIMuted.length>0 && !reachedEndOfMutedPeople" align="center">
+              <button class="btn btn-info-outline" (click)="loadMoreMutedPeople()">Load
+                more</button>
+            </div>
+            <div *ngIf="reachedEndOfMutedPeople" align="center" class="clr-row clr-justify-content-center">
+              <div class="alert alert-info clr-col-3" role="alert">
+                <div class="alert-items">
+                  <div class="alert-item static">
+                    <div class="alert-icon-wrapper">
+                      <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
+                    </div>
+                    <span class="alert-text">That's all!</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
       </div>
     </clr-tab-content>
@@ -115,8 +155,28 @@
             </div>
           </div>
 
-          <div *ngFor="let item of peopleIMuted" class="clr-col-12 clr-col-md-8">
-            <app-contact-card [contact]="item" [showFollow] = "false" (contactListUpdated)="onContactListChange()"></app-contact-card>
+          <div *ngIf="!loadingPeopleYouMuted" class="clr-col-12 clr-col-md-8">
+            <div *ngFor="let item of peopleIMuted" >
+              <app-contact-card [contact]="item" [showFollow] = "false" (contactListUpdated)="onContactListChange()"></app-contact-card>
+            </div>
+          </div>
+          <div *ngIf="!loadingPeopleYouMuted && (peopleIMuted && peopleIMuted.length>0)" class="clr-col-12 clr-col-md-8">
+            <div *ngIf="peopleIMuted && peopleIMuted.length>0 && !reachedEndOfMutedPeople" align="center">
+              <button class="btn btn-info-outline" (click)="loadMoreMutedPeople()">Load
+                more</button>
+            </div>
+            <div *ngIf="reachedEndOfMutedPeople" align="center" class="clr-row clr-justify-content-center">
+              <div class="alert alert-info clr-col-3" role="alert">
+                <div class="alert-items">
+                  <div class="alert-item static">
+                    <div class="alert-icon-wrapper">
+                      <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
+                    </div>
+                    <span class="alert-text">That's all!</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
       </div>
     </clr-tab-content>

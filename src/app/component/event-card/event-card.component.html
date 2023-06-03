@@ -16,12 +16,12 @@
             <span *ngIf="!authorWithProfile?.profile?.name" class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey }} </span>
           </div>
           <div class="follow-ml8">
-            <ng-template [ngIf]="!amIFollowingtheAuthor">
+            <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec">
               <button class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
               Follow
               </button>
             </ng-template>
-            <ng-template [ngIf]="amIFollowingtheAuthor">
+            <ng-template [ngIf]="amIFollowingtheAuthor && loggedInWithNsec">
               <button class="btn btn-sm" [disabled]="eventInProgress" (click)="unFollow()">
                 Unfollow
               </button>

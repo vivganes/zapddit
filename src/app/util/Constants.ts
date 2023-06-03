@@ -8,4 +8,5 @@ export class Constants{
   public static readonly DEFAULTSATSFORZAPS='defaultSatsForZaps';
   public static readonly MUTEDTOPICS='mutedTopics';
   public static readonly SHOWMEDIA='loadMediaContentOnlyForPeopleIFollow';
+  public static readonly FOLLOWERS_FROM_RELAY ='loadingFollowersFromRelay';
 }

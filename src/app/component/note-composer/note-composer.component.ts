@@ -21,6 +21,9 @@ const NOSTR_NOTE_REGEX = /nostr:(note1[\S]*)/gi;
 
 export class NoteComposerComponent {
 
+  static loggedInWithNpub:boolean = false;
+  NoteComposerComponent = NoteComposerComponent;
+
   @Input()
   isReply:boolean = false;
 
@@ -29,11 +32,11 @@ export class NoteComposerComponent {
 
   @Input()
   currentTag?:string;
-  
+
   @Output()
   postedEventEmitter:  EventEmitter<NDKEvent> = new EventEmitter<NDKEvent>();
 
-  @ViewChild('noteText') 
+  @ViewChild('noteText')
   noteText?: ElementRef<HTMLInputElement>;
   isSendingNote:boolean = false;
   noteSent:boolean = false;
@@ -51,6 +54,8 @@ export class NoteComposerComponent {
       .subscribe((value:string) => {
         this.searchResults$ = this.getItems(value);
       },(err:any)=> console.error(err));
+
+      NoteComposerComponent.loggedInWithNpub = this.ndkProvider.isLoggedInUsingPubKey
   }
 
   getItems(term:string): Observable<User[]> {
@@ -77,7 +82,7 @@ export class NoteComposerComponent {
     let usersFromCache = await this.db.peopleIFollow.toArray()
     let filteredUsersFromCache = usersFromCache.filter((user:User)=>{
       return user.displayName?.toLocaleLowerCase().startsWith(term)
-      || user.name?.toLocaleLowerCase().startsWith(term) 
+      || user.name?.toLocaleLowerCase().startsWith(term)
       || user.npub?.toLocaleLowerCase().startsWith(term)
     })
     return filteredUsersFromCache;
@@ -88,7 +93,7 @@ export class NoteComposerComponent {
     let noteText =this.noteText?.nativeElement.value;
     if(noteText){
     let hashTags = this.getHashTagsFromText(noteText);
-    let userMentions = this.getUserMentionsFromText(noteText); 
+    let userMentions = this.getUserMentionsFromText(noteText);
     let noteMentions = this.getNoteMentionsFromText(noteText);
     let postedEvent = await this.ndkProvider.sendNote(noteText,hashTags,userMentions,noteMentions,this.parentEvent);
     this.isSendingNote = false;

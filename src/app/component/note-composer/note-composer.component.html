@@ -4,10 +4,10 @@
             <div class="card-block">
                 <div class="card-text">
                     <div>
-                        <textarea #noteText id='note-text' autocomplete="off" 
+                        <textarea #noteText id='note-text' autocomplete="off"
                         (paste)="handlePaste($event)"
                         class="{{ isReply? 'compose-reply': 'compose-note' }} clr-textarea"
-                        placeholder="{{isReply? 'Comment' : 'Write'}} something interesting here..." 
+                        placeholder="{{isReply? 'Comment' : 'Write'}} something interesting here..."
                         [mentionConfig]="{ items: (searchResults$ | async) || [], labelKey: 'displayName', mentionSelect: formatSelectedUser, disableSearch: true }"
                         [mentionListTemplate]="mentionListTemplate"
                         (searchTerm)="doSearch($event)"
@@ -20,10 +20,10 @@
                     <span>{{ item.displayName }}</span>
                     &nbsp;
                     <span>{{ item.npub }} </span>
-                </ng-template>                
+                </ng-template>
             </div>
             <div class="card-footer">
-                <button class="btn btn-primary" [disabled]="(!noteText.value) || (noteText.value.trim() === '')" [clrLoading]="isSendingNote" (click)="sendNote()">Post</button>
+                <button class="btn btn-primary" [disabled]="(!noteText.value) || (noteText.value.trim() === '') || NoteComposerComponent.loggedInWithNpub" [clrLoading]="isSendingNote" (click)="sendNote()">Post</button>
                 <button type="button" [clrLoading]="uploadingNow" class="btn btn-icon btn-link" aria-label="attach" title="Attach Picture" (click)="attachFile()">
                     <cds-icon shape="paperclip"></cds-icon>
                 </button>

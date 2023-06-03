@@ -56,6 +56,7 @@ export class EventCardComponent {
   linkCopied:boolean = false;
   authorHexPubKey:string|undefined ='';
   eventInProgress:boolean = false;
+  loggedInWithNsec:boolean =false;
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -82,6 +83,8 @@ export class EventCardComponent {
     this.getImageUrls();
     this.getVideoUrls();
     this.getOnlineVideoUrls();
+
+    this.loggedInWithNsec=!this.ndkProvider.isLoggedInUsingPubKey;
   }
 
   addReply(reply: NDKEvent){

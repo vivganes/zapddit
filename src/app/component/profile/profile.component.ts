@@ -16,12 +16,24 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfileComponent implements OnInit{
+  readonly count:number=20;
   user?:User;
   peopleIFollow: User[] = [];
   peopleIMuted: User[] = [];
+  peopleIFollowLimit:number = 20;
+  mutedPeopleLimit:number = 20;
+  peopleIFollowOffset:number = 0;
+  mutedPeopleOffset:number = 0;
   loadingPeopleYouFollow: boolean = false;
+  loadingNextPeopleYouFollow: boolean = false;
+  loadingNextMutedPeople: boolean = false;
   loadingPeopleYouMuted: boolean = false;
   isMobileScreen:boolean = false;
+  totalPeopleIfollow:number=0;
+  totalMutedPeople:number=0;
+  reachedEndOfPeopleIFollow:boolean = false;
+  reachedEndOfMutedPeople = false;
+  showFollowButton = true;
 
   ngOnInit(): void {
     var userProfile = this.ndkProvider.currentUserProfile;
@@ -55,19 +67,27 @@ export class ProfileComponent implements OnInit{
         this.fetchPeopleIMuted();
       }
     });
+
+    this.showFollowButton = !this.ndkProvider.isLoggedInUsingPubKey
   }
 
   constructor(private ndkProvider:NdkproviderService, private breakpointObserver: BreakpointObserver,
     private changeDetectorRef: ChangeDetectorRef, private dbService:ZappeditdbService) {
   }
 
-  fetchPeopleIMuted(){
+  async fetchPeopleIMuted(){
       this.loadingPeopleYouMuted = true;
+      this.totalMutedPeople = await this.dbService.mutedPeople.count();
 
-      this.dbService.mutedPeople.toArray().then(users=>{
+      console.log("loading muted people")
+
+      this.dbService.mutedPeople.limit(this.mutedPeopleLimit).offset(this.mutedPeopleOffset).toArray().then(users=>{
         this.peopleIMuted.length = 0;
         this.peopleIMuted.push(...users);
+        this.checkIfAllMutedPeopleFetched();
+
       }).finally(()=>{
+        console.log("muted people loaded")
         this.loadingPeopleYouMuted = false;
       });
   }
@@ -77,17 +97,73 @@ export class ProfileComponent implements OnInit{
   }
 
   followingTabClicked(){
-    if(this.peopleIFollow.length==0){
       this.fetchPeopleIFollow();
+  }
+
+  async fetchPeopleIFollow(){
+    this.loadingPeopleYouFollow = true;
+    this.totalPeopleIfollow = await this.dbService.peopleIFollow.count();
+
+    console.log("loading people i follow")
+    this.dbService.peopleIFollow.limit(this.peopleIFollowLimit).offset(this.peopleIFollowOffset).toArray().then(users=>{
+      this.peopleIFollow.length = 0;
+      this.peopleIFollow.push(...users);
+      this.checkIfAllFetched();
+    }).finally(()=>{
+      console.log("people i follow load done")
+      this.loadingPeopleYouFollow = false;
+    });
+  }
+
+  loadMorePeopleIFollow(){
+    this.loadingNextPeopleYouFollow = true;
+    var currentLimit = this.peopleIFollowLimit
+    this.peopleIFollowOffset = currentLimit;
+    this.peopleIFollowLimit = currentLimit + this.count
+    console.log("loading next people i follow")
+
+    this.dbService.peopleIFollow.limit(currentLimit + this.count).offset(currentLimit).toArray().then(users=>{
+      this.peopleIFollow.push(...users);
+      this.changeDetectorRef.detectChanges();
+      this.loadingNextPeopleYouFollow = false;
+
+      this.checkIfAllFetched();
+    }).finally(()=>{
+      console.log("loading next people i follow done")
+      this.loadingNextPeopleYouFollow = false;
+    });
+  }
+
+  loadMoreMutedPeople(){
+    this.loadingNextMutedPeople = true;
+    var currentLimit = this.mutedPeopleLimit
+    this.mutedPeopleOffset = currentLimit;
+    this.mutedPeopleLimit = currentLimit + this.count
+    console.log("loading next muted list")
+
+    this.dbService.mutedPeople.limit(currentLimit + this.count).offset(currentLimit).toArray().then(users=>{
+      this.peopleIMuted.push(...users);
+      this.changeDetectorRef.detectChanges();
+      this.loadingNextMutedPeople = false;
+
+      this.checkIfAllMutedPeopleFetched();
+    }).finally(()=>{
+      console.log("loading next muted list")
+      this.loadingNextMutedPeople = false;
+    });
+
+  }
+
+  checkIfAllFetched(){
+    if(this.totalPeopleIfollow === this.peopleIFollow.length){
+      this.reachedEndOfPeopleIFollow = true;
     }
   }
 
-  fetchPeopleIFollow(){
-    this.loadingPeopleYouFollow = true;
-    this.ndkProvider.fetchFollowersFromCache().then(cachedUsers =>{
-      this.peopleIFollow = cachedUsers;
-      this.loadingPeopleYouFollow = false;
-    });
+  checkIfAllMutedPeopleFetched(){
+    if(this.totalMutedPeople === this.peopleIMuted.length){
+      this.reachedEndOfMutedPeople = true;
+    }
   }
 
   onContactListChange(){
