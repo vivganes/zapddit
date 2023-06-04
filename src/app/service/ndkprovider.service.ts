@@ -1,4 +1,6 @@
+
 import { EventEmitter, Injectable, Output } from '@angular/core';
+import { IndexableType, Table } from 'dexie';
 import NDK, {
   type NDKConstructorParams,
   NDKNip07Signer,
@@ -20,6 +22,7 @@ import { NDKUserProfileWithNpub } from '../model/NDKUserProfileWithNpub';
 import { User } from '../model/user';
 import { Constants } from '../util/Constants';
 import * as moment from 'moment';
+import { BehaviorSubject,debounceTime } from 'rxjs';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -65,6 +68,7 @@ export class NdkproviderService {
     const npubFromLocal = localStorage.getItem(Constants.NPUB);
     const privateKey = localStorage.getItem(Constants.PRIVATEKEY);
     const loggedInPubKey = localStorage.getItem(Constants.LOGGEDINUSINGPUBKEY);
+    localStorage.setItem(Constants.FOLLOWERS_FROM_RELAY,'false');
     if(npubFromLocal && npubFromLocal !== ''){
       // we can login as the login has already happened
       if(privateKey && privateKey !== ''){
@@ -237,6 +241,9 @@ export class NdkproviderService {
     this.loggingIn = false;
     //once all setup is done, then only set loggedIn=true to start rendering
     this.loggedIn = true;
+
+    this.fetchFollowersFromCache();
+    this.fetchMutedUsersFromCache();
   }
 
   isLoggedIn(): boolean {
@@ -273,29 +280,33 @@ export class NdkproviderService {
     return ndkEvent;
   }
 
-  private async fetchFollowersForCurrentLoggedInUser():Promise<Set<NDKUser> | undefined>{
-    try{
-      if(this.currentUser){
-        return this.fetchFollowersFromNpub(this.currentUser.npub)
-      }
-    } catch(e){
-      console.log(e);
-    }
-      return new Set<NDKUser>;
-  }
-
   async fetchFollowersAndCache(peopleIFollowFromRelay:Set<NDKUser> | undefined){
-    if(peopleIFollowFromRelay && peopleIFollowFromRelay?.size>0){
+    if(peopleIFollowFromRelay){
+      localStorage.setItem(Constants.FOLLOWERS_FROM_RELAY,'true');
+
+      this.dbService.peopleIFollow.clear();
+      console.log("People I follow db cleared");
 
       var ndkUsersArray=Array.from(peopleIFollowFromRelay);
 
-      ndkUsersArray.forEach(item =>{
-        item.fetchProfile().then(res=>
-          this.dbService.peopleIFollow.where('hexPubKey').equalsIgnoreCase(item.hexpubkey())
+      for(const item of ndkUsersArray){
+        await item.fetchProfile();
+        await this.addToDB(item, this.dbService.peopleIFollow)
+      }
+
+      localStorage.setItem(Constants.FOLLOWERS_FROM_RELAY,'false');
+      console.log("People I follow loaded")
+    }else{
+      console.log("People I follow loaded - nothing to load")
+    }
+  }
+
+  async addToDB(item:NDKUser, table: Table<User,IndexableType>){
+    table.where('hexPubKey').equalsIgnoreCase(item.hexpubkey())
           .and(user=>user.displayName !== null && user.displayName !== undefined)
-          .count().then((count)=>{
+          .count().then(async (count)=>{
             if(count == 0){
-              this.dbService.peopleIFollow.add({
+              table.add({
                 hexPubKey:item.hexpubkey(),
                 name: item.profile?.name!,
                 displayName: item.profile?.displayName!,
@@ -304,13 +315,59 @@ export class NdkproviderService {
                 pictureUrl: item.profile?.image!,
                 about:item.profile?.about!
               }, item.npub)
+              console.debug("user added to - "+ table.name)
             }else{
-              console.log("Record already exists")
+              console.debug("User already exists")
             }
-          })
-        )
-      })
+          }).catch(e=>console.error("db call - "+e))
+  }
+
+  async fetchMutedPeopleAndCache(peopleIMutedFromRelay:(NDKUser|undefined)[]){
+    if(peopleIMutedFromRelay){
+
+      this.dbService.mutedPeople.clear();
+      console.log("Muted people db cleared");
+
+      if(peopleIMutedFromRelay.length!=0){
+      var ndkUsersArray=Array.from(peopleIMutedFromRelay);
+
+      for(var i=0;i<ndkUsersArray.length; i++){
+        var item = ndkUsersArray[i];
+        if(item){
+            await this.addToDB(item!, this.dbService.mutedPeople)
+        }
+      }
+
+      console.log("mutelist loaded")
+    }else{
+      console.log("mutelist loaded - nothing to load")
     }
+  }
+}
+
+  private async fetchMuteList(hexPubKey:string){
+    console.log("mutelist load begin")
+
+    const filter: NDKFilter = { kinds: [30000], '#d': ['mute'], authors:[hexPubKey]};
+    var mutedListResult = await this.ndk?.fetchEvents(filter);
+
+    var mutedListEvent:NDKEvent = mutedListResult?.values().next().value;
+
+    var mutedNDKUsers:(NDKUser | undefined)[]=[];
+
+    if(mutedListEvent){
+      var mutedList = mutedListEvent?.tags.flat().filter(item=> item!=='d' && item !== 'p' && item!=='mute');
+
+      console.log("mutedList - "+ mutedList.length);
+
+      for (var i=0; i<mutedList.length; i++) {
+        var ndkUser = await this.getNdkUserFromHex(mutedList[i])
+        mutedNDKUsers.push(ndkUser);
+      }
+    }
+
+    console.log("mutelist load ends - "+ mutedNDKUsers.length)
+    return mutedNDKUsers;
   }
 
   async fetchFollowersFromCache(): Promise<User[]>{
@@ -320,11 +377,25 @@ export class NdkproviderService {
     var peopleIFollowFromRelay = await this.currentUser?.follows();
     console.log("PeopleIFollow from relay "+peopleIFollowFromRelay?.size);
 
-    if((peopleIFollowFromCache?.length === 0) || peopleIFollowFromCache?.length !== peopleIFollowFromRelay?.size){
+    if((peopleIFollowFromCache?.length === 0) || peopleIFollowFromCache?.length !== peopleIFollowFromRelay?.size
+    && localStorage.getItem(Constants.FOLLOWERS_FROM_RELAY) === 'false'){
         await this.fetchFollowersAndCache(peopleIFollowFromRelay);
     }
 
     return await this.dbService.peopleIFollow.toArray();
+  }
+
+  async fetchMutedUsersFromCache(): Promise<User[]>{
+    var peopleIMutedFromCache = await this.dbService.mutedPeople.toArray();
+    console.log("PeopleIMuted from cache "+peopleIMutedFromCache?.length);
+
+    var peopleIMutedFromRelay = await this.fetchMuteList(this.currentUser?.hexpubkey()!);
+
+    if((peopleIMutedFromCache?.length === 0) || peopleIMutedFromCache?.length !== peopleIMutedFromRelay?.length){
+        await this.fetchMutedPeopleAndCache(peopleIMutedFromRelay);
+    }
+
+    return await this.dbService.mutedPeople.toArray();
   }
 
   async fetchEvents(tag: string, limit?: number, since?: number, until?: number): Promise<Set<NDKEvent> | undefined> {

@@ -33,6 +33,7 @@ export class EventCardComponent {
   @Input()
   isQuotedEvent: boolean = false;
 
+  mutedAuthor:boolean = false;
   authorWithProfile: NDKUser | undefined;
   canLoadMedia:boolean = false;
   amIFollowingtheAuthor:boolean  = false;
@@ -55,6 +56,8 @@ export class EventCardComponent {
   linkCopied:boolean = false;
   authorHexPubKey:string|undefined ='';
   eventInProgress:boolean = false;
+  loggedInWithNsec:boolean =false;
+  notTheLoggedInUser:boolean = false;
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -81,6 +84,8 @@ export class EventCardComponent {
     this.getImageUrls();
     this.getVideoUrls();
     this.getOnlineVideoUrls();
+
+    this.loggedInWithNsec=!this.ndkProvider.isLoggedInUsingPubKey;
   }
 
   addReply(reply: NDKEvent){
@@ -220,6 +225,12 @@ export class EventCardComponent {
           this.amIFollowingtheAuthor = this.canLoadMedia = count > 0;
           this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey!);
       })
+
+      this.dbService.mutedPeople.where({hexPubKey:this.event?.pubkey.toString()}).count().then(count=>{
+        this.mutedAuthor = count > 0;
+      })
+
+    this.notTheLoggedInUser = authorPubKey !== this.ndkProvider.currentUser?.hexpubkey();
     }
   }
 
