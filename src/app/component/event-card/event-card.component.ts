@@ -221,16 +221,23 @@ export class EventCardComponent {
   async getAuthor() {
     let authorPubKey = this.authorHexPubKey = this.event?.pubkey;
     if (authorPubKey) {
+      var loggedInUserHexPubKey = this.ndkProvider.currentUser?.hexpubkey();
+
       this.dbService.peopleIFollow.where({hexPubKey:authorPubKey.toString()}).count().then(async count=>{
           this.amIFollowingtheAuthor = this.canLoadMedia = count > 0;
+
+          if(loggedInUserHexPubKey === this.authorHexPubKey){
+            this.canLoadMedia =  true;
+          }
+
           this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey!);
       })
 
-      this.dbService.mutedPeople.where({hexPubKey:this.event?.pubkey.toString()}).count().then(count=>{
+      this.dbService.mutedPeople.where({hexPubKey:authorPubKey.toString()}).count().then(count=>{
         this.mutedAuthor = count > 0;
       })
 
-    this.notTheLoggedInUser = authorPubKey !== this.ndkProvider.currentUser?.hexpubkey();
+      this.notTheLoggedInUser = authorPubKey !== this.ndkProvider.currentUser?.hexpubkey();
     }
   }
 
