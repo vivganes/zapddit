@@ -173,7 +173,7 @@ and (max-width : 320px) {
   .search_form{
     display: none;
   }
-  
+
   .hashtag-search{
     display: none !important;
   }
@@ -201,7 +201,7 @@ and (max-width : 320px) {
     max-width: 18rem;
   }
 
- 
+
 }
 
 .pt-5{
@@ -217,3 +217,9 @@ and (max-width : 320px) {
   font-size:smaller;
   color:gray
 }
+
+* {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0) !important;
+  -webkit-focus-ring-color: rgba(255, 255, 255, 0) !important;
+  outline: none !important;
+  }

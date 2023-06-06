@@ -16,7 +16,8 @@ export class ContactCardComponent implements OnInit {
   event: NDKEvent | undefined;
   unfollowed:boolean = false;
   eventInProgress:boolean = false;
-
+  @Input()
+  showFollow:boolean = true;
   @Output()
   contactListUpdated = new EventEmitter<boolean>();
 

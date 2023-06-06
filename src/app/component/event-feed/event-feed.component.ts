@@ -25,7 +25,6 @@ export class EventFeedComponent {
   @Output()
   followChanged: EventEmitter<string> = new EventEmitter<string>();
 
-  users:User[] = [];
   followedTopics: string[]|undefined;
   events: Set<NDKEvent> | undefined;
   nextEvents: Set<NDKEvent> | undefined;
@@ -59,8 +58,6 @@ export class EventFeedComponent {
       this.followedTopics = followedTopicsByNdk.split(',');
     }
 
-    this.fetchPeopleIFollowList();
-
     route.params.subscribe(params => {
       let topic = params['topic'];
       if(topic){
@@ -72,12 +69,6 @@ export class EventFeedComponent {
       this.limit = 25;
       this.getEvents();
     });
-  }
-
-  fetchPeopleIFollowList(){
-    this.ndkProvider.fetchFollowersFromCache().then((cachedUsers:User[]) =>
-      this.users = cachedUsers
-    );
   }
 
   async getEvents() {

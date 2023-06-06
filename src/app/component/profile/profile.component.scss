@@ -1,0 +1,65 @@
+::ng-deep.nav>.active {
+  font-size: large;
+  font-weight: bold;
+}
+
+.center-text{
+  text-align: center;
+}
+
+.profile-field{
+  padding: 1em;
+}
+
+.pb-2{
+  padding-bottom: 2em;
+}
+
+.pt-2{
+  padding-top:2em;
+}
+
+.avatar-image {
+  max-height: 100px;
+  border-radius: 50%;
+  margin-right: 3px;
+}
+
+.middle{
+  vertical-align: middle;
+  position: relative;
+}
+
+.text-vmiddle{
+  top:50%;
+  position:absolute
+}
+
+@media only screen and (max-width: 995px) {
+  .text-vmiddle{
+    top:0%;
+    position:absolute;
+  }
+
+  .middle{
+    vertical-align: middle;
+    position: relative;
+    margin-bottom: 10px;
+  }
+
+  .avatar-image {
+    max-height: 100px;
+    border-radius: 50%;
+    margin-right: 3px;
+    margin-top:12px;
+  }
+
+}
+
+.mb-20{
+  margin-bottom: 20px;
+}
+
+.large-text{
+  font-size: medium;
+}
