@@ -42,6 +42,7 @@ export class PreferencesPageComponent {
       });    
         
     })
+    this.ndkProvider.getUserSubscribedRelays();
   }
 
   copyPrivateKey(){
