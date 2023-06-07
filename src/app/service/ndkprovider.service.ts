@@ -708,7 +708,7 @@ export class NdkproviderService {
     if(subscribedRelays !== undefined) subscribedRelayListToPublish = subscribedRelays
     else subscribedRelayListToPublish = this.appData.subscribedRelays;
 
-    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish + '\n' + mutedTopicsToPublish;
+    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish + '\n' + mutedTopicsToPublish + '\n' + subscribedRelayListToPublish;
     const tag: NDKTag = ['d', 'zapddit.com'];
     ndkEvent.tags = [tag];
     if(this.canWriteToNostr){
@@ -766,10 +766,12 @@ export class NdkproviderService {
 
   async refreshAppData() {
     const latestEvents: Set<NDKEvent> | undefined = await this.fetchLatestAppData();
+    console.log(latestEvents);
     if (latestEvents && latestEvents.size > 0) {
       const latestEvent: NDKEvent = Array.from(latestEvents)[0];
       const multiLineAppData = latestEvent.content;
       const lineWiseAppData = multiLineAppData.split('\n');
+      console.log(multiLineAppData);
       for (let i = 0; i < lineWiseAppData.length; i++) {
         switch (i) {
           case 0:
