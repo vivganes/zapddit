@@ -42,7 +42,7 @@ export class AppComponent {
   followedTopics: string[] = [];
   darkTheme: boolean = false;
   wizardIsOpen: boolean = false;
-
+  isNip05Verified:boolean = false;
 
   ndkProvider: NdkproviderService;
 
@@ -81,6 +81,10 @@ export class AppComponent {
     this.ndkProvider.launchOnboardingWizard.subscribe((launch:boolean)=>{
       this.wizardIsOpen = launch;
     })
+
+    this.ndkProvider.isNip05Verified$.subscribe(val=>{
+      this.isNip05Verified = val
+    });
   }
 
 

@@ -51,6 +51,7 @@ export class NdkproviderService {
     mutedTopics:'',
   };
 
+  isNip05Verified$ = new BehaviorSubject<boolean>(false);
   defaultSatsForZaps:number = 1
   loggedIn: boolean = false;
   loggingIn: boolean = false;
@@ -244,6 +245,9 @@ export class NdkproviderService {
 
     this.fetchFollowersFromCache();
     this.fetchMutedUsersFromCache();
+
+    var verified = await this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.hexpubkey());
+    console.log("verified " +verified);
   }
 
   isLoggedIn(): boolean {
@@ -671,6 +675,32 @@ export class NdkproviderService {
     }
 
     return zapEndpointCallback;
+  }
+
+  async checkIfNIP05Verified(nip05:string | undefined, hexPubKey:string | undefined):Promise<boolean>{
+    var nip05Domain;
+    var verificationEndpoint;
+    var nip05Name;
+    var verified:boolean = false;
+    if(nip05){
+      var elements = nip05.split('@');
+      nip05Domain = elements.pop()
+      nip05Name = elements.pop()
+      verificationEndpoint = `https://${nip05Domain}/.well-known/nostr.json?name=${nip05Name}`
+
+      var response = await fetch(`${verificationEndpoint}`);
+      const body = await response.json();
+
+      if(body['names'] && body['names'][`${nip05Name}`]){
+        var hexPubKeyFromRemote = body['names'][`${nip05Name}`];
+
+        if(hexPubKey === hexPubKeyFromRemote){
+           verified = true
+           this.isNip05Verified$.next(true);
+        }
+      }
+    }
+    return verified;
   }
 }
 
