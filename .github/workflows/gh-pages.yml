@@ -22,7 +22,7 @@ jobs:
 
 
     - name: Build
-      run: npm run build:prod && echo 'zapddit.com' > ./dist/zapddit/CNAME && cp ./dist/zapddit/index.html ./dist/zapddit/404.html
+      run: npm run build:prod && touch ./dist/zapddit/.nojekyll && echo 'zapddit.com' > ./dist/zapddit/CNAME && cp ./dist/zapddit/index.html ./dist/zapddit/404.html
 
     - name: Deploy
       if: success()
