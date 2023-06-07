@@ -84,7 +84,6 @@ export class AppComponent {
 
     this.ndkProvider.isNip05Verified$.subscribe(val=>{
       this.isNip05Verified = val
-      console.log("ver "+val)
     });
   }
 

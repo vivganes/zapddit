@@ -43,9 +43,8 @@
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile  && !ndkProvider.currentUserProfile?.displayName && !ndkProvider.currentUserProfile?.name && ndkProvider.currentUserNpub!=null">{{ ndkProvider.currentUserNpub.substring(0,14)+'...' }}</span>
           <span class="profile-name"  *ngIf="ndkProvider.currentUserProfile?.displayName">{{ ndkProvider.currentUserProfile?.displayName }}</span>
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile?.name">@{{ ndkProvider.currentUserProfile?.name }}</span>
-          <div  style="display:flex"><span class="profile-name" *ngIf="ndkProvider.currentUserProfile?.nip05">{{ ndkProvider.currentUserProfile?.nip05 }}
-            </span><cds-icon shape="check-circle" solid clrverticalnavicon class="purple" *ngIf="isNip05Verified">
-            </cds-icon></div>
+          <cds-icon shape="check-circle" solid clrverticalnavicon class="purple" *ngIf="isNip05Verified">
+          </cds-icon>
       </label>
       <div class="nav-divider"></div>
 

@@ -688,7 +688,7 @@ export class NdkproviderService {
       nip05Name = elements.pop()
       verificationEndpoint = `https://${nip05Domain}/.well-known/nostr.json?name=${nip05Name}`
 
-      var response = await fetch(`${verificationEndpoint}?`);
+      var response = await fetch(`${verificationEndpoint}`);
       const body = await response.json();
 
       if(body['names'] && body['names'][`${nip05Name}`]){
