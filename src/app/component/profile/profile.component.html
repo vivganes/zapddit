@@ -4,7 +4,7 @@
       <button clrTabLink class="large-text">🤓 Profile Details</button>
       <clr-tab-content *clrIfActive>
         <div class="clr-row pt-2">
-          <div class="clr-col-lg-6 clr-col-md-8  clr-col-xl-3" >
+          <div class="clr-col-lg-7 clr-col-md-8  clr-col-xl-5" >
             <div class="clr-row profile-field">
               <div class="clr-col-lg-6 middle"><span class="text-vmiddle"><strong>Avatar</strong></span></div>
               <div class="clr-col-lg-6">
@@ -34,7 +34,8 @@
             </div>
             <div class="clr-row profile-field">
               <div class="clr-col-lg-6"><strong>NIP05</strong></div>
-              <div class="clr-col-lg-6">{{user?.nip05}}</div>
+              <div class="clr-col-lg-6">{{user?.nip05}} <cds-icon shape="check-circle" class="purple" solid *ngIf="isNip05Verified">
+              </cds-icon></div>
             </div>
 
             <div class="clr-row profile-field">

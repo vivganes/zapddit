@@ -34,7 +34,7 @@ export class ProfileComponent implements OnInit{
   reachedEndOfPeopleIFollow:boolean = false;
   reachedEndOfMutedPeople = false;
   showFollowButton = true;
-
+  isNip05Verified = false;
   offsetWhenUnfollowed:number = 0;
   limitWhenUnfollowed:number = 20;
 
@@ -66,6 +66,11 @@ export class ProfileComponent implements OnInit{
     });
 
     this.showFollowButton = !this.ndkProvider.isLoggedInUsingPubKey
+
+    this.ndkProvider.isNip05Verified$.subscribe(val=>{
+      this.isNip05Verified = val
+      this.changeDetectorRef.detectChanges();
+    });
   }
 
   constructor(private ndkProvider:NdkproviderService, private breakpointObserver: BreakpointObserver,
