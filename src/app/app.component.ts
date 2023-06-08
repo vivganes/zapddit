@@ -89,10 +89,11 @@ export class AppComponent {
 
 
   setTheme(dark:boolean){
-    (<any>document.getElementById('zapddit-theme')).href="/assets/clr-ui"+(dark?"-dark":"")+".css";
+    if((document.getElementById('zapddit-theme'))){
+      (<any>document.getElementById('zapddit-theme')).href="/assets/clr-ui"+(dark?"-dark":"")+".css";
+    }
     this.darkTheme = dark;
   }
-
   openWizard(){
     this.wizardIsOpen = true;
   }

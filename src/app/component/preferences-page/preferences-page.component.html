@@ -10,7 +10,7 @@
         <clr-textarea-container>
             <label>Downzap Recipient's npub</label>
             <textarea clrTextarea
-            [disabled]="ndkProvider.isLoggedInUsingPubKey"
+            [disabled]="isLoggedInUsingPubKey"
             cols="50"
             id="downzap-recipients"
             placeholder="npub of the recipient" >{{ ndkProvider.appData.downzapRecipients }}</textarea>
@@ -42,7 +42,7 @@
             </div>
           </div>
         </div>
-         <button type="submit" [disabled]="ndkProvider.isLoggedInUsingPubKey"
+         <button type="submit" [disabled]="isLoggedInUsingPubKey"
           class="btn btn-primary" (click)="saveDownzapRecipients()">Save</button>
     </form>
     </clr-accordion-content>
@@ -55,13 +55,13 @@
         <clr-input-container>
             <label>No. of sats for Zaps</label>
             <input clrInput
-            [disabled]="ndkProvider.isLoggedInUsingPubKey"
+            [disabled]="isLoggedInUsingPubKey"
             type="number"
             id="sats-for-zaps"
             value="{{ ndkProvider.defaultSatsForZaps }}" >
             <clr-control-helper>These many sats will be send when you zap</clr-control-helper>
         </clr-input-container>
-        <button [clrLoading]="settingDefaultSats" [disabled]="ndkProvider.isLoggedInUsingPubKey"
+        <button [clrLoading]="settingDefaultSats" [disabled]="isLoggedInUsingPubKey"
          type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button>
     </form>
     </clr-accordion-content>
@@ -70,7 +70,7 @@
   <clr-accordion-panel>
     <clr-accordion-title>Muted Topics</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
-      <form *ngIf ="!ndkProvider.isLoggedInUsingPubKey" clrForm onsubmit="return false;">
+      <form *ngIf ="!isLoggedInUsingPubKey" clrForm onsubmit="return false;">
         <clr-input-container>
             <label>Hashtag to mute</label>
             <input clrInput
@@ -85,7 +85,7 @@
     <div *ngIf="ndkProvider.appData.mutedTopics && ndkProvider.appData.mutedTopics !== ''">
       <p *ngFor="let topic of ndkProvider.appData.mutedTopics.split(','); ">
         #{{ topic }}
-        <cds-icon *ngIf="!ndkProvider.isLoggedInUsingPubKey" class="trash-icon" status="danger" size="md" shape="trash"  title="Unmute" (click)="unmuteTopic(topic)"></cds-icon>
+        <cds-icon *ngIf="!isLoggedInUsingPubKey" class="trash-icon" status="danger" size="md" shape="trash"  title="Unmute" (click)="unmuteTopic(topic)"></cds-icon>
       </p>
     </div>
     <p *ngIf ="!ndkProvider.appData.mutedTopics || ndkProvider.appData.mutedTopics === '' ">No topics muted</p>
@@ -97,7 +97,7 @@
   <clr-accordion-panel [clrAccordionPanelOpen]="true">
     <clr-accordion-title>Media Content</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
-      <form *ngIf ="!ndkProvider.isLoggedInUsingPubKey" clrForm onsubmit="return false;">
+      <form *ngIf ="!isLoggedInUsingPubKey" clrForm onsubmit="return false;">
         <clr-checkbox-container clrInline>
           <clr-checkbox-wrapper>
             <label>Blur media from people I dont follow</label>

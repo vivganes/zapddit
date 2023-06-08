@@ -18,11 +18,9 @@ import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
 import { LoginUtil } from '../util/LoginUtil';
 import { ZappeditdbService } from './zappeditdb.service';
-import { NDKUserProfileWithNpub } from '../model/NDKUserProfileWithNpub';
 import { User } from '../model/user';
 import { Constants } from '../util/Constants';
-import * as moment from 'moment';
-import { BehaviorSubject,debounceTime } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -60,7 +58,7 @@ export class NdkproviderService {
   peopleIFollowEmitter: NDKSubscription | undefined;
   private signer:NDKSigner|undefined = undefined;
   isNip07 = false;
-  isLoggedInUsingPubKey = false;
+  isLoggedInUsingPubKey$ = new BehaviorSubject<boolean>(false);
   mutedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
   @Output()
   launchOnboardingWizard:EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -79,7 +77,7 @@ export class NdkproviderService {
       } else {
         if(loggedInPubKey && loggedInPubKey !== ''){
           this.isNip07 = false;
-          this.isLoggedInUsingPubKey = true;
+          this.isLoggedInUsingPubKey$.next(true);
         } else {
         //this.signer = new NDKNip07Signer();
         //dont assign a signer now. we need to assign it later only
@@ -105,7 +103,7 @@ export class NdkproviderService {
     } else if(enteredKey.startsWith('npub')) {
       localStorage.setItem(Constants.NPUB,enteredKey)
       localStorage.setItem(Constants.LOGGEDINUSINGPUBKEY, 'true');
-      this.isLoggedInUsingPubKey = true;
+      this.isLoggedInUsingPubKey$.next(true);
       this.tryLoginUsingNpub(enteredKey);
     } else{
       this.loginError ="Invalid input. Enter either nsec or npub id";

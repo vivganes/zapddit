@@ -65,7 +65,9 @@ export class ProfileComponent implements OnInit{
       }
     });
 
-    this.showFollowButton = !this.ndkProvider.isLoggedInUsingPubKey
+    this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val =>{
+      this.showFollowButton = !val;
+    })
 
     this.ndkProvider.isNip05Verified$.subscribe(val=>{
       this.isNip05Verified = val

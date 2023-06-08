@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OnboardingWizardComponent } from './onboarding-wizard.component';
+import { CommonTestingModule } from 'src/app/testing/CommonTestingModule';
 
 describe('OnboardingWizardComponent', () => {
+  CommonTestingModule.setUpTestBed(OnboardingWizardComponent)
+
   let component: OnboardingWizardComponent;
   let fixture: ComponentFixture<OnboardingWizardComponent>;
 

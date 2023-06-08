@@ -55,7 +55,9 @@ export class NoteComposerComponent {
         this.searchResults$ = this.getItems(value);
       },(err:any)=> console.error(err));
 
-      NoteComposerComponent.loggedInWithNpub = this.ndkProvider.isLoggedInUsingPubKey
+      this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
+        NoteComposerComponent.loggedInWithNpub = val;
+      })
   }
 
   getItems(term:string): Observable<User[]> {

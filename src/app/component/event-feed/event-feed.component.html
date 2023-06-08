@@ -1,7 +1,7 @@
 <ng-template [ngIf]="tag !== undefined" [ngIfElse]="homefeedHeader">
   <h3 align="center">
     #{{ tag }}
-    <ng-template [ngIf]="!ndkProvider.isLoggedInUsingPubKey">
+    <ng-template [ngIf]="!isLoggedInUsingPubKey">
       <ng-template [ngIf]="!isTopicFollowed(tag)" [ngIfElse]="elseBlock">
         <button class="btn btn-sm btn-primary btn-icon" (click)="followTopic(tag)">
           <cds-icon shape="plus-circle" solid></cds-icon> Follow

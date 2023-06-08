@@ -1,6 +1,5 @@
 import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter } from '@angular/core';
 import { NDKEvent, NDKTag, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
-import * as moment from 'moment';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import linkifyHtml from 'linkify-html';
 import QRCodeStyling from 'qr-code-styling';
@@ -10,6 +9,7 @@ import { Util } from 'src/app/util/Util';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { LoginUtil } from 'src/app/util/LoginUtil';
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
@@ -85,7 +85,9 @@ export class EventCardComponent {
     this.getVideoUrls();
     this.getOnlineVideoUrls();
 
-    this.loggedInWithNsec=!this.ndkProvider.isLoggedInUsingPubKey;
+    this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
+      this.loggedInWithNsec=!val;
+    })    
   }
 
   addReply(reply: NDKEvent){
@@ -197,6 +199,15 @@ export class EventCardComponent {
       }
     }
     return displayedContent;
+  }
+
+  copyNoteHexIdToClipboard(){
+    this.clipboard.copy(this.event?.id!);
+  }
+
+  copyNote1IdToClipboard(){
+    const note1Id = LoginUtil.hexToBech32('note',this.event?.id!)
+    this.clipboard.copy(note1Id);
   }
 
   async share(){

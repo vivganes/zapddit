@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EventCardComponent } from './event-card.component';
 import { CommonTestingModule } from 'src/app/testing/CommonTestingModule';
+import { ShortNumberPipe } from 'src/app/pipe/short-number.pipe';
+import { formatTimestampPipe } from 'src/app/pipe/formatTimeStamp.pipe';
 
 describe('EventCardComponent', () => {
 
@@ -12,7 +14,9 @@ describe('EventCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EventCardComponent],
+      declarations: [EventCardComponent,
+        ShortNumberPipe,
+        formatTimestampPipe],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EventCardComponent);

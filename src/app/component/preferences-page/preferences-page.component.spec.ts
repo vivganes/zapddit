@@ -12,9 +12,8 @@ describe('PreferencesPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PreferencesPageComponent ]
-    })
-    .compileComponents();
+      declarations: [PreferencesPageComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PreferencesPageComponent);
     component = fixture.componentInstance;

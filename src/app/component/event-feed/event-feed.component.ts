@@ -28,6 +28,7 @@ export class EventFeedComponent {
   followedTopics: string[]|undefined;
   events: Set<NDKEvent> | undefined;
   nextEvents: Set<NDKEvent> | undefined;
+  isLoggedInUsingPubKey:boolean = false;
 
   ndkProvider: NdkproviderService;
 
@@ -44,11 +45,14 @@ export class EventFeedComponent {
         this.getEvents();
       }
     });
+
+    this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
+      this.isLoggedInUsingPubKey = val;
+    })
   }
 
   constructor(ndkProvider: NdkproviderService, private topicService: TopicService,
     private route: ActivatedRoute) {
-    console.log("creating feed component")
     this.ndkProvider = ndkProvider;
 
     const followedTopicsByNdk = ndkProvider.appData.followedTopics;
