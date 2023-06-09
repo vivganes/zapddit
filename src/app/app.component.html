@@ -58,7 +58,7 @@
         <cds-icon shape="cog" clrVerticalNavIcon></cds-icon><span class="nav-text">Preferences</span>
       </a>
       <a clrVerticalNavLink href="#" (click)="logout()">
-        <cds-icon shape="logout" clrVerticalNavIcon></cds-icon><span class="nav-text">Logout</span>
+        <cds-icon shape="logout" clrVerticalNavIcon></cds-icon><span class="nav-text">{{ndkProvider.isTryingZapddit ? 'Clear & Reset' : 'Logout'}}</span>
       </a>
       <div class="nav-divider"></div>
       <label class="nav-header">Followed Topics</label>
