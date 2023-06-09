@@ -73,7 +73,10 @@
             <h4 class="card-title">Create a new user</h4>
             <div class="card-text">
               <p>
-                Create a new user on the nostr ecosystem.  Zapddit does not own your account's data. You could use the same account in all multiple nostr clients.
+                Create a new user on the nostr ecosystem.  Zapddit does not own your account's data.
+              </p>
+              <p>
+                You can use the same account in all the nostr clients.
               </p>
               <button *ngIf="!ndkProvider.loggedIn" [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
                 (click)="attemptGenerateNewCredential()">Create new nostr user
