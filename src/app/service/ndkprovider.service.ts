@@ -16,7 +16,7 @@ import NDK, {
 } from '@nostr-dev-kit/ndk';
 import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
-import { LoginUtil } from '../util/LoginUtil';
+import { LoginUtil, NewCredential } from '../util/LoginUtil';
 import { ZappeditdbService } from './zappeditdb.service';
 import { User } from '../model/user';
 import { Constants } from '../util/Constants';
@@ -30,6 +30,7 @@ interface ZappedItAppData {
 
 const explicitRelayUrls = ['wss://nos.lol',
 'wss://relay.nostr.band',
+'wss://nostr.mutinywallet.com',
 'wss://relay.f7z.io',
 'wss://relay.damus.io',
 'wss://nostr.mom']; //TODO: fix this
@@ -59,6 +60,8 @@ export class NdkproviderService {
   private signer:NDKSigner|undefined = undefined;
   isNip07 = false;
   isLoggedInUsingPubKey$ = new BehaviorSubject<boolean>(false);
+  isLoggedInUsingNsec: boolean = false;
+  isNewToNostr:boolean = false;
   mutedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
   @Output()
   launchOnboardingWizard:EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -72,6 +75,7 @@ export class NdkproviderService {
       // we can login as the login has already happened
       if(privateKey && privateKey !== ''){
         this.isNip07 = false;
+        this.isLoggedInUsingNsec = true;
         this.signer = new NDKPrivateKeySigner(privateKey);
         this.tryLoginUsingNpub(npubFromLocal);
       } else {
@@ -98,6 +102,7 @@ export class NdkproviderService {
       this.signer.user().then((user) => {
         localStorage.setItem(Constants.PRIVATEKEY, hexPrivateKey)
         localStorage.setItem(Constants.NPUB, user.npub)
+        this.isLoggedInUsingNsec = true;
         this.tryLoginUsingNpub(user.npub);
       })
     } else if(enteredKey.startsWith('npub')) {
@@ -113,6 +118,46 @@ export class NdkproviderService {
       this.loginError = e.message;
       this.loggingIn = false;
     }
+  }
+
+  setAsNewToNostr(){
+    this.isNewToNostr = true;
+  }
+
+  setNotNewToNostr(){
+    this.isNewToNostr = false;
+  }
+ 
+  async createNewUserOnNostr(displayName:string){
+    //create a relay follow list event and send it across
+    const relayEvent:NDKEvent = new NDKEvent(this.ndk);
+    relayEvent.kind = 10002;
+    relayEvent.content = "";
+    relayEvent.tags = await this.getSuggestedRelays();
+    console.log(relayEvent);
+    relayEvent.publish();
+
+    //create new profile event and send it across
+    const newProfileEvent:NDKEvent = new NDKEvent(this.ndk);
+    newProfileEvent.kind = 0;
+    newProfileEvent.content = `{"display_name": "${displayName}", "name": "${displayName}"}`;
+    console.log(newProfileEvent)
+    await newProfileEvent.publish();
+    this.currentUserProfile = {
+      name: displayName,
+      displayName: displayName
+    }
+  }
+
+  async getSuggestedRelays():Promise<NDKTag[]>{
+    const relayTags = explicitRelayUrls.map(val => ['r',val])
+    return relayTags;
+  }
+
+
+  attemptToGenerateNewCredential(){
+    const newCredential: NewCredential = LoginUtil.generateNewCredential();
+    this.attemptLoginUsingPrivateOrPubKey(newCredential.privateKey);
   }
 
   validateAndGetHexKey(enteredKey:string):string{
@@ -593,14 +638,7 @@ export class NdkproviderService {
         event: null,
         amount: this.defaultSatsForZaps*1000,
         comment: comment || '',
-        relays: [
-          'wss://nos.lol',
-          'wss://relay.nostr.band',
-          'wss://relay.f7z.io',
-          'wss://relay.damus.io',
-          'wss://nostr.mom',
-          'wss://no.str.cr',
-        ], // TODO: fix this
+        relays: explicitRelayUrls
       });
 
       // add the event tag if it exists; this supports both 'e' and 'a' tags

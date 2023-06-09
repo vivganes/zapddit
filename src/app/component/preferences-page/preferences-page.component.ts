@@ -1,8 +1,10 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { TopicService } from 'src/app/service/topic.service';
+import { Clipboard } from '@angular/cdk/clipboard';
 import '@cds/core/checkbox/register.js';
 import { Constants } from '../../util/Constants';
+import { LoginUtil } from 'src/app/util/LoginUtil';
 
 @Component({
   selector: 'app-preferences-page',
@@ -22,7 +24,7 @@ export class PreferencesPageComponent {
   loadContentFromPeopleIFollow:boolean = true;
   changeDetector:ChangeDetectorRef;
 
-  constructor(ndkProvider: NdkproviderService, topicService: TopicService, changeDetector: ChangeDetectorRef) {
+  constructor(ndkProvider: NdkproviderService, topicService: TopicService, changeDetector: ChangeDetectorRef,private clipboard: Clipboard) {
     this.ndkProvider = ndkProvider;
     this.topicService = topicService;    
     this.changeDetector = changeDetector;
@@ -42,6 +44,10 @@ export class PreferencesPageComponent {
     })
   }
 
+  copyPrivateKey(){
+    const privateKeyHex = localStorage.getItem('privateKey')
+    this.clipboard.copy(LoginUtil.hexToBech32("nsec",privateKeyHex!))
+  }
 
   async saveDownzapRecipients() {
     this.downzapSetSuccessMessage = undefined;

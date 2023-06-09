@@ -94,6 +94,7 @@ export class AppComponent {
     }
     this.darkTheme = dark;
   }
+  
   openWizard(){
     this.wizardIsOpen = true;
   }
