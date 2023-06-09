@@ -1,7 +1,6 @@
 <div class="card" *ngIf="!mutedAuthor">
   <div class="card-block">
     <div class="card-media-block">
-
       <img *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" alt="Profile picture" src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" title="Open in Snort"/>
       <img alt="temp avatar"
         (click)="openAuthorInSnort()"
@@ -16,13 +15,6 @@
             <span *ngIf="!authorWithProfile?.profile?.name" class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey }} </span>
           </div>
           <div class="follow-ml8">
-            <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser">
-              <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
-              Follow
-              </button>
-            </ng-template>
-            <ng-template [ngIf]="amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser">
-              <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="unFollow()">
             <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
               Follow
@@ -34,9 +26,9 @@
               </button>
             </ng-template>
           </div>
+        </div>  
       </div>
         <span class="card-media-text break-words-overflow"> {{ event?.created_at | formatTimestamp }} </span>
-      </div>
     </div>
     <div *ngIf="!isQuotedEvent" class="break-words-overflow pointer-cursor" [routerLink]="'/n/'+event?.id">
       <ngx-dynamic-hooks *ngIf="linkifiedContent" [content]="linkifiedContent"></ngx-dynamic-hooks>
