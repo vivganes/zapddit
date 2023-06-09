@@ -28,6 +28,11 @@ interface ZappedItAppData {
   mutedTopics:string;
 }
 
+interface MutedUserMetaData{
+  status:boolean;
+  count:number;
+}
+
 const explicitRelayUrls = ['wss://nos.lol',
 'wss://relay.nostr.band',
 'wss://nostr.mutinywallet.com',
@@ -51,6 +56,8 @@ export class NdkproviderService {
   };
 
   isNip05Verified$ = new BehaviorSubject<boolean>(false);
+  fetchingPeopleIFollowFromRelay$ = new BehaviorSubject<boolean>(true);
+  fetchingMutedUsersFromRelay$ = new BehaviorSubject<MutedUserMetaData>({status:true,count:0});
   defaultSatsForZaps:number = 1
   loggedIn: boolean = false;
   loggingIn: boolean = false;
@@ -330,22 +337,48 @@ export class NdkproviderService {
   async fetchFollowersAndCache(peopleIFollowFromRelay:Set<NDKUser> | undefined){
     if(peopleIFollowFromRelay){
       localStorage.setItem(Constants.FOLLOWERS_FROM_RELAY,'true');
-
+      this.fetchingPeopleIFollowFromRelay$.next(true);
       this.dbService.peopleIFollow.clear();
       console.log("People I follow db cleared");
 
       var ndkUsersArray=Array.from(peopleIFollowFromRelay);
 
-      for(const item of ndkUsersArray){
-        await item.fetchProfile();
-        await this.addToDB(item, this.dbService.peopleIFollow)
+      console.log("Fetching People I follow users profile");
+
+      for(var item of ndkUsersArray){
+          await item.fetchProfile();
       }
 
+      console.log("Done fetching People I follow users profile");
+
+      var users = ndkUsersArray.map(item=>{
+       return {
+                hexPubKey:item.hexpubkey(),
+                name: item.profile?.name!,
+                displayName: item.profile?.displayName!,
+                nip05: item.profile?.nip05!,
+                npub: item.npub,
+                pictureUrl: item.profile?.image!,
+                about:item.profile?.about!
+      }});
+
+      await this.addToDBBulk(users, this.dbService.peopleIFollow)
+
       localStorage.setItem(Constants.FOLLOWERS_FROM_RELAY,'false');
+
+      this.fetchingPeopleIFollowFromRelay$.next(false);
+
       console.log("People I follow loaded")
     }else{
+      this.fetchingPeopleIFollowFromRelay$.next(false);
       console.log("People I follow loaded - nothing to load")
     }
+  }
+
+  async addToDBBulk(items:User[], table: Table<User,IndexableType>){
+    console.debug("User bulk add - "+ table.name+ " "+ items.length + " records" );
+    await table.bulkPut(items);
+    console.debug("User bulk add done - "+ table.name)
   }
 
   async addToDB(item:NDKUser, table: Table<User,IndexableType>){
@@ -371,6 +404,7 @@ export class NdkproviderService {
 
   async fetchMutedPeopleAndCache(peopleIMutedFromRelay:(NDKUser|undefined)[]){
     if(peopleIMutedFromRelay){
+      this.fetchingMutedUsersFromRelay$.next({status:true,count:0});
 
       this.dbService.mutedPeople.clear();
       console.log("Muted people db cleared");
@@ -378,15 +412,31 @@ export class NdkproviderService {
       if(peopleIMutedFromRelay.length!=0){
       var ndkUsersArray=Array.from(peopleIMutedFromRelay);
 
-      for(var i=0;i<ndkUsersArray.length; i++){
+      var users:User[]=[];
+
+      for(var i=0; i<ndkUsersArray.length; i++){
         var item = ndkUsersArray[i];
-        if(item){
-            await this.addToDB(item!, this.dbService.mutedPeople)
+        if(item) {
+            users.push({
+              hexPubKey:item.hexpubkey(),
+              name: item.profile?.name!,
+              displayName: item.profile?.displayName!,
+              nip05: item.profile?.nip05!,
+              npub: item.npub,
+              pictureUrl: item.profile?.image!,
+              about:item.profile?.about!
+            });
         }
       }
 
+      await this.addToDBBulk(users, this.dbService.mutedPeople)
+
+      this.fetchingMutedUsersFromRelay$.next({status:false, count:users.length});
+
       console.log("mutelist loaded")
     }else{
+      this.fetchingMutedUsersFromRelay$.next({status:false, count:0});
+
       console.log("mutelist loaded - nothing to load")
     }
   }
@@ -427,6 +477,8 @@ export class NdkproviderService {
     if((peopleIFollowFromCache?.length === 0) || peopleIFollowFromCache?.length !== peopleIFollowFromRelay?.size
     && localStorage.getItem(Constants.FOLLOWERS_FROM_RELAY) === 'false'){
         await this.fetchFollowersAndCache(peopleIFollowFromRelay);
+    }else{
+      this.fetchingPeopleIFollowFromRelay$.next(false);
     }
 
     return await this.dbService.peopleIFollow.toArray();
@@ -440,6 +492,8 @@ export class NdkproviderService {
 
     if((peopleIMutedFromCache?.length === 0) || peopleIMutedFromCache?.length !== peopleIMutedFromRelay?.length){
         await this.fetchMutedPeopleAndCache(peopleIMutedFromRelay);
+    }else{
+      this.fetchingMutedUsersFromRelay$.next({status:false, count:peopleIMutedFromRelay?.length});
     }
 
     return await this.dbService.mutedPeople.toArray();

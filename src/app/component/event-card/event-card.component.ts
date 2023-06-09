@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { NDKEvent, NDKTag, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import linkifyHtml from 'linkify-html';
@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { LoginUtil } from 'src/app/util/LoginUtil';
+import { Subscription } from 'rxjs';
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
@@ -20,7 +21,7 @@ const NOSTR_NOTE_REGEX = /nostr:(note1[\S]*)/gi;
   templateUrl: './event-card.component.html',
   styleUrls: ['./event-card.component.scss'],
 })
-export class EventCardComponent {
+export class EventCardComponent implements OnInit, OnDestroy{
   // Regular expression patterns to match video URLs
   private readonly youtubeRegex:RegExp = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([\w-]+)/g;
   private readonly vimeoRegex:RegExp = /(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d+)/g;
@@ -32,6 +33,8 @@ export class EventCardComponent {
   showingComments: boolean = false;
   @Input()
   isQuotedEvent: boolean = false;
+  @Input()
+  peopleIFollowLoadedFromRelay: boolean = false;
 
   mutedAuthor:boolean = false;
   authorWithProfile: NDKUser | undefined;
@@ -58,6 +61,7 @@ export class EventCardComponent {
   eventInProgress:boolean = false;
   loggedInWithNsec:boolean =false;
   notTheLoggedInUser:boolean = false;
+  fetchingMutedUsersFromRelaySub:Subscription = new Subscription();
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -74,7 +78,7 @@ export class EventCardComponent {
     }
   }
 
-  ngOnInit() {
+  ngOnInit():void {
     this.displayedContent = this.replaceHashStyleMentionsWithComponents();
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNoteMentionsWithComponents(this.displayedContent)
@@ -87,7 +91,13 @@ export class EventCardComponent {
 
     this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
       this.loggedInWithNsec=!val;
-    })    
+    })
+
+    this.fetchingMutedUsersFromRelaySub = this.ndkProvider.fetchingMutedUsersFromRelay$.subscribe(val=>{
+      if(val.status===false && val.count>0){
+        this.getAuthor();
+      }
+    })
   }
 
   addReply(reply: NDKEvent){
@@ -495,5 +505,9 @@ export class EventCardComponent {
     this.eventInProgress = false;
     console.error ("Error from unfollow: " + error);
   });
+ }
+
+ ngOnDestroy(): void {
+  this.fetchingMutedUsersFromRelaySub.unsubscribe();
  }
 }
