@@ -24,8 +24,7 @@ export class LoginPageComponent {
   }
 
   attemptGenerateNewCredential(){
+    this.ndkProvider.setAsNewToNostr();
     this.ndkProvider.attemptToGenerateNewCredential();
   }
-
-
 }

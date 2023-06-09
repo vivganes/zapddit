@@ -25,9 +25,11 @@ export class OnboardingWizardComponent {
   twitterHater:boolean = false;
   suggestedTopics: string[] = [];
   muteList: string[] = [];
+  newUserDisplayName?:string;
+  ndkProvider: NdkproviderService;
 
-  constructor(private ndkProvider:NdkproviderService){
-
+  constructor(ndkProvider:NdkproviderService){
+    this.ndkProvider = ndkProvider;
   }
 
   updateTopics(){
@@ -70,7 +72,7 @@ export class OnboardingWizardComponent {
     this.muteList = mutedTopics;
   }
 
-  acceptChoices(){
+  async acceptChoices(){
     let alreadyFollowedTopics:string[] = []
     let followedTopicsToBePublished = []
     let alreadyFollowedTopicsString = this.ndkProvider.appData.followedTopics;
@@ -92,8 +94,12 @@ export class OnboardingWizardComponent {
     }
     mutedTopicsToBePublished = [...alreadyMutedTopics,...this.muteList];
     mutedTopicsToBePublished = [...new Set(mutedTopicsToBePublished)];
-
+    if(this.newUserDisplayName){
+      //create new profile event and send it across
+      await this.ndkProvider.createNewUserOnNostr(this.newUserDisplayName);
+    }
     this.ndkProvider.publishAppData(followedTopicsToBePublished.join(','), undefined, mutedTopicsToBePublished.join(','));
+    this.ndkProvider.setNotNewToNostr();
   }
 
   markWizardClosed(){

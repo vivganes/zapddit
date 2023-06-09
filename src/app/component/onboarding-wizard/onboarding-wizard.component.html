@@ -16,9 +16,32 @@
                 <p>Click 'Next' to begin.</p>
             </div>                    
         </div>
-        
+    </clr-wizard-page>
 
-
+    <clr-wizard-page *ngIf="ndkProvider.isNewToNostr">
+        <ng-template clrPageTitle>Setup Profile</ng-template>
+        <div class="clr-row">
+            <div class="clr-col-12">
+                <div class="card">
+                    <h3 class="card-header">Setup your profile</h3>
+                    <div class="card-block">
+                        <form clrForm onsubmit="return false;">
+                            <clr-input-container>
+                                <label>Your Name</label>
+                                <input clrInput
+                                type="text"
+                                id="nostr-display-name"
+                                [(ngModel)]="newUserDisplayName"
+                                placeholder="Enter a cool name here..." 
+                                name="display-name">
+                                <clr-control-helper>This is how people will refer to you on the nostr ecosystem</clr-control-helper>
+                            </clr-input-container>                           
+                        </form>
+                        
+                    </div>                    
+                </div>
+            </div>
+        </div>  
     </clr-wizard-page>
 
     <clr-wizard-page>

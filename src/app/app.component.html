@@ -14,7 +14,7 @@
     </form>
     </div>
     <div class="header-actions">
-      <a href="javascript://" (click)="openWizard()" class="nav-link" aria-label="setup" title="Onboarding Wizard">
+      <a *ngIf="isLoggedIn()" href="javascript://" (click)="openWizard()" class="nav-link" aria-label="setup" title="Onboarding Wizard">
         <cds-icon shape="wand" solid></cds-icon>
       </a>
       <a *ngIf="darkTheme" href="javascript://" (click)="switchTheme()" class="nav-link" aria-label="theme">
