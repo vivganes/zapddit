@@ -17,6 +17,7 @@ import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
 import { LoginUtil, NewCredential } from '../util/LoginUtil';
 import { ZappeditdbService } from './zappeditdb.service';
+import { NDKUserProfileWithNpub } from '../model/NDKUserProfileWithNpub';
 import { User, Relay } from '../model';
 import { Constants } from '../util/Constants';
 import { BehaviorSubject } from 'rxjs';
@@ -71,6 +72,7 @@ export class NdkproviderService {
   isTryingZapddit:boolean = false;
   isNewToNostr:boolean = false;
   mutedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
+  subscribedRelayEmitter: EventEmitter<string> = new EventEmitter<string>();
   canWriteToNostr: boolean = false;
   @Output()
   launchOnboardingWizard: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -677,12 +679,7 @@ export class NdkproviderService {
     throw new Error('Method not implemented.');
   }
 
-  publishAppData(
-    followListCsv?: string,
-    downzapRecipients?: string,
-    mutedTopics?: string,
-    subscribedRelays?: string
-  ) {
+  publishAppData(followListCsv?: string, downzapRecipients?: string, mutedTopics?: string, subscribedRelays?: string) {
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 30078;
     if (this.currentUser) {
@@ -708,7 +705,14 @@ export class NdkproviderService {
     if(subscribedRelays !== undefined) subscribedRelayListToPublish = subscribedRelays
     else subscribedRelayListToPublish = this.appData.subscribedRelays;
 
-    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish + '\n' + mutedTopicsToPublish + '\n' + subscribedRelayListToPublish;
+    ndkEvent.content =
+      followedTopicsToPublish +
+      '\n' +
+      downzapRecipientsToPublish +
+      '\n' +
+      mutedTopicsToPublish +
+      '\n' +
+      subscribedRelayListToPublish;
     const tag: NDKTag = ['d', 'zapddit.com'];
     ndkEvent.tags = [tag];
     if(this.canWriteToNostr){

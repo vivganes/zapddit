@@ -24,7 +24,6 @@ export class ZappeditdbService extends Dexie{
     this.version(VERSION).stores(DATASTORE);
 
     this.version(Math.round(this.verno + 2)).stores({mutedPeople: DATASTORE.mutedPeople});
-
     this.version(Math.round(this.verno + 3)).stores({subscribedRelays: DATASTORE.subscribedRelays});
   }
 }

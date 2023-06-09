@@ -14,8 +14,7 @@ export class RelaysService {
 
    addRelay(relay: string){
     console.log(`Adding relay: ${relay}`);
-    let subscribedRelays: string[] = this.ndkProviderService.appData.subscribedRelays.split(',');
-    console.log(subscribedRelays);
+    // let subscribedRelays: string[] = this.ndkProviderService.appData.subscribedRelays;
    }
 
    removeRelay(relay: string){
