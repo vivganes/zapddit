@@ -94,7 +94,7 @@
     </clr-accordion-content>
   </clr-accordion-panel>
 
-  <clr-accordion-panel [clrAccordionPanelOpen]="true">
+  <clr-accordion-panel>
     <clr-accordion-title>Media Content</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form *ngIf ="!isLoggedInUsingPubKey" clrForm onsubmit="return false;">
@@ -107,6 +107,26 @@
           <clr-control-helper>Enable this option to show media only from people you follow.</clr-control-helper>
         </clr-checkbox-container>
     </form>
+    </clr-accordion-content>
+  </clr-accordion-panel>
+
+  <clr-accordion-panel>
+    <clr-accordion-title>Backup Private Key</clr-accordion-title>
+    <clr-accordion-content *clrIfExpanded>
+      <form *ngIf ="ndkProvider.isLoggedInUsingNsec" clrForm onsubmit="return false;">
+          <button type="button" class="btn btn-primary" (click)="copyPrivateKey()">Copy to clipboard</button>
+      </form>
+      <div *ngIf ="!ndkProvider.isLoggedInUsingNsec" class="alert alert-warning" role="alert">
+        <div class="alert-items">
+            <div class="alert-item static">
+                <div class="alert-icon-wrapper">
+                    <cds-icon class="alert-icon" shape="exclamation-triangle"></cds-icon>
+                </div>
+                <span class="alert-text">You are not logged in using your private key. May be you have logged in using the NIP-07 extension or your public key.</span>
+                
+            </div>
+        </div>
+    </div>
     </clr-accordion-content>
   </clr-accordion-panel>
 </clr-accordion>

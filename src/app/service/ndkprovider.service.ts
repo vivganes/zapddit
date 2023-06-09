@@ -16,7 +16,7 @@ import NDK, {
 } from '@nostr-dev-kit/ndk';
 import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
-import { LoginUtil } from '../util/LoginUtil';
+import { LoginUtil, NewCredential } from '../util/LoginUtil';
 import { ZappeditdbService } from './zappeditdb.service';
 import { User } from '../model/user';
 import { Constants } from '../util/Constants';
@@ -59,6 +59,7 @@ export class NdkproviderService {
   private signer:NDKSigner|undefined = undefined;
   isNip07 = false;
   isLoggedInUsingPubKey$ = new BehaviorSubject<boolean>(false);
+  isLoggedInUsingNsec: boolean = false;
   mutedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
   @Output()
   launchOnboardingWizard:EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -72,6 +73,7 @@ export class NdkproviderService {
       // we can login as the login has already happened
       if(privateKey && privateKey !== ''){
         this.isNip07 = false;
+        this.isLoggedInUsingNsec = true;
         this.signer = new NDKPrivateKeySigner(privateKey);
         this.tryLoginUsingNpub(npubFromLocal);
       } else {
@@ -98,6 +100,7 @@ export class NdkproviderService {
       this.signer.user().then((user) => {
         localStorage.setItem(Constants.PRIVATEKEY, hexPrivateKey)
         localStorage.setItem(Constants.NPUB, user.npub)
+        this.isLoggedInUsingNsec = true;
         this.tryLoginUsingNpub(user.npub);
       })
     } else if(enteredKey.startsWith('npub')) {
@@ -113,6 +116,11 @@ export class NdkproviderService {
       this.loginError = e.message;
       this.loggingIn = false;
     }
+  }
+
+  attemptToGenerateNewCredential(){
+    const newCredential: NewCredential = LoginUtil.generateNewCredential();
+    this.attemptLoginUsingPrivateOrPubKey(newCredential.privateKey);
   }
 
   validateAndGetHexKey(enteredKey:string):string{

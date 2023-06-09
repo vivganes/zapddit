@@ -23,5 +23,9 @@ export class LoginPageComponent {
     this.ndkProvider.attemptLoginUsingPrivateOrPubKey(enteredKey);
   }
 
+  attemptGenerateNewCredential(){
+    this.ndkProvider.attemptToGenerateNewCredential();
+  }
+
 
 }

@@ -62,11 +62,11 @@
       </a>
       <div class="nav-divider"></div>
       <label class="nav-header">Followed Topics</label>
-      <a clrVerticalNavLink *ngFor="let topic of followedTopics" [routerLink]="['/t', topic]" routerLinkActive="active"
-        ><cds-icon shape="hashtag" clrverticalnavicon class="nav-icon"></cds-icon
-        ><span class="nav-text">{{ topic }}</span></a
-      >
-
+      <a clrVerticalNavLink *ngFor="let topic of followedTopics" [routerLink]="['/t', topic]" 
+      routerLinkActive="active">
+        <cds-icon shape="hashtag" clrverticalnavicon class="nav-icon"></cds-icon>
+        <span class="nav-text">{{ topic }}</span>
+      </a>
       <div class="nav-divider"></div>
       <div>
         <a><span class="nav-text">Created with 💙 by <a href="https://snort.social/p/npub1ltx67888tz7lqnxlrg06x234vjnq349tcfyp52r0lstclp548mcqnuz40t">@vivganes</a></span></a>

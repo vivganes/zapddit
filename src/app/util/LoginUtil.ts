@@ -1,6 +1,11 @@
 import * as secp from "@noble/secp256k1";
 import * as utils from "@noble/curves/abstract/utils";
+import * as bip39 from "@scure/bip39";
+import { wordlist } from "@scure/bip39/wordlists/english";
+import { HDKey } from "@scure/bip32";
 import { bech32 } from "bech32";
+import { NDKUser } from "@nostr-dev-kit/ndk";
+import { Util } from "./Util";
 
 
 
@@ -18,6 +23,11 @@ export enum NostrPrefix {
   Event = "nevent",
   Relay = "nrelay",
   Address = "naddr",
+}
+
+export interface NewCredential{
+  pubkey: string,
+  privateKey:string
 }
 export class LoginUtil{
     static getHexFromPrivateOrPubKey(key:string):string{ 
@@ -94,6 +104,39 @@ export class LoginUtil{
       const tl3 = kind ? [3, 4, ...new Uint8Array(new Uint32Array([kind]).buffer).reverse()] : []
     
       return bech32.encode(prefix, bech32.toWords([...tl0, ...tl1, ...tl2, ...tl3]), 1_000);
+    }
+
+    static generateBip39Entropy(mnemonic?: string): Uint8Array {
+      try {
+        const mn = mnemonic ?? bip39.generateMnemonic(wordlist, 256);
+        return bip39.mnemonicToEntropy(mn, wordlist);
+      } catch (e) {
+        throw new Error("INVALID MNEMONIC PHRASE");
+      }
+    }
+
+    static generateNewCredential(): NewCredential {
+      const ent = LoginUtil.generateBip39Entropy();
+      const privateKey = LoginUtil.entropyToPrivateKey(ent);
+      const publicKey = utils.bytesToHex(secp.schnorr.getPublicKey(privateKey));
+      return {
+        pubkey: this.hexToBech32("npub",publicKey),
+        privateKey: this.hexToBech32("nsec",privateKey)
+      }      
+    }
+
+    /**
+     * Derive NIP-06 private key from master key
+     */
+    static entropyToPrivateKey(entropy: Uint8Array): string {
+      const masterKey = HDKey.fromMasterSeed(entropy);
+      const newKey = masterKey.derive("m/44'/1237'/0'/0/0"); // Thanks - https://github.com/v0l/snort/blob/main/packages/app/src/Const.ts
+
+      if (!newKey.privateKey) {
+        throw new Error("INVALID KEY DERIVATION");
+      }
+
+      return utils.bytesToHex(newKey.privateKey);
     }
 
     static getPublicKey(privKey: string) {
