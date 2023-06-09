@@ -27,4 +27,8 @@ export class LoginPageComponent {
     this.ndkProvider.setAsNewToNostr();
     this.ndkProvider.attemptToGenerateNewCredential();
   }
+
+  attemptLoginWithoutAccount(){
+    this.ndkProvider.attemptToTryUnauthenticated();
+  }
 }

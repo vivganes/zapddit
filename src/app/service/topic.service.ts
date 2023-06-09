@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NdkproviderService } from './ndkprovider.service';
+import { Constants } from '../util/Constants';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,7 @@ export class TopicService {
 
       followedTopics = followedTopicsArr.join(',');
     }
+    localStorage.setItem(Constants.FOLLOWEDTOPICS,followedTopics);
     this.ndkProviderService.publishAppData(followedTopics);
   }
 
@@ -37,6 +39,7 @@ export class TopicService {
       followedTopicsArr = [...new Set(followedTopicsArr)]; //remove dupes
       followedTopics = followedTopicsArr.join(',');
     }
+    localStorage.setItem(Constants.FOLLOWEDTOPICS,followedTopics);
     this.ndkProviderService.publishAppData(followedTopics);
   }
 
@@ -52,6 +55,7 @@ export class TopicService {
 
       mutedTopics = mutedTopicsArr.join(',');
     }
+    localStorage.setItem(Constants.MUTEDTOPICS,mutedTopics);
     this.ndkProviderService.publishAppData(undefined, undefined,mutedTopics);
   }
 
@@ -67,6 +71,7 @@ export class TopicService {
       mutedTopicsArr = [...new Set(mutedTopicsArr)]; //remove dupes
       mutedTopics = mutedTopicsArr.join(',');
     }
+    localStorage.setItem(Constants.MUTEDTOPICS,mutedTopics);
     this.ndkProviderService.publishAppData(undefined, undefined,mutedTopics);
   }
 }

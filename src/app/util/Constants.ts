@@ -3,6 +3,7 @@ export class Constants{
   public static readonly PRIVATEKEY = 'privateKey'
   public static readonly NPUB='npub';
   public static readonly LOGGEDINUSINGPUBKEY='loggedInUsingPubKey';
+  public static readonly TRYING_ZAPDDIT="tryingZapddit";
   public static readonly FOLLOWEDTOPICS='followedTopics';
   public static readonly DOWNZAPRECIPIENTS='downzapRecipients';
   public static readonly DEFAULTSATSFORZAPS='defaultSatsForZaps';

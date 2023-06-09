@@ -17,12 +17,12 @@
           </div>
           <div class="follow-ml8">
             <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser">
-              <button class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
+              <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
               Follow
               </button>
             </ng-template>
             <ng-template [ngIf]="amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser">
-              <button class="btn btn-sm" [disabled]="eventInProgress" (click)="unFollow()">
+              <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="unFollow()">
                 Unfollow
               </button>
             </ng-template>
@@ -54,8 +54,8 @@
                 <div class="alert-item static clr-justify-content-center">
                     <div class="alert-icon-wrapper">
                         <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
-                    </div>
-                    <span class="alert-text">Media is not shown as you are not following the author.  Click the above image to see it.</span>
+                    </div>    
+                    <span class="alert-text">Media is not shown as per your preferences.  Click the above image to see it.  You can change this from preferences.</span>
                   </div>
                 </div>
             </div>
@@ -102,13 +102,13 @@
   </ng-template >
   </div>
   <div *ngIf="!isQuotedEvent" class="card-footer">
-    <button class="btn btn-sm btn-icon btn-link"  [disabled]="!loggedInWithNsec"  (click)="upZap()">
+    <button class="btn btn-sm btn-icon btn-link"  [disabled]="!ndkProvider.canWriteToNostr"  (click)="upZap()">
       <cds-icon shape="bolt" direction="down"></cds-icon>{{ upZapTotalMilliSats/1000 | shortNumber }} Upzap
     </button>
     <button
       class="btn btn-sm btn-icon btn-link"
       (click)="downZap()"
-      [disabled]="loggedInWithNsec || !ndkProvider.appData.downzapRecipients"
+      [disabled]="!ndkProvider.canWriteToNostr || !ndkProvider.appData.downzapRecipients"
       [title]="
         ndkProvider.appData.downzapRecipients
           ? 'This deposits your downzap amounts to the configured Downzap recipients'
@@ -157,6 +157,6 @@
         </div>
       </div>
     </ng-template>
-    <app-note-composer [isReply]="true" [parentEvent]="event" (postedEventEmitter)="addReply($event)"></app-note-composer>
+    <app-note-composer *ngIf="ndkProvider.canWriteToNostr" [isReply]="true" [parentEvent]="event" (postedEventEmitter)="addReply($event)"></app-note-composer>
   </div>
 </ng-template>

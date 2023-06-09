@@ -51,7 +51,7 @@
       <a clrVerticalNavLink routerLink="/feed" routerLinkActive="active">
         <cds-icon shape="home" clrverticalnavicon class="nav-icon"></cds-icon><span class="nav-text">My Feed</span>
       </a>
-      <a clrVerticalNavLink routerLink="/profile" routerLinkActive="active">
+      <a *ngIf="!ndkProvider.isTryingZapddit" clrVerticalNavLink routerLink="/profile" routerLinkActive="active">
         <cds-icon shape="user" clrVerticalNavIcon></cds-icon><span class="nav-text">Profile</span>
       </a>
       <a clrVerticalNavLink routerLink="/preferences" routerLinkActive="active">

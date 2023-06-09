@@ -3,14 +3,14 @@
 </h3>
 
 <clr-accordion [clrAccordionMultiPanel]="true">
-  <clr-accordion-panel>
+  <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
     <clr-accordion-title>Downzap Recipients</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <clr-textarea-container>
             <label>Downzap Recipient's npub</label>
             <textarea clrTextarea
-            [disabled]="isLoggedInUsingPubKey"
+            [disabled]="!ndkProvider.canWriteToNostr"
             cols="50"
             id="downzap-recipients"
             placeholder="npub of the recipient" >{{ ndkProvider.appData.downzapRecipients }}</textarea>
@@ -48,7 +48,7 @@
     </clr-accordion-content>
   </clr-accordion-panel>
 
-  <clr-accordion-panel>
+  <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
     <clr-accordion-title>Default sats for Zaps</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
@@ -89,28 +89,26 @@
       </p>
     </div>
     <p *ngIf ="!ndkProvider.appData.mutedTopics || ndkProvider.appData.mutedTopics === '' ">No topics muted</p>
-
-
     </clr-accordion-content>
   </clr-accordion-panel>
 
   <clr-accordion-panel>
-    <clr-accordion-title>Media Content</clr-accordion-title>
+    <clr-accordion-title>Media Display</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
-      <form *ngIf ="!isLoggedInUsingPubKey" clrForm onsubmit="return false;">
+      <form clrForm onsubmit="return false;">
         <clr-checkbox-container clrInline>
           <clr-checkbox-wrapper>
-            <label>Blur media from people I dont follow</label>
+            <label>{{(ndkProvider.isTryingZapddit)?'Blur all media':'Blur media from people I dont follow'}}</label>
             <input type="checkbox" [(ngModel)]="loadContentFromPeopleIFollow" id="load-media" clrCheckbox
             placeholder="#Load Media" (ngModelChange)="onMediaSettingChange($event)" name="loadContentFromPeopleIFollow" id="loadContentFromPeopleIFollow">
           </clr-checkbox-wrapper>
-          <clr-control-helper>Enable this option to show media only from people you follow.</clr-control-helper>
+          <clr-control-helper *ngIf="!ndkProvider.isTryingZapddit">Enable this option to show media only from people you follow.</clr-control-helper>
         </clr-checkbox-container>
     </form>
     </clr-accordion-content>
   </clr-accordion-panel>
 
-  <clr-accordion-panel>
+  <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
     <clr-accordion-title>Backup Private Key</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form *ngIf ="ndkProvider.isLoggedInUsingNsec" clrForm onsubmit="return false;">
@@ -125,7 +123,7 @@
                 <span class="alert-text">You are not logged in using your private key. May be you have logged in using the NIP-07 extension or your public key.</span>
             </div>
         </div>
-    </div>
+      </div>
     </clr-accordion-content>
   </clr-accordion-panel>
 </clr-accordion>
