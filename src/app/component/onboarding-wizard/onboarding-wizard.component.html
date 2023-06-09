@@ -8,7 +8,6 @@
 
     <clr-wizard-page>
         <ng-template clrPageTitle>Hey there 👋</ng-template>
-
         <div class="card">
             <h3 class="card-header">Welcome onboard 🫂</h3>
             <div class="card-block">
@@ -16,6 +15,22 @@
                 <p>Click 'Next' to begin.</p>
             </div>                    
         </div>
+    </clr-wizard-page>
+
+    <clr-wizard-page *ngIf="ndkProvider.isNewToNostr">
+        <ng-template clrPageTitle>First things first</ng-template>
+        <div class="clr-row">
+            <div class="clr-col-12">
+                <div class="card">
+                    <h3 class="card-header">Backup your private key</h3>
+                    <div class="card-block">
+                        Click on the button below to copy your private key. Keep it in a safe place.  Don't share this with anyone. 
+                        <p>This is the key to access your nostr account across all clients.</p>
+                        <button type="button" class="btn btn-primary" (click)="copyPrivateKey()">Copy to clipboard</button>
+                    </div>                    
+                </div>
+            </div>
+        </div>  
     </clr-wizard-page>
 
     <clr-wizard-page *ngIf="ndkProvider.isNewToNostr">
@@ -45,7 +60,7 @@
     </clr-wizard-page>
 
     <clr-wizard-page>
-        <ng-template clrPageTitle>Step 1</ng-template>
+        <ng-template clrPageTitle>Follow list</ng-template>
         <div class="clr-row">
             <div class="clr-col-12">
                 <div class="card">
@@ -85,7 +100,7 @@
     </clr-wizard-page>
 
     <clr-wizard-page>
-        <ng-template clrPageTitle>Step 2</ng-template>
+        <ng-template clrPageTitle>Mute list</ng-template>
         <div class="clr-row">
             <div class="clr-col-12">
                 <div class="card">

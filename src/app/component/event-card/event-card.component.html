@@ -1,7 +1,6 @@
 <div class="card" *ngIf="!mutedAuthor">
   <div class="card-block">
     <div class="card-media-block">
-
       <img *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" alt="Profile picture" src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" title="Open in Snort"/>
       <img alt="temp avatar"
         (click)="openAuthorInSnort()"
@@ -17,19 +16,19 @@
           </div>
           <div class="follow-ml8">
             <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
-              <button class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
+              <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
               Follow
               </button>
             </ng-template>
             <ng-template [ngIf]="amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
-              <button class="btn btn-sm" [disabled]="eventInProgress" (click)="unFollow()">
+              <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="unFollow()">
                 Unfollow
               </button>
             </ng-template>
           </div>
+        </div>  
       </div>
         <span class="card-media-text break-words-overflow"> {{ event?.created_at | formatTimestamp }} </span>
-      </div>
     </div>
     <div *ngIf="!isQuotedEvent" class="break-words-overflow pointer-cursor" [routerLink]="'/n/'+event?.id">
       <ngx-dynamic-hooks *ngIf="linkifiedContent" [content]="linkifiedContent"></ngx-dynamic-hooks>
@@ -54,8 +53,8 @@
                 <div class="alert-item static clr-justify-content-center">
                     <div class="alert-icon-wrapper">
                         <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
-                    </div>
-                    <span class="alert-text">Media is not shown as you are not following the author.  Click the above image to see it.</span>
+                    </div>    
+                    <span class="alert-text">Media is not shown as per your preferences.  Click the above image to see it.  You can change this from preferences.</span>
                   </div>
                 </div>
             </div>
@@ -102,13 +101,13 @@
   </ng-template >
   </div>
   <div *ngIf="!isQuotedEvent" class="card-footer">
-    <button class="btn btn-sm btn-icon btn-link"  [disabled]="!loggedInWithNsec"  (click)="upZap()">
+    <button class="btn btn-sm btn-icon btn-link"  [disabled]="!ndkProvider.canWriteToNostr"  (click)="upZap()">
       <cds-icon shape="bolt" direction="down"></cds-icon>{{ upZapTotalMilliSats/1000 | shortNumber }} Upzap
     </button>
     <button
       class="btn btn-sm btn-icon btn-link"
       (click)="downZap()"
-      [disabled]="loggedInWithNsec || !ndkProvider.appData.downzapRecipients"
+      [disabled]="!ndkProvider.canWriteToNostr || !ndkProvider.appData.downzapRecipients"
       [title]="
         ndkProvider.appData.downzapRecipients
           ? 'This deposits your downzap amounts to the configured Downzap recipients'
@@ -157,6 +156,6 @@
         </div>
       </div>
     </ng-template>
-    <app-note-composer [isReply]="true" [parentEvent]="event" (postedEventEmitter)="addReply($event)"></app-note-composer>
+    <app-note-composer *ngIf="ndkProvider.canWriteToNostr" [isReply]="true" [parentEvent]="event" (postedEventEmitter)="addReply($event)"></app-note-composer>
   </div>
 </ng-template>

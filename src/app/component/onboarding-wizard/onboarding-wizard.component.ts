@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
+import { Constants } from 'src/app/util/Constants';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { LoginUtil } from 'src/app/util/LoginUtil';
 
 @Component({
   selector: 'app-onboarding-wizard',
@@ -28,7 +31,7 @@ export class OnboardingWizardComponent {
   newUserDisplayName?:string;
   ndkProvider: NdkproviderService;
 
-  constructor(ndkProvider:NdkproviderService){
+  constructor(ndkProvider:NdkproviderService, private clipboard:Clipboard){
     this.ndkProvider = ndkProvider;
   }
 
@@ -98,8 +101,16 @@ export class OnboardingWizardComponent {
       //create new profile event and send it across
       await this.ndkProvider.createNewUserOnNostr(this.newUserDisplayName);
     }
+    localStorage.setItem(Constants.FOLLOWEDTOPICS,followedTopicsToBePublished.join(','));
+    localStorage.setItem(Constants.MUTEDTOPICS,mutedTopicsToBePublished.join(','));
+
     this.ndkProvider.publishAppData(followedTopicsToBePublished.join(','), undefined, mutedTopicsToBePublished.join(','));
     this.ndkProvider.setNotNewToNostr();
+  }
+
+  copyPrivateKey(){
+    const privateKeyHex = localStorage.getItem('privateKey')
+    this.clipboard.copy(LoginUtil.hexToBech32("nsec",privateKeyHex!))
   }
 
   markWizardClosed(){

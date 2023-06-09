@@ -68,8 +68,10 @@ export class NdkproviderService {
   isNip07 = false;
   isLoggedInUsingPubKey$ = new BehaviorSubject<boolean>(false);
   isLoggedInUsingNsec: boolean = false;
+  isTryingZapddit:boolean = false;
   isNewToNostr:boolean = false;
   mutedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
+  canWriteToNostr: boolean = false;
   @Output()
   launchOnboardingWizard:EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -77,26 +79,55 @@ export class NdkproviderService {
     const npubFromLocal = localStorage.getItem(Constants.NPUB);
     const privateKey = localStorage.getItem(Constants.PRIVATEKEY);
     const loggedInPubKey = localStorage.getItem(Constants.LOGGEDINUSINGPUBKEY);
+    const tryingZapddit = localStorage.getItem(Constants.TRYING_ZAPDDIT);
     localStorage.setItem(Constants.FOLLOWERS_FROM_RELAY,'false');
-    if(npubFromLocal && npubFromLocal !== ''){
-      // we can login as the login has already happened
-      if(privateKey && privateKey !== ''){
-        this.isNip07 = false;
-        this.isLoggedInUsingNsec = true;
-        this.signer = new NDKPrivateKeySigner(privateKey);
-        this.tryLoginUsingNpub(npubFromLocal);
-      } else {
-        if(loggedInPubKey && loggedInPubKey !== ''){
+    if(tryingZapddit && tryingZapddit == 'true'){
+      this.startWithUnauthSession();
+    } else{
+      if(npubFromLocal && npubFromLocal !== ''){
+        // we can login as the login has already happened
+        if(privateKey && privateKey !== ''){
           this.isNip07 = false;
-          this.isLoggedInUsingPubKey$.next(true);
+          this.isLoggedInUsingNsec = true;
+          this.signer = new NDKPrivateKeySigner(privateKey);
+          this.canWriteToNostr = true;
+          this.tryLoginUsingNpub(npubFromLocal);
         } else {
-        //this.signer = new NDKNip07Signer();
-        //dont assign a signer now. we need to assign it later only
-          this.isNip07 = true;
+          if(loggedInPubKey && loggedInPubKey !== ''){
+            this.isNip07 = false;
+            this.isLoggedInUsingPubKey$.next(true);
+          } else {
+          //this.signer = new NDKNip07Signer();
+          //dont assign a signer now. we need to assign it later only
+            this.isNip07 = true;
+          }
+          this.tryLoginUsingNpub(npubFromLocal);
         }
-        this.tryLoginUsingNpub(npubFromLocal);
       }
     }
+  }
+
+  private async startWithUnauthSession() {
+    this.loggingIn = true;
+    this.canWriteToNostr = false;
+    this.isTryingZapddit = true;
+    const followedTopicsFromLocal = localStorage.getItem(Constants.FOLLOWEDTOPICS);
+    const mutedTopicsFromLocal = localStorage.getItem(Constants.MUTEDTOPICS);
+    this.appData.followedTopics = followedTopicsFromLocal!;
+    this.appData.mutedTopics = mutedTopicsFromLocal!;
+    console.log(this.appData.followedTopics);
+    this.followedTopicsEmitter.emit(this.appData.followedTopics);
+    this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
+    this.currentUserProfile = {      
+      displayName: 'Lurky Lurkerson'
+    }
+    this.ndk = new NDK({
+      explicitRelayUrls: explicitRelayUrls
+    });
+    await this.ndk.connect();
+    this.loggedIn = true;
+    this.loggingIn = false;
+
   }
 
   attemptLoginUsingPrivateOrPubKey(enteredKey: string){
@@ -110,6 +141,7 @@ export class NdkproviderService {
         localStorage.setItem(Constants.PRIVATEKEY, hexPrivateKey)
         localStorage.setItem(Constants.NPUB, user.npub)
         this.isLoggedInUsingNsec = true;
+        this.canWriteToNostr = true;
         this.tryLoginUsingNpub(user.npub);
       })
     } else if(enteredKey.startsWith('npub')) {
@@ -119,7 +151,8 @@ export class NdkproviderService {
       this.tryLoginUsingNpub(enteredKey);
     } else{
       this.loginError ="Invalid input. Enter either nsec or npub id";
-    } this.loggingIn = false
+    } 
+    this.loggingIn = false
     }catch(e:any){
       console.error(e);
       this.loginError = e.message;
@@ -136,20 +169,22 @@ export class NdkproviderService {
   }
  
   async createNewUserOnNostr(displayName:string){
-    //create a relay follow list event and send it across
-    const relayEvent:NDKEvent = new NDKEvent(this.ndk);
-    relayEvent.kind = 10002;
-    relayEvent.content = "";
-    relayEvent.tags = await this.getSuggestedRelays();
-    console.log(relayEvent);
-    relayEvent.publish();
+    if(this.canWriteToNostr){
+      //create a relay follow list event and send it across
+      const relayEvent:NDKEvent = new NDKEvent(this.ndk);
+      relayEvent.kind = 10002;
+      relayEvent.content = "";
+      relayEvent.tags = await this.getSuggestedRelays();
+      console.log(relayEvent);
+      relayEvent.publish();
 
-    //create new profile event and send it across
-    const newProfileEvent:NDKEvent = new NDKEvent(this.ndk);
-    newProfileEvent.kind = 0;
-    newProfileEvent.content = `{"display_name": "${displayName}", "name": "${displayName}"}`;
-    console.log(newProfileEvent)
-    await newProfileEvent.publish();
+      //create new profile event and send it across
+      const newProfileEvent:NDKEvent = new NDKEvent(this.ndk);
+      newProfileEvent.kind = 0;
+      newProfileEvent.content = `{"display_name": "${displayName}", "name": "${displayName}"}`;
+      console.log(newProfileEvent)
+      await newProfileEvent.publish();
+    }
     this.currentUserProfile = {
       name: displayName,
       displayName: displayName
@@ -165,6 +200,21 @@ export class NdkproviderService {
   attemptToGenerateNewCredential(){
     const newCredential: NewCredential = LoginUtil.generateNewCredential();
     this.attemptLoginUsingPrivateOrPubKey(newCredential.privateKey);
+  }
+
+  async attemptToTryUnauthenticated(){
+    this.isTryingZapddit = true;
+    this.canWriteToNostr = false;
+    localStorage.setItem(Constants.TRYING_ZAPDDIT,'true');
+    this.currentUserProfile = {      
+      displayName: 'Lurky Lurkerson'
+    }
+    this.ndk = new NDK({
+      explicitRelayUrls:explicitRelayUrls
+    });
+    await this.ndk.connect();
+    this.loggedIn = true;
+    this.launchOnboardingWizard.emit(true);
   }
 
   validateAndGetHexKey(enteredKey:string):string{
@@ -184,7 +234,7 @@ export class NdkproviderService {
       }
       console.log("Found window nostr")
       this.signer = new NDKNip07Signer();
-    }
+    } 
 
     const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls };
     this.ndk = new NDK(params);
@@ -195,6 +245,7 @@ export class NdkproviderService {
 
   attemptLoginWithNip07() {
     this.loggingIn = true;
+    this.canWriteToNostr = true;
     this.resolveNip07Extension();
   }
 
@@ -285,7 +336,9 @@ export class NdkproviderService {
         console.log("Error in connecting NDK " + e);
       }
     }
-    await this.refreshAppData();
+    if(!this.isTryingZapddit){
+      await this.refreshAppData();
+    }
     if(this.appData.followedTopics === ''){
       this.launchOnboardingWizard.emit(true);
     }
@@ -293,8 +346,10 @@ export class NdkproviderService {
     //once all setup is done, then only set loggedIn=true to start rendering
     this.loggedIn = true;
 
-    this.fetchFollowersFromCache();
-    this.fetchMutedUsersFromCache();
+    if(!this.isTryingZapddit){
+      this.fetchFollowersFromCache();
+      this.fetchMutedUsersFromCache();
+    }
 
     var verified = await this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.hexpubkey());
     console.log("verified " +verified);
@@ -330,7 +385,9 @@ export class NdkproviderService {
     if(this.currentUser){
       ndkEvent.pubkey = this.currentUser?.hexpubkey();
     }
-    await ndkEvent.publish();
+    if(this.canWriteToNostr){
+      await ndkEvent.publish();
+    }
     return ndkEvent;
   }
 
@@ -566,7 +623,9 @@ export class NdkproviderService {
     ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish +"\n"+ mutedTopicsToPublish;
     const tag: NDKTag = ['d', 'zapddit.com'];
     ndkEvent.tags = [tag];
-    ndkEvent.publish(); // This will trigger the extension to ask the user to confirm signing.
+    if(this.canWriteToNostr){
+      ndkEvent.publish(); // This will trigger the extension to ask the user to confirm signing.
+    }
     this.appData = {
       followedTopics:followedTopicsToPublish,
       downzapRecipients:downzapRecipientsToPublish,
@@ -600,8 +659,11 @@ export class NdkproviderService {
 
     ndkEvent.tags = tags;
     ndkEvent.kind = 3;
-    await ndkEvent.sign();
-    return ndkEvent.publish();
+    if(this.canWriteToNostr){
+      await ndkEvent.sign();
+      return ndkEvent.publish();
+    }
+    return;
   }
 
   fetchLatestAppData() {
@@ -665,6 +727,7 @@ export class NdkproviderService {
 
   logout(){
     localStorage.clear();
+    this.dbService.delete();
     window.location.href="/";
   }
 

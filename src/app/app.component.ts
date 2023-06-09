@@ -69,13 +69,10 @@ export class AppComponent {
     else {
       this.setTheme(false);
     }
+    this.setFollowedTopicsFromString(this.ndkProvider.appData.followedTopics);    
 
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
-      if (followedTopics === '') {
-        this.followedTopics = [];
-      } else {
-        this.followedTopics = followedTopics.split(',');
-      }
+      this.setFollowedTopicsFromString(followedTopics);
     });
 
     this.ndkProvider.launchOnboardingWizard.subscribe((launch:boolean)=>{
@@ -87,6 +84,14 @@ export class AppComponent {
     });
   }
 
+
+  private setFollowedTopicsFromString(followedTopics: string) {
+    if (followedTopics === '') {
+      this.followedTopics = [];
+    } else {
+      this.followedTopics = followedTopics.split(',');
+    }
+  }
 
   setTheme(dark:boolean){
     if((document.getElementById('zapddit-theme'))){
