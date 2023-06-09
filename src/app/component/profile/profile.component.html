@@ -51,13 +51,13 @@
       <button clrTabLink class="large-text" (click)="followingTabClicked()">🕸 People I Follow</button>
       <clr-tab-content *clrIfActive >
         <div class="clr-row clr-justify-content-center pt-2 mb-20">
-            <div *ngIf="loadingPeopleYouFollow" class="clr-col-12 clr-col-md-8">
+            <div *ngIf="fetchingPeopleIFollowFromRelay && loadingPeopleYouFollow" class="clr-col-12 clr-col-md-8">
               <div class="event-loading-spinner clr-justify-content-center">
                 <span class="spinner spinner-md">Loading people you follow...</span>
               </div>
             </div>
 
-            <div *ngIf="!(loadingPeopleYouFollow) && peopleIFollow?.length === 0"  class="clr-row clr-justify-content-center">
+            <div *ngIf="!fetchingPeopleIFollowFromRelay && !(loadingPeopleYouFollow) && peopleIFollow?.length === 0"  class="clr-row clr-justify-content-center">
               <div class="alert-items">
                   <div class="alert-item static clr-justify-content-center">
                     <span class="alert-text">Not following anyone yet. May be try following some people? <br/> Like <a href="https://snort.social/p/npub1ltx67888tz7lqnxlrg06x234vjnq349tcfyp52r0lstclp548mcqnuz40t">@vivganes</a>?</span>
@@ -65,12 +65,12 @@
               </div>
             </div>
 
-            <div *ngIf="!loadingPeopleYouFollow" class="clr-col-12 clr-col-md-8">
+            <div *ngIf="!fetchingPeopleIFollowFromRelay && !loadingPeopleYouFollow" class="clr-col-12 clr-col-md-8">
               <div  *ngFor="let item of peopleIFollow" >
                 <app-contact-card [contact]="item" [showFollow] = "showFollowButton" (contactListUpdated)="onContactListChange()"></app-contact-card>
               </div>
             </div>
-            <div *ngIf="!loadingPeopleYouFollow && (peopleIFollow && peopleIFollow.length>0)" class="clr-col-12 clr-col-md-8">
+            <div *ngIf="!fetchingPeopleIFollowFromRelay && !loadingPeopleYouFollow && (peopleIFollow && peopleIFollow.length>0)" class="clr-col-12 clr-col-md-8">
               <div *ngIf="peopleIFollow && peopleIFollow.length>0 && !reachedEndOfPeopleIFollow" align="center">
                 <button class="btn btn-info-outline" (click)="loadMorePeopleIFollow()">Load
                   more</button>
@@ -96,13 +96,13 @@
     <button clrTabLink [clrTabLinkInOverflow]="true" (click)="mutedTabClicked()" class="large-text">🔇 People I Muted</button>
     <clr-tab-content *clrIfActive >
       <div class="clr-row clr-justify-content-center pt-2 mb-20">
-          <div *ngIf="loadingPeopleYouMuted" class="clr-col-12 clr-col-md-8">
+          <div *ngIf="fetchingMutedUsersFromRelay && loadingPeopleYouMuted" class="clr-col-12 clr-col-md-8">
             <div class="event-loading-spinner clr-justify-content-center">
               <span class="spinner spinner-md">Loading people you muted...</span>
             </div>
           </div>
 
-          <div *ngIf="!(loadingPeopleYouMuted) && peopleIMuted?.length === 0"  class="clr-row clr-justify-content-center">
+          <div *ngIf="!fetchingMutedUsersFromRelay && !(loadingPeopleYouMuted) && peopleIMuted?.length === 0"  class="clr-row clr-justify-content-center">
             <div class="alert-items">
                 <div class="alert-item static clr-justify-content-center">
                   <span class="alert-text">Looks like you haven't muted anyone yet.</span>
@@ -110,12 +110,12 @@
             </div>
           </div>
 
-          <div *ngIf="!loadingPeopleYouMuted" class="clr-col-12 clr-col-md-8">
+          <div *ngIf="!fetchingMutedUsersFromRelay && !loadingPeopleYouMuted" class="clr-col-12 clr-col-md-8">
             <div *ngFor="let item of peopleIMuted">
               <app-contact-card [contact]="item" [showFollow] = "false" (contactListUpdated)="onContactListChange()"></app-contact-card>
             </div>
           </div>
-          <div *ngIf="!loadingPeopleYouMuted && (peopleIMuted && peopleIMuted.length>0)" class="clr-col-12 clr-col-md-8">
+          <div *ngIf="!fetchingMutedUsersFromRelay && !loadingPeopleYouMuted && (peopleIMuted && peopleIMuted.length>0)" class="clr-col-12 clr-col-md-8">
             <div *ngIf="peopleIMuted && peopleIMuted.length>0 && !reachedEndOfMutedPeople" align="center">
               <button class="btn btn-info-outline" (click)="loadMoreMutedPeople()">Load
                 more</button>
