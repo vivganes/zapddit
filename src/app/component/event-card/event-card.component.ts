@@ -241,17 +241,15 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   async getAuthor() {
     let authorPubKey = this.authorHexPubKey = this.event?.pubkey;
+    this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey!);
     if (authorPubKey) {
       var loggedInUserHexPubKey = this.ndkProvider.currentUser?.hexpubkey();
 
       this.dbService.peopleIFollow.where({hexPubKey:authorPubKey.toString()}).count().then(async count=>{
           this.amIFollowingtheAuthor = this.canLoadMedia = count > 0;
-
           if(loggedInUserHexPubKey === this.authorHexPubKey){
             this.canLoadMedia =  true;
           }
-
-          this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey!);
       })
 
       this.dbService.mutedPeople.where({hexPubKey:authorPubKey.toString()}).count().then(count=>{

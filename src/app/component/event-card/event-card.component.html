@@ -11,7 +11,7 @@
       <div class="card-media-description">
         <div class="next">
           <div>
-            <span class="card-media-title break-words-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ authorWithProfile?.profile?.name }} </span>
+            <span class="card-media-title break-words-overflow pointer-cursor bold-text"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ authorWithProfile?.profile?.name }} </span>
             <span *ngIf="!authorWithProfile?.profile?.name" class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey }} </span>
           </div>
           <div class="follow-ml8">

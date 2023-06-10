@@ -11,7 +11,8 @@
         <div class="card">
             <h3 class="card-header">Welcome onboard 🫂</h3>
             <div class="card-block">
-                <p>Travel with us, answering a few questions, while we set you up to enjoy the <span class="label label-info">#zapddit</span> experience 🚀</p>
+                I'm <b>zapddit</b>, a topic-based nostr browser.  Here, you follow topics, not people.
+                <p>Travel with me, answering a few questions, while I set you up to enjoy the <span class="label label-info">#zapddit</span>experience 🚀</p>
                 <p>Click 'Next' to begin.</p>
             </div>                    
         </div>
@@ -47,7 +48,7 @@
                                 type="text"
                                 id="nostr-display-name"
                                 [(ngModel)]="newUserDisplayName"
-                                placeholder="Enter a cool name here..." 
+                                placeholder="Give yourself a cool name here..." 
                                 name="display-name">
                                 <clr-control-helper>This is how people will refer to you on the nostr ecosystem</clr-control-helper>
                             </clr-input-container>                           
@@ -136,14 +137,14 @@
         <div class="clr-row">
             <div class="clr-col-12">
                 <p>You are almost there!</p>
-                <p>Once you click <b>Finish</b>, we will auto-follow the suggested topics below and auto-mute the topics listed at the end.</p>
-                <div class="alert alert-info" role="alert">
+                <p>Once you click <b>Finish</b>, I will auto-follow the suggested topics below and auto-mute the topics listed at the end.</p>
+                <div *ngIf="!(ndkProvider.isNewToNostr || ndkProvider.isTryingZapddit)" class="alert alert-info" role="alert">
                     <div class="alert-items">
                         <div class="alert-item static">
                             <div class="alert-icon-wrapper">
                                 <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
                             </div>
-                            <span class="alert-text">Don't worry! If you already have a zapddit setup, this won't mess it up. We won't unfollow or unmute any topic that you already followed or muted.</span>
+                            <span class="alert-text">Don't worry! If you already have a zapddit setup, I won't mess it up. I won't unfollow or unmute any topic that you already followed or muted.</span>
                         </div>
                     </div>
                 </div>
