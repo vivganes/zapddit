@@ -9,7 +9,7 @@
         src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
         title="Open in Snort" />
       <div class="card-media-description">
-            <span *ngIf="authorWithProfile?.profile?.name || authorWithProfile?.profile?.displayName" class="card-media-title break-words-overflow pointer-cursor bold-text"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ (authorWithProfile?.profile?.name) ? authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name }} 
+            <span *ngIf="authorWithProfile?.profile?.name || authorWithProfile?.profile?.displayName" class="card-media-title break-words-overflow pointer-cursor bold-text"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ (authorWithProfile?.profile?.displayName) ? authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name }} 
               <span class="follow-ml8 card-media-title">
                 <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
                   <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">

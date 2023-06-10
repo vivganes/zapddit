@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { NDKEvent, NDKTag, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import linkifyHtml from 'linkify-html';
@@ -70,7 +70,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
   displayedContent: string|undefined;
 
   constructor(ndkProvider: NdkproviderService, private renderer: Renderer2,
-    private dbService: ZappeditdbService, private router:Router, private domSanitizer:DomSanitizer, private clipboard: Clipboard) {
+    private dbService: ZappeditdbService, private router:Router, private domSanitizer:DomSanitizer, 
+      private clipboard: Clipboard, private changeDetector:ChangeDetectorRef) {
     this.ndkProvider = ndkProvider;
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
     if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
@@ -241,9 +242,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   async getAuthor() {
     let authorPubKey = this.authorHexPubKey = this.event?.pubkey;
-    console.log("Requesting for "+ authorPubKey)
     this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey!);
-    console.log("Got for "+ authorPubKey + "-" + this.authorWithProfile?.profile?.displayName)
+    this.changeDetector.detectChanges();
     if (authorPubKey) {
       var loggedInUserHexPubKey = this.ndkProvider.currentUser?.hexpubkey();
 
@@ -260,6 +260,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
       this.notTheLoggedInUser = authorPubKey !== this.ndkProvider.currentUser?.hexpubkey();
     }
+    this.changeDetector.detectChanges();
   }
 
   getNthTag( n:number):string{
@@ -476,7 +477,6 @@ export class EventCardComponent implements OnInit, OnDestroy{
       this.ndkProvider.fetchFollowersFromCache().then(()=>{
         // wait for the user to be persisted in the db and then re-check to enable the media based on followed/unfollowed state
         setTimeout(()=>{
-          this.getAuthor()
           this.eventInProgress = false;
         },10000);
       })

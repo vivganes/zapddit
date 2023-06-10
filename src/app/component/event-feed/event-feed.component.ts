@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
 })
 export class EventFeedComponent implements OnInit,OnDestroy{
   until: number | undefined = Date.now();
-  limit: number | undefined = 25;
+  limit: number | undefined = 15;
   loadingEvents: boolean = false;
   loadingNextEvents: boolean = false;
   reachedEndOfFeed : boolean = false;
@@ -45,7 +45,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       }
       if(this.tag===undefined){
         this.until = Date.now();
-        this.limit = 25;
+        this.limit = 15;
         this.getEvents();
       }
     });
@@ -80,7 +80,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
         this.tag = undefined;
       }
       this.until = Date.now();
-      this.limit = 25;
+      this.limit = 15;
       this.getEvents();
     });
   }

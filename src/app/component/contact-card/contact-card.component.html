@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-block">
-    <div class="card-media-block">
+    <div *ngIf="!contactLoading" class="card-media-block">
       <img *ngIf="contact?.pictureUrl"  alt="Profile picture" src="{{ contact?.pictureUrl }}" class="card-media-image pointer-cursor" title="Open in Snort" (click)="openInSnort(contact)"/>
       <img alt="temp avatar"
         *ngIf="contact?.pictureUrl=== undefined"
@@ -17,6 +17,9 @@
           <span class="card-media-meta break-anywhere-overflow"  title="Npub"><cds-icon shape="key" clrverticalnavicon class="nav-icon"></cds-icon> {{ contact?.npub}} </span>
           <span class="card-media-text break-anywhere-overflow"> {{ contact?.about }} </span>
         </div>
+    </div>
+    <div *ngIf="contactLoading" class="card-media-block">
+      <span class="spinner spinner-md">Loading profile...</span>
     </div>
   </div>
 </div>

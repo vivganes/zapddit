@@ -35,7 +35,7 @@ interface MutedUserMetaData{
 
 const explicitRelayUrls = ['wss://nos.lol',
 'wss://relay.nostr.band',
-'wss://nostr.mutinywallet.com',
+// 'wss://nostr.mutinywallet.com', // causes some errors. disabling for now.
 'wss://relay.f7z.io',
 'wss://relay.damus.io',
 'wss://nostr.mom']; //TODO: fix this
@@ -403,21 +403,21 @@ export class NdkproviderService {
 
       console.log("Fetching People I follow users profile");
 
-      for(var item of ndkUsersArray){
-          await item.fetchProfile();
-      }
+      // for(var item of ndkUsersArray){
+      //     await item.fetchProfile();
+      // }
 
       console.log("Done fetching People I follow users profile");
 
       var users = ndkUsersArray.map(item=>{
        return {
                 hexPubKey:item.hexpubkey(),
-                name: item.profile?.name!,
-                displayName: item.profile?.displayName!,
-                nip05: item.profile?.nip05!,
-                npub: item.npub,
-                pictureUrl: item.profile?.image!,
-                about:item.profile?.about!
+                // name: item.profile?.name!,
+                // displayName: item.profile?.displayName!,
+                // nip05: item.profile?.nip05!,
+                // npub: item.npub,
+                // pictureUrl: item.profile?.image!,
+                // about:item.profile?.about!
       }});
 
       await this.addToDBBulk(users, this.dbService.peopleIFollow)
