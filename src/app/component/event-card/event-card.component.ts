@@ -42,7 +42,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   amIFollowingtheAuthor:boolean  = false;
   imageUrls: RegExpMatchArray | null | undefined;
   videoUrls: Map<string,string|undefined> = new Map<string,string|undefined>();
-  onlineVideoUrls:string[] = [];
+  onlineVideoUrls:SafeUrl[] = [];
   zaps: Set<NDKEvent> = new Set<NDKEvent>();
   replies: NDKEvent[] = [];
   upZapTotalMilliSats: number = 0
@@ -241,7 +241,9 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   async getAuthor() {
     let authorPubKey = this.authorHexPubKey = this.event?.pubkey;
+    console.log("Requesting for "+ authorPubKey)
     this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey!);
+    console.log("Got for "+ authorPubKey + "-" + this.authorWithProfile?.profile?.displayName)
     if (authorPubKey) {
       var loggedInUserHexPubKey = this.ndkProvider.currentUser?.hexpubkey();
 
@@ -323,7 +325,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
     while ((match = regex.exec(text!)) !== null) {
       const videoUrl = match[0];
       if(videoUrl){
-        this.onlineVideoUrls.push(videoUrl);
+        this.onlineVideoUrls.push(this.sanitiseUrl(videoUrl));
       }
     }
   }

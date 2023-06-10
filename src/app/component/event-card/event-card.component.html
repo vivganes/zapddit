@@ -9,7 +9,7 @@
         src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
         title="Open in Snort" />
       <div class="card-media-description">
-            <span *ngIf="authorWithProfile?.profile?.name" class="card-media-title break-words-overflow pointer-cursor bold-text"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ authorWithProfile?.profile?.name }} 
+            <span *ngIf="authorWithProfile?.profile?.name || authorWithProfile?.profile?.displayName" class="card-media-title break-words-overflow pointer-cursor bold-text"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ (authorWithProfile?.profile?.name) ? authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name }} 
               <span class="follow-ml8 card-media-title">
                 <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
                   <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
@@ -23,7 +23,7 @@
                 </ng-template>
               </span>
             </span>
-            <span *ngIf="!authorWithProfile?.profile?.name" class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey }} 
+            <span *ngIf="!authorWithProfile?.profile?.name && !authorWithProfile?.profile?.displayName" class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey | abbreviateId }} 
               <span class="follow-ml8 card-media-title">
                 <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
                   <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
@@ -91,13 +91,13 @@
         </div>
     </div>
 
-    <div *ngFor="let onlineVideoSrc of onlineVideoUrls"  class="clr-row clr-justify-content-center">
+    <!-- <div *ngFor="let onlineVideoSrc of onlineVideoUrls"  class="clr-row clr-justify-content-center">
       <div class="flex">
         <div class="clr-justify-content video">
-          <iframe class="online-video-size" loading="lazy" [src]="sanitiseUrl(onlineVideoSrc)" frameborder="0" allowfullscreen></iframe>
+          <iframe class="online-video-size" loading="lazy" [src]="onlineVideoSrc" frameborder="0" allowfullscreen></iframe>
         </div>
       </div>
-  </div>
+    </div> -->
 
   <ng-template #linkCopiedAlert [ngIf]="linkCopied">
   <div align="center" class="alert alert-success" role="alert">

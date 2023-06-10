@@ -29,6 +29,7 @@ import { formatTimestampPipe } from './pipe/formatTimeStamp.pipe';
 import { OnboardingWizardComponent } from './component/onboarding-wizard/onboarding-wizard.component';
 import { ImageLoaderDirective } from './directive/ImageLoaderDirective';
 import { ProfileComponent } from './component/profile/profile.component';
+import { AbbreviateIdPipe } from './pipe/abbreviateId.pipe';
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
@@ -46,6 +47,7 @@ const componentParsers: Array<HookParserEntry> = [
     SinglePostComponent,
     ShortNumberPipe,
     formatTimestampPipe,
+    AbbreviateIdPipe,
     HashtagComponent,
     PreferencesPageComponent,
     LoginPageComponent,
