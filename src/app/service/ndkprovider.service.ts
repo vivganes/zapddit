@@ -100,6 +100,7 @@ export class NdkproviderService {
           //this.signer = new NDKNip07Signer();
           //dont assign a signer now. we need to assign it later only
             this.isNip07 = true;
+            this.canWriteToNostr = true;
           }
           this.tryLoginUsingNpub(npubFromLocal);
         }
