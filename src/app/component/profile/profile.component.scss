@@ -8,8 +8,16 @@
 }
 
 .profile-field{
-  padding: 1em;
+  padding: 1em
 }
+
+input,
+textarea{
+  width: 80% !important;
+  margin-left: 10rem;
+}
+
+
 
 .pb-2{
   padding-bottom: 2em;
@@ -54,6 +62,11 @@
     margin-top:12px;
   }
 
+  input,
+  textarea{
+    width: 80% !important;
+    margin-left: 0rem;
+  }
 }
 
 .mb-20{
@@ -62,4 +75,20 @@
 
 .large-text{
   font-size: medium;
+}
+
+.mr-5{
+  margin-right: 5px;
+}
+.fright{
+  float: right;
+}
+
+.about{
+  width: 80%;
+  height: 4rem;
+}
+
+.ml-4{
+  margin-left: 4px;
 }

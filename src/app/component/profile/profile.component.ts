@@ -1,11 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef,
-  ChangeDetectionStrategy } from '@angular/core';
+  ChangeDetectionStrategy, ElementRef, ViewChild } from '@angular/core';
 import { User } from 'src/app/model/user';
 import { NdkproviderService } from '../../service/ndkprovider.service';
-import { NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
+import { NDKUser, NDKUserProfile,NDKEvent } from '@nostr-dev-kit/ndk';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
 import { Constants } from '../../util/Constants';
 import { OnDestroy } from '@angular/core';
+import {  NgForm } from "@angular/forms";
 import {
   BreakpointObserver,
   BreakpointState
@@ -20,7 +21,18 @@ import { Subscription } from 'rxjs';
 })
 export class ProfileComponent implements OnInit, OnDestroy{
   readonly count:number=20;
-  user?:User;
+  user:User={
+    about:'',
+    displayName:'',
+    name:'',
+    pictureUrl:'',
+    hexPubKey:'',
+    nip05:'',
+    npub:''
+  };
+
+  @ViewChild("profileForm")
+  profileForm: NgForm;
   peopleIFollow: User[] = [];
   peopleIMuted: User[] = [];
   peopleIFollowLimit:number = 20;
@@ -44,6 +56,12 @@ export class ProfileComponent implements OnInit, OnDestroy{
   limitWhenUnfollowed:number = 20;
   fetchingPeopleIFollowFromRelaySub:Subscription=new Subscription();
   fetchingMutedUsersFromRelaySub:Subscription=new Subscription();
+  editMode:boolean = false
+  newName:string='';
+  newDisplayName:string='';
+  newNIP05:string='';
+  newAbout:string='';
+
 
   ngOnInit(): void {
     var userProfile = this.ndkProvider.currentUserProfile;
@@ -202,5 +220,9 @@ export class ProfileComponent implements OnInit, OnDestroy{
   ngOnDestroy(): void {
       this.fetchingPeopleIFollowFromRelaySub.unsubscribe();
       this.fetchingMutedUsersFromRelaySub.unsubscribe();
+  }
+
+ async onSave(){
+    await this.ndkProvider.saveMetadataAndFetchUserProfile(this.user!)
   }
 }

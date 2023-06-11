@@ -20,7 +20,9 @@ import {
   shareIcon,
   chatBubbleIcon,
   paperclipIcon,
-  wandIcon
+  wandIcon,
+  noteIcon,
+  floppyIcon,
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
@@ -30,7 +32,7 @@ import hashtag from './util/IntlHashtagLinkifyPlugin';
 import { Constants } from './util/Constants';
 
 
-ClarityIcons.addIcons(userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon);
+ClarityIcons.addIcons(floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -69,7 +71,7 @@ export class AppComponent {
     else {
       this.setTheme(false);
     }
-    this.setFollowedTopicsFromString(this.ndkProvider.appData.followedTopics);    
+    this.setFollowedTopicsFromString(this.ndkProvider.appData.followedTopics);
 
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       this.setFollowedTopicsFromString(followedTopics);
@@ -99,7 +101,7 @@ export class AppComponent {
     }
     this.darkTheme = dark;
   }
-  
+
   openWizard(){
     this.wizardIsOpen = true;
   }
