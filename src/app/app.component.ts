@@ -42,7 +42,7 @@ export class AppComponent {
   followedTopics: string[] = [];
   darkTheme: boolean = false;
   wizardIsOpen: boolean = false;
-
+  isNip05Verified:boolean = false;
 
   ndkProvider: NdkproviderService;
 
@@ -69,26 +69,37 @@ export class AppComponent {
     else {
       this.setTheme(false);
     }
+    this.setFollowedTopicsFromString(this.ndkProvider.appData.followedTopics);    
 
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
-      if (followedTopics === '') {
-        this.followedTopics = [];
-      } else {
-        this.followedTopics = followedTopics.split(',');
-      }
+      this.setFollowedTopicsFromString(followedTopics);
     });
 
     this.ndkProvider.launchOnboardingWizard.subscribe((launch:boolean)=>{
       this.wizardIsOpen = launch;
     })
+
+    this.ndkProvider.isNip05Verified$.subscribe(val=>{
+      this.isNip05Verified = val
+    });
   }
 
+
+  private setFollowedTopicsFromString(followedTopics: string) {
+    if (followedTopics === '') {
+      this.followedTopics = [];
+    } else {
+      this.followedTopics = followedTopics.split(',');
+    }
+  }
 
   setTheme(dark:boolean){
-    (<any>document.getElementById('zapddit-theme')).href="/assets/clr-ui"+(dark?"-dark":"")+".css";
+    if((document.getElementById('zapddit-theme'))){
+      (<any>document.getElementById('zapddit-theme')).href="/assets/clr-ui"+(dark?"-dark":"")+".css";
+    }
     this.darkTheme = dark;
   }
-
+  
   openWizard(){
     this.wizardIsOpen = true;
   }

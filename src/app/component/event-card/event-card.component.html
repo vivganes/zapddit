@@ -1,7 +1,6 @@
 <div class="card" *ngIf="!mutedAuthor">
   <div class="card-block">
     <div class="card-media-block">
-
       <img *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" alt="Profile picture" src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" title="Open in Snort"/>
       <img alt="temp avatar"
         (click)="openAuthorInSnort()"
@@ -10,25 +9,37 @@
         src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
         title="Open in Snort" />
       <div class="card-media-description">
-        <div class="next">
-          <div>
-            <span class="card-media-title break-words-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ authorWithProfile?.profile?.name }} </span>
-            <span *ngIf="!authorWithProfile?.profile?.name" class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey }} </span>
-          </div>
-          <div class="follow-ml8">
-            <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser">
-              <button class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
-              Follow
-              </button>
-            </ng-template>
-            <ng-template [ngIf]="amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser">
-              <button class="btn btn-sm" [disabled]="eventInProgress" (click)="unFollow()">
-                Unfollow
-              </button>
-            </ng-template>
-          </div>
-      </div>
-        <span class="card-media-text break-words-overflow"> {{ event?.created_at | formatTimestamp }} </span>
+            <span *ngIf="authorWithProfile?.profile?.name || authorWithProfile?.profile?.displayName" class="card-media-title break-words-overflow pointer-cursor bold-text"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ (authorWithProfile?.profile?.displayName) ? authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name }} 
+              <span class="follow-ml8 card-media-title">
+                <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
+                  <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
+                  Follow
+                  </button>
+                </ng-template>
+                <ng-template [ngIf]="amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
+                  <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="unFollow()">
+                    Unfollow
+                  </button>
+                </ng-template>
+              </span>
+            </span>
+            <span *ngIf="!authorWithProfile?.profile?.name && !authorWithProfile?.profile?.displayName" class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey | abbreviateId }} 
+              <span class="follow-ml8 card-media-title">
+                <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
+                  <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
+                  Follow
+                  </button>
+                </ng-template>
+                <ng-template [ngIf]="amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
+                  <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="unFollow()">
+                    Unfollow
+                  </button>
+                </ng-template>
+              </span>
+            </span>
+            
+            <span class="card-media-text break-words-overflow"> {{ event?.created_at | formatTimestamp }} </span>
+          
       </div>
     </div>
     <div *ngIf="!isQuotedEvent" class="break-words-overflow pointer-cursor" [routerLink]="'/n/'+event?.id">
@@ -54,8 +65,8 @@
                 <div class="alert-item static clr-justify-content-center">
                     <div class="alert-icon-wrapper">
                         <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
-                    </div>
-                    <span class="alert-text">Media is not shown as you are not following the author.  Click the above image to see it.</span>
+                    </div>    
+                    <span class="alert-text">Media is not shown as per your preferences.  Click the above image to see it.  You can change this from preferences.</span>
                   </div>
                 </div>
             </div>
@@ -80,13 +91,13 @@
         </div>
     </div>
 
-    <div *ngFor="let onlineVideoSrc of onlineVideoUrls"  class="clr-row clr-justify-content-center">
+    <!-- <div *ngFor="let onlineVideoSrc of onlineVideoUrls"  class="clr-row clr-justify-content-center">
       <div class="flex">
         <div class="clr-justify-content video">
-          <iframe class="online-video-size" loading="lazy" [src]="sanitiseUrl(onlineVideoSrc)" frameborder="0" allowfullscreen></iframe>
+          <iframe class="online-video-size" loading="lazy" [src]="onlineVideoSrc" frameborder="0" allowfullscreen></iframe>
         </div>
       </div>
-  </div>
+    </div> -->
 
   <ng-template #linkCopiedAlert [ngIf]="linkCopied">
   <div align="center" class="alert alert-success" role="alert">
@@ -102,13 +113,13 @@
   </ng-template >
   </div>
   <div *ngIf="!isQuotedEvent" class="card-footer">
-    <button class="btn btn-sm btn-icon btn-link"  [disabled]="ndkProvider.isLoggedInUsingPubKey"  (click)="upZap()">
+    <button class="btn btn-sm btn-icon btn-link"  [disabled]="!ndkProvider.canWriteToNostr"  (click)="upZap()">
       <cds-icon shape="bolt" direction="down"></cds-icon>{{ upZapTotalMilliSats/1000 | shortNumber }} Upzap
     </button>
     <button
       class="btn btn-sm btn-icon btn-link"
       (click)="downZap()"
-      [disabled]="ndkProvider.isLoggedInUsingPubKey || !ndkProvider.appData.downzapRecipients"
+      [disabled]="!ndkProvider.canWriteToNostr || !ndkProvider.appData.downzapRecipients"
       [title]="
         ndkProvider.appData.downzapRecipients
           ? 'This deposits your downzap amounts to the configured Downzap recipients'
@@ -142,6 +153,8 @@
       </button>
       <clr-dropdown-menu clrPosition="top-left" *clrIfOpen>
           <div clrDropdownItem (click)="openInSnort()">Open in Snort</div>
+          <div clrDropdownItem (click)="copyNoteHexIdToClipboard()">Copy Hex ID</div>
+          <div clrDropdownItem (click)="copyNote1IdToClipboard()">Copy note1 ID</div>
       </clr-dropdown-menu>
   </clr-dropdown>
   </div>
@@ -155,6 +168,6 @@
         </div>
       </div>
     </ng-template>
-    <app-note-composer [isReply]="true" [parentEvent]="event" (postedEventEmitter)="addReply($event)"></app-note-composer>
+    <app-note-composer *ngIf="ndkProvider.canWriteToNostr" [isReply]="true" [parentEvent]="event" (postedEventEmitter)="addReply($event)"></app-note-composer>
   </div>
 </ng-template>

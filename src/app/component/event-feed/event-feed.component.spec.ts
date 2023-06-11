@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EventFeedComponent } from './event-feed.component';
+import { CommonTestingModule } from 'src/app/testing/CommonTestingModule';
 
 describe('EventFeedComponent', () => {
+  CommonTestingModule.setUpTestBed(EventFeedComponent)
+
   let component: EventFeedComponent;
   let fixture: ComponentFixture<EventFeedComponent>;
 

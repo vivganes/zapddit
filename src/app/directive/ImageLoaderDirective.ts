@@ -5,7 +5,6 @@ export class ImageLoaderDirective {
   @Input('src') imageSrc?: string;
   @HostListener('load')
   loadImage() {
-    console.log('load triggered')
     if (this.imageSrc) {
       this.srcAttr = this.imageSrc;
     }

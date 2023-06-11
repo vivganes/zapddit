@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
+import { Constants } from 'src/app/util/Constants';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { LoginUtil } from 'src/app/util/LoginUtil';
 
 @Component({
   selector: 'app-onboarding-wizard',
@@ -25,9 +28,11 @@ export class OnboardingWizardComponent {
   twitterHater:boolean = false;
   suggestedTopics: string[] = [];
   muteList: string[] = [];
+  newUserDisplayName?:string;
+  ndkProvider: NdkproviderService;
 
-  constructor(private ndkProvider:NdkproviderService){
-
+  constructor(ndkProvider:NdkproviderService, private clipboard:Clipboard){
+    this.ndkProvider = ndkProvider;
   }
 
   updateTopics(){
@@ -70,7 +75,7 @@ export class OnboardingWizardComponent {
     this.muteList = mutedTopics;
   }
 
-  acceptChoices(){
+  async acceptChoices(){
     let alreadyFollowedTopics:string[] = []
     let followedTopicsToBePublished = []
     let alreadyFollowedTopicsString = this.ndkProvider.appData.followedTopics;
@@ -92,8 +97,20 @@ export class OnboardingWizardComponent {
     }
     mutedTopicsToBePublished = [...alreadyMutedTopics,...this.muteList];
     mutedTopicsToBePublished = [...new Set(mutedTopicsToBePublished)];
+    if(this.newUserDisplayName){
+      //create new profile event and send it across
+      await this.ndkProvider.createNewUserOnNostr(this.newUserDisplayName);
+    }
+    localStorage.setItem(Constants.FOLLOWEDTOPICS,followedTopicsToBePublished.join(','));
+    localStorage.setItem(Constants.MUTEDTOPICS,mutedTopicsToBePublished.join(','));
 
     this.ndkProvider.publishAppData(followedTopicsToBePublished.join(','), undefined, mutedTopicsToBePublished.join(','));
+    this.ndkProvider.setNotNewToNostr();
+  }
+
+  copyPrivateKey(){
+    const privateKeyHex = localStorage.getItem('privateKey')
+    this.clipboard.copy(LoginUtil.hexToBech32("nsec",privateKeyHex!))
   }
 
   markWizardClosed(){

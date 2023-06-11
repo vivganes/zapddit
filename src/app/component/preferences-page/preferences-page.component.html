@@ -3,14 +3,14 @@
 </h3>
 
 <clr-accordion [clrAccordionMultiPanel]="true">
-  <clr-accordion-panel>
+  <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
     <clr-accordion-title>Downzap Recipients</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <clr-textarea-container>
             <label>Downzap Recipient's npub</label>
             <textarea clrTextarea
-            [disabled]="ndkProvider.isLoggedInUsingPubKey"
+            [disabled]="!ndkProvider.canWriteToNostr"
             cols="50"
             id="downzap-recipients"
             placeholder="npub of the recipient" >{{ ndkProvider.appData.downzapRecipients }}</textarea>
@@ -42,26 +42,26 @@
             </div>
           </div>
         </div>
-         <button type="submit" [disabled]="ndkProvider.isLoggedInUsingPubKey"
+         <button type="submit" [disabled]="isLoggedInUsingPubKey"
           class="btn btn-primary" (click)="saveDownzapRecipients()">Save</button>
     </form>
     </clr-accordion-content>
   </clr-accordion-panel>
 
-  <clr-accordion-panel>
+  <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
     <clr-accordion-title>Default sats for Zaps</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <clr-input-container>
             <label>No. of sats for Zaps</label>
             <input clrInput
-            [disabled]="ndkProvider.isLoggedInUsingPubKey"
+            [disabled]="isLoggedInUsingPubKey"
             type="number"
             id="sats-for-zaps"
             value="{{ ndkProvider.defaultSatsForZaps }}" >
             <clr-control-helper>These many sats will be send when you zap</clr-control-helper>
         </clr-input-container>
-        <button [clrLoading]="settingDefaultSats" [disabled]="ndkProvider.isLoggedInUsingPubKey"
+        <button [clrLoading]="settingDefaultSats" [disabled]="isLoggedInUsingPubKey"
          type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button>
     </form>
     </clr-accordion-content>
@@ -70,7 +70,7 @@
   <clr-accordion-panel>
     <clr-accordion-title>Muted Topics</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
-      <form *ngIf ="!ndkProvider.isLoggedInUsingPubKey" clrForm onsubmit="return false;">
+      <form *ngIf ="!isLoggedInUsingPubKey" clrForm onsubmit="return false;">
         <clr-input-container>
             <label>Hashtag to mute</label>
             <input clrInput
@@ -85,28 +85,45 @@
     <div *ngIf="ndkProvider.appData.mutedTopics && ndkProvider.appData.mutedTopics !== ''">
       <p *ngFor="let topic of ndkProvider.appData.mutedTopics.split(','); ">
         #{{ topic }}
-        <cds-icon *ngIf="!ndkProvider.isLoggedInUsingPubKey" class="trash-icon" status="danger" size="md" shape="trash"  title="Unmute" (click)="unmuteTopic(topic)"></cds-icon>
+        <cds-icon *ngIf="!isLoggedInUsingPubKey" class="trash-icon" status="danger" size="md" shape="trash"  title="Unmute" (click)="unmuteTopic(topic)"></cds-icon>
       </p>
     </div>
     <p *ngIf ="!ndkProvider.appData.mutedTopics || ndkProvider.appData.mutedTopics === '' ">No topics muted</p>
-
-
     </clr-accordion-content>
   </clr-accordion-panel>
 
-  <clr-accordion-panel [clrAccordionPanelOpen]="true">
-    <clr-accordion-title>Media Content</clr-accordion-title>
+  <clr-accordion-panel>
+    <clr-accordion-title>Media Display</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
-      <form *ngIf ="!ndkProvider.isLoggedInUsingPubKey" clrForm onsubmit="return false;">
+      <form clrForm onsubmit="return false;">
         <clr-checkbox-container clrInline>
           <clr-checkbox-wrapper>
-            <label>Blur media from people I dont follow</label>
+            <label>{{(ndkProvider.isTryingZapddit)?'Blur all media':'Blur media from people I dont follow'}}</label>
             <input type="checkbox" [(ngModel)]="loadContentFromPeopleIFollow" id="load-media" clrCheckbox
             placeholder="#Load Media" (ngModelChange)="onMediaSettingChange($event)" name="loadContentFromPeopleIFollow" id="loadContentFromPeopleIFollow">
           </clr-checkbox-wrapper>
-          <clr-control-helper>Enable this option to show media only from people you follow.</clr-control-helper>
+          <clr-control-helper *ngIf="!ndkProvider.isTryingZapddit">Enable this option to show media only from people you follow.</clr-control-helper>
         </clr-checkbox-container>
     </form>
+    </clr-accordion-content>
+  </clr-accordion-panel>
+
+  <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
+    <clr-accordion-title>Backup Private Key</clr-accordion-title>
+    <clr-accordion-content *clrIfExpanded>
+      <form *ngIf ="ndkProvider.isLoggedInUsingNsec" clrForm onsubmit="return false;">
+          <button type="button" class="btn btn-primary" (click)="copyPrivateKey()">Copy to clipboard</button>
+      </form>
+      <div *ngIf ="!ndkProvider.isLoggedInUsingNsec" class="alert alert-warning" role="alert">
+        <div class="alert-items">
+            <div class="alert-item static">
+                <div class="alert-icon-wrapper">
+                    <cds-icon class="alert-icon" shape="exclamation-triangle"></cds-icon>
+                </div>
+                <span class="alert-text">You are not logged in using your private key. May be you have logged in using the NIP-07 extension or your public key.</span>
+            </div>
+        </div>
+      </div>
     </clr-accordion-content>
   </clr-accordion-panel>
 </clr-accordion>

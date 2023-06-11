@@ -1,8 +1,10 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { User } from '../../model/user';
-import { NDKEvent } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { ZappeditdbService } from 'src/app/service/zappeditdb.service';
 import { NdkproviderService } from '../../service/ndkprovider.service';
+import { Util } from 'src/app/util/Util';
+import { LoginUtil } from 'src/app/util/LoginUtil';
 
 @Component({
   selector: 'app-contact-card',
@@ -20,12 +22,37 @@ export class ContactCardComponent implements OnInit {
   showFollow:boolean = true;
   @Output()
   contactListUpdated = new EventEmitter<boolean>();
+  contactLoading: boolean = false;
 
-  constructor(private ndkProvider: NdkproviderService, private dbService:ZappeditdbService) {
+  constructor(private ndkProvider: NdkproviderService, private dbService:ZappeditdbService, private changeDetector:ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
+    this.populateContactDetails();
+  }
 
+  populateContactDetails(){
+    this.contactLoading = true;
+    this.ndkProvider.getProfileFromHex(this.contact?.hexPubKey!).then((userProfile)=> {
+      console.log("Got for "+ this.contact?.hexPubKey + " - "+ userProfile?.displayName)
+      if(userProfile){
+        this.contact  = this.convertToUser(userProfile, this.contact?.hexPubKey!);
+      }
+      this.contactLoading = false;
+      this.changeDetector.detectChanges();
+    })    
+  }
+  
+  convertToUser(profile : NDKUserProfile, hexPubKey: string){
+    let user:User = {
+      hexPubKey: hexPubKey,
+      displayName: profile.displayName,
+      name: profile.name,
+      about: profile.about,
+      pictureUrl: profile.image,
+      npub: LoginUtil.hexToBech32('npub',hexPubKey)
+    }
+    return user;
   }
 
   getImageUrls(): RegExpMatchArray | null | undefined {

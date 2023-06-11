@@ -10,7 +10,7 @@ import { LoginUtil } from 'src/app/util/LoginUtil';
 })
 export class QuotedEventComponent {
 
-  event?:NDKEvent
+  event?:NDKEvent|null
 
   @Input()
   id?:string

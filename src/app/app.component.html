@@ -14,7 +14,7 @@
     </form>
     </div>
     <div class="header-actions">
-      <a href="javascript://" (click)="openWizard()" class="nav-link" aria-label="setup" title="Onboarding Wizard">
+      <a *ngIf="isLoggedIn()" href="javascript://" (click)="openWizard()" class="nav-link" aria-label="setup" title="Onboarding Wizard">
         <cds-icon shape="wand" solid></cds-icon>
       </a>
       <a *ngIf="darkTheme" href="javascript://" (click)="switchTheme()" class="nav-link" aria-label="theme">
@@ -43,28 +43,30 @@
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile  && !ndkProvider.currentUserProfile?.displayName && !ndkProvider.currentUserProfile?.name && ndkProvider.currentUserNpub!=null">{{ ndkProvider.currentUserNpub.substring(0,14)+'...' }}</span>
           <span class="profile-name"  *ngIf="ndkProvider.currentUserProfile?.displayName">{{ ndkProvider.currentUserProfile?.displayName }}</span>
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile?.name">@{{ ndkProvider.currentUserProfile?.name }}</span>
+          <cds-icon shape="check-circle" solid clrverticalnavicon class="purple" *ngIf="isNip05Verified">
+          </cds-icon>
       </label>
       <div class="nav-divider"></div>
 
       <a clrVerticalNavLink routerLink="/feed" routerLinkActive="active">
         <cds-icon shape="home" clrverticalnavicon class="nav-icon"></cds-icon><span class="nav-text">My Feed</span>
       </a>
-      <a clrVerticalNavLink routerLink="/profile" routerLinkActive="active">
+      <a *ngIf="!ndkProvider.isTryingZapddit" clrVerticalNavLink routerLink="/profile" routerLinkActive="active">
         <cds-icon shape="user" clrVerticalNavIcon></cds-icon><span class="nav-text">Profile</span>
       </a>
       <a clrVerticalNavLink routerLink="/preferences" routerLinkActive="active">
         <cds-icon shape="cog" clrVerticalNavIcon></cds-icon><span class="nav-text">Preferences</span>
       </a>
       <a clrVerticalNavLink href="#" (click)="logout()">
-        <cds-icon shape="logout" clrVerticalNavIcon></cds-icon><span class="nav-text">Logout</span>
+        <cds-icon shape="logout" clrVerticalNavIcon></cds-icon><span class="nav-text">{{ndkProvider.isTryingZapddit ? 'Clear & Reset' : 'Logout'}}</span>
       </a>
       <div class="nav-divider"></div>
       <label class="nav-header">Followed Topics</label>
-      <a clrVerticalNavLink *ngFor="let topic of followedTopics" [routerLink]="['/t', topic]" routerLinkActive="active"
-        ><cds-icon shape="hashtag" clrverticalnavicon class="nav-icon"></cds-icon
-        ><span class="nav-text">{{ topic }}</span></a
-      >
-
+      <a clrVerticalNavLink *ngFor="let topic of followedTopics" [routerLink]="['/t', topic]" 
+      routerLinkActive="active">
+        <cds-icon shape="hashtag" clrverticalnavicon class="nav-icon"></cds-icon>
+        <span class="nav-text">{{ topic }}</span>
+      </a>
       <div class="nav-divider"></div>
       <div>
         <a><span class="nav-text">Created with 💙 by <a href="https://snort.social/p/npub1ltx67888tz7lqnxlrg06x234vjnq349tcfyp52r0lstclp548mcqnuz40t">@vivganes</a></span></a>

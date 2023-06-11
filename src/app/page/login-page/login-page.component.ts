@@ -23,5 +23,12 @@ export class LoginPageComponent {
     this.ndkProvider.attemptLoginUsingPrivateOrPubKey(enteredKey);
   }
 
+  attemptGenerateNewCredential(){
+    this.ndkProvider.setAsNewToNostr();
+    this.ndkProvider.attemptToGenerateNewCredential();
+  }
 
+  attemptLoginWithoutAccount(){
+    this.ndkProvider.attemptToTryUnauthenticated();
+  }
 }

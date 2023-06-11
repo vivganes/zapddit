@@ -32,13 +32,14 @@ Users see a tally of upvotes vs downvotes for each post | Users see a tally of u
   - [x] Load images only for notes by 'followed' users
   - [x] Switch light mode/dark mode
   - [x] Mute Hashtags
-  - [x] Show replies/comments
+  - [x] Show replies/comments in a nice tree
   - [x] Show note mentions
+  - [x] Compose notes
+  - [x] Compose replies to notes
+  - [x] Show videos
   - [ ] Relay list
-  - [ ] Compose notes
-  - [ ] Compose replies to notes
-  - [ ] Show video
   - [ ] LN wallet connect
+  - [ ] Browse without logging in
   - [ ] Configure multiple downzap recipients - Exact recipient randomly chosen during the downzap
   - [ ] Anything else? Feel free to suggest!
 

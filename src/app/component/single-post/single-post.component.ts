@@ -10,7 +10,7 @@ import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 })
 export class SinglePostComponent {
 
-  event?:NDKEvent
+  event?:NDKEvent|null
 
   constructor(route:ActivatedRoute,private ndkProvider: NdkproviderService){
     route.params.subscribe(async params => {

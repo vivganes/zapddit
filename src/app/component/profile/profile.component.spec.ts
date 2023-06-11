@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProfileComponent } from './profile.component';
+import { CommonTestingModule } from 'src/app/testing/CommonTestingModule';
 
 describe('ProfileComponent', () => {
+  CommonTestingModule.setUpTestBed(ProfileComponent)
+
   let component: ProfileComponent;
   let fixture: ComponentFixture<ProfileComponent>;
 

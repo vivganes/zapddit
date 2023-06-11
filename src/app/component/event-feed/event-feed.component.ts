@@ -1,23 +1,27 @@
-import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { Constants } from 'src/app/util/Constants';
+import { Util } from 'src/app/util/Util';
+import { Component, EventEmitter, Input, Output, SimpleChanges, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { TopicService } from 'src/app/service/topic.service';
-import { ZappeditdbService } from '../../service/zappeditdb.service';
-import { User } from '../../model/user';
 import { HashTagFilter } from 'src/app/filter/HashTagFilter';
+import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-event-feed',
   templateUrl: './event-feed.component.html',
   styleUrls: ['./event-feed.component.scss'],
 })
-export class EventFeedComponent {
+export class EventFeedComponent implements OnInit,OnDestroy{
   until: number | undefined = Date.now();
-  limit: number | undefined = 25;
+  limit: number | undefined = 15;
   loadingEvents: boolean = false;
   loadingNextEvents: boolean = false;
   reachedEndOfFeed : boolean = false;
+  peopleIFollowLoadedFromRelay:boolean=false;
+  fetchingPeopleIFollowFromRelaySub:Subscription=new Subscription();
 
   @Input()
   tag: string | undefined;
@@ -28,10 +32,11 @@ export class EventFeedComponent {
   followedTopics: string[]|undefined;
   events: Set<NDKEvent> | undefined;
   nextEvents: Set<NDKEvent> | undefined;
+  isLoggedInUsingPubKey:boolean = false;
 
   ndkProvider: NdkproviderService;
 
-  ngOnInit() {
+  ngOnInit():void {
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       if (followedTopics === '') {
         this.followedTopics = [];
@@ -40,15 +45,24 @@ export class EventFeedComponent {
       }
       if(this.tag===undefined){
         this.until = Date.now();
-        this.limit = 25;
+        this.limit = 15;
         this.getEvents();
       }
     });
+
+    this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
+      this.isLoggedInUsingPubKey = val;
+    });
+
+    this.fetchingPeopleIFollowFromRelaySub = this.ndkProvider.fetchingPeopleIFollowFromRelay$.subscribe(val=>{
+      if(val===false && localStorage.getItem(Constants.FOLLOWERS_FROM_RELAY)==='false'){
+        this.peopleIFollowLoadedFromRelay = true;
+      }
+    })
   }
 
   constructor(ndkProvider: NdkproviderService, private topicService: TopicService,
     private route: ActivatedRoute) {
-    console.log("creating feed component")
     this.ndkProvider = ndkProvider;
 
     const followedTopicsByNdk = ndkProvider.appData.followedTopics;
@@ -66,7 +80,7 @@ export class EventFeedComponent {
         this.tag = undefined;
       }
       this.until = Date.now();
-      this.limit = 25;
+      this.limit = 15;
       this.getEvents();
     });
   }
@@ -194,5 +208,9 @@ export class EventFeedComponent {
   loadMoreEvents(){
     this.until = this.getOldestEventTimestamp();
     this.getEventsForNextPage();
+  }
+
+  ngOnDestroy(): void {
+    this.fetchingPeopleIFollowFromRelaySub.unsubscribe();
   }
 }

@@ -1,6 +1,5 @@
-import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { NDKEvent, NDKTag, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
-import * as moment from 'moment';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import linkifyHtml from 'linkify-html';
 import QRCodeStyling from 'qr-code-styling';
@@ -10,6 +9,8 @@ import { Util } from 'src/app/util/Util';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { LoginUtil } from 'src/app/util/LoginUtil';
+import { Subscription } from 'rxjs';
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
@@ -20,7 +21,7 @@ const NOSTR_NOTE_REGEX = /nostr:(note1[\S]*)/gi;
   templateUrl: './event-card.component.html',
   styleUrls: ['./event-card.component.scss'],
 })
-export class EventCardComponent {
+export class EventCardComponent implements OnInit, OnDestroy{
   // Regular expression patterns to match video URLs
   private readonly youtubeRegex:RegExp = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([\w-]+)/g;
   private readonly vimeoRegex:RegExp = /(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d+)/g;
@@ -32,6 +33,8 @@ export class EventCardComponent {
   showingComments: boolean = false;
   @Input()
   isQuotedEvent: boolean = false;
+  @Input()
+  peopleIFollowLoadedFromRelay: boolean = false;
 
   mutedAuthor:boolean = false;
   authorWithProfile: NDKUser | undefined;
@@ -39,7 +42,7 @@ export class EventCardComponent {
   amIFollowingtheAuthor:boolean  = false;
   imageUrls: RegExpMatchArray | null | undefined;
   videoUrls: Map<string,string|undefined> = new Map<string,string|undefined>();
-  onlineVideoUrls:string[] = [];
+  onlineVideoUrls:SafeUrl[] = [];
   zaps: Set<NDKEvent> = new Set<NDKEvent>();
   replies: NDKEvent[] = [];
   upZapTotalMilliSats: number = 0
@@ -58,6 +61,7 @@ export class EventCardComponent {
   eventInProgress:boolean = false;
   loggedInWithNsec:boolean =false;
   notTheLoggedInUser:boolean = false;
+  fetchingMutedUsersFromRelaySub:Subscription = new Subscription();
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -66,7 +70,8 @@ export class EventCardComponent {
   displayedContent: string|undefined;
 
   constructor(ndkProvider: NdkproviderService, private renderer: Renderer2,
-    private dbService: ZappeditdbService, private router:Router, private domSanitizer:DomSanitizer, private clipboard: Clipboard) {
+    private dbService: ZappeditdbService, private router:Router, private domSanitizer:DomSanitizer, 
+      private clipboard: Clipboard, private changeDetector:ChangeDetectorRef) {
     this.ndkProvider = ndkProvider;
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
     if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
@@ -74,7 +79,7 @@ export class EventCardComponent {
     }
   }
 
-  ngOnInit() {
+  ngOnInit():void {
     this.displayedContent = this.replaceHashStyleMentionsWithComponents();
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNoteMentionsWithComponents(this.displayedContent)
@@ -85,7 +90,15 @@ export class EventCardComponent {
     this.getVideoUrls();
     this.getOnlineVideoUrls();
 
-    this.loggedInWithNsec=!this.ndkProvider.isLoggedInUsingPubKey;
+    this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
+      this.loggedInWithNsec=!val;
+    })
+
+    this.fetchingMutedUsersFromRelaySub = this.ndkProvider.fetchingMutedUsersFromRelay$.subscribe(val=>{
+      if(val.status===false && val.count>0){
+        this.getAuthor();
+      }
+    })
   }
 
   addReply(reply: NDKEvent){
@@ -199,6 +212,15 @@ export class EventCardComponent {
     return displayedContent;
   }
 
+  copyNoteHexIdToClipboard(){
+    this.clipboard.copy(this.event?.id!);
+  }
+
+  copyNote1IdToClipboard(){
+    const note1Id = LoginUtil.hexToBech32('note',this.event?.id!)
+    this.clipboard.copy(note1Id);
+  }
+
   async share(){
     var url = "https://zapddit.com/n/"+ this.event?.id
     if(navigator.share){
@@ -220,17 +242,16 @@ export class EventCardComponent {
 
   async getAuthor() {
     let authorPubKey = this.authorHexPubKey = this.event?.pubkey;
+    this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey!);
+    this.changeDetector.detectChanges();
     if (authorPubKey) {
       var loggedInUserHexPubKey = this.ndkProvider.currentUser?.hexpubkey();
 
       this.dbService.peopleIFollow.where({hexPubKey:authorPubKey.toString()}).count().then(async count=>{
           this.amIFollowingtheAuthor = this.canLoadMedia = count > 0;
-
           if(loggedInUserHexPubKey === this.authorHexPubKey){
             this.canLoadMedia =  true;
           }
-
-          this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey!);
       })
 
       this.dbService.mutedPeople.where({hexPubKey:authorPubKey.toString()}).count().then(count=>{
@@ -239,6 +260,7 @@ export class EventCardComponent {
 
       this.notTheLoggedInUser = authorPubKey !== this.ndkProvider.currentUser?.hexpubkey();
     }
+    this.changeDetector.detectChanges();
   }
 
   getNthTag( n:number):string{
@@ -304,7 +326,7 @@ export class EventCardComponent {
     while ((match = regex.exec(text!)) !== null) {
       const videoUrl = match[0];
       if(videoUrl){
-        this.onlineVideoUrls.push(videoUrl);
+        this.onlineVideoUrls.push(this.sanitiseUrl(videoUrl));
       }
     }
   }
@@ -455,7 +477,6 @@ export class EventCardComponent {
       this.ndkProvider.fetchFollowersFromCache().then(()=>{
         // wait for the user to be persisted in the db and then re-check to enable the media based on followed/unfollowed state
         setTimeout(()=>{
-          this.getAuthor()
           this.eventInProgress = false;
         },10000);
       })
@@ -484,5 +505,9 @@ export class EventCardComponent {
     this.eventInProgress = false;
     console.error ("Error from unfollow: " + error);
   });
+ }
+
+ ngOnDestroy(): void {
+  this.fetchingMutedUsersFromRelaySub.unsubscribe();
  }
 }

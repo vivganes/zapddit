@@ -4,10 +4,13 @@ import { User } from 'src/app/model/user';
 import { NdkproviderService } from '../../service/ndkprovider.service';
 import { NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
+import { Constants } from '../../util/Constants';
+import { OnDestroy } from '@angular/core';
 import {
   BreakpointObserver,
   BreakpointState
 } from '@angular/cdk/layout';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -15,7 +18,7 @@ import {
   styleUrls: ['./profile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProfileComponent implements OnInit{
+export class ProfileComponent implements OnInit, OnDestroy{
   readonly count:number=20;
   user?:User;
   peopleIFollow: User[] = [];
@@ -34,9 +37,13 @@ export class ProfileComponent implements OnInit{
   reachedEndOfPeopleIFollow:boolean = false;
   reachedEndOfMutedPeople = false;
   showFollowButton = true;
-
+  isNip05Verified = false;
+  fetchingPeopleIFollowFromRelay = true;
+  fetchingMutedUsersFromRelay = true;
   offsetWhenUnfollowed:number = 0;
   limitWhenUnfollowed:number = 20;
+  fetchingPeopleIFollowFromRelaySub:Subscription=new Subscription();
+  fetchingMutedUsersFromRelaySub:Subscription=new Subscription();
 
   ngOnInit(): void {
     var userProfile = this.ndkProvider.currentUserProfile;
@@ -65,7 +72,33 @@ export class ProfileComponent implements OnInit{
       }
     });
 
-    this.showFollowButton = !this.ndkProvider.isLoggedInUsingPubKey
+    this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val =>{
+      this.showFollowButton = !val;
+    })
+
+    this.ndkProvider.isNip05Verified$.subscribe(val=>{
+      this.isNip05Verified = val
+      this.changeDetectorRef.detectChanges();
+    });
+
+    this.fetchingPeopleIFollowFromRelaySub =this.ndkProvider.fetchingPeopleIFollowFromRelay$.subscribe(val=>{
+      this.fetchingPeopleIFollowFromRelay = val
+
+      if(val === false){
+        this.fetchPeopleIFollow();
+        this.changeDetectorRef.detectChanges();
+      }
+    });
+
+
+    this.fetchingMutedUsersFromRelaySub = this.ndkProvider.fetchingMutedUsersFromRelay$.subscribe(val=>{
+      this.fetchingMutedUsersFromRelay = val.status
+
+      if(val.status === false){
+        this.fetchPeopleIMuted();
+        this.changeDetectorRef.detectChanges();
+      }
+    });
   }
 
   constructor(private ndkProvider:NdkproviderService, private breakpointObserver: BreakpointObserver,
@@ -97,6 +130,7 @@ export class ProfileComponent implements OnInit{
 
   async fetchPeopleIFollow(){
     this.loadingPeopleYouFollow = true;
+    if(localStorage.getItem(Constants.FOLLOWERS_FROM_RELAY)=== 'false'){
     console.log("loading people i follow")
 
     var users = await this.dbService.peopleIFollow.limit(this.peopleIFollowLimit).offset(this.peopleIFollowOffset).toArray();
@@ -108,6 +142,7 @@ export class ProfileComponent implements OnInit{
 
     this.changeDetectorRef.detectChanges();
     console.log("people i follow load done")
+    }
   }
 
   async loadMorePeopleIFollow(){
@@ -162,5 +197,10 @@ export class ProfileComponent implements OnInit{
 
   openInSnort(){
     window.open('https://snort.social/p/'+this.user?.npub,'_blank')
+  }
+
+  ngOnDestroy(): void {
+      this.fetchingPeopleIFollowFromRelaySub.unsubscribe();
+      this.fetchingMutedUsersFromRelaySub.unsubscribe();
   }
 }

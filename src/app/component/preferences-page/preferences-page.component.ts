@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { TopicService } from 'src/app/service/topic.service';
+import { Clipboard } from '@angular/cdk/clipboard';
 import '@cds/core/checkbox/register.js';
 import { Constants } from '../../util/Constants';
+import { LoginUtil } from 'src/app/util/LoginUtil';
 
 @Component({
   selector: 'app-preferences-page',
@@ -14,21 +16,38 @@ export class PreferencesPageComponent {
   downzapRecipientsError: string | undefined;
   downzapSetSuccessMessage: string | undefined;
   topicService: TopicService;
+  isLoggedInUsingPubKey:boolean = false;
 
   ndkProvider: NdkproviderService;
   settingDefaultSats:boolean = false;
   mutingTopic: boolean = false;
   loadContentFromPeopleIFollow:boolean = true;
+  changeDetector:ChangeDetectorRef;
 
-  constructor(ndkProvider: NdkproviderService, topicService: TopicService) {
+  constructor(ndkProvider: NdkproviderService, topicService: TopicService, changeDetector: ChangeDetectorRef,private clipboard: Clipboard) {
     this.ndkProvider = ndkProvider;
-    this.topicService = topicService;
+    this.topicService = topicService;    
+    this.changeDetector = changeDetector;
+  }
+
+  ngOnInit(){
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
     if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
       this.loadContentFromPeopleIFollow = Boolean(JSON.parse(mediaSettings!));
     }
+    this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val =>{
+      Promise.resolve().then(() => {
+        this.isLoggedInUsingPubKey = val;
+        this.changeDetector.detectChanges();
+      });    
+        
+    })
   }
 
+  copyPrivateKey(){
+    const privateKeyHex = localStorage.getItem('privateKey')
+    this.clipboard.copy(LoginUtil.hexToBech32("nsec",privateKeyHex!))
+  }
 
   async saveDownzapRecipients() {
     this.downzapSetSuccessMessage = undefined;
