@@ -92,3 +92,24 @@ textarea{
 .ml-4{
   margin-left: 4px;
 }
+
+.profile-pic {
+	position: relative;
+	display: inline-block;
+}
+
+.profile-pic:hover .edit {
+	display: block;
+}
+
+.edit {
+	padding-top: 7px;
+	position: absolute;
+	right: 60%;
+	top: 0;
+	display: none;
+}
+
+.edit a {
+	color: #000;
+}

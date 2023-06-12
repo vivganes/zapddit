@@ -11,7 +11,7 @@ import {
   BreakpointObserver,
   BreakpointState
 } from '@angular/cdk/layout';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject, debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -61,7 +61,11 @@ export class ProfileComponent implements OnInit, OnDestroy{
   newDisplayName:string='';
   newNIP05:string='';
   newAbout:string='';
-
+  editPicture:boolean=false;
+  pictureUrlChange = new BehaviorSubject('');
+  showNewPicture:boolean = false;
+  newPictureUrl:string='';
+  saveDisabled:boolean = false;
 
   ngOnInit(): void {
     var userProfile = this.ndkProvider.currentUserProfile;
@@ -117,6 +121,20 @@ export class ProfileComponent implements OnInit, OnDestroy{
         this.changeDetectorRef.detectChanges();
       }
     });
+
+    this.pictureUrlChange
+      .asObservable()
+      .pipe(debounceTime(250))
+      .subscribe(async value => {
+        if(value && await this.checkImage(value)){
+          this.showNewPicture = true;
+          this.user.pictureUrl = value;
+        }
+        else{
+          this.showNewPicture = false;
+          this.user.pictureUrl = '';
+        }
+      });
   }
 
   constructor(private ndkProvider:NdkproviderService, private breakpointObserver: BreakpointObserver,
@@ -223,6 +241,24 @@ export class ProfileComponent implements OnInit, OnDestroy{
   }
 
  async onSave(){
+    this.saveDisabled = true;
     await this.ndkProvider.saveMetadataAndFetchUserProfile(this.user!)
+    this.saveDisabled = false;
+    this.editPicture = false;
+    this.showNewPicture = false;
+  }
+
+  editPictureUrl(){
+    this.editPicture= true;
+  }
+
+  updateNewPictureUrl(value:string){
+    this.pictureUrlChange.next(value);
+  }
+
+  async checkImage(url:string):Promise<boolean>{
+    const res = await fetch(url);
+    const buff = await res.blob();
+    return buff.type.startsWith('image/')
   }
 }

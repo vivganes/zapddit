@@ -861,10 +861,15 @@ export class NdkproviderService {
     const newProfileEvent:NDKEvent = new NDKEvent(this.ndk);
     newProfileEvent.kind = 0;
     newProfileEvent.pubkey = this.currentUser?.hexpubkey()!;
-    newProfileEvent.content = `{"display_name": "${user?.displayName}", "name": "${user?.name}",
-    "nip05":"${user?.nip05}", "about":"${user?.about}"}`;
-    console.log(newProfileEvent)
-    await newProfileEvent.sign();
+    let currentProfile = this.currentUser?.profile;
+    currentProfile!.displayName = user.displayName;
+    currentProfile!.name = user.name;
+    currentProfile!.nip05 = user.nip05;
+    currentProfile!.bio = user.about;
+    if(user.pictureUrl){
+      currentProfile!.image = user.pictureUrl;
+    }
+    newProfileEvent.content = JSON.stringify(currentProfile!);
     await newProfileEvent.publish();
     var newUserProfile = await this.getProfileFromNpub(this.currentUser?.npub!);
     console.log("New user profile - "+ JSON.stringify(newUserProfile));
