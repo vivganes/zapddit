@@ -9,6 +9,18 @@
             <div class="clr-row profile-field">
               <div class="clr-col-lg-6"><strong>npub</strong></div>
               <div class="clr-col-lg-6">{{npub}}</div>
+            </div>            
+            <div class="clr-row profile-field ml-4">
+              <clr-input-container>
+              <label><strong>New Picture URL</strong></label>
+              <input clrInput
+                                type="text"
+                                id="nostr-picture-url"
+                                [(ngModel)]="newPictureUrl"
+                                (ngModelChange)="updateNewPictureUrl($event)"
+                                placeholder="Enter your new picture url here..."
+                                name="pictureUrl">
+              </clr-input-container>
             </div>
             <div class="clr-row profile-field">
               <div class="clr-col-lg-6 middle"><span class="text-vmiddle"><strong>Avatar</strong></span></div>
@@ -24,18 +36,6 @@
                 class="avatar-image pointer-cursor"
                 alt="profile" (click)="editPictureUrl()"/>
               </div>
-            </div>
-            <div class="clr-row profile-field ml-4">
-              <clr-input-container>
-              <label><strong>New Picture URL</strong></label>
-              <input clrInput
-                                type="text"
-                                id="nostr-picture-url"
-                                [(ngModel)]="newPictureUrl"
-                                (ngModelChange)="updateNewPictureUrl($event)"
-                                placeholder="Enter your new picture url here..."
-                                name="pictureUrl">
-              </clr-input-container>
             </div>
             <div class="clr-row profile-field"  *ngIf="showNewPicture">
               <div class="clr-col-lg-6 middle"><span class="text-vmiddle"><strong>New picture preview</strong></span></div>
