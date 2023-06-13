@@ -37,6 +37,7 @@ Users see a tally of upvotes vs downvotes for each post | Users see a tally of u
   - [x] Compose notes
   - [x] Compose replies to notes
   - [x] Show videos
+  - [x] Non-zap upvotes and downvotes
   - [ ] Relay list
   - [ ] LN wallet connect
   - [ ] Browse without logging in
