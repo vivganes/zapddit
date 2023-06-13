@@ -22,6 +22,7 @@ export class PreferencesPageComponent {
   settingDefaultSats:boolean = false;
   mutingTopic: boolean = false;
   loadContentFromPeopleIFollow:boolean = true;
+  hideNonZapReactions: boolean = false;
   changeDetector:ChangeDetectorRef;
 
   constructor(ndkProvider: NdkproviderService, topicService: TopicService, changeDetector: ChangeDetectorRef,private clipboard: Clipboard) {
@@ -34,6 +35,10 @@ export class PreferencesPageComponent {
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
     if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
       this.loadContentFromPeopleIFollow = Boolean(JSON.parse(mediaSettings!));
+    }
+    var hideNonZapReactionsFromLocal = localStorage.getItem(Constants.HIDE_NONZAP_REACTIONS)
+    if(hideNonZapReactionsFromLocal && hideNonZapReactionsFromLocal === 'true'){
+      this.hideNonZapReactions = true;
     }
     this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val =>{
       Promise.resolve().then(() => {
@@ -101,5 +106,9 @@ export class PreferencesPageComponent {
 
   onMediaSettingChange(checked:any){
     localStorage.setItem(Constants.SHOWMEDIA,checked);
+  }
+
+  onHideNonZapChange(checked:any){
+    localStorage.setItem(Constants.HIDE_NONZAP_REACTIONS,checked);
   }
 }

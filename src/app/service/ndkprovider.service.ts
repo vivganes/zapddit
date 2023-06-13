@@ -12,7 +12,8 @@ import NDK, {
   NDKTag,
   NDKSubscription,
   NDKSigner,
-  NDKPrivateKeySigner
+  NDKPrivateKeySigner,
+  NDKKind
 } from '@nostr-dev-kit/ndk';
 import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
@@ -585,13 +586,18 @@ export class NdkproviderService {
   }
 
   async getRelatedEventsOfNote(event: NDKEvent){
-    const filter: NDKFilter = { kinds: [1,9735], '#e': [event.id] };
+    const filter: NDKFilter = { kinds: [1,7,9735], '#e': [event.id] };
     return this.ndk?.fetchEvents(filter);
 
   }
 
   async fetchZaps(event: NDKEvent): Promise<Set<NDKEvent> | undefined> {
     const filter: NDKFilter = { kinds: [9735], '#e': [event.id] };
+    return this.ndk?.fetchEvents(filter);
+  }
+
+  async fetchReactions(event: NDKEvent): Promise<Set<NDKEvent> | undefined> {
+    const filter: NDKFilter = { kinds: [7], '#e': [event.id] };
     return this.ndk?.fetchEvents(filter);
   }
 
@@ -889,6 +895,15 @@ export class NdkproviderService {
     newProfileEvent.content = JSON.stringify(currentProfileCopy!);
     await newProfileEvent.sign();
     await newProfileEvent.publish();
+  }
+
+  async publishReactionToEvent(event:NDKEvent, reaction:string){
+    const tags:NDKTag[] = [['e',event.id],['p',event.pubkey]]
+    const reactionEvent = new NDKEvent(this.ndk);
+    reactionEvent.kind = NDKKind.Reaction;
+    reactionEvent.content = reaction;
+    reactionEvent.tags = tags;
+    reactionEvent.publish();    
   }
 }
 

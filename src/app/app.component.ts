@@ -23,6 +23,9 @@ import {
   wandIcon,
   noteIcon,
   floppyIcon,
+  heartIcon,
+  thumbsDownIcon,
+  thumbsUpIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
@@ -32,7 +35,7 @@ import hashtag from './util/IntlHashtagLinkifyPlugin';
 import { Constants } from './util/Constants';
 
 
-ClarityIcons.addIcons(floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon);
+ClarityIcons.addIcons(thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

@@ -45,6 +45,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
   onlineVideoUrls:SafeUrl[] = [];
   zaps: Set<NDKEvent> = new Set<NDKEvent>();
   replies: NDKEvent[] = [];
+  likes:number = 0
+  dislikes:number = 0
   upZapTotalMilliSats: number = 0
   downZapTotalMilliSats: number = 0
   showQR: boolean= false;
@@ -66,6 +68,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
   @Input()
   downZapEnabled: boolean | undefined;
 
+  hideNonZapReactions: boolean = false;
+
   ndkProvider: NdkproviderService;
   displayedContent: string|undefined;
 
@@ -76,6 +80,10 @@ export class EventCardComponent implements OnInit, OnDestroy{
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
     if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
       this.showMediaFromPeopleIFollow = Boolean(JSON.parse(mediaSettings!));
+    }
+    var hideNonZapReactionsFromLocal = localStorage.getItem(Constants.HIDE_NONZAP_REACTIONS)
+    if(hideNonZapReactionsFromLocal && hideNonZapReactionsFromLocal === 'true'){
+      this.hideNonZapReactions = true;
     }
   }
 
@@ -144,7 +152,14 @@ export class EventCardComponent implements OnInit, OnDestroy{
             }
           } else if (event.kind === 9735){
             this.zaps.add(event);
-          } else {
+          } else if (event.kind === 7){
+            if(event.content.indexOf('-')>-1){
+              this.dislikes++;
+            } else {
+              this.likes++;
+            }
+          }
+          else {
             console.error("This kind of event is unrecognized. Ignoring");
           }
         }
@@ -219,6 +234,16 @@ export class EventCardComponent implements OnInit, OnDestroy{
   copyNote1IdToClipboard(){
     const note1Id = LoginUtil.hexToBech32('note',this.event?.id!)
     this.clipboard.copy(note1Id);
+  }
+
+  async publishLike(){
+    await this.ndkProvider.publishReactionToEvent(this.event!,'+');
+    this.likes++;
+  }
+
+  async publishDislike(){
+    await this.ndkProvider.publishReactionToEvent(this.event!,'-');
+    this.dislikes++;
   }
 
   async share(){
@@ -416,6 +441,22 @@ export class EventCardComponent implements OnInit, OnDestroy{
           }
         } catch(e){
           console.error(e);
+        }
+      }
+    }
+  }
+
+  async fetchReactionsAndSegregate(){
+    if (this.event) {
+      let reactions = await this.ndkProvider.fetchReactions(this.event);
+      if(reactions){
+        this.dislikes = this.likes = 0;
+        for(let reaction of reactions){
+          if(reaction.content.indexOf('-')>-1){
+            this.dislikes++;
+          } else {
+            this.likes++;
+          }
         }
       }
     }
