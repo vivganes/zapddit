@@ -9,7 +9,7 @@
     "test": "ng test",
     "build:prod": "ng build --configuration production --base-href=/",
     "test:headless": "ng test --watch=false --browsers=ChromeHeadless",
-		"deploy": "./bin/deploy.sh"
+		"deploy": "npm run build && ./bin/deploy.sh"
   },
   "private": true,
   "dependencies": {
