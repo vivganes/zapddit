@@ -1,16 +1,17 @@
 import { Component, OnInit, ChangeDetectorRef,
-  ChangeDetectionStrategy } from '@angular/core';
+  ChangeDetectionStrategy, ElementRef, ViewChild } from '@angular/core';
 import { User } from 'src/app/model/user';
 import { NdkproviderService } from '../../service/ndkprovider.service';
-import { NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
+import { NDKUser, NDKUserProfile,NDKEvent, NDKFilter } from '@nostr-dev-kit/ndk';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
 import { Constants } from '../../util/Constants';
 import { OnDestroy } from '@angular/core';
+import {  NgForm } from "@angular/forms";
 import {
   BreakpointObserver,
   BreakpointState
 } from '@angular/cdk/layout';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject, debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -20,7 +21,26 @@ import { Subscription } from 'rxjs';
 })
 export class ProfileComponent implements OnInit, OnDestroy{
   readonly count:number=20;
-  user?:User;
+  user={
+    about:'',
+    displayName:'',
+    name:'',
+    pictureUrl:'',
+    hexPubKey:'',
+    nip05:'',
+    website:'',
+    display_name:'',
+    username:'',
+    bio:'',
+    lud16:'',
+    banner:'',
+    lud06:'',
+    image:''
+  };
+
+  npub:string;
+  @ViewChild("profileForm")
+  profileForm: NgForm;
   peopleIFollow: User[] = [];
   peopleIMuted: User[] = [];
   peopleIFollowLimit:number = 20;
@@ -44,22 +64,26 @@ export class ProfileComponent implements OnInit, OnDestroy{
   limitWhenUnfollowed:number = 20;
   fetchingPeopleIFollowFromRelaySub:Subscription=new Subscription();
   fetchingMutedUsersFromRelaySub:Subscription=new Subscription();
+  editMode:boolean = false
+  newName:string='';
+  newDisplayName:string='';
+  newNIP05:string='';
+  newAbout:string='';
+  editPicture:boolean=false;
+  pictureUrlChange = new BehaviorSubject('');
+  showNewPicture:boolean = false;
+  newPictureUrl:string='';
+  saveDisabled:boolean = false;
 
   ngOnInit(): void {
-    var userProfile = this.ndkProvider.currentUserProfile;
-    var user = this.ndkProvider.currentUser;
 
-    if(this.ndkProvider.currentUser && this.ndkProvider.currentUserProfile){
-      this.user = {
-        about: userProfile?.about!,
-        name: userProfile?.name!,
-        displayName:userProfile?.displayName!,
-        npub:user?.npub!,
-        nip05:userProfile?.nip05!,
-        hexPubKey:user?.hexpubkey()!,
-        pictureUrl:userProfile?.image!
-      }
-    }
+    const filter:NDKFilter = { kinds: [0], authors:[this.ndkProvider.currentUser?.hexpubkey()!]}
+    this.ndkProvider?.ndk?.fetchEvent(filter).then(event=>{
+      this.user = JSON.parse(event.content);
+      this.npub = this.ndkProvider.currentUser?.npub!
+      this.changeDetectorRef.detectChanges();
+    });
+
     this.breakpointObserver
     .observe(['(min-width: 450px)'])
     .subscribe((state: BreakpointState) => {
@@ -99,6 +123,19 @@ export class ProfileComponent implements OnInit, OnDestroy{
         this.changeDetectorRef.detectChanges();
       }
     });
+
+    this.pictureUrlChange
+      .asObservable()
+      .pipe(debounceTime(250))
+      .subscribe(async value => {
+        if(value && await this.checkImage(value)){
+          this.showNewPicture = true;
+        }
+        else{
+          this.showNewPicture = false;
+          this.newPictureUrl = '';
+        }
+      });
   }
 
   constructor(private ndkProvider:NdkproviderService, private breakpointObserver: BreakpointObserver,
@@ -196,11 +233,38 @@ export class ProfileComponent implements OnInit, OnDestroy{
   }
 
   openInSnort(){
-    window.open('https://snort.social/p/'+this.user?.npub,'_blank')
+    window.open('https://snort.social/p/'+this.npub,'_blank')
   }
 
   ngOnDestroy(): void {
       this.fetchingPeopleIFollowFromRelaySub.unsubscribe();
       this.fetchingMutedUsersFromRelaySub.unsubscribe();
+  }
+
+ async onSave(){
+    this.saveDisabled = true;
+    await this.ndkProvider.saveMetadataAndFetchUserProfile(this.user!, this.newPictureUrl)
+    if(this.newPictureUrl){
+      this.user.image = this.newPictureUrl
+    }
+    this.saveDisabled = false;
+    this.editPicture = false;
+    this.showNewPicture = false;
+    this.ndkProvider.currentUser?.fetchProfile();
+    this.ndkProvider.currentUserProfile = this.ndkProvider.currentUser?.profile;
+  }
+
+  editPictureUrl(){
+    this.editPicture= true;
+  }
+
+  updateNewPictureUrl(value:string){
+    this.pictureUrlChange.next(value);
+  }
+
+  async checkImage(url:string):Promise<boolean>{
+    const res = await fetch(url);
+    const buff = await res.blob();
+    return buff.type.startsWith('image/')
   }
 }

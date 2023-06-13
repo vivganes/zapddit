@@ -119,7 +119,7 @@ export class NdkproviderService {
     console.log(this.appData.followedTopics);
     this.followedTopicsEmitter.emit(this.appData.followedTopics);
     this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
-    this.currentUserProfile = {      
+    this.currentUserProfile = {
       displayName: 'Lurky Lurkerson'
     }
     this.ndk = new NDK({
@@ -152,7 +152,7 @@ export class NdkproviderService {
       this.tryLoginUsingNpub(enteredKey);
     } else{
       this.loginError ="Invalid input. Enter either nsec or npub id";
-    } 
+    }
     this.loggingIn = false
     }catch(e:any){
       console.error(e);
@@ -168,7 +168,7 @@ export class NdkproviderService {
   setNotNewToNostr(){
     this.isNewToNostr = false;
   }
- 
+
   async createNewUserOnNostr(displayName:string){
     if(this.canWriteToNostr){
       //create a relay follow list event and send it across
@@ -207,7 +207,7 @@ export class NdkproviderService {
     this.isTryingZapddit = true;
     this.canWriteToNostr = false;
     localStorage.setItem(Constants.TRYING_ZAPDDIT,'true');
-    this.currentUserProfile = {      
+    this.currentUserProfile = {
       displayName: 'Lurky Lurkerson'
     }
     this.ndk = new NDK({
@@ -235,7 +235,7 @@ export class NdkproviderService {
       }
       console.log("Found window nostr")
       this.signer = new NDKNip07Signer();
-    } 
+    }
 
     const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls };
     this.ndk = new NDK(params);
@@ -855,6 +855,40 @@ export class NdkproviderService {
       }
     }
     return verified;
+  }
+
+  async saveMetadataAndFetchUserProfile(user:any, pictureUrl:string){
+    const newProfileEvent:NDKEvent = new NDKEvent(this.ndk);
+    newProfileEvent.kind = 0;
+    newProfileEvent.pubkey = this.currentUser?.hexpubkey()!;
+    let currentProfile = user;
+    let currentProfileCopy = {}
+
+    if(pictureUrl){
+      currentProfileCopy={
+        ...currentProfile,
+        name:user.name,
+        displayName: user.displayName,
+        display_name:user.displayName,
+        nip05: user.nip05,
+        about: user.about,
+        bio:user.bio,
+        image:pictureUrl
+      }
+    }else{
+      currentProfileCopy={
+        ...currentProfile,
+        name:user.name,
+        displayName: user.displayName,
+        display_name:user.displayName,
+        nip05: user.nip05,
+        about: user.about,
+        bio:user.bio
+      }
+    }
+    newProfileEvent.content = JSON.stringify(currentProfileCopy!);
+    await newProfileEvent.sign();
+    await newProfileEvent.publish();
   }
 }
 

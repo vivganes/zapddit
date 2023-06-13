@@ -4,44 +4,129 @@
       <button clrTabLink class="large-text">🤓 Profile Details</button>
       <clr-tab-content *clrIfActive>
         <div class="clr-row pt-2">
-          <div class="clr-col-lg-7 clr-col-md-8  clr-col-xl-5" >
-            <div class="clr-row profile-field">
-              <div class="clr-col-lg-6 middle"><span class="text-vmiddle"><strong>Avatar</strong></span></div>
-              <div class="clr-col-lg-6">
-              <img
-                *ngIf="user?.pictureUrl"
-                [src]="user?.pictureUrl"
-                class="avatar-image pointer-cursor"
-                alt="profile" (click)="openInSnort()"/>
-                <img
-                *ngIf="!(user?.pictureUrl)"
-                src="https://robohash.org/7OG.png?set=set2&size=150x150"
-                class="avatar-image pointer-cursor"
-                alt="profile" (click)="openInSnort()"/>
-              </div>
-            </div>
-            <div class="clr-row profile-field">
-              <div class="clr-col-lg-6"><strong>Name</strong></div>
-              <div class="clr-col-lg-6">{{user?.name}}</div>
-            </div>
-            <div class="clr-row profile-field">
-              <div class="clr-col-lg-6"><strong>Display Name</strong></div>
-              <div class="clr-col-lg-6">{{user?.displayName}}</div>
-            </div>
+          <div>
+            <form clrForm #profileForm="ngForm" novalidate (keydown.enter)="$event.preventDefault()">
             <div class="clr-row profile-field">
               <div class="clr-col-lg-6"><strong>npub</strong></div>
-              <div class="clr-col-lg-6">{{user?.npub}}</div>
+              <div class="clr-col-lg-6">{{npub}}</div>
+            </div>            
+            <div class="clr-row profile-field ml-4">
+              <clr-input-container>
+              <label><strong>Avatar URL</strong></label>
+              <input clrInput
+                                type="text"
+                                id="nostr-picture-url"
+                                [(ngModel)]="newPictureUrl"
+                                (ngModelChange)="updateNewPictureUrl($event)"
+                                placeholder="Enter your new avatar url here..."
+                                name="pictureUrl">
+              </clr-input-container>
             </div>
             <div class="clr-row profile-field">
-              <div class="clr-col-lg-6"><strong>NIP05</strong></div>
-              <div class="clr-col-lg-6">{{user?.nip05}} <cds-icon shape="check-circle" class="purple" solid *ngIf="isNip05Verified">
-              </cds-icon></div>
+              <div class="clr-col-lg-6 middle"><span class="text-vmiddle"><strong>Avatar</strong></span></div>
+              <div class="clr-col-lg-6 profile-pic">
+              <img
+                *ngIf="user.image"
+                [src]="user.image"
+                class="avatar-image pointer-cursor"
+                alt="profile" (click)="editPictureUrl()"/>
+              <img
+                *ngIf="!(user.image)"
+                src="https://robohash.org/7OG.png?set=set2&size=150x150"
+                class="avatar-image pointer-cursor"
+                alt="profile" (click)="editPictureUrl()"/>
+              </div>
+            </div>
+            <div class="clr-row profile-field"  *ngIf="showNewPicture">
+              <div class="clr-col-lg-6 middle"><span class="text-vmiddle"><strong>New picture preview</strong></span></div>
+              <div class="clr-col-lg-6 profile-pic">
+                <img *ngIf="showNewPicture"
+                [src]="newPictureUrl"
+                class="avatar-image pointer-cursor"
+                alt="Invalid Picture URL"/>
+                <img *ngIf="!showNewPicture"
+                src="https://images.unsplash.com/photo-1568879844413-7827cbf81261?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=20"
+                class="avatar-image"
+                alt="Invalid Picture URL"/>
+              </div>
             </div>
 
-            <div class="clr-row profile-field">
-              <div class="clr-col-lg-6"><strong>About</strong></div>
-              <div class="clr-col-lg-6">{{user?.about}}</div>
+            <div class="clr-row profile-field ml-4">
+              <clr-input-container>
+                <label><strong>Name</strong></label>
+                <input clrInput
+                                type="text"
+                                id="nostr-name"
+                                [(ngModel)]="user.name"
+                                placeholder="Give yourself a cool name here..."
+                                name="name" >
+              </clr-input-container>
             </div>
+            <div class="clr-row profile-field ml-4">
+              <clr-input-container >
+              <label><strong>Display Name</strong></label>
+              <input clrInput
+                                type="text"
+                                id="nostr-display-name"
+                                [(ngModel)]="user.displayName"
+                                placeholder="Enter your display name here..."
+                                name="displayName">
+              </clr-input-container>
+            </div>
+            <div class="clr-row profile-field ml-4">
+            <clr-input-container>
+              <label><strong>NIP05</strong></label>
+              <input clrInput
+                                type="text"
+                                id="nostr-nip05"
+                                [(ngModel)]="user.nip05"
+                                placeholder="Enter your NIP05 address here..."
+                                name="nip05">
+            </clr-input-container>
+            </div>
+
+            <div class="clr-row profile-field ml-4">
+              <clr-textarea-container>
+              <label><strong>About</strong></label>
+              <textarea clrTextarea
+                                class="about"
+                                id="nostr-about"
+                                [(ngModel)]="user.about"
+                                placeholder="Give some information about yourself"
+                                name="about" ></textarea>
+
+            </clr-textarea-container>
+            </div>
+
+            <div class="clr-row profile-field ml-4">
+              <clr-input-container>
+                <label><strong>Website</strong></label>
+                <input clrInput
+                                  type="text"
+                                  id="nostr-website"
+                                  [(ngModel)]="user.website"
+                                  placeholder="Enter your website url here..."
+                                  name="website">
+              </clr-input-container>
+              </div>
+              <div class="clr-row profile-field ml-4">
+                <clr-input-container>
+                  <label><strong>LN Address</strong></label>
+                  <input clrInput
+                                    type="text"
+                                    id="nostr-lud16"
+                                    [(ngModel)]="user.lud16"
+                                    placeholder="Enter your LUD16 lightning address here..."
+                                    name="lud16">
+                </clr-input-container>
+                </div>
+            <div  class="clr-row profile-field">
+              <div class="clr-row profile-field">
+                <button class="btn btn-primary btn-sm btn-icon" (click)="onSave()" [disabled]="saveDisabled"><cds-icon shape="floppy" class="mr-5">
+                </cds-icon>Save</button>
+              </div>
+            </div>
+          </form>
           </div>
         </div>
       </clr-tab-content>
