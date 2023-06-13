@@ -43,3 +43,4 @@ Thumbs.db
 
 
 src/debug
+.env.local
