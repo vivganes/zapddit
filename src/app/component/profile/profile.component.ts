@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef,
   ChangeDetectionStrategy, ElementRef, ViewChild } from '@angular/core';
 import { User } from 'src/app/model/user';
 import { NdkproviderService } from '../../service/ndkprovider.service';
-import { NDKUser, NDKUserProfile,NDKEvent } from '@nostr-dev-kit/ndk';
+import { NDKUser, NDKUserProfile,NDKEvent, NDKFilter } from '@nostr-dev-kit/ndk';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
 import { Constants } from '../../util/Constants';
 import { OnDestroy } from '@angular/core';
@@ -21,16 +21,23 @@ import { Subscription, BehaviorSubject, debounceTime } from 'rxjs';
 })
 export class ProfileComponent implements OnInit, OnDestroy{
   readonly count:number=20;
-  user:User={
+  user={
     about:'',
     displayName:'',
     name:'',
     pictureUrl:'',
     hexPubKey:'',
     nip05:'',
-    npub:''
+    website:'',
+    display_name:'',
+    username:'',
+    bio:'',
+    lud16:'',
+    banner:'',
+    lud06:''
   };
 
+  npub:string;
   @ViewChild("profileForm")
   profileForm: NgForm;
   peopleIFollow: User[] = [];
@@ -68,20 +75,14 @@ export class ProfileComponent implements OnInit, OnDestroy{
   saveDisabled:boolean = false;
 
   ngOnInit(): void {
-    var userProfile = this.ndkProvider.currentUserProfile;
-    var user = this.ndkProvider.currentUser;
 
-    if(this.ndkProvider.currentUser && this.ndkProvider.currentUserProfile){
-      this.user = {
-        about: userProfile?.about!,
-        name: userProfile?.name!,
-        displayName:userProfile?.displayName!,
-        npub:user?.npub!,
-        nip05:userProfile?.nip05!,
-        hexPubKey:user?.hexpubkey()!,
-        pictureUrl:userProfile?.image!
-      }
-    }
+    const filter:NDKFilter = { kinds: [0], authors:[this.ndkProvider.currentUser?.hexpubkey()!]}
+    this.ndkProvider?.ndk?.fetchEvent(filter).then(event=>{
+      this.user = JSON.parse(event.content);
+      this.npub = this.ndkProvider.currentUser?.npub!
+      this.changeDetectorRef.detectChanges();
+    });
+
     this.breakpointObserver
     .observe(['(min-width: 450px)'])
     .subscribe((state: BreakpointState) => {
@@ -128,11 +129,10 @@ export class ProfileComponent implements OnInit, OnDestroy{
       .subscribe(async value => {
         if(value && await this.checkImage(value)){
           this.showNewPicture = true;
-          this.user.pictureUrl = value;
         }
         else{
           this.showNewPicture = false;
-          this.user.pictureUrl = '';
+          this.newPictureUrl = '';
         }
       });
   }
@@ -232,7 +232,7 @@ export class ProfileComponent implements OnInit, OnDestroy{
   }
 
   openInSnort(){
-    window.open('https://snort.social/p/'+this.user?.npub,'_blank')
+    window.open('https://snort.social/p/'+this.npub,'_blank')
   }
 
   ngOnDestroy(): void {
@@ -242,7 +242,7 @@ export class ProfileComponent implements OnInit, OnDestroy{
 
  async onSave(){
     this.saveDisabled = true;
-    await this.ndkProvider.saveMetadataAndFetchUserProfile(this.user!)
+    await this.ndkProvider.saveMetadataAndFetchUserProfile(this.user!, this.newPictureUrl)
     this.saveDisabled = false;
     this.editPicture = false;
     this.showNewPicture = false;

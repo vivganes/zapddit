@@ -857,23 +857,38 @@ export class NdkproviderService {
     return verified;
   }
 
-  async saveMetadataAndFetchUserProfile(user:User){
+  async saveMetadataAndFetchUserProfile(user:any, pictureUrl:string){
     const newProfileEvent:NDKEvent = new NDKEvent(this.ndk);
     newProfileEvent.kind = 0;
     newProfileEvent.pubkey = this.currentUser?.hexpubkey()!;
-    let currentProfile = this.currentUser?.profile;
-    currentProfile!.displayName = user.displayName;
-    currentProfile!.name = user.name;
-    currentProfile!.nip05 = user.nip05;
-    currentProfile!.bio = user.about;
-    if(user.pictureUrl){
-      currentProfile!.image = user.pictureUrl;
+    let currentProfile = user;
+    let currentProfileCopy = {}
+
+    if(pictureUrl){
+      currentProfileCopy={
+        ...currentProfile,
+        name:user.name,
+        displayName: user.displayName,
+        display_name:user.displayName,
+        nip05: user.nip05,
+        about: user.about,
+        bio:user.bio,
+        image:pictureUrl
+      }
+    }else{
+      currentProfileCopy={
+        ...currentProfile,
+        name:user.name,
+        displayName: user.displayName,
+        display_name:user.displayName,
+        nip05: user.nip05,
+        about: user.about,
+        bio:user.bio
+      }
     }
-    newProfileEvent.content = JSON.stringify(currentProfile!);
+    newProfileEvent.content = JSON.stringify(currentProfileCopy!);
+    await newProfileEvent.sign();
     await newProfileEvent.publish();
-    var newUserProfile = await this.getProfileFromNpub(this.currentUser?.npub!);
-    console.log("New user profile - "+ JSON.stringify(newUserProfile));
-    this.currentUserProfile = newUserProfile;
   }
 }
 

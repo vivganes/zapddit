@@ -5,10 +5,10 @@
       <clr-tab-content *clrIfActive>
         <div class="clr-row pt-2">
           <div>
-            <form clrForm #profileForm="ngForm" novalidate>
+            <form clrForm #profileForm="ngForm" novalidate (keydown.enter)="$event.preventDefault()">
             <div class="clr-row profile-field">
               <div class="clr-col-lg-6"><strong>npub</strong></div>
-              <div class="clr-col-lg-6">{{user.npub}}</div>
+              <div class="clr-col-lg-6">{{npub}}</div>
             </div>
             <div class="clr-row profile-field">
               <div class="clr-col-lg-6 middle"><span class="text-vmiddle"><strong>Avatar</strong></span></div>
@@ -23,7 +23,7 @@
                 src="https://robohash.org/7OG.png?set=set2&size=150x150"
                 class="avatar-image pointer-cursor"
                 alt="profile" (click)="editPictureUrl()"/>
-                <div class="edit"><a href="#"><cds-icon shape="note"></cds-icon></a></div>
+                <div class="edit" (click)="editPictureUrl()"><cds-icon shape="note"></cds-icon></div>
               </div>
             </div>
             <div class="clr-row profile-field ml-4" *ngIf="editPicture">
@@ -35,7 +35,7 @@
                                 [(ngModel)]="newPictureUrl"
                                 (ngModelChange)="updateNewPictureUrl($event)"
                                 placeholder="Enter your new picture url here..."
-                                name="pictureUrl" [clrLoading]="user.pictureUrl">
+                                name="pictureUrl">
               </clr-input-container>
             </div>
             <div class="clr-row profile-field"  *ngIf="showNewPicture">
@@ -98,6 +98,19 @@
 
             </clr-textarea-container>
             </div>
+
+            <div class="clr-row profile-field ml-4">
+              <clr-input-container>
+                <label><strong>Website</strong></label>
+                <input clrInput
+                                  type="text"
+                                  id="nostr-website"
+                                  [(ngModel)]="user.website"
+                                  placeholder="Enter your website url here..."
+                                  name="website">
+              </clr-input-container>
+              </div>
+
             <div  class="clr-row profile-field">
               <div class="clr-row profile-field">
                 <button class="btn btn-primary btn-sm btn-icon" (click)="onSave()" [disabled]="saveDisabled"><cds-icon shape="floppy" class="mr-5">
