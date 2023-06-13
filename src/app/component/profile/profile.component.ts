@@ -80,6 +80,9 @@ export class ProfileComponent implements OnInit, OnDestroy{
     const filter:NDKFilter = { kinds: [0], authors:[this.ndkProvider.currentUser?.hexpubkey()!]}
     this.ndkProvider?.ndk?.fetchEvent(filter).then(event=>{
       this.user = JSON.parse(event.content);
+      if(this.user.image){
+        this.newPictureUrl = this.user.image;
+      }
       this.npub = this.ndkProvider.currentUser?.npub!
       this.changeDetectorRef.detectChanges();
     });
