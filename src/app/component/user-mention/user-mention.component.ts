@@ -28,14 +28,14 @@ export class UserMentionComponent {
       this.ndkProvider.getProfileFromNpub(this.npub).then((profile => {
         if(profile){
           this.displayName = (profile.displayName? profile.displayName : (profile.name?profile.name : this.npub));
-          this.href="https://snort.social/p/"+this.npub
+          this.href="https://break-19.com/people"+this.npub+'/notes'
         }
       }))
     } else if(this.hexKey){
       this.ndkProvider.getProfileFromHex(this.hexKey).then((profile => {
         if(profile){
           this.displayName = (profile.displayName? profile.displayName : (profile.name?profile.name : this.hexKey));
-          this.href="https://snort.social/p/"+this.hexKey
+          this.href="https://break-19.com/people/"+this.hexKey+'/notes'
         }
       }))
     }

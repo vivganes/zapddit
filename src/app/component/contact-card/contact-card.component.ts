@@ -62,7 +62,7 @@ export class ContactCardComponent implements OnInit {
   }
 
   openInSnort(item?:User){
-    window.open('https://snort.social/p/'+item?.npub,'_blank');
+    window.open('https://break-19.com/people/'+item?.npub+'/notes','_blank');
   }
 
   unFollow(authorHexPubKey?:string){

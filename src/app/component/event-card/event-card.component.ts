@@ -247,7 +247,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
   async share(){
-    var url = "https://zapddit.com/n/"+ this.event?.id
+    var url = "https://tags.break-19.com/events/"+ this.event?.id
     if(navigator.share){
       navigator
       .share({
@@ -497,11 +497,11 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
   openInSnort(){
-    window.open('https://snort.social/e/'+this.event?.id,'_blank')
+    window.open('https://break-19.com/events/'+this.event?.id,'_blank')
   }
 
   openAuthorInSnort(){
-    window.open('https://snort.social/p/'+this.authorWithProfile?.npub,'_blank')
+    window.open('https://break-19.com/people/'+this.authorWithProfile?.npub+'/notes','_blank')
   }
 
  hasMedia():boolean{

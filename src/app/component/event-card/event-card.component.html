@@ -1,15 +1,15 @@
 <div class="card" *ngIf="!mutedAuthor">
   <div class="card-block">
     <div class="card-media-block">
-      <img *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" alt="Profile picture" src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" title="Open in Snort"/>
+      <img *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" alt="Profile picture" src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" title="Open in Break-19"/>
       <img alt="temp avatar"
         (click)="openAuthorInSnort()"
         *ngIf="authorWithProfile?.profile?.image == undefined"
         class="card-media-image pointer-cursor"
         src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
-        title="Open in Snort" />
+        title="Open in Break-19" />
       <div class="card-media-description">
-            <span *ngIf="authorWithProfile?.profile?.name || authorWithProfile?.profile?.displayName" class="card-media-title break-words-overflow pointer-cursor bold-text"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ (authorWithProfile?.profile?.displayName) ? authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name }} 
+            <span *ngIf="authorWithProfile?.profile?.name || authorWithProfile?.profile?.displayName" class="card-media-title break-words-overflow pointer-cursor bold-text"  title="Open in Break-19" (click)="openAuthorInSnort()"> {{ (authorWithProfile?.profile?.displayName) ? authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name }} 
               <span class="follow-ml8 card-media-title">
                 <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
                   <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
@@ -23,7 +23,7 @@
                 </ng-template>
               </span>
             </span>
-            <span *ngIf="!authorWithProfile?.profile?.name && !authorWithProfile?.profile?.displayName" class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openAuthorInSnort()"> {{ event?.pubkey | abbreviateId }} 
+            <span *ngIf="!authorWithProfile?.profile?.name && !authorWithProfile?.profile?.displayName" class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Break-19" (click)="openAuthorInSnort()"> {{ event?.pubkey | abbreviateId }} 
               <span class="follow-ml8 card-media-title">
                 <ng-template [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
                   <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress" (click)="follow()">
@@ -158,7 +158,7 @@
           <cds-icon shape="angle" direction="down"></cds-icon>
       </button>
       <clr-dropdown-menu clrPosition="top-left" *clrIfOpen>
-          <div clrDropdownItem (click)="openInSnort()">Open in Snort</div>
+          <div clrDropdownItem (click)="openInSnort()">Open in Break-19</div>
           <div clrDropdownItem (click)="copyNoteHexIdToClipboard()">Copy Hex ID</div>
           <div clrDropdownItem (click)="copyNote1IdToClipboard()">Copy note1 ID</div>
       </clr-dropdown-menu>

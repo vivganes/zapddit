@@ -39,6 +39,7 @@ const explicitRelayUrls = ['wss://nos.lol',
 // 'wss://nostr.mutinywallet.com', // causes some errors. disabling for now.
 'wss://relay.f7z.io',
 'wss://relay.damus.io',
+'wss://relay.break-19.com',
 'wss://nostr.mom']; //TODO: fix this
 
 @Injectable({

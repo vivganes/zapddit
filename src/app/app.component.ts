@@ -42,7 +42,7 @@ ClarityIcons.addIcons(thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIc
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'zapddit';
+  title = 'tags.break-19';
   private router: Router;
   followedTopics: string[] = [];
   darkTheme: boolean = false;

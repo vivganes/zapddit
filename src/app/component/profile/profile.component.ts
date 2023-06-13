@@ -236,7 +236,7 @@ export class ProfileComponent implements OnInit, OnDestroy{
   }
 
   openInSnort(){
-    window.open('https://snort.social/p/'+this.npub,'_blank')
+    window.open('https://break-19.com/people/'+this.user?.npub+'/notes','_blank')
   }
 
   ngOnDestroy(): void {
