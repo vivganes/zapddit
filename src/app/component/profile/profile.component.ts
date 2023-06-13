@@ -34,7 +34,8 @@ export class ProfileComponent implements OnInit, OnDestroy{
     bio:'',
     lud16:'',
     banner:'',
-    lud06:''
+    lud06:'',
+    image:''
   };
 
   npub:string;
@@ -243,9 +244,14 @@ export class ProfileComponent implements OnInit, OnDestroy{
  async onSave(){
     this.saveDisabled = true;
     await this.ndkProvider.saveMetadataAndFetchUserProfile(this.user!, this.newPictureUrl)
+    if(this.newPictureUrl){
+      this.user.image = this.newPictureUrl
+    }
     this.saveDisabled = false;
     this.editPicture = false;
     this.showNewPicture = false;
+    this.ndkProvider.currentUser?.fetchProfile();
+    this.ndkProvider.currentUserProfile = this.ndkProvider.currentUser?.profile;
   }
 
   editPictureUrl(){
