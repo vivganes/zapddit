@@ -23,6 +23,7 @@ export class ContactCardComponent implements OnInit {
   @Output()
   contactListUpdated = new EventEmitter<boolean>();
   contactLoading: boolean = false;
+  isNIP05Verified:boolean = false;
 
   constructor(private ndkProvider: NdkproviderService, private dbService:ZappeditdbService, private changeDetector:ChangeDetectorRef) {
   }
@@ -33,16 +34,21 @@ export class ContactCardComponent implements OnInit {
 
   populateContactDetails(){
     this.contactLoading = true;
-    this.ndkProvider.getProfileFromHex(this.contact?.hexPubKey!).then((userProfile)=> {
+    this.ndkProvider.getProfileFromHex(this.contact?.hexPubKey!).then(async (userProfile)=> {
       console.log("Got for "+ this.contact?.hexPubKey + " - "+ userProfile?.displayName)
       if(userProfile){
         this.contact  = this.convertToUser(userProfile, this.contact?.hexPubKey!);
       }
+
+      var nip05Address = userProfile?.nip05;
+      if(nip05Address)
+        this.isNIP05Verified = await this.ndkProvider.checkIfNIP05Verified(nip05Address, this.contact?.hexPubKey!);
+
       this.contactLoading = false;
       this.changeDetector.detectChanges();
-    })    
+    })
   }
-  
+
   convertToUser(profile : NDKUserProfile, hexPubKey: string){
     let user:User = {
       hexPubKey: hexPubKey,

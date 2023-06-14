@@ -1,4 +1,4 @@
-import { Component, ComponentRef } from '@angular/core';
+import { Component, ComponentRef, OnInit, OnDestroy } from '@angular/core';
 import '@cds/core/icon/register.js';
 import {
   ClarityIcons,
@@ -33,6 +33,7 @@ import { NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as linkify from 'linkifyjs';
 import hashtag from './util/IntlHashtagLinkifyPlugin';
 import { Constants } from './util/Constants';
+import { Subscription, BehaviorSubject } from 'rxjs';
 
 
 ClarityIcons.addIcons(thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon);
@@ -41,13 +42,15 @@ ClarityIcons.addIcons(thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIc
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy{
   title = 'zapddit';
   private router: Router;
   followedTopics: string[] = [];
   darkTheme: boolean = false;
   wizardIsOpen: boolean = false;
   isNip05Verified:boolean = false;
+  isNip05VerifiedForAuthorSub:Subscription = new Subscription();
+  followedTopicsEmitterSub:Subscription = new Subscription();
 
   ndkProvider: NdkproviderService;
 
@@ -58,7 +61,7 @@ export class AppComponent {
 
   }
 
-  ngOnInit() {
+  ngOnInit() :void{
     var mediaSetting = localStorage.getItem(Constants.SHOWMEDIA);
     if(!mediaSetting){
       localStorage.setItem(Constants.SHOWMEDIA,'true');
@@ -76,7 +79,7 @@ export class AppComponent {
     }
     this.setFollowedTopicsFromString(this.ndkProvider.appData.followedTopics);
 
-    this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
+    this.followedTopicsEmitterSub =  this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       this.setFollowedTopicsFromString(followedTopics);
     });
 
@@ -84,7 +87,7 @@ export class AppComponent {
       this.wizardIsOpen = launch;
     })
 
-    this.ndkProvider.isNip05Verified$.subscribe(val=>{
+    this.isNip05VerifiedForAuthorSub = this.ndkProvider.isNip05Verified$.subscribe(val=>{
       this.isNip05Verified = val
     });
   }
@@ -158,5 +161,10 @@ export class AppComponent {
 
   logout(){
     this.ndkProvider.logout();
+  }
+
+  ngOnDestroy():void{
+    this.followedTopicsEmitterSub.unsubscribe();
+    this.isNip05VerifiedForAuthorSub.unsubscribe();
   }
 }
