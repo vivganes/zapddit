@@ -16,6 +16,8 @@ const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
 const NOSTR_NOTE_REGEX = /nostr:(note1[\S]*)/gi;
 
+const NOSTR_EVENT_REGEX = /nostr:(nevent1[\S]*)/gi;
+
 @Component({
   selector: 'app-event-card',
   templateUrl: './event-card.component.html',
@@ -91,6 +93,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
     this.displayedContent = this.replaceHashStyleMentionsWithComponents();
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNoteMentionsWithComponents(this.displayedContent)
+    this.displayedContent = this.replaceNEventMentionsWithComponents(this.displayedContent)
     this.linkifiedContent = this.linkifyContent(this.displayedContent)
     this.getAuthor();
     this.getRelatedEventsAndSegregate();
@@ -215,6 +218,22 @@ export class EventCardComponent implements OnInit, OnDestroy{
     let displayedContent = content;
     if(displayedContent){
       var matches = displayedContent.matchAll(NOSTR_NOTE_REGEX);
+      for(let match of matches){
+        try{
+          let noteId = match[1];
+          displayedContent = displayedContent.replaceAll(match[0],`<app-quoted-event id="${noteId}"></app-quoted-event>`)
+        }catch(e){
+          console.error(e);
+        }
+      }
+    }
+    return displayedContent;
+  }
+
+  replaceNEventMentionsWithComponents(content?:string): string|undefined{
+    let displayedContent = content;
+    if(displayedContent){
+      var matches = displayedContent.matchAll(NOSTR_EVENT_REGEX);
       for(let match of matches){
         try{
           let noteId = match[1];

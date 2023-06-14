@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { treeFeaturesFactory } from '@clr/angular/data/tree-view/tree-features.service';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { LoginUtil } from 'src/app/util/LoginUtil';
@@ -11,6 +12,7 @@ import { LoginUtil } from 'src/app/util/LoginUtil';
 export class QuotedEventComponent {
 
   event?:NDKEvent|null
+  loading:boolean = true;
 
   @Input()
   id?:string
@@ -25,7 +27,18 @@ export class QuotedEventComponent {
   }
 
   async getNote(id:string){   
-    const bech32Id = LoginUtil.bech32ToHex(id);
-    this.event= await this.ndkProvider.fetchEventFromId(bech32Id)    
+    this.loading = true;
+    let bech32Id = '';
+    if(id.startsWith('nevent')){
+      let decodedValue  = LoginUtil.decodeTLV(id);
+      bech32Id = (decodedValue[0].value as string);
+    } else {
+      bech32Id = LoginUtil.bech32ToHex(id);
+    }
+    let fetchedEvent = await this.ndkProvider.fetchEventFromId(bech32Id)    
+    if(fetchedEvent?.kind == 1){
+      this.event = fetchedEvent;
+    } 
+    this.loading = false;
   }
 }
