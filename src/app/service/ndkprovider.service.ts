@@ -1,4 +1,3 @@
-
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { IndexableType, Table } from 'dexie';
 import NDK, {
@@ -19,14 +18,16 @@ import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
 import { LoginUtil, NewCredential } from '../util/LoginUtil';
 import { ZappeditdbService } from './zappeditdb.service';
-import { User } from '../model/user';
+import { NDKUserProfileWithNpub } from '../model/NDKUserProfileWithNpub';
+import { User, Relay } from '../model';
 import { Constants } from '../util/Constants';
 import { BehaviorSubject } from 'rxjs';
 
 interface ZappedItAppData {
   followedTopics: string;
   downzapRecipients: string;
-  mutedTopics:string;
+  mutedTopics: string;
+  subscribedRelays: string;
 }
 
 interface MutedUserMetaData{
@@ -45,15 +46,15 @@ const explicitRelayUrls = ['wss://nos.lol',
   providedIn: 'root',
 })
 export class NdkproviderService {
-
   ndk: NDK | undefined;
   currentUserProfile: NDKUserProfile | undefined;
   currentUser: NDKUser | undefined;
-  currentUserNpub: string|undefined;
+  currentUserNpub: string | undefined;
   appData: ZappedItAppData = {
     followedTopics: '',
     downzapRecipients: '',
-    mutedTopics:'',
+    mutedTopics: '',
+    subscribedRelays: '',
   };
 
   isNip05Verified$ = new BehaviorSubject<boolean>(false);
@@ -62,21 +63,22 @@ export class NdkproviderService {
   defaultSatsForZaps:number = 1
   loggedIn: boolean = false;
   loggingIn: boolean = false;
-  loginError:string|undefined;
-  followedTopicsEmitter:EventEmitter<string> = new EventEmitter<string>()
+  loginError: string | undefined;
+  followedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
   peopleIFollowEmitter: NDKSubscription | undefined;
-  private signer:NDKSigner|undefined = undefined;
+  private signer: NDKSigner | undefined = undefined;
   isNip07 = false;
   isLoggedInUsingPubKey$ = new BehaviorSubject<boolean>(false);
   isLoggedInUsingNsec: boolean = false;
   isTryingZapddit:boolean = false;
   isNewToNostr:boolean = false;
   mutedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
+  subscribedRelayEmitter: EventEmitter<string> = new EventEmitter<string>();
   canWriteToNostr: boolean = false;
   @Output()
-  launchOnboardingWizard:EventEmitter<boolean> = new EventEmitter<boolean>();
+  launchOnboardingWizard: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  constructor(private dbService:ZappeditdbService){
+  constructor(private dbService: ZappeditdbService) {
     const npubFromLocal = localStorage.getItem(Constants.NPUB);
     const privateKey = localStorage.getItem(Constants.PRIVATEKEY);
     const loggedInPubKey = localStorage.getItem(Constants.LOGGEDINUSINGPUBKEY);
@@ -226,15 +228,15 @@ export class NdkproviderService {
     return LoginUtil.getHexFromPrivateOrPubKey(enteredKey);
   }
 
-  async tryLoginUsingNpub(npubFromLocal: string){
+  async tryLoginUsingNpub(npubFromLocal: string) {
     this.loggingIn = true;
     this.loginError = undefined;
-    if(this.isNip07){
+    if (this.isNip07) {
       while (!window.hasOwnProperty('nostr')) {
         // define the condition as you like
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
-      console.log("Found window nostr")
+      console.log('Found window nostr');
       this.signer = new NDKNip07Signer();
     }
 
@@ -242,7 +244,7 @@ export class NdkproviderService {
     this.ndk = new NDK(params);
 
     await this.ndk.connect(1000);
-    this.initializeUsingNpub(npubFromLocal)
+    this.initializeUsingNpub(npubFromLocal);
   }
 
   attemptLoginWithNip07() {
@@ -271,7 +273,7 @@ export class NdkproviderService {
     return user?.profile;
   }
 
-  async fetchFollowersFromNpub(npub: string):Promise<Set<NDKUser> | undefined>{
+  async fetchFollowersFromNpub(npub: string): Promise<Set<NDKUser> | undefined> {
     const user = this.ndk?.getUser({ npub });
     const ndkUsers = await user?.follows();
     return ndkUsers;
@@ -302,14 +304,14 @@ export class NdkproviderService {
 
   private async initializeClientWithSigner() {
     try {
-        this.signer?.user().then(async user => {
-        const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls };
+      this.signer?.user().then(async user => {
+        const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: this.appData.subscribedRelays.length > 0 ? this.appData.subscribedRelays.split(',') : explicitRelayUrls };
         this.ndk = new NDK(params);
         await this.ndk.assertSigner();
         await this.ndk.connect(1000);
         if (user.npub) {
           console.log('Permission granted to read their public key:', user.npub);
-          localStorage.setItem(Constants.NPUB,user.npub);
+          localStorage.setItem(Constants.NPUB, user.npub);
           await this.initializeUsingNpub(user.npub);
         } else {
           console.log('Permission not granted');
@@ -324,18 +326,19 @@ export class NdkproviderService {
     this.currentUserNpub = npub;
     this.currentUserProfile = await this.getProfileFromNpub(npub);
     this.currentUser = await this.getNdkUserFromNpub(npub);
+
     const relays = this.currentUser?.relayUrls;
     if (relays && relays.length > 0) {
-      const newNDKParams = { signer: this.signer, explicitRelayUrls: relays };
+      const newNDKParams = { signer: this.signer, explicitRelayUrls: this.appData.subscribedRelays.length > 0 ? this.appData.subscribedRelays.split(',') : relays };
       const newNDK = new NDK(newNDKParams);
-      if(this.isNip07){
+      if (this.isNip07) {
         await newNDK.assertSigner();
       }
       try {
         await newNDK.connect().catch(e => console.log(e));
         this.ndk = newNDK;
       } catch (e) {
-        console.log("Error in connecting NDK " + e);
+        console.log('Error in connecting NDK ' + e);
       }
     }
     if(!this.isTryingZapddit){
@@ -351,6 +354,7 @@ export class NdkproviderService {
     if(!this.isTryingZapddit){
       this.fetchFollowersFromCache();
       this.fetchMutedUsersFromCache();
+      this.fetchSubscribedRelaysFromCache();
     }
 
     var verified = await this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.hexpubkey());
@@ -365,26 +369,32 @@ export class NdkproviderService {
     return this.currentUserProfile;
   }
 
-  async sendNote(text:string, hashtags?:string[], userMentionsHex?:string[], postMentions?:string[], replyingToEvent?:NDKEvent): Promise<NDKEvent>{
+  async sendNote(
+    text: string,
+    hashtags?: string[],
+    userMentionsHex?: string[],
+    postMentions?: string[],
+    replyingToEvent?: NDKEvent
+  ): Promise<NDKEvent> {
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 1;
     ndkEvent.content = text;
-    let tags:NDKTag[] = []
-    if(hashtags){
-      tags.push(...hashtags?.map(hashtag =>  ['t',hashtag.toLocaleLowerCase()]))
+    let tags: NDKTag[] = [];
+    if (hashtags) {
+      tags.push(...hashtags?.map(hashtag => ['t', hashtag.toLocaleLowerCase()]));
     }
-    if(userMentionsHex){
-      tags.push(...userMentionsHex?.map(userMention => ['p',userMention]));
+    if (userMentionsHex) {
+      tags.push(...userMentionsHex?.map(userMention => ['p', userMention]));
     }
-    if(postMentions){
-      tags.push(...postMentions?.map(postMention => ['e',postMention,'','mention']));
+    if (postMentions) {
+      tags.push(...postMentions?.map(postMention => ['e', postMention, '', 'mention']));
     }
-    if(replyingToEvent){
+    if (replyingToEvent) {
       tags.push(...replyingToEvent.getMatchingTags('p'));
-      tags.push(['e',replyingToEvent.id,'','reply']);
+      tags.push(['e', replyingToEvent.id, '', 'reply']);
     }
     ndkEvent.tags = tags;
-    if(this.currentUser){
+    if (this.currentUser) {
       ndkEvent.pubkey = this.currentUser?.hexpubkey();
     }
     if(this.canWriteToNostr){
@@ -398,9 +408,9 @@ export class NdkproviderService {
       localStorage.setItem(Constants.FOLLOWERS_FROM_RELAY,'true');
       this.fetchingPeopleIFollowFromRelay$.next(true);
       this.dbService.peopleIFollow.clear();
-      console.log("People I follow db cleared");
+      console.log('People I follow db cleared');
 
-      var ndkUsersArray=Array.from(peopleIFollowFromRelay);
+      var ndkUsersArray = Array.from(peopleIFollowFromRelay);
 
       console.log("Fetching People I follow users profile");
 
@@ -461,6 +471,22 @@ export class NdkproviderService {
           }).catch(e=>console.error("db call - "+e))
   }
 
+  async addRelayToDB(table: Table<Relay>, relay: Relay) {
+    table
+    .where('name')
+    .equalsIgnoreCase(relay.name)
+    .count()
+    .then(async count => {
+      if (count == 0) {
+        table.add(relay, relay.name);
+        console.log(`relay added to ${table.name}`);
+      } else {
+        console.log('Relay already exists');
+      }
+    })
+    .catch(e => console.error(`db call - ${e}`));
+  }
+
   async fetchMutedPeopleAndCache(peopleIMutedFromRelay:(NDKUser|undefined)[]){
     if(peopleIMutedFromRelay){
       this.fetchingMutedUsersFromRelay$.next({status:true,count:0});
@@ -501,37 +527,37 @@ export class NdkproviderService {
   }
 }
 
-  private async fetchMuteList(hexPubKey:string){
-    console.log("mutelist load begin")
+  private async fetchMuteList(hexPubKey: string) {
+    console.log('mutelist load begin');
 
-    const filter: NDKFilter = { kinds: [30000], '#d': ['mute'], authors:[hexPubKey]};
+    const filter: NDKFilter = { kinds: [30000], '#d': ['mute'], authors: [hexPubKey] };
     var mutedListResult = await this.ndk?.fetchEvents(filter);
 
-    var mutedListEvent:NDKEvent = mutedListResult?.values().next().value;
+    var mutedListEvent: NDKEvent = mutedListResult?.values().next().value;
 
-    var mutedNDKUsers:(NDKUser | undefined)[]=[];
+    var mutedNDKUsers: (NDKUser | undefined)[] = [];
 
-    if(mutedListEvent){
-      var mutedList = mutedListEvent?.tags.flat().filter(item=> item!=='d' && item !== 'p' && item!=='mute');
+    if (mutedListEvent) {
+      var mutedList = mutedListEvent?.tags.flat().filter(item => item !== 'd' && item !== 'p' && item !== 'mute');
 
-      console.log("mutedList - "+ mutedList.length);
+      console.log('mutedList - ' + mutedList.length);
 
-      for (var i=0; i<mutedList.length; i++) {
-        var ndkUser = await this.getNdkUserFromHex(mutedList[i])
+      for (var i = 0; i < mutedList.length; i++) {
+        var ndkUser = await this.getNdkUserFromHex(mutedList[i]);
         mutedNDKUsers.push(ndkUser);
       }
     }
 
-    console.log("mutelist load ends - "+ mutedNDKUsers.length)
+    console.log('mutelist load ends - ' + mutedNDKUsers.length);
     return mutedNDKUsers;
   }
 
-  async fetchFollowersFromCache(): Promise<User[]>{
+  async fetchFollowersFromCache(): Promise<User[]> {
     var peopleIFollowFromCache = await this.dbService.peopleIFollow.toArray();
-    console.log("PeopleIFollow from cache "+peopleIFollowFromCache?.length);
+    console.log('PeopleIFollow from cache ' + peopleIFollowFromCache?.length);
 
     var peopleIFollowFromRelay = await this.currentUser?.follows();
-    console.log("PeopleIFollow from relay "+peopleIFollowFromRelay?.size);
+    console.log('PeopleIFollow from relay ' + peopleIFollowFromRelay?.size);
 
     if((peopleIFollowFromCache?.length === 0) || peopleIFollowFromCache?.length !== peopleIFollowFromRelay?.size
     && localStorage.getItem(Constants.FOLLOWERS_FROM_RELAY) === 'false'){
@@ -543,9 +569,9 @@ export class NdkproviderService {
     return await this.dbService.peopleIFollow.toArray();
   }
 
-  async fetchMutedUsersFromCache(): Promise<User[]>{
+  async fetchMutedUsersFromCache(): Promise<User[]> {
     var peopleIMutedFromCache = await this.dbService.mutedPeople.toArray();
-    console.log("PeopleIMuted from cache "+peopleIMutedFromCache?.length);
+    console.log('PeopleIMuted from cache ' + peopleIMutedFromCache?.length);
 
     var peopleIMutedFromRelay = await this.fetchMuteList(this.currentUser?.hexpubkey()!);
 
@@ -558,16 +584,66 @@ export class NdkproviderService {
     return await this.dbService.mutedPeople.toArray();
   }
 
+  async fetchSubscribedRelaysAndCache(relaysFromRelay: Relay[]) {
+    if (relaysFromRelay) {
+      this.dbService.subscribedRelays.clear();
+      console.log('Subbed relay db cleared');
+      let subbedRelaysForAppdata: string = '';
+      let updateUserUrls: boolean = true;
+      if(this.currentUser?.relayUrls){
+        updateUserUrls = this.currentUser?.relayUrls.length > 0 ? false : true;
+      }
+      
+      console.log(`Update currentUser relayUrls: ${updateUserUrls}`);
+
+      if (relaysFromRelay.length != 0) {
+        for (var i = 0; i < relaysFromRelay.length; i++) {
+          var item = relaysFromRelay[i];
+          if (item) {
+            await this.addRelayToDB(this.dbService.subscribedRelays, item);
+            if(subbedRelaysForAppdata === '') subbedRelaysForAppdata = item.url
+            else subbedRelaysForAppdata += `,${item.url}`;
+            if (updateUserUrls) this.currentUser?.relayUrls.push(item.url);
+          }
+        }
+        console.log(`Current user relayUrls: ${this.currentUser?.relayUrls}`);
+
+        if(this.appData.subscribedRelays !== subbedRelaysForAppdata) this.appData.subscribedRelays=subbedRelaysForAppdata;
+        localStorage.setItem(Constants.RELAYSUBS, this.appData.subscribedRelays);
+        const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: this.currentUser?.relayUrls };
+        this.ndk = new NDK(params);
+        console.log('Subbed relays loaded');
+      } else {
+        console.log('Subbed relays loaded - nothing to load');
+      }
+    }
+  }
+
+  async fetchSubscribedRelaysFromCache(): Promise<Relay[]> {
+    var subscribedRelaysFromCache = await this.dbService.subscribedRelays.toArray();
+    console.log(`Subscribed Relays from cache : ${subscribedRelaysFromCache?.length}`);
+
+    const subscribedRelaysFromRelay: Relay[] = await this.getUserSubscribedRelays();
+
+    if (
+      subscribedRelaysFromCache?.length === 0 ||
+      subscribedRelaysFromCache?.length !== subscribedRelaysFromRelay?.length
+    ) {
+      await this.fetchSubscribedRelaysAndCache(subscribedRelaysFromRelay);
+    }
+    return await this.dbService.subscribedRelays.toArray();
+  }
+
   async fetchEvents(tag: string, limit?: number, since?: number, until?: number): Promise<Set<NDKEvent> | undefined> {
     const filter: NDKFilter = { kinds: [1], '#t': [tag], limit: limit, since: since, until: until };
     return this.ndk?.fetchEvents(filter);
   }
 
-  async fetchEventFromId(id:string){
-    if(id.startsWith('note1')){
+  async fetchEventFromId(id: string) {
+    if (id.startsWith('note1')) {
       id = LoginUtil.bech32ToHex(id);
     }
-    const filter:NDKFilter = { kinds: [1], ids:[id]}
+    const filter: NDKFilter = { kinds: [1], ids: [id] };
     return this.ndk?.fetchEvent(filter);
   }
 
@@ -581,14 +657,18 @@ export class NdkproviderService {
     return this.ndk?.fetchEvents(filter);
   }
 
-  async zapRequest(event: NDKEvent):Promise<string|null> {
-    return await event.zap(this.defaultSatsForZaps*1000, '+');
+  async fetchRelayEvent(hexPubKey: string): Promise<NDKEvent | undefined> {
+    const filter: NDKFilter = { kinds: [3], authors: [hexPubKey] };
+    return this.ndk?.fetchEvent(filter);
   }
 
-  async getRelatedEventsOfNote(event: NDKEvent){
-    const filter: NDKFilter = { kinds: [1,7,9735], '#e': [event.id] };
-    return this.ndk?.fetchEvents(filter);
+  async zapRequest(event: NDKEvent): Promise<string | null> {
+    return await event.zap(this.defaultSatsForZaps * 1000, '+');
+  }
 
+  async getRelatedEventsOfNote(event: NDKEvent) {
+    const filter: NDKFilter = { kinds: [1, 9735], '#e': [event.id] };
+    return this.ndk?.fetchEvents(filter);
   }
 
   async fetchZaps(event: NDKEvent): Promise<Set<NDKEvent> | undefined> {
@@ -596,58 +676,65 @@ export class NdkproviderService {
     return this.ndk?.fetchEvents(filter);
   }
 
-  async fetchReactions(event: NDKEvent): Promise<Set<NDKEvent> | undefined> {
-    const filter: NDKFilter = { kinds: [7], '#e': [event.id] };
-    return this.ndk?.fetchEvents(filter);
-  }
-
-  async  muteTopic(topic: string) {
+  async muteTopic(topic: string) {
     throw new Error('Method not implemented.');
   }
 
-  publishAppData(followListCsv?: string, downzapRecipients?: string, mutedTopics? : string) {
+  publishAppData(followListCsv?: string, downzapRecipients?: string, mutedTopics?: string, subscribedRelays?: string) {
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 30078;
-    if(this.currentUser){
-      ndkEvent.pubkey = this.currentUser?.hexpubkey()
+    if (this.currentUser) {
+      ndkEvent.pubkey = this.currentUser?.hexpubkey();
     }
     let followedTopicsToPublish = '';
-    if(followListCsv !== undefined){
+    if (followListCsv !== undefined) {
       followedTopicsToPublish = followListCsv;
     } else {
       followedTopicsToPublish = this.appData.followedTopics;
     }
 
-
-    const downzapRecipientsToPublish = (downzapRecipients || this.appData.downzapRecipients)
+    const downzapRecipientsToPublish = downzapRecipients || this.appData.downzapRecipients;
     let mutedTopicsToPublish = '';
-    if(mutedTopics !== undefined){
-      mutedTopicsToPublish = mutedTopics
+    if (mutedTopics !== undefined) {
+      mutedTopicsToPublish = mutedTopics;
     } else {
       mutedTopicsToPublish = this.appData.mutedTopics;
     }
 
-    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish +"\n"+ mutedTopicsToPublish;
+    // const subscribedRelayListToPublish = subscribedRelays || this.appData.subscribedRelays;
+    let subscribedRelayListToPublish = '';
+    if(subscribedRelays !== undefined) subscribedRelayListToPublish = subscribedRelays
+    else subscribedRelayListToPublish = this.appData.subscribedRelays;
+
+    ndkEvent.content =
+      followedTopicsToPublish +
+      '\n' +
+      downzapRecipientsToPublish +
+      '\n' +
+      mutedTopicsToPublish +
+      '\n' +
+      subscribedRelayListToPublish;
     const tag: NDKTag = ['d', 'zapddit.com'];
     ndkEvent.tags = [tag];
     if(this.canWriteToNostr){
       ndkEvent.publish(); // This will trigger the extension to ask the user to confirm signing.
     }
     this.appData = {
-      followedTopics:followedTopicsToPublish,
-      downzapRecipients:downzapRecipientsToPublish,
-      mutedTopics: mutedTopicsToPublish
-    }
+      followedTopics: followedTopicsToPublish,
+      downzapRecipients: downzapRecipientsToPublish,
+      mutedTopics: mutedTopicsToPublish,
+      subscribedRelays: subscribedRelayListToPublish,
+    };
     this.followedTopicsEmitter.emit(followedTopicsToPublish);
   }
 
-  async followUnfollowContact(hexPubKeyToFollow:string, follow:boolean){
-    var contactListFromCache = (await this.dbService.peopleIFollow.toArray()).map(item=>item.hexPubKey);
+  async followUnfollowContact(hexPubKeyToFollow: string, follow: boolean) {
+    var contactListFromCache = (await this.dbService.peopleIFollow.toArray()).map(item => item.hexPubKey);
 
     // if it is a follow event, attach the new contact to the list or else remove from the list if found and publish
-    if(follow){
+    if (follow) {
       contactListFromCache.push(hexPubKeyToFollow);
-    }else{
+    } else {
       const index = contactListFromCache.indexOf(hexPubKeyToFollow);
 
       if (index > -1) {
@@ -655,13 +742,13 @@ export class NdkproviderService {
       }
     }
 
-    var tags:NDKTag[] = contactListFromCache.map((item, index)=>{
-      return ["p", item.toString()]
+    var tags: NDKTag[] = contactListFromCache.map((item, index) => {
+      return ['p', item.toString()];
     });
 
     const ndkEvent = new NDKEvent(this.ndk);
-    if(this.currentUser){
-      ndkEvent.pubkey = this.currentUser?.hexpubkey()
+    if (this.currentUser) {
+      ndkEvent.pubkey = this.currentUser?.hexpubkey();
     }
 
     ndkEvent.tags = tags;
@@ -684,10 +771,12 @@ export class NdkproviderService {
 
   async refreshAppData() {
     const latestEvents: Set<NDKEvent> | undefined = await this.fetchLatestAppData();
+    console.log(latestEvents);
     if (latestEvents && latestEvents.size > 0) {
       const latestEvent: NDKEvent = Array.from(latestEvents)[0];
       const multiLineAppData = latestEvent.content;
       const lineWiseAppData = multiLineAppData.split('\n');
+      console.log(multiLineAppData);
       for (let i = 0; i < lineWiseAppData.length; i++) {
         switch (i) {
           case 0:
@@ -700,6 +789,9 @@ export class NdkproviderService {
           case 2:
             this.appData.mutedTopics = lineWiseAppData[i];
             this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
+            break;
+          case 3:
+            this.appData.subscribedRelays = lineWiseAppData[i];
             break;
           default:
           //do nothing. irrelevant data
@@ -714,30 +806,31 @@ export class NdkproviderService {
       console.log('Latest muted topics:' + this.appData.mutedTopics);
       localStorage.setItem(Constants.MUTEDTOPICS, this.appData.mutedTopics);
 
+      console.log('Latest subscribed relays: ' + this.appData.subscribedRelays);
+      localStorage.setItem(Constants.RELAYSUBS, this.appData.subscribedRelays);
 
       const satsFromLocalStorage = localStorage.getItem(Constants.DEFAULTSATSFORZAPS);
-      if(satsFromLocalStorage){
-        try{
-        const numberSats = Number.parseInt(satsFromLocalStorage);
-        this.defaultSatsForZaps = numberSats;
-        }catch(e){
+      if (satsFromLocalStorage) {
+        try {
+          const numberSats = Number.parseInt(satsFromLocalStorage);
+          this.defaultSatsForZaps = numberSats;
+        } catch (e) {
           console.error(e);
         }
       }
     }
   }
 
-  setDefaultSatsForZaps(sats:number){
+  setDefaultSatsForZaps(sats: number) {
     this.defaultSatsForZaps = sats;
-    localStorage.setItem(Constants.DEFAULTSATSFORZAPS, ""+sats)
+    localStorage.setItem(Constants.DEFAULTSATSFORZAPS, '' + sats);
   }
 
-  logout(){
+  logout() {
     localStorage.clear();
     this.dbService.delete();
     window.location.href="/";
   }
-
 
   /*
   Below methods are a stop-gap copy from NDK source to support zapping non-author
@@ -760,7 +853,7 @@ export class NdkproviderService {
 
         // set the event to null since nostr-tools doesn't support nip-33 zaps
         event: null,
-        amount: this.defaultSatsForZaps*1000,
+        amount: this.defaultSatsForZaps * 1000,
         comment: comment || '',
         relays: explicitRelayUrls
       });
@@ -786,7 +879,7 @@ export class NdkproviderService {
       const response = await fetch(
         `${zapEndpoint}?` +
           new URLSearchParams({
-            amount: (this.defaultSatsForZaps*1000).toString(),
+            amount: (this.defaultSatsForZaps * 1000).toString(),
             nostr: JSON.stringify(zapRequestNostrEvent),
           })
       );
@@ -863,48 +956,24 @@ export class NdkproviderService {
     return verified;
   }
 
-  async saveMetadataAndFetchUserProfile(user:any, pictureUrl:string){
-    const newProfileEvent:NDKEvent = new NDKEvent(this.ndk);
-    newProfileEvent.kind = 0;
-    newProfileEvent.pubkey = this.currentUser?.hexpubkey()!;
-    let currentProfile = user;
-    let currentProfileCopy = {}
-
-    if(pictureUrl){
-      currentProfileCopy={
-        ...currentProfile,
-        name:user.name,
-        displayName: user.displayName,
-        display_name:user.displayName,
-        nip05: user.nip05,
-        about: user.about,
-        bio:user.bio,
-        image:pictureUrl
-      }
-    }else{
-      currentProfileCopy={
-        ...currentProfile,
-        name:user.name,
-        displayName: user.displayName,
-        display_name:user.displayName,
-        nip05: user.nip05,
-        about: user.about,
-        bio:user.bio
-      }
+  async getUserSubscribedRelays(): Promise<Relay[]> {
+    let relays: Relay[] = [];
+    let author: string = '';
+    if (this.currentUser?.hexpubkey()) {
+      author = this.currentUser.hexpubkey();
     }
-    newProfileEvent.content = JSON.stringify(currentProfileCopy!);
-    await newProfileEvent.sign();
-    await newProfileEvent.publish();
-  }
-
-  async publishReactionToEvent(event:NDKEvent, reaction:string){
-    const tags:NDKTag[] = [['e',event.id],['p',event.pubkey]]
-    const reactionEvent = new NDKEvent(this.ndk);
-    reactionEvent.kind = NDKKind.Reaction;
-    reactionEvent.content = reaction;
-    reactionEvent.tags = tags;
-    reactionEvent.publish();    
+    const relayEvent: NDKEvent | undefined = await this.fetchRelayEvent(author);
+    if (relayEvent?.content) {
+      const relayJson = JSON.parse(relayEvent?.content);
+      const rel = Object.entries(relayJson);
+      rel.forEach(relay => {
+        const relayUrl: string = relay[0];
+        const relayName: string = relayUrl.replace('wss://','').replace('/','');
+        console.log(relayName, relayUrl);
+        const item: Relay = new Relay(relayName, relayUrl);
+        relays.push(item);
+      });
+    }
+    return relays;
   }
 }
-
-

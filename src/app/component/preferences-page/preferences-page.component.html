@@ -142,4 +142,16 @@
       </div>
     </clr-accordion-content>
   </clr-accordion-panel>
+  <clr-accordion-panel>
+    <clr-accordion-title>My Relays</clr-accordion-title>
+    <clr-accordion-content *clrIfExpanded>
+      <form *ngIf ="!isLoggedInUsingPubKey" clrForm onsubmit="return false;">
+        <div *ngIf="ndkProvider.appData.subscribedRelays && ndkProvider.appData.subscribedRelays !== ''">
+          <ul class="list-unstyled">
+            <li *ngFor="let relay of ndkProvider.appData.subscribedRelays.split(',');">{{relay}}</li>
+          </ul>
+        </div>
+      </form>
+    </clr-accordion-content>
+  </clr-accordion-panel>
 </clr-accordion>

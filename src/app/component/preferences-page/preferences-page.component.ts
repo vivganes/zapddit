@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { TopicService } from 'src/app/service/topic.service';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { RelaysService } from "src/app/service/relays.service";
 import '@cds/core/checkbox/register.js';
 import { Constants } from '../../util/Constants';
 import { LoginUtil } from 'src/app/util/LoginUtil';
@@ -47,6 +48,7 @@ export class PreferencesPageComponent {
       });    
         
     })
+    this.ndkProvider.getUserSubscribedRelays();
   }
 
   copyPrivateKey(){

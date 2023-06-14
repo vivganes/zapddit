@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
+import {Relay} from 'src/app/model'
 import { Constants } from 'src/app/util/Constants';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { LoginUtil } from 'src/app/util/LoginUtil';
@@ -28,6 +29,7 @@ export class OnboardingWizardComponent {
   twitterHater:boolean = false;
   suggestedTopics: string[] = [];
   muteList: string[] = [];
+  subscribedRelays: string[] = [];
   newUserDisplayName?:string;
   ndkProvider: NdkproviderService;
 
@@ -104,7 +106,23 @@ export class OnboardingWizardComponent {
     localStorage.setItem(Constants.FOLLOWEDTOPICS,followedTopicsToBePublished.join(','));
     localStorage.setItem(Constants.MUTEDTOPICS,mutedTopicsToBePublished.join(','));
 
-    this.ndkProvider.publishAppData(followedTopicsToBePublished.join(','), undefined, mutedTopicsToBePublished.join(','));
+    let alreadySubscribedRelays: string[] = [];
+    let subscribedRelaysToBePublished = [];
+    let alreadySubscribedRelaysString = this.ndkProvider.appData.subscribedRelays;
+    var subscribedRelays: Relay[] = await this.ndkProvider.getUserSubscribedRelays();
+    if(alreadySubscribedRelaysString === ''){
+      if (subscribedRelays) {
+        subscribedRelays.forEach(relay => {
+          alreadySubscribedRelays.push(relay.url);
+        });
+      }
+    } else {
+      alreadySubscribedRelays = alreadySubscribedRelaysString.split(',');
+    }
+    subscribedRelaysToBePublished = [...alreadySubscribedRelays, ...this.subscribedRelays];
+    subscribedRelaysToBePublished = [...new Set(subscribedRelaysToBePublished)];
+
+    this.ndkProvider.publishAppData(followedTopicsToBePublished.join(','), undefined, mutedTopicsToBePublished.join(','), subscribedRelaysToBePublished.join(','));
     this.ndkProvider.setNotNewToNostr();
   }
 
