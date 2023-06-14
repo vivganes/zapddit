@@ -38,7 +38,7 @@ export class OnboardingWizardComponent {
   updateTopics(){
     let newTopics = []
     if(this.dailyDoseSeeker){
-      newTopics.push('coffeechain','chaichain','nostr','nostrich','nostriches');
+      newTopics.push('coffeechain','chaichain','nostr','nostrich','nostriches','news');
     }
     if(this.memeEnjoyer){
       newTopics.push('memechain','meme','memes')
