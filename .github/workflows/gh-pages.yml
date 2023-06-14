@@ -20,10 +20,15 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-
     - name: Build
-      run: npm run build:prod && touch ./dist/zapddit/.nojekyll && echo 'zapddit.com' > ./dist/zapddit/CNAME && cp ./dist/zapddit/index.html ./dist/zapddit/404.html
-
+      run: npm run build:prod 
+      
+    - name: Deploy
+      run: aws s3 rm s3://${{ secrets.AWS_S3_BUCKET_NAME }} --recursive &&  aws s3 sync ./_site/ s3://${{ secrets.AWS_S3_BUCKET_NAME }}
+      
+    - name: "Create AWS Cloudfront Invalidation"
+      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+      
    # - name: Deploy
    #   if: success()
     #  uses: peaceiris/actions-gh-pages@v3
