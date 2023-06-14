@@ -43,7 +43,7 @@
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile  && !ndkProvider.currentUserProfile?.displayName && !ndkProvider.currentUserProfile?.name && ndkProvider.currentUserNpub!=null">{{ ndkProvider.currentUserNpub.substring(0,14)+'...' }}</span>
           <span class="profile-name"  *ngIf="ndkProvider.currentUserProfile?.displayName">{{ ndkProvider.currentUserProfile?.displayName }}</span>
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile?.name">@{{ ndkProvider.currentUserProfile?.name }}</span>
-          <cds-icon shape="check-circle" solid clrverticalnavicon class="purple" *ngIf="isNip05Verified">
+          <cds-icon shape="check-circle" solid clrverticalnavicon *ngIf="isNip05Verified">
           </cds-icon>
       </label>
       <div class="nav-divider"></div>
@@ -62,7 +62,7 @@
       </a>
       <div class="nav-divider"></div>
       <label class="nav-header">Followed Topics</label>
-      <a clrVerticalNavLink *ngFor="let topic of followedTopics" [routerLink]="['/t', topic]" 
+      <a clrVerticalNavLink *ngFor="let topic of followedTopics" [routerLink]="['/t', topic]"
       routerLinkActive="active">
         <cds-icon shape="hashtag" clrverticalnavicon class="nav-icon"></cds-icon>
         <span class="nav-text">{{ topic }}</span>

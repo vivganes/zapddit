@@ -353,8 +353,7 @@ export class NdkproviderService {
       this.fetchMutedUsersFromCache();
     }
 
-    var verified = await this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.hexpubkey());
-    console.log("verified " +verified);
+    await this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.hexpubkey());
   }
 
   isLoggedIn(): boolean {
@@ -903,7 +902,7 @@ export class NdkproviderService {
     reactionEvent.kind = NDKKind.Reaction;
     reactionEvent.content = reaction;
     reactionEvent.tags = tags;
-    reactionEvent.publish();    
+    reactionEvent.publish();
   }
 }
 

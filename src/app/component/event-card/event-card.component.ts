@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { LoginUtil } from 'src/app/util/LoginUtil';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject } from 'rxjs';
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
@@ -38,6 +38,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   @Input()
   peopleIFollowLoadedFromRelay: boolean = false;
 
+  nip05Address:string | undefined;
   mutedAuthor:boolean = false;
   authorWithProfile: NDKUser | undefined;
   canLoadMedia:boolean = false;
@@ -66,6 +67,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   loggedInWithNsec:boolean =false;
   notTheLoggedInUser:boolean = false;
   fetchingMutedUsersFromRelaySub:Subscription = new Subscription();
+  isNIP05Verified:boolean = false;
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -76,7 +78,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   displayedContent: string|undefined;
 
   constructor(ndkProvider: NdkproviderService, private renderer: Renderer2,
-    private dbService: ZappeditdbService, private router:Router, private domSanitizer:DomSanitizer, 
+    private dbService: ZappeditdbService, private router:Router, private domSanitizer:DomSanitizer,
       private clipboard: Clipboard, private changeDetector:ChangeDetectorRef) {
     this.ndkProvider = ndkProvider;
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
@@ -287,6 +289,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
   async getAuthor() {
     let authorPubKey = this.authorHexPubKey = this.event?.pubkey;
     this.authorWithProfile = await this.ndkProvider.getNdkUserFromHex(authorPubKey!);
+    await this.ndkProvider.getProfileFromHex(this.event?.pubkey!);
+    this.nip05Address = this.authorWithProfile?.profile?.nip05;
     this.changeDetector.detectChanges();
     if (authorPubKey) {
       var loggedInUserHexPubKey = this.ndkProvider.currentUser?.hexpubkey();
@@ -304,6 +308,9 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
       this.notTheLoggedInUser = authorPubKey !== this.ndkProvider.currentUser?.hexpubkey();
     }
+    if(this.nip05Address)
+      this.isNIP05Verified = await this.ndkProvider.checkIfNIP05Verified(this.nip05Address, this.authorHexPubKey);
+
     this.changeDetector.detectChanges();
   }
 
