@@ -16,6 +16,8 @@ const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
 const NOSTR_NOTE_REGEX = /nostr:(note1[\S]*)/gi;
 
+const NOSTR_EVENT_REGEX = /nostr:(nevent1[\S]*)/gi;
+
 @Component({
   selector: 'app-event-card',
   templateUrl: './event-card.component.html',
@@ -45,6 +47,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
   onlineVideoUrls:SafeUrl[] = [];
   zaps: Set<NDKEvent> = new Set<NDKEvent>();
   replies: NDKEvent[] = [];
+  likes:number = 0
+  dislikes:number = 0
   upZapTotalMilliSats: number = 0
   downZapTotalMilliSats: number = 0
   showQR: boolean= false;
@@ -66,6 +70,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
   @Input()
   downZapEnabled: boolean | undefined;
 
+  hideNonZapReactions: boolean = false;
+
   ndkProvider: NdkproviderService;
   displayedContent: string|undefined;
 
@@ -77,12 +83,17 @@ export class EventCardComponent implements OnInit, OnDestroy{
     if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
       this.showMediaFromPeopleIFollow = Boolean(JSON.parse(mediaSettings!));
     }
+    var hideNonZapReactionsFromLocal = localStorage.getItem(Constants.HIDE_NONZAP_REACTIONS)
+    if(hideNonZapReactionsFromLocal && hideNonZapReactionsFromLocal === 'true'){
+      this.hideNonZapReactions = true;
+    }
   }
 
   ngOnInit():void {
     this.displayedContent = this.replaceHashStyleMentionsWithComponents();
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNoteMentionsWithComponents(this.displayedContent)
+    this.displayedContent = this.replaceNEventMentionsWithComponents(this.displayedContent)
     this.linkifiedContent = this.linkifyContent(this.displayedContent)
     this.getAuthor();
     this.getRelatedEventsAndSegregate();
@@ -144,7 +155,14 @@ export class EventCardComponent implements OnInit, OnDestroy{
             }
           } else if (event.kind === 9735){
             this.zaps.add(event);
-          } else {
+          } else if (event.kind === 7){
+            if(event.content.indexOf('-')>-1){
+              this.dislikes++;
+            } else {
+              this.likes++;
+            }
+          }
+          else {
             console.error("This kind of event is unrecognized. Ignoring");
           }
         }
@@ -212,6 +230,22 @@ export class EventCardComponent implements OnInit, OnDestroy{
     return displayedContent;
   }
 
+  replaceNEventMentionsWithComponents(content?:string): string|undefined{
+    let displayedContent = content;
+    if(displayedContent){
+      var matches = displayedContent.matchAll(NOSTR_EVENT_REGEX);
+      for(let match of matches){
+        try{
+          let noteId = match[1];
+          displayedContent = displayedContent.replaceAll(match[0],`<app-quoted-event id="${noteId}"></app-quoted-event>`)
+        }catch(e){
+          console.error(e);
+        }
+      }
+    }
+    return displayedContent;
+  }
+
   copyNoteHexIdToClipboard(){
     this.clipboard.copy(this.event?.id!);
   }
@@ -219,6 +253,16 @@ export class EventCardComponent implements OnInit, OnDestroy{
   copyNote1IdToClipboard(){
     const note1Id = LoginUtil.hexToBech32('note',this.event?.id!)
     this.clipboard.copy(note1Id);
+  }
+
+  async publishLike(){
+    await this.ndkProvider.publishReactionToEvent(this.event!,'+');
+    this.likes++;
+  }
+
+  async publishDislike(){
+    await this.ndkProvider.publishReactionToEvent(this.event!,'-');
+    this.dislikes++;
   }
 
   async share(){
@@ -416,6 +460,22 @@ export class EventCardComponent implements OnInit, OnDestroy{
           }
         } catch(e){
           console.error(e);
+        }
+      }
+    }
+  }
+
+  async fetchReactionsAndSegregate(){
+    if (this.event) {
+      let reactions = await this.ndkProvider.fetchReactions(this.event);
+      if(reactions){
+        this.dislikes = this.likes = 0;
+        for(let reaction of reactions){
+          if(reaction.content.indexOf('-')>-1){
+            this.dislikes++;
+          } else {
+            this.likes++;
+          }
         }
       }
     }

@@ -25,6 +25,19 @@ export enum NostrPrefix {
   Address = "naddr",
 }
 
+export enum TLVEntryType {
+  Special = 0,
+  Relay = 1,
+  Author = 2,
+  Kind = 3,
+}
+
+export interface TLVEntry {
+  type: TLVEntryType;
+  length: number;
+  value: string | number;
+}
+
 export interface NewCredential{
   pubkey: string,
   privateKey:string
@@ -65,7 +78,7 @@ export class LoginUtil{
         } catch {
           return str;
         }
-    }
+    } 
 
     /* Thanks to https://github.com/v0l/snort/blob/main/packages/app/src/Util.ts
     */
@@ -154,5 +167,46 @@ export class LoginUtil{
           console.warn("Invalid hex", hex, e);
           return "";
         }
+    }
+
+    static decodeTLV(str: string) {
+      const decoded = bech32.decode(str, 1_000);
+      const data = bech32.fromWords(decoded.words);
+    
+      const entries: TLVEntry[] = [];
+      let x = 0;
+      while (x < data.length) {
+        const t = data[x];
+        const l = data[x + 1];
+        const v = data.slice(x + 2, x + 2 + l);
+        entries.push({
+          type: t,
+          length: l,
+          value: LoginUtil.decodeTLVEntry(t, decoded.prefix, new Uint8Array(v)),
+        });
+        x += 2 + l;
       }
+      return entries;
+    }
+    
+    static decodeTLVEntry(type: TLVEntryType, prefix: string, data: Uint8Array) {
+      switch (type) {
+        case TLVEntryType.Special: {
+          if (prefix === NostrPrefix.Address) {
+            return new TextDecoder("ASCII").decode(data);
+          } else {
+            return utils.bytesToHex(data);
+          }
+        }
+        case TLVEntryType.Author: {
+          return utils.bytesToHex(data);
+        }
+        case TLVEntryType.Kind: {
+          return new Uint32Array(new Uint8Array(data.reverse()).buffer)[0];
+        }
+        case TLVEntryType.Relay: {
+          return new TextDecoder("ASCII").decode(data);
+        }
+      }
+    }
 }

@@ -49,6 +49,22 @@
   </clr-accordion-panel>
 
   <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
+    <clr-accordion-title>Only Zaps Mode ⚡</clr-accordion-title>
+    <clr-accordion-content *clrIfExpanded>
+      <form clrForm onsubmit="return false;">
+        <clr-checkbox-container clrInline>
+          <clr-checkbox-wrapper>
+            <label>{{'Hide non-zap options for upvote and downvote'}}</label>
+            <input type="checkbox" [(ngModel)]="hideNonZapReactions" id="hide-non-zap" clrCheckbox
+            placeholder="#Hide Non Zap Reactions" (ngModelChange)="onHideNonZapChange($event)" name="hideNonZap" id="hideNonZap">
+          </clr-checkbox-wrapper>
+          <clr-control-helper>Enable this option to hide non-zap upvote and downvotes for notes and comments.</clr-control-helper>
+        </clr-checkbox-container>
+    </form>
+    </clr-accordion-content>
+  </clr-accordion-panel>
+
+  <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
     <clr-accordion-title>Default sats for Zaps</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">

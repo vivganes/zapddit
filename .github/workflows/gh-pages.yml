@@ -4,6 +4,10 @@ on:
   push:
     branches:
     - main
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: "us-east-1"
 
 jobs:
   deploy:
@@ -20,14 +24,19 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-
     - name: Build
-      run: npm run build:prod && touch ./dist/zapddit/.nojekyll && echo 'zapddit.com' > ./dist/zapddit/CNAME && cp ./dist/zapddit/index.html ./dist/zapddit/404.html
-
+      run: npm run build:prod 
+      
     - name: Deploy
-      if: success()
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.ZAPPEDIT_TOKEN }}
-        publish_dir: dist/zapddit
-        enable_jekyll: true
+      run: aws s3 rm s3://${{ secrets.AWS_S3_BUCKET_NAME }} --recursive &&  aws s3 sync ./dist/zapddit/ s3://${{ secrets.AWS_S3_BUCKET_NAME }}
+      
+    - name: "Create AWS Cloudfront Invalidation"
+      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+      
+   # - name: Deploy
+   #   if: success()
+    #  uses: peaceiris/actions-gh-pages@v3
+    #  with:
+     #   github_token: ${{ secrets.ZAPPEDIT_TOKEN }}
+      #  publish_dir: dist/zapddit
+       # enable_jekyll: true
