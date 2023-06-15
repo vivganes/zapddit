@@ -333,7 +333,7 @@ export class NdkproviderService {
     this.currentUserProfile = await this.getProfileFromNpub(npub);
     this.currentUser = await this.getNdkUserFromNpub(npub);
     const userRelays = await this.fetchSubscribedRelaysFromCache();
-    
+
     let relayUrls: string[] = [];
     userRelays.forEach(x => {
       relayUrls.push(x.url)
@@ -886,7 +886,9 @@ export class NdkproviderService {
 
         if (hexPubKey === hexPubKeyFromRemote) {
           verified = true;
-          this.isNip05Verified$.next(true);
+          // raise this only for the current logged in user
+          if (hexPubKey === this.currentUser?.hexpubkey()) 
+            this.isNip05Verified$.next(true);
         }
       }
     }
