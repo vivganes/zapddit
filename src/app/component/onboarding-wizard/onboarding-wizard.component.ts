@@ -17,6 +17,7 @@ export class OnboardingWizardComponent {
   @Output()
   openChange:EventEmitter<boolean> = new EventEmitter<boolean>();
   dailyDoseSeeker:boolean = false;
+  newsReader:boolean = false;
   memeEnjoyer:boolean =false;
   btcMaxi:boolean = false;
   foodLover:boolean = false;
@@ -38,7 +39,10 @@ export class OnboardingWizardComponent {
   updateTopics(){
     let newTopics = []
     if(this.dailyDoseSeeker){
-      newTopics.push('coffeechain','chaichain','nostr','nostrich','nostriches','news');
+      newTopics.push('coffeechain','chaichain','nostr','nostrich','nostriches');
+    }
+    if(this.newsReader){
+      newTopics.push('news','worldnews');
     }
     if(this.memeEnjoyer){
       newTopics.push('memechain','meme','memes')
