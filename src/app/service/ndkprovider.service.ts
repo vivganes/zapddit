@@ -19,7 +19,7 @@ import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
 import { LoginUtil, NewCredential } from '../util/LoginUtil';
 import { ZappeditdbService } from './zappeditdb.service';
-import { User } from '../model/user';
+import { User, Relay } from '../model';
 import { Constants } from '../util/Constants';
 import { BehaviorSubject } from 'rxjs';
 
@@ -555,6 +555,14 @@ export class NdkproviderService {
     }
 
     return await this.dbService.mutedPeople.toArray();
+  }
+
+  async fetchSubscribedRelaysAndCache(relaysFromRelay: Relay[]) {
+    if(relaysFromRelay){
+      this.dbService.subscribedRelays.clear();
+      console.log('Subbed relay db cleared');
+      console.log(`Current user relays: ${this.currentUser?.relayUrls}`);
+    }
   }
 
   async fetchEvents(tag: string, limit?: number, since?: number, until?: number): Promise<Set<NDKEvent> | undefined> {
