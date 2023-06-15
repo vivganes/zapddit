@@ -855,7 +855,9 @@ export class NdkproviderService {
 
         if(hexPubKey === hexPubKeyFromRemote){
            verified = true
-           this.isNip05Verified$.next(true);
+           // raise this only for the current logged in user
+           if(hexPubKey === this.currentUser?.hexpubkey())
+              this.isNip05Verified$.next(true);
         }
       }
     }
