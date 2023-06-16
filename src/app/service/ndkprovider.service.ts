@@ -263,7 +263,13 @@ export class NdkproviderService {
   }
 
   async getProfileFromNpub(npub: string): Promise<NDKUserProfile | undefined> {
-    const user = this.ndk?.getUser({ npub });
+    let user = undefined;
+    if (localStorage.getItem(Constants.RELAYSUBS) !== undefined){
+      const relayUrls = localStorage.getItem(Constants.RELAYSUBS)?.split(',');
+      user = this.ndk?.getUser({npub: npub, relayUrls: relayUrls});
+    } else {
+      user = this.ndk?.getUser({npub: npub});
+    }
     await user?.fetchProfile();
     return user?.profile;
   }
@@ -278,7 +284,12 @@ export class NdkproviderService {
     try {
       let relayUrls: string[] | undefined = [];
       let user: NDKUser | undefined;
-      user = await this.ndk?.getUser({ npub });
+      if (localStorage.getItem(Constants.RELAYSUBS) !== undefined){
+        relayUrls = localStorage.getItem(Constants.RELAYSUBS)?.split(',');
+        user = this.ndk?.getUser({npub: npub, relayUrls: relayUrls});
+      } else {
+        user = this.ndk?.getUser({npub: npub});
+      }
       await user?.fetchProfile();
       return user;
     } catch (e) {
@@ -938,7 +949,7 @@ export class NdkproviderService {
 
   async fetchRelayEvent(hexPubKey: string): Promise<NDKEvent | undefined | null> {
     const filter: NDKFilter = { kinds: [3], authors: [hexPubKey] };
-    return this.ndk?.fetchEvent(filter);
+    return this.ndk?.fetchEvent(filter,{});
   }
 
   async getUserSubscribedRelays(): Promise<Relay[]> {
@@ -954,7 +965,7 @@ export class NdkproviderService {
       rel.forEach(relay => {
         const relayUrl: string = relay[0];
         const relayName: string = relayUrl.replace('wss://', '').replace('/', '');
-        // console.log(relayName, relayUrl);
+        console.log(relayName, relayUrl);
         const item: Relay = new Relay(relayName, relayUrl);
         relays.push(item);
       });
