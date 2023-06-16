@@ -1,5 +1,6 @@
 import { Component, ComponentRef, OnInit, OnDestroy } from '@angular/core';
 import '@cds/core/icon/register.js';
+// import {} from '@cds/core';
 import {
   ClarityIcons,
   userIcon,

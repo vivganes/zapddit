@@ -338,7 +338,6 @@ export class NdkproviderService {
     // const relays = this.currentUser?.relayUrls;
     
     if (relayUrls && relayUrls.length > 0) {
-      console.log(`initializeUsingNpub creating newNDK with relays: ${relayUrls.join(',')}`)
       const newNDKParams = { signer: this.signer, explicitRelayUrls: relayUrls };
       const newNDK = new NDK(newNDKParams);
       if (this.isNip07) {
@@ -408,6 +407,23 @@ export class NdkproviderService {
     if (this.canWriteToNostr) {
       await ndkEvent.publish();
     }
+    return ndkEvent;
+  }
+
+  async updateRelays(relays: string[]): Promise<NDKEvent> {
+    let relayObj: string = '{';
+    relays.forEach(x => {
+      if (relayObj === '{') relayObj += `"${x}": {"read": true, "write": true}`;
+      else relayObj += `,"${x}": {"read": true, "write": true}`
+    })
+    relayObj += '}';
+    console.log(relayObj);
+    const ndkEvent = new NDKEvent(this.ndk);
+    ndkEvent.kind = 3;
+    ndkEvent.content = relayObj;
+    if (this.currentUser) ndkEvent.pubkey = this.currentUser.hexpubkey();
+    if (this.canWriteToNostr) await ndkEvent.publish();
+    
     return ndkEvent;
   }
 
@@ -948,6 +964,7 @@ export class NdkproviderService {
       author = this.currentUser.hexpubkey();
     }
     const relayEvent: NDKEvent | undefined | null = await this.fetchRelayEvent(author);
+    console.log(relayEvent);
     if (relayEvent?.content) {
       const relayJson = JSON.parse(relayEvent?.content);
       const rel = Object.entries(relayJson);
