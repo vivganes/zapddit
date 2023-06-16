@@ -146,7 +146,7 @@
   <clr-accordion-panel>
     <clr-accordion-title>My Relays</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
-      <form *ngIf ="!isLoggedInUsingPubKey" clrForm onsubmit="return false;">
+      <form clrForm onsubmit="return false;">
         <div *ngIf="this.relayUrls && this.relayUrls.length > 0">
           <ul class="list-unstyled">
             <li *ngFor="let relay of this.relayUrls">{{relay}}</li>
