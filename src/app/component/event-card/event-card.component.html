@@ -1,5 +1,5 @@
 <div class="card" *ngIf="!mutedAuthor">
-  <div class="card-block">
+  <div class="card-block">    
     <div class="card-media-block">
       <img *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" alt="Profile picture" src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" title="Open in Snort"/>
       <img alt="temp avatar"
@@ -100,7 +100,16 @@
         </div>
       </div>
     </div> -->
-
+  <div *ngIf="errorMsg" class="alert alert-warning alert-sm">
+    <button type="button" class="close" aria-label="Close">
+        <cds-icon shape="close"></cds-icon>
+    </button>
+    <div class="alert-item static">
+        <span class="alert-text">
+            {{ errorMsg }}
+        </span>
+    </div>
+  </div>
   <ng-template #linkCopiedAlert [ngIf]="linkCopied">
   <div align="center" class="alert alert-success" role="alert">
     <div class="alert-items">
@@ -121,12 +130,13 @@
     <button class="btn btn-sm btn-icon btn-link" *ngIf="!hideNonZapReactions" [disabled]="!ndkProvider.canWriteToNostr"  (click)="publishDislike()">
       <cds-icon shape="thumbs-down"></cds-icon> {{ dislikes | shortNumber }} Downvote
     </button>
-    <button class="btn btn-sm btn-icon btn-link"  [disabled]="!ndkProvider.canWriteToNostr"  (click)="upZap()">
+    <button class="btn btn-sm btn-icon btn-link" [clrLoading]="upzappingNow" [disabled]="!ndkProvider.canWriteToNostr"  (click)="upZap()">
       <cds-icon shape="bolt" direction="down"></cds-icon> {{ upZapTotalMilliSats/1000 | shortNumber }} Upzap
     </button>
     <button
       class="btn btn-sm btn-icon btn-link"
       (click)="downZap()"
+      [clrLoading]="downzappingNow"
       [disabled]="!ndkProvider.canWriteToNostr || !ndkProvider.appData.downzapRecipients"
       [title]="
         ndkProvider.appData.downzapRecipients
@@ -148,7 +158,10 @@
       <h3 class="modal-title">Scan this QR using your Lightning Wallet app</h3>
       <div align="center" class="modal-body">
         <div #canvas></div>
-        <div class="break-words-overflow">{{invoice}}</div>
+        <div class="break-words-overflow">{{invoice! | abbreviateId }}</div>
+        <button type="button" class="btn btn-primary" (click)="openWallet()">Open Wallet</button>
+        <p></p>
+        <button type="button" class="btn btn-primary" (click)="copyInvoiceToClipboard()">Copy to clipboard</button>
       </div>
       <div class="modal-footer">
           <button type="button" class="btn btn-primary" (click)="zapDoneClicked()">Done</button>
