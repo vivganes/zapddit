@@ -25,10 +25,13 @@ export class PreferencesPageComponent {
   hideNonZapReactions: boolean = false;
   changeDetector:ChangeDetectorRef;
 
+  relayUrls: string[] | undefined;
+
   constructor(ndkProvider: NdkproviderService, topicService: TopicService, changeDetector: ChangeDetectorRef,private clipboard: Clipboard) {
     this.ndkProvider = ndkProvider;
     this.topicService = topicService;    
     this.changeDetector = changeDetector;
+    this.relayUrls = localStorage.getItem(Constants.RELAYSUBS)?.split(',')
   }
 
   ngOnInit(){
