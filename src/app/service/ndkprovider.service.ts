@@ -125,7 +125,7 @@ export class NdkproviderService {
     this.ndk = new NDK({
       explicitRelayUrls: explicitRelayUrls,
     });
-    await this.ndk.connect();
+    await this.ndk.connect(1000);
     this.loggedIn = true;
     this.loggingIn = false;
   }
@@ -211,7 +211,7 @@ export class NdkproviderService {
     this.ndk = new NDK({
       explicitRelayUrls: explicitRelayUrls,
     });
-    await this.ndk.connect();
+    await this.ndk.connect(1000);
     this.loggedIn = true;
     this.launchOnboardingWizard.emit(true);
   }
@@ -263,13 +263,8 @@ export class NdkproviderService {
   }
 
   async getProfileFromNpub(npub: string): Promise<NDKUserProfile | undefined> {
-    let user = undefined;
-    if (localStorage.getItem(Constants.RELAYSUBS) !== undefined){
-      const relayUrls = localStorage.getItem(Constants.RELAYSUBS)?.split(',');
-      user = this.ndk?.getUser({npub: npub, relayUrls: relayUrls});
-    } else {
-      user = this.ndk?.getUser({npub: npub});
-    }
+    let user = undefined;    
+    user = this.ndk?.getUser({npub: npub});
     await user?.fetchProfile();
     return user?.profile;
   }
@@ -282,14 +277,8 @@ export class NdkproviderService {
 
   async getNdkUserFromNpub(npub: string): Promise<NDKUser | undefined> {
     try {
-      let relayUrls: string[] | undefined = [];
-      let user: NDKUser | undefined;
-      if (localStorage.getItem(Constants.RELAYSUBS) !== undefined){
-        relayUrls = localStorage.getItem(Constants.RELAYSUBS)?.split(',');
-        user = this.ndk?.getUser({npub: npub, relayUrls: relayUrls});
-      } else {
-        user = this.ndk?.getUser({npub: npub});
-      }
+      let user: NDKUser | undefined;      
+      user = this.ndk?.getUser({npub: npub});
       await user?.fetchProfile();
       return user;
     } catch (e) {
@@ -356,7 +345,7 @@ export class NdkproviderService {
         await newNDK.assertSigner();
       }
       try {
-        await newNDK.connect().catch(e => console.log(e));
+        await newNDK.connect(1000).catch(e => console.log(e));
         this.ndk = newNDK;
       } catch (e) {
         console.log('Error in connecting NDK ' + e);
