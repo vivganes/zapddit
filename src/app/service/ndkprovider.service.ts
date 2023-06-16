@@ -278,12 +278,7 @@ export class NdkproviderService {
     try {
       let relayUrls: string[] | undefined = [];
       let user: NDKUser | undefined;
-      if (localStorage.getItem(Constants.RELAYSUBS) !== undefined){
-        relayUrls = localStorage.getItem(Constants.RELAYSUBS)?.split(',');
-        user = this.ndk?.getUser({npub: npub, relayUrls: relayUrls})
-      } else {
-        user = this.ndk?.getUser({ npub });
-      }
+      user = await this.ndk?.getUser({ npub });
       await user?.fetchProfile();
       return user;
     } catch (e) {
