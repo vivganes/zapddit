@@ -597,7 +597,7 @@ export class NdkproviderService {
       id = LoginUtil.bech32ToHex(id);
     }
     const filter: NDKFilter = { kinds: [1], ids: [id] };
-    return this.ndk?.fetchEvent(filter);
+    return this.ndk?.fetchEvent(filter,{});
   }
 
   async fetchAllFollowedEvents(

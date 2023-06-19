@@ -1,5 +1,4 @@
 import { Constants } from 'src/app/util/Constants';
-import { Util } from 'src/app/util/Util';
 import { Component, EventEmitter, Input, Output, SimpleChanges, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
@@ -7,7 +6,12 @@ import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { TopicService } from 'src/app/service/topic.service';
 import { HashTagFilter } from 'src/app/filter/HashTagFilter';
 import { Subscription } from 'rxjs';
+import { EventBuffer } from 'src/app/buffer/EventBuffer';
+import { ReverseChrono } from 'src/app/sortlogic/ReverseChrono';
 
+const BUFFER_REFILL_PAGE_SIZE = 100;
+const BUFFER_READ_PAGE_SIZE = 20;
+ 
 
 @Component({
   selector: 'app-event-feed',
@@ -16,7 +20,7 @@ import { Subscription } from 'rxjs';
 })
 export class EventFeedComponent implements OnInit,OnDestroy{
   until: number | undefined = Date.now();
-  limit: number | undefined = 15;
+  limit: number | undefined = BUFFER_REFILL_PAGE_SIZE;
   loadingEvents: boolean = false;
   loadingNextEvents: boolean = false;
   reachedEndOfFeed : boolean = false;
@@ -33,6 +37,8 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   events: Set<NDKEvent> | undefined;
   nextEvents: Set<NDKEvent> | undefined;
   isLoggedInUsingPubKey:boolean = false;
+  eventBuffer: EventBuffer<NDKEvent> = new EventBuffer<NDKEvent>();
+  nowShowingUptoIndex:number = 0;
 
   ndkProvider: NdkproviderService;
 
@@ -44,9 +50,11 @@ export class EventFeedComponent implements OnInit,OnDestroy{
         this.followedTopics = followedTopics.split(',');
       }
       if(this.tag===undefined){
+        this.nowShowingUptoIndex = 0;
+        this.eventBuffer.events = [];
         this.until = Date.now();
-        this.limit = 15;
-        this.getEvents();
+        this.limit = BUFFER_REFILL_PAGE_SIZE;
+        this.getEventsAndFillBuffer();
       }
     });
 
@@ -73,6 +81,8 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     }
 
     route.params.subscribe(params => {
+      this.nowShowingUptoIndex = 0;
+      this.eventBuffer.events = [];
       let topic = params['topic'];
       if(topic){
       this.tag = topic.toLowerCase();
@@ -80,19 +90,25 @@ export class EventFeedComponent implements OnInit,OnDestroy{
         this.tag = undefined;
       }
       this.until = Date.now();
-      this.limit = 15;
-      this.getEvents();
+      this.limit = BUFFER_REFILL_PAGE_SIZE;
+      this.getEventsAndFillBuffer();
     });
   }
 
-  async getEvents() {
+  async getEventsAndFillBuffer() {
     this.loadingEvents = true;
     this.loadingNextEvents = false;
     this.reachedEndOfFeed = false;
     if (this.tag && this.tag !== '') {
       const fetchedEvents = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
       if(fetchedEvents){
-        this.removeMutedAndSetEvents(fetchedEvents);
+        const sorted = [... fetchedEvents].sort(new ReverseChrono().compare)
+        this.eventBuffer.refillWithEntries(sorted);
+        const eventsToAddToDisplay = this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1);
+        if(eventsToAddToDisplay){
+          this.removeMutedAndSetEvents(new Set<NDKEvent>(eventsToAddToDisplay));
+          this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
+        }
       }
       this.loadingEvents = false;
     } else {
@@ -104,7 +120,13 @@ export class EventFeedComponent implements OnInit,OnDestroy{
           this.until
         );
         if(fetchedEvents){
-          this.removeMutedAndSetEvents(fetchedEvents);
+          const sorted = [... fetchedEvents].sort(new ReverseChrono().compare)
+          this.eventBuffer.refillWithEntries(sorted);
+          const eventsToAddToDisplay = this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1);
+          if(eventsToAddToDisplay){
+            this.removeMutedAndSetEvents(new Set<NDKEvent>(eventsToAddToDisplay));
+            this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
+          }
         }
       }
       this.loadingEvents=false;
@@ -131,28 +153,48 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     this.loadingNextEvents = true;
     this.reachedEndOfFeed = false;
     if (this.tag && this.tag !== '') {
-      this.nextEvents = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
-        if(this.nextEvents && this.nextEvents.size>0){
-          if(this.events){
-            let mutedTopicsArr:string[] = []
-            if(this.ndkProvider.appData.mutedTopics && this.ndkProvider.appData.mutedTopics !== ''){
-              mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
-            }
-            [...this.nextEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)).forEach(this.events.add,this.events)
-            this.loadingNextEvents = false;
-            this.nextEvents =undefined;
+      this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,this.nowShowingUptoIndex+BUFFER_READ_PAGE_SIZE-1))
+      if(this.nextEvents.size === 0){
+        this.until = this.getOldestEventTimestamp();
+        const nextBatch = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
+        if(nextBatch){
+          const sorted = [... nextBatch].sort(new ReverseChrono().compare)
+          this.eventBuffer.refillWithEntries(sorted);
+          this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1))
+        } 
+      }
+      this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
+
+      if(this.nextEvents && this.nextEvents.size>0){
+        if(this.events){
+          let mutedTopicsArr:string[] = []
+          if(this.ndkProvider.appData.mutedTopics && this.ndkProvider.appData.mutedTopics !== ''){
+            mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
           }
-        } else {
-          this.reachedEndOfFeed = true
+          [...this.nextEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)).forEach(this.events.add,this.events)
+          this.loadingNextEvents = false;
+          this.nextEvents =undefined;
         }
+      } else {
+        this.reachedEndOfFeed = true
+      }
     } else {
       if(this.followedTopics && this.followedTopics.length > 0){
-        this.nextEvents = await this.ndkProvider.fetchAllFollowedEvents(
+        this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,this.nowShowingUptoIndex+BUFFER_READ_PAGE_SIZE-1))
+      if(this.nextEvents.size === 0){
+        const nextBatch = await this.ndkProvider.fetchAllFollowedEvents(
           this.ndkProvider.appData.followedTopics.split(','),
           this.limit,
           undefined,
           this.until
         );
+        if(nextBatch){
+          const sorted = [... nextBatch].sort(new ReverseChrono().compare)
+          this.eventBuffer.refillWithEntries(sorted);
+          this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1))
+        } 
+      }
+      this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
       }
       if(this.nextEvents && this.nextEvents.size>0){
         if(this.events){
@@ -172,10 +214,12 @@ export class EventFeedComponent implements OnInit,OnDestroy{
 
   getOldestEventTimestamp(): number | undefined {
     if (this.events) {
-      let timestampsOfEvents: (number | undefined)[] = Array.from(this.events).map(ndkEvent => {
-        return ndkEvent.created_at;
-      });
-      return Math.min(...(timestampsOfEvents as number[]));
+      // let timestampsOfEvents: (number | undefined)[] = Array.from(this.events).map(ndkEvent => {
+      //   return ndkEvent.created_at;
+      // });
+      // return Math.min(...(timestampsOfEvents as number[]));
+
+      return this.eventBuffer!.events![this.eventBuffer!.events!.length-1].created_at!;
     }
     return Date.now();
   }
@@ -206,7 +250,6 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   }
 
   loadMoreEvents(){
-    this.until = this.getOldestEventTimestamp();
     this.getEventsForNextPage();
   }
 
