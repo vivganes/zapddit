@@ -1,5 +1,4 @@
 import { Constants } from 'src/app/util/Constants';
-import { Util } from 'src/app/util/Util';
 import { Component, EventEmitter, Input, Output, SimpleChanges, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
@@ -7,7 +6,11 @@ import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { TopicService } from 'src/app/service/topic.service';
 import { HashTagFilter } from 'src/app/filter/HashTagFilter';
 import { Subscription } from 'rxjs';
+import { EventBuffer } from 'src/app/buffer/EventBuffer';
 
+const BUFFER_REFILL_PAGE_SIZE = 100;
+const BUFFER_READ_PAGE_SIZE = 20;
+ 
 
 @Component({
   selector: 'app-event-feed',
@@ -16,7 +19,7 @@ import { Subscription } from 'rxjs';
 })
 export class EventFeedComponent implements OnInit,OnDestroy{
   until: number | undefined = Date.now();
-  limit: number | undefined = 15;
+  limit: number | undefined = BUFFER_REFILL_PAGE_SIZE;
   loadingEvents: boolean = false;
   loadingNextEvents: boolean = false;
   reachedEndOfFeed : boolean = false;
@@ -33,11 +36,14 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   events: Set<NDKEvent> | undefined;
   nextEvents: Set<NDKEvent> | undefined;
   isLoggedInUsingPubKey:boolean = false;
+  eventBuffer: EventBuffer<NDKEvent> = new EventBuffer<NDKEvent>();
+  nowShowingUptoIndex:number = 0;
 
   ndkProvider: NdkproviderService;
 
   ngOnInit():void {
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
+      this.nowShowingUptoIndex = 0;
       if (followedTopics === '') {
         this.followedTopics = [];
       } else {
@@ -45,8 +51,8 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       }
       if(this.tag===undefined){
         this.until = Date.now();
-        this.limit = 15;
-        this.getEvents();
+        this.limit = BUFFER_REFILL_PAGE_SIZE;
+        this.getEventsAndFillBuffer();
       }
     });
 
@@ -80,19 +86,24 @@ export class EventFeedComponent implements OnInit,OnDestroy{
         this.tag = undefined;
       }
       this.until = Date.now();
-      this.limit = 15;
-      this.getEvents();
+      this.limit = BUFFER_REFILL_PAGE_SIZE;
+      this.getEventsAndFillBuffer();
     });
   }
 
-  async getEvents() {
+  async getEventsAndFillBuffer() {
     this.loadingEvents = true;
     this.loadingNextEvents = false;
     this.reachedEndOfFeed = false;
     if (this.tag && this.tag !== '') {
       const fetchedEvents = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
       if(fetchedEvents){
-        this.removeMutedAndSetEvents(fetchedEvents);
+        this.eventBuffer.refillWithEntries([...fetchedEvents]);
+        const eventsToAddToDisplay = this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1);
+        if(eventsToAddToDisplay){
+          this.removeMutedAndSetEvents(new Set<NDKEvent>(eventsToAddToDisplay));
+          this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
+        }
       }
       this.loadingEvents = false;
     } else {
@@ -104,7 +115,12 @@ export class EventFeedComponent implements OnInit,OnDestroy{
           this.until
         );
         if(fetchedEvents){
-          this.removeMutedAndSetEvents(fetchedEvents);
+          this.eventBuffer.refillWithEntries([...fetchedEvents]);
+          const eventsToAddToDisplay = this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1);
+          if(eventsToAddToDisplay){
+            this.removeMutedAndSetEvents(new Set<NDKEvent>(eventsToAddToDisplay));
+            this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
+          }
         }
       }
       this.loadingEvents=false;
@@ -131,28 +147,45 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     this.loadingNextEvents = true;
     this.reachedEndOfFeed = false;
     if (this.tag && this.tag !== '') {
-      this.nextEvents = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
-        if(this.nextEvents && this.nextEvents.size>0){
-          if(this.events){
-            let mutedTopicsArr:string[] = []
-            if(this.ndkProvider.appData.mutedTopics && this.ndkProvider.appData.mutedTopics !== ''){
-              mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
-            }
-            [...this.nextEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)).forEach(this.events.add,this.events)
-            this.loadingNextEvents = false;
-            this.nextEvents =undefined;
+      this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,this.nowShowingUptoIndex+BUFFER_READ_PAGE_SIZE-1))
+      if(this.nextEvents.size === 0){
+        const nextBatch = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
+        if(nextBatch){
+          this.eventBuffer.refillWithEntries([...nextBatch]);
+          this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1))
+        } 
+      }
+      this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
+
+      if(this.nextEvents && this.nextEvents.size>0){
+        if(this.events){
+          let mutedTopicsArr:string[] = []
+          if(this.ndkProvider.appData.mutedTopics && this.ndkProvider.appData.mutedTopics !== ''){
+            mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
           }
-        } else {
-          this.reachedEndOfFeed = true
+          [...this.nextEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)).forEach(this.events.add,this.events)
+          this.loadingNextEvents = false;
+          this.nextEvents =undefined;
         }
+      } else {
+        this.reachedEndOfFeed = true
+      }
     } else {
       if(this.followedTopics && this.followedTopics.length > 0){
-        this.nextEvents = await this.ndkProvider.fetchAllFollowedEvents(
+        this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,this.nowShowingUptoIndex+BUFFER_READ_PAGE_SIZE-1))
+      if(this.nextEvents.size === 0){
+        const nextBatch = await this.ndkProvider.fetchAllFollowedEvents(
           this.ndkProvider.appData.followedTopics.split(','),
           this.limit,
           undefined,
           this.until
         );
+        if(nextBatch){
+          this.eventBuffer.refillWithEntries([...nextBatch]);
+          this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1))
+        } 
+      }
+      this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
       }
       if(this.nextEvents && this.nextEvents.size>0){
         if(this.events){
