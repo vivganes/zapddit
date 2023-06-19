@@ -7,6 +7,7 @@ import { TopicService } from 'src/app/service/topic.service';
 import { HashTagFilter } from 'src/app/filter/HashTagFilter';
 import { Subscription } from 'rxjs';
 import { EventBuffer } from 'src/app/buffer/EventBuffer';
+import { ReverseChrono } from 'src/app/sortlogic/ReverseChrono';
 
 const BUFFER_REFILL_PAGE_SIZE = 100;
 const BUFFER_READ_PAGE_SIZE = 20;
@@ -43,13 +44,14 @@ export class EventFeedComponent implements OnInit,OnDestroy{
 
   ngOnInit():void {
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
-      this.nowShowingUptoIndex = 0;
       if (followedTopics === '') {
         this.followedTopics = [];
       } else {
         this.followedTopics = followedTopics.split(',');
       }
       if(this.tag===undefined){
+        this.nowShowingUptoIndex = 0;
+        this.eventBuffer.events = [];
         this.until = Date.now();
         this.limit = BUFFER_REFILL_PAGE_SIZE;
         this.getEventsAndFillBuffer();
@@ -79,6 +81,8 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     }
 
     route.params.subscribe(params => {
+      this.nowShowingUptoIndex = 0;
+      this.eventBuffer.events = [];
       let topic = params['topic'];
       if(topic){
       this.tag = topic.toLowerCase();
@@ -98,7 +102,8 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     if (this.tag && this.tag !== '') {
       const fetchedEvents = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
       if(fetchedEvents){
-        this.eventBuffer.refillWithEntries([...fetchedEvents]);
+        const sorted = [... fetchedEvents].sort(new ReverseChrono().compare)
+        this.eventBuffer.refillWithEntries(sorted);
         const eventsToAddToDisplay = this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1);
         if(eventsToAddToDisplay){
           this.removeMutedAndSetEvents(new Set<NDKEvent>(eventsToAddToDisplay));
@@ -115,7 +120,8 @@ export class EventFeedComponent implements OnInit,OnDestroy{
           this.until
         );
         if(fetchedEvents){
-          this.eventBuffer.refillWithEntries([...fetchedEvents]);
+          const sorted = [... fetchedEvents].sort(new ReverseChrono().compare)
+          this.eventBuffer.refillWithEntries(sorted);
           const eventsToAddToDisplay = this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1);
           if(eventsToAddToDisplay){
             this.removeMutedAndSetEvents(new Set<NDKEvent>(eventsToAddToDisplay));
@@ -149,9 +155,11 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     if (this.tag && this.tag !== '') {
       this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,this.nowShowingUptoIndex+BUFFER_READ_PAGE_SIZE-1))
       if(this.nextEvents.size === 0){
+        this.until = this.getOldestEventTimestamp();
         const nextBatch = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
         if(nextBatch){
-          this.eventBuffer.refillWithEntries([...nextBatch]);
+          const sorted = [... nextBatch].sort(new ReverseChrono().compare)
+          this.eventBuffer.refillWithEntries(sorted);
           this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1))
         } 
       }
@@ -181,7 +189,8 @@ export class EventFeedComponent implements OnInit,OnDestroy{
           this.until
         );
         if(nextBatch){
-          this.eventBuffer.refillWithEntries([...nextBatch]);
+          const sorted = [... nextBatch].sort(new ReverseChrono().compare)
+          this.eventBuffer.refillWithEntries(sorted);
           this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1))
         } 
       }
@@ -205,10 +214,12 @@ export class EventFeedComponent implements OnInit,OnDestroy{
 
   getOldestEventTimestamp(): number | undefined {
     if (this.events) {
-      let timestampsOfEvents: (number | undefined)[] = Array.from(this.events).map(ndkEvent => {
-        return ndkEvent.created_at;
-      });
-      return Math.min(...(timestampsOfEvents as number[]));
+      // let timestampsOfEvents: (number | undefined)[] = Array.from(this.events).map(ndkEvent => {
+      //   return ndkEvent.created_at;
+      // });
+      // return Math.min(...(timestampsOfEvents as number[]));
+
+      return this.eventBuffer!.events![this.eventBuffer!.events!.length-1].created_at!;
     }
     return Date.now();
   }
@@ -239,7 +250,6 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   }
 
   loadMoreEvents(){
-    this.until = this.getOldestEventTimestamp();
     this.getEventsForNextPage();
   }
 
