@@ -68,6 +68,9 @@ export class EventCardComponent implements OnInit, OnDestroy{
   notTheLoggedInUser:boolean = false;
   fetchingMutedUsersFromRelaySub:Subscription = new Subscription();
   isNIP05Verified:boolean = false;
+  upzappingNow:boolean = false;
+  downzappingNow:boolean = false;
+  errorMsg?:string;
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -387,40 +390,11 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
   async upZap() {
-    if (this.event) {
-      this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
-      const invoice = await this.ndkProvider.zapRequest(this.event);
-      const qr = new QRCodeStyling({
-        width:  256,
-        height:  256,
-        data: invoice?invoice:undefined,
-        margin: 5,
-        type: "canvas",
-        dotsOptions: {
-          type: "rounded",
-        },
-        cornersSquareOptions: {
-          type: "extra-rounded",
-        }
-      });
-      qr.append(this.canvas?.nativeElement);
-      this.invoice = invoice;
-      this.showQR=true;
-    }
-  }
-
-  isDownzapEnabled(): boolean {
-    return this.ndkProvider.appData.downzapRecipients !== '';
-  }
-
-  async downZap() {
-    if (this.event) {
-      this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
-      const invoice = await this.ndkProvider.downZapRequest(
-          this.event,
-          await this.ndkProvider.getNdkUserFromNpub(this.ndkProvider.appData.downzapRecipients),
-          '-'
-        );
+    this.upzappingNow = true;
+    try{
+      if (this.event) {
+        this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
+        const invoice = await this.ndkProvider.zapRequest(this.event);
         const qr = new QRCodeStyling({
           width:  256,
           height:  256,
@@ -436,8 +410,59 @@ export class EventCardComponent implements OnInit, OnDestroy{
         });
         qr.append(this.canvas?.nativeElement);
         this.invoice = invoice;
-        this.showQR = true;
-    }
+        this.showQR=true;
+      }
+    }catch(e:any){
+      this.errorMsg = e.message;
+    }finally{
+      this.upzappingNow = false;
+    }      
+  }
+
+  isDownzapEnabled(): boolean {
+    return this.ndkProvider.appData.downzapRecipients !== '';
+  }
+
+  openWallet(){
+    window.open(`lightning:${this.invoice}`,"_blank");
+  }
+
+  copyInvoiceToClipboard(){
+    this.clipboard.copy(this.invoice!);
+  }
+
+  async downZap() {
+    this.downzappingNow = true;
+    try{
+      if (this.event) {
+        this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
+        const invoice = await this.ndkProvider.downZapRequest(
+            this.event,
+            await this.ndkProvider.getNdkUserFromNpub(this.ndkProvider.appData.downzapRecipients),
+            '-'
+          );
+          const qr = new QRCodeStyling({
+            width:  256,
+            height:  256,
+            data: invoice?invoice:undefined,
+            margin: 5,
+            type: "canvas",
+            dotsOptions: {
+              type: "rounded",
+            },
+            cornersSquareOptions: {
+              type: "extra-rounded",
+            }
+          });
+          qr.append(this.canvas?.nativeElement);
+          this.invoice = invoice;
+          this.showQR = true;
+      }
+    }catch(e:any){
+      this.errorMsg = e.message;
+    }finally{
+      this.downzappingNow = false;
+    }  
   }
 
   async fetchZapsAndSegregate() {

@@ -38,10 +38,9 @@ Users see a tally of upvotes vs downvotes for each post | Users see a tally of u
   - [x] Compose replies to notes
   - [x] Show videos
   - [x] Non-zap upvotes and downvotes
-  - [ ] Relay list
+  - [x] Relay list
+  - [x] Browse without logging in
   - [ ] LN wallet connect
-  - [ ] Browse without logging in
-  - [ ] Configure multiple downzap recipients - Exact recipient randomly chosen during the downzap
   - [ ] Anything else? Feel free to suggest!
 
 
