@@ -489,7 +489,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
     if (this.zaps) {
       for (let zap of this.zaps) {
         try{
-          if (this.isDownzap(zap)) {
+          if (Util.isDownzap(zap)) {
             const milliSats = this.readMilliSatsFromZap(zap);
             if(milliSats){
               this.downZapTotalMilliSats += milliSats;
@@ -534,21 +534,6 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   getMatchingTags(tags:string[],tagName:string) {
     return tags.filter(tag => tag[0] === tagName);
-  }
-
-  isDownzap(event: NDKEvent) {
-    const descTagSet = event.getMatchingTags('description');
-    if (descTagSet.length > 0) {
-      const descTag = descTagSet[0];
-      if (descTag.length > 1) {
-        const descriptionStr = descTag[1];
-        const descriptionObj = JSON.parse(descriptionStr);
-        if (descriptionObj.content?.indexOf('-') > -1) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   zapDoneClicked(){

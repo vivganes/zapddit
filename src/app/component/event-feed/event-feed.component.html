@@ -14,11 +14,35 @@
       </ng-template>
     </ng-template>
   </h3>
+  <div align="center">
+    <button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='top-votes-up-minus-down'?'btn-primary':'')}}" (click)="switchBuffer('top-votes-up-minus-down')">
+      Top by Votes
+    </button>
+    <button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='best-votes-up-down-ratio'?'btn-primary':'')}}" (click)="switchBuffer('best-votes-up-down-ratio')">
+      Best by Votes
+    </button>
+  </div>
+  <div class="progress-block" *ngIf="advanceSortPreparationProgress<100">
+    <label for="demoProgressBar">Preparing advanced views </label>
+    <clr-progress-bar clrValue="{{advanceSortPreparationProgress}}" clrMax="100" [clrFade]="true" clrLabeled></clr-progress-bar>
+  </div>
 </ng-template>
 <ng-template #homefeedHeader>
   <h3 align="center">
     🏡 My Feed
   </h3>
+  <div align="center">
+    <button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='top-votes-up-minus-down'?'btn-primary':'')}}" (click)="switchBuffer('top-votes-up-minus-down')">
+      Top by Votes
+    </button>
+    <button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='best-votes-up-down-ratio'?'btn-primary':'')}}" (click)="switchBuffer('best-votes-up-down-ratio')">
+      Best by Votes
+    </button>
+  </div>
+  <div class="progress-block" *ngIf="advanceSortPreparationProgress<100">
+    <label for="demoProgressBar">Preparing advanced views </label>
+    <clr-progress-bar clrValue="{{advanceSortPreparationProgress}}" clrMax="100" [clrFade]="true" clrLabeled></clr-progress-bar>
+  </div>
 </ng-template>
 <div *ngIf="(!tag) && followedTopics?.length == 0 && !events" class="clr-row clr-justify-content-center">
   <div align="center" class="alert alert-info clr-col-12 clr-col-md-8" role="alert">
