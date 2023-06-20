@@ -300,6 +300,12 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
       this.dbService.peopleIFollow.where({hexPubKey:authorPubKey.toString()}).count().then(async count=>{
           this.amIFollowingtheAuthor = this.canLoadMedia = count > 0;
+
+          // we do not want to override this flag, if user already clicked the media to view
+          if(!this.canLoadMedia){
+            this.canLoadMedia = count > 0;
+          }
+
           if(loggedInUserHexPubKey === this.authorHexPubKey){
             this.canLoadMedia =  true;
           }
@@ -353,12 +359,15 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
   getVideoUrls():RegExpMatchArray | null | undefined {
-    const urlRegex = /https:.*?\.(?:webm|mp4)/gi;
+    const urlRegex = /https:.*?\.(?:webm|mp4|mov)/gi;
 
     const videoUrlsArray = this.event?.content.match(urlRegex);
 
     videoUrlsArray?.forEach(url => {
-      this.videoUrls.set(url, url?.split('.').pop());
+      if(url.indexOf(".mov") >=0)
+      this.videoUrls.set(url, "mp4");
+      else
+        this.videoUrls.set(url, url?.split('.').pop());
     });
 
     return videoUrlsArray;
@@ -386,6 +395,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
   clickToLoadMedia(){
+    console.log("clicked to load media")
     this.canLoadMedia = true;
   }
 
@@ -416,7 +426,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
       this.errorMsg = e.message;
     }finally{
       this.upzappingNow = false;
-    }      
+    }
   }
 
   isDownzapEnabled(): boolean {
@@ -462,7 +472,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
       this.errorMsg = e.message;
     }finally{
       this.downzappingNow = false;
-    }  
+    }
   }
 
   async fetchZapsAndSegregate() {
@@ -556,7 +566,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
  hasMedia():boolean{
-  return this.imageUrls!=null && this.imageUrls?.length > 0;
+  return (this.imageUrls!=null && this.imageUrls?.length > 0) || (this.videoUrls!=null && this.videoUrls?.size > 0);
  }
 
  follow(){
