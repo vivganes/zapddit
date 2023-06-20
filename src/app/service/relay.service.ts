@@ -15,27 +15,24 @@ export class RelayService {
     this.dbProvider = zappeditdbService;
   }
 
-  async getRelays(): Promise<string[]> {
+  async getRelays(): Promise<Relay[]> {
     const relays: Relay[] = await this.dbProvider.subscribedRelays.toArray();
-    let relayList: string[] = [];
-    relays.forEach(x => {
-      relayList.push(x.url);
-    });
-    return relayList;
+    // console.log(relays);
+    return relays;
   }
 
   async removeRelay(relay: string) {
-    let relayList: string[] = [];
+    let relayList: Relay[] = [];
     this.dbProvider.subscribedRelays.delete(relay)
     relayList = await this.getRelays();
     this.ndkProvider.updateRelays(relayList);
   }
 
-  async addRelay(relay: string) {
-    let relayList: string[] = [];
+  async addRelay(relay: string, read: boolean, write: boolean) {
+    let relayList: Relay[] = [];
     const relayName: string = relay.replace('wss://', '').replace('/', '');
-    const newRelay: Relay = new Relay(relayName, relay);
-    this.ndkProvider.addRelayToDB(this.dbProvider.subscribedRelays, newRelay);
+    const newRelay: Relay = new Relay(relayName, relay, read, write);
+    await this.ndkProvider.addRelayToDB(this.dbProvider.subscribedRelays, newRelay);
     relayList = await this.getRelays();
     this.ndkProvider.updateRelays(relayList);
   }

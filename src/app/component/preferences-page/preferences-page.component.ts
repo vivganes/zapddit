@@ -8,6 +8,7 @@ import '@cds/core/checkbox/register.js';
 import { Constants } from '../../util/Constants';
 import { LoginUtil } from 'src/app/util/LoginUtil';
 import { finalize } from 'rxjs';
+import { Relay } from "../../model";
 
 @Component({
   selector: 'app-preferences-page',
@@ -29,7 +30,14 @@ export class PreferencesPageComponent {
   changeDetector: ChangeDetectorRef;
 
   relayUrls: string[] | undefined;
+  relays: Relay[];
   relayService: RelayService;
+
+  userForm = new FormGroup({
+    url: new FormControl,
+    read: new FormControl,
+    write: new FormControl
+  })
 
   constructor(
     ndkProvider: NdkproviderService,
@@ -127,28 +135,32 @@ export class PreferencesPageComponent {
   }
 
   async getRelayList() {
-    this.relayUrls = await Promise.resolve(this.relayService.getRelays());
-    console.log(`ngOnInit relayUrls: ${this.relayUrls.join(',')}`);
+    this.relays = await Promise.resolve(this.relayService.getRelays());
+    //console.log(`ngOnInit relayUrls: ${this.relayUrls.join(',')}`);
   }
 
-  removeRelay(relay: string) {
-    this.relayService.removeRelay(relay);
+  async removeRelay(relay: string) {
+    await this.relayService.removeRelay(relay);
+    this.relays = await Promise.resolve(this.relayService.getRelays());
   }
 
-  addRelay() {
+  async addRelay() {
     this.addingRelay = true;
-    let relay = (<HTMLInputElement>document.getElementById('relay-to-add')).value;
+    const relay = (<HTMLInputElement>document.getElementById('relay-to-add')).value;
+    const read = (<HTMLInputElement>document.getElementById('relay-read')).checked;
+    const write = (<HTMLInputElement>document.getElementById('relay-write')).checked;
+
     try {
-      this.relayService.addRelay(relay);
+      // console.log(relay);
+      // console.log(`read: ${read}`);
+      // console.log(`write: ${write}`);
+      await this.relayService.addRelay(relay, read, write);
     } catch (e) {
+      console.log('error');
       console.error(e);
     } finally {
+      this.relays = await Promise.resolve(this.relayService.getRelays());
       this.addingRelay = false;
     }
-    // this.relayService.addRelay(relay);
   }
-
-  // addRelay(relay: string) {
-  //   this.relayService.addRelay(relay);
-  // }
 }
