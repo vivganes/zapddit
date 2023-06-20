@@ -2,6 +2,12 @@ export class EventBuffer<T>{
 
     events?:T[]
 
+    constructor(events?:T[]){
+        if(events){
+            this.events = events;
+        }
+    }
+
     /**
      * 
      * @param startIndex 
