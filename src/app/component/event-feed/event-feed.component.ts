@@ -14,13 +14,16 @@ import { TopZapsUpMinusDown } from 'src/app/sortlogic/TopZapsUpMinusDown';
 import { TopVotesUpMinusDown } from 'src/app/sortlogic/TopVotesUpMinusDown';
 import { BestZapsUpDownRatio } from 'src/app/sortlogic/BestZapsUpDownRatio';
 import { BestVotesUpDownRatio } from 'src/app/sortlogic/BestVotesUpDownRatio';
+import { HotVotesTimesTime } from 'src/app/sortlogic/HotVotesTimesTime';
 
 const BUFFER_REFILL_PAGE_SIZE = 60;
 const BUFFER_READ_PAGE_SIZE = 20;
+const DEFAULT_REVERSE_CHRONO = 'default-reverse-chrono';
 const TOP_ZAPS_UP_MINUS_DOWN  = 'top-zaps-up-minus-down';
 const TOP_VOTES_UP_MINUS_DOWN = 'top-votes-up-minus-down';
 const BEST_ZAPS_UP_DOWN_RATIO = 'best-zaps-up-down-ratio';
 const BEST_VOTES_UP_DOWN_RATIO = 'best-votes-up-down-ratio';
+const HOT_VOTES_TIMES_TIME = 'hot-votes-times-time';
 const CONTROVERSIAL_VOTES_UP_DOWN_BALANCE = 'controversial-votes-up-down-balance';
 const CONTROVERSIAL_ZAPS_UP_DOWN_BALANCE = 'controverial-zaps-up-down-balance';
 
@@ -47,7 +50,8 @@ export class EventFeedComponent implements OnInit, OnDestroy {
   preparingAdvanceSorts: boolean = false;
   advancedSortsAvailable: boolean = false;
   advanceSortPreparationProgress:number = 0;
-  currentSortName?:string;
+  currentSortName?:string = DEFAULT_REVERSE_CHRONO;
+  advancedSortWarningModalOpen:boolean = false;
 
   @Input()
   tag: string | undefined;
@@ -135,13 +139,7 @@ export class EventFeedComponent implements OnInit, OnDestroy {
         if (eventsToAddToDisplay) {
           this.removeMutedAndSetEvents(new Set<NDKEvent>(eventsToAddToDisplay));
           this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
-        }
-        if (this.isAdvancedSortEnabled) {
-          this.preparingAdvanceSorts = true;
-          this.prepareAdvancedSorts(new Set<NDKEvent>([...fetchedEvents].slice(0,BUFFER_REFILL_PAGE_SIZE))).then(()=>{
-            this.preparingAdvanceSorts = false;
-          });
-        }
+        }        
       }
       this.loadingEvents = false;
     } else {
@@ -162,16 +160,20 @@ export class EventFeedComponent implements OnInit, OnDestroy {
           if (eventsToAddToDisplay) {
             this.removeMutedAndSetEvents(new Set<NDKEvent>(eventsToAddToDisplay));
             this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
-          }
-          if (this.isAdvancedSortEnabled) {
-            this.preparingAdvanceSorts = true;
-            this.prepareAdvancedSorts(fetchedEvents).then(()=>{
-              this.preparingAdvanceSorts = false;
-            });
-          }
+          }          
         }
       }
       this.loadingEvents = false;
+    }
+  }
+
+  attemptPreparingAdvancedSorts(){
+    this.advancedSortWarningModalOpen = false;
+    if (this.isAdvancedSortEnabled) {
+      this.preparingAdvanceSorts = true;
+      this.prepareAdvancedSorts(new Set<NDKEvent>(this.chronoEventBuffer.events!.slice(0,BUFFER_REFILL_PAGE_SIZE))).then(()=>{
+        this.preparingAdvanceSorts = false;
+      });
     }
   }
 
@@ -202,14 +204,16 @@ export class EventFeedComponent implements OnInit, OnDestroy {
         )
       );
       if (this.nextEvents.size === 0) {
-        this.until = this.getOldestEventTimestamp();
-        const nextBatch = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
-        if (nextBatch) {
-          const sorted = [...nextBatch].sort(this.currentSortLogic.compare);
-          this.chronoEventBuffer.refillWithEntries(sorted);
-          this.nextEvents = new Set<NDKEvent>(
-            this.chronoEventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex, BUFFER_READ_PAGE_SIZE - 1)
-          );
+        if(this.currentSortName === DEFAULT_REVERSE_CHRONO){  //refill buffer only when default sort is applied, else show end of feed
+          this.until = this.getOldestEventTimestamp();
+          const nextBatch = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
+          if (nextBatch) {
+            const sorted = [...nextBatch].sort(this.currentSortLogic.compare);
+            this.chronoEventBuffer.refillWithEntries(sorted);
+            this.nextEvents = new Set<NDKEvent>(
+              this.chronoEventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex, BUFFER_READ_PAGE_SIZE - 1)
+            );
+          }
         }
       }
       this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
@@ -236,18 +240,20 @@ export class EventFeedComponent implements OnInit, OnDestroy {
           )
         );
         if (this.nextEvents.size === 0) {
-          const nextBatch = await this.ndkProvider.fetchAllFollowedEvents(
-            this.ndkProvider.appData.followedTopics.split(','),
-            this.limit,
-            undefined,
-            this.until
-          );
-          if (nextBatch) {
-            const sorted = [...nextBatch].sort(this.currentSortLogic.compare);
-            this.chronoEventBuffer.refillWithEntries(sorted);
-            this.nextEvents = new Set<NDKEvent>(
-              this.chronoEventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex, BUFFER_READ_PAGE_SIZE - 1)
+          if(this.currentSortName === DEFAULT_REVERSE_CHRONO){
+            const nextBatch = await this.ndkProvider.fetchAllFollowedEvents(
+              this.ndkProvider.appData.followedTopics.split(','),
+              this.limit,
+              undefined,
+              this.until
             );
+            if (nextBatch) {
+              const sorted = [...nextBatch].sort(this.currentSortLogic.compare);
+              this.chronoEventBuffer.refillWithEntries(sorted);
+              this.nextEvents = new Set<NDKEvent>(
+                this.chronoEventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex, BUFFER_READ_PAGE_SIZE - 1)
+              );
+            }
           }
         }
         this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
@@ -358,10 +364,15 @@ export class EventFeedComponent implements OnInit, OnDestroy {
     await this.populateAdvancedBufferFromEvents(eventsWithEngagement,TOP_VOTES_UP_MINUS_DOWN,new TopVotesUpMinusDown());
    // await this.populateAdvancedBufferFromEvents(eventsWithEngagement,BEST_ZAPS_UP_DOWN_RATIO,new BestZapsUpDownRatio());
     await this.populateAdvancedBufferFromEvents(eventsWithEngagement,BEST_VOTES_UP_DOWN_RATIO,new BestVotesUpDownRatio());
+    await this.populateAdvancedBufferFromEvents(eventsWithEngagement,HOT_VOTES_TIMES_TIME,new HotVotesTimesTime());
+
   }
 
   switchBuffer(bufferType:string){
     this.currentEventBuffer = this.advancedEventBuffers.get(bufferType);
+    if(this.currentEventBuffer === undefined){
+      this.currentEventBuffer = this.chronoEventBuffer;
+    }
     this.nowShowingUptoIndex = 0;
     this.events = new Set<NDKEvent>();
     const eventsToAddToDisplay = this.currentEventBuffer!.getItemsWithIndexes(

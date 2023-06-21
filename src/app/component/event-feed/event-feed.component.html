@@ -15,32 +15,53 @@
     </ng-template>
   </h3>
   <div align="center">
-    <button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='top-votes-up-minus-down'?'btn-primary':'')}}" (click)="switchBuffer('top-votes-up-minus-down')">
-      Top by Votes
-    </button>
-    <button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='best-votes-up-down-ratio'?'btn-primary':'')}}" (click)="switchBuffer('best-votes-up-down-ratio')">
-      Best by Votes
-    </button>
+    <b>Sort: </b>  
+    <clr-button-group [clrMenuPosition]="'bottom-right'" class="btn-sm">
+        <clr-button class="btn btn-sm {{(currentSortName==='default-reverse-chrono'?'btn-primary':'')}}" (click)="switchBuffer('default-reverse-chrono')">New</clr-button>
+        <clr-button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='top-votes-up-minus-down'?'btn-primary':'')}}" (click)="switchBuffer('top-votes-up-minus-down')">
+          Top by Votes</clr-button>
+        <clr-button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='best-votes-up-down-ratio'?'btn-primary':'')}}" (click)="switchBuffer('best-votes-up-down-ratio')">
+          Best by Votes</clr-button>
+        <clr-button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='hot-votes-times-time'?'btn-primary':'')}}" (click)="switchBuffer('hot-votes-times-time')">
+            Hot by Votes</clr-button>
+        <clr-button *ngIf="!advancedSortsAvailable" class="btn btn-sm" [clrInMenu]="true"(click)="advancedSortWarningModalOpen = true">Prepare advanced sorts</clr-button>
+    </clr-button-group>
   </div>
-  <div class="progress-block" *ngIf="advanceSortPreparationProgress<100">
-    <label for="demoProgressBar">Preparing advanced views </label>
+  <div class="progress-block" *ngIf="preparingAdvanceSorts && advanceSortPreparationProgress<100">
+    <label for="demoProgressBar">Preparing advanced sorts </label>
     <clr-progress-bar clrValue="{{advanceSortPreparationProgress}}" clrMax="100" [clrFade]="true" clrLabeled></clr-progress-bar>
   </div>
 </ng-template>
+<clr-modal [(clrModalOpen)]="advancedSortWarningModalOpen">
+  <h3 class="modal-title">Are you sure?</h3>
+  <div class="modal-body">
+      <p>To prepare advanced sorts, I will fetch all reactions for maximum {{limit}} notes.</p>
+      <p>I will do this work in the background while you continue to enjoy zapddit.</p>
+  </div>
+  <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="advancedSortWarningModalOpen = false">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="attemptPreparingAdvancedSorts()">Ok</button>
+  </div>
+</clr-modal>
 <ng-template #homefeedHeader>
   <h3 align="center">
     🏡 My Feed
   </h3>
   <div align="center">
-    <button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='top-votes-up-minus-down'?'btn-primary':'')}}" (click)="switchBuffer('top-votes-up-minus-down')">
-      Top by Votes
-    </button>
-    <button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='best-votes-up-down-ratio'?'btn-primary':'')}}" (click)="switchBuffer('best-votes-up-down-ratio')">
-      Best by Votes
-    </button>
+    <b>Sort: </b>  
+    <clr-button-group [clrMenuPosition]="'bottom-right'" class="btn-sm">
+        <clr-button class="btn btn-sm {{(currentSortName==='default-reverse-chrono'?'btn-primary':'')}}" (click)="switchBuffer('default-reverse-chrono')">New</clr-button>
+        <clr-button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='top-votes-up-minus-down'?'btn-primary':'')}}" (click)="switchBuffer('top-votes-up-minus-down')">
+          Top by Votes</clr-button>
+        <clr-button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='best-votes-up-down-ratio'?'btn-primary':'')}}" (click)="switchBuffer('best-votes-up-down-ratio')">
+          Best by Votes</clr-button>
+        <clr-button *ngIf="advancedSortsAvailable" class="btn btn-sm {{(currentSortName==='hot-votes-times-time'?'btn-primary':'')}}" (click)="switchBuffer('hot-votes-times-time')">
+            Hot by Votes</clr-button>
+        <clr-button *ngIf="!advancedSortsAvailable" class="btn btn-sm" [clrInMenu]="true"(click)="advancedSortWarningModalOpen = true">Prepare advanced sorts</clr-button>
+    </clr-button-group>    
   </div>
-  <div class="progress-block" *ngIf="advanceSortPreparationProgress<100">
-    <label for="demoProgressBar">Preparing advanced views </label>
+  <div class="progress-block" *ngIf="preparingAdvanceSorts && advanceSortPreparationProgress<100">
+    <label for="demoProgressBar">Preparing advanced sorts </label>
     <clr-progress-bar clrValue="{{advanceSortPreparationProgress}}" clrMax="100" [clrFade]="true" clrLabeled></clr-progress-bar>
   </div>
 </ng-template>
