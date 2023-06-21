@@ -109,6 +109,10 @@ export class EventFeedComponent implements OnInit, OnDestroy {
 
     route.params.subscribe(params => {
       this.nowShowingUptoIndex = 0;
+      this.advanceSortPreparationProgress = 0;
+      this.preparingAdvanceSorts = false;
+      this.advancedSortsAvailable = false;
+      this.advancedEventBuffers =  new Map<string,EventBuffer<NDKEventWithEngagement>>()
       this.chronoEventBuffer.events = [];
       this.currentEventBuffer = this.chronoEventBuffer;
       let topic = params['topic'];
