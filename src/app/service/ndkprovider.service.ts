@@ -22,7 +22,6 @@ import { ZappeditdbService } from './zappeditdb.service';
 import { User, Relay } from '../model';
 import { Constants } from '../util/Constants';
 import { BehaviorSubject } from 'rxjs';
-import { __await } from 'tslib';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -960,11 +959,11 @@ export class NdkproviderService {
     let relayEvent: NDKEvent |null|undefined;
     // nip 65 specifies a kind 10002 event to broadcast a user's subscribed relays
     const filter: NDKFilter = { kinds: [10002], authors: [hexPubKey] };
-    relayEvent = await this.ndk?.fetchEvent(filter);
+    relayEvent = await this.ndk?.fetchEvent(filter,{});
     if (!relayEvent){ // failover to the damus/snort relay event
       // some clients use kind 3 (contacts) events to broadcast a user's subscribed relays
       const filter2: NDKFilter = { kinds: [3], authors: [hexPubKey] };
-      relayEvent = await this.ndk?.fetchEvent(filter2);
+      relayEvent = await this.ndk?.fetchEvent(filter2,{});
     }
     
     return relayEvent;
@@ -1055,13 +1054,13 @@ export class NdkproviderService {
   }
 
   async addRelayToDB(table: Table<Relay>, relay: Relay) {
-    table
+    await table
       .where('name')
       .equalsIgnoreCase(relay.name)
       .count()
       .then(async count => {
         if (count == 0) {
-          table.add(relay, relay.name);
+          await table.add(relay, relay.name);
           console.log(`relay added to ${table.name}`);
         } else {
           console.log('Relay already exists');
