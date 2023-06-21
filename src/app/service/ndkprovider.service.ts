@@ -426,8 +426,21 @@ export class NdkproviderService {
       // console.log(ndkEvent);
       await ndkEvent.sign();
       await ndkEvent.publish();
-    } 
+    }
+    const relayTags = ndkEvent.getMatchingTags('r');
+    console.log(relayTags);
+    this.setRelaysForCurrentNdk(relayTags)
     return ndkEvent;
+  }
+
+  setRelaysForCurrentNdk(relayTags:NDKTag[]){
+    const newNdk = new NDK({
+      signer: this.signer,
+      explicitRelayUrls: relayTags.map((tag) => tag[1])
+    })
+    newNdk.connect(1000).then(()=>{
+      this.ndk = newNdk;
+    })
   }
 
   async fetchFollowersAndCache(peopleIFollowFromRelay: Set<NDKUser> | undefined) {
@@ -959,11 +972,15 @@ export class NdkproviderService {
     let relayEvent: NDKEvent |null|undefined;
     // nip 65 specifies a kind 10002 event to broadcast a user's subscribed relays
     const filter: NDKFilter = { kinds: [10002], authors: [hexPubKey] };
-    relayEvent = await this.ndk?.fetchEvent(filter,{});
-    if (!relayEvent){ // failover to the damus/snort relay event
-      // some clients use kind 3 (contacts) events to broadcast a user's subscribed relays
-      const filter2: NDKFilter = { kinds: [3], authors: [hexPubKey] };
-      relayEvent = await this.ndk?.fetchEvent(filter2,{});
+    const relayEvents = (await this.ndk?.fetchEvents(filter,{}));
+    if(relayEvents){
+      const sortedRelayEvents = [...relayEvents].sort((a:NDKEvent,b:NDKEvent)=> b.created_at!-a.created_at!)
+      relayEvent = sortedRelayEvents[0]; //take the latest event
+      if (!relayEvent){ // failover to the damus/snort relay event
+        // some clients use kind 3 (contacts) events to broadcast a user's subscribed relays
+        const filter2: NDKFilter = { kinds: [3], authors: [hexPubKey] };
+        relayEvent = await this.ndk?.fetchEvent(filter2,{});
+      }
     }
     
     return relayEvent;
@@ -1074,9 +1091,10 @@ export class NdkproviderService {
       this.dbService.subscribedRelays.clear();
       console.log('Subbed relay db cleared');
 
-      relaysFromRelay.forEach(async relay => {
-        await this.addRelayToDB(this.dbService.subscribedRelays, relay)
-      })
+      for(let relay of relaysFromRelay){
+        await this.addRelayToDB(this.dbService.subscribedRelays, relay);
+      }
+
     }
   }
 

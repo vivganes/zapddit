@@ -7,7 +7,6 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import '@cds/core/checkbox/register.js';
 import { Constants } from '../../util/Constants';
 import { LoginUtil } from 'src/app/util/LoginUtil';
-import { finalize } from 'rxjs';
 import { Relay } from "../../model";
 
 @Component({
