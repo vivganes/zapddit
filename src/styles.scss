@@ -146,8 +146,8 @@ mention-list > ul{
 }
 
 .online-video-size{
-  width: 460px;
-  height: 295px;
+  width: 480px;
+  height: 275px;
 }
 
 .clr-wizard-stepnav-wrapper{
@@ -161,7 +161,18 @@ mention-list > ul{
 
   .online-video-size{
     width: 300px ;
-    height: 200px ;
+    height: 180px ;
+  }
+
+  .youtube-player {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    width: 100%;
+    background: #000;
+    margin: 5px;
   }
 }
 
@@ -199,10 +210,6 @@ and (max-width : 320px) {
     color:#000!important;
     outline: none;
     box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0px 4px 6px -5px hsl(0, 0%, 2%)
-  }
-
-  .online-video-size{
-    max-width: 18rem;
   }
 
 

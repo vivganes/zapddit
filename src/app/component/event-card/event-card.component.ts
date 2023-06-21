@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, SecurityContext } from '@angular/core';
 import { NDKEvent, NDKTag, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import linkifyHtml from 'linkify-html';
@@ -18,6 +18,11 @@ const NOSTR_NOTE_REGEX = /nostr:(note1[\S]*)/gi;
 
 const NOSTR_EVENT_REGEX = /nostr:(nevent1[\S]*)/gi;
 
+export interface OnlineVideo {
+  type:string;
+  url:SafeUrl;
+}
+
 @Component({
   selector: 'app-event-card',
   templateUrl: './event-card.component.html',
@@ -25,7 +30,8 @@ const NOSTR_EVENT_REGEX = /nostr:(nevent1[\S]*)/gi;
 })
 export class EventCardComponent implements OnInit, OnDestroy{
   // Regular expression patterns to match video URLs
-  private readonly youtubeRegex:RegExp = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([\w-]+)/g;
+  private readonly youtubeRegex:RegExp = /(?:https?:\/\/)?(www\.youtube\.com|youtu\.be)\/.+$/g;
+  //private readonly youtubeRegex:RegExp = /^(https?\:\/\/)?(www\.youtube\.com|youtu\.be)\/.+$/g
   private readonly vimeoRegex:RegExp = /(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d+)/g;
   private readonly dailymotionRegex:RegExp = /(?:https?:\/\/)?(?:www\.)?dailymotion\.com\/video\/([\w-]+)/g;
 
@@ -38,6 +44,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   @Input()
   peopleIFollowLoadedFromRelay: boolean = false;
 
+  SecurityContext = SecurityContext;
   nip05Address:string | undefined;
   mutedAuthor:boolean = false;
   authorWithProfile: NDKUser | undefined;
@@ -45,7 +52,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   amIFollowingtheAuthor:boolean  = false;
   imageUrls: RegExpMatchArray | null | undefined;
   videoUrls: Map<string,string|undefined> = new Map<string,string|undefined>();
-  onlineVideoUrls:SafeUrl[] = [];
+  onlineVideoUrls:OnlineVideo[] = [];
   zaps: Set<NDKEvent> = new Set<NDKEvent>();
   replies: NDKEvent[] = [];
   likes:number = 0
@@ -71,6 +78,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
   upzappingNow:boolean = false;
   downzappingNow:boolean = false;
   errorMsg?:string;
+  @ViewChild("parent")
+  parent: ElementRef;
 
   @Input()
   downZapEnabled: boolean | undefined;
@@ -81,7 +90,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   displayedContent: string|undefined;
 
   constructor(ndkProvider: NdkproviderService, private renderer: Renderer2,
-    private dbService: ZappeditdbService, private router:Router, private domSanitizer:DomSanitizer,
+    private dbService: ZappeditdbService, private router:Router, public domSanitizer:DomSanitizer,
       private clipboard: Clipboard, private changeDetector:ChangeDetectorRef) {
     this.ndkProvider = ndkProvider;
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
@@ -115,6 +124,10 @@ export class EventCardComponent implements OnInit, OnDestroy{
         this.getAuthor();
       }
     })
+  }
+
+  ngAfterViewInit(): void {
+    this.initYouTubeVideos();
   }
 
   addReply(reply: NDKEvent){
@@ -375,22 +388,72 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   getOnlineVideoUrls(){
     // Extract YouTube watch URLs
-    this.extractUrls(this.event?.content, this.youtubeRegex);
+    this.extractUrls(this.event?.content, this.youtubeRegex, "youtube");
 
     // Extract Vimeo URLs
-    this.extractUrls(this.event?.content, this.vimeoRegex);
+    this.extractUrls(this.event?.content, this.vimeoRegex, "vimeo");
 
     // Extract Dailymotion URLs
-    this.extractUrls(this.event?.content, this.dailymotionRegex);
+    this.extractUrls(this.event?.content, this.dailymotionRegex,"dailymotion");
   }
 
-  extractUrls(text: string | undefined, regex: RegExp) {
+  extractUrls(text: string | undefined, regex: RegExp, type:string) {
     let match: RegExpExecArray | null;
     while ((match = regex.exec(text!)) !== null) {
       const videoUrl = match[0];
       if(videoUrl){
-        this.onlineVideoUrls.push(this.sanitiseUrl(videoUrl));
+        this.onlineVideoUrls.push({type:type, url:this.sanitiseUrl(videoUrl)});
       }
+    }
+  }
+
+  youTubeGetID(url:SafeUrl){
+    var urlParts = this.domSanitizer.sanitize(SecurityContext.URL,url)!.split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+    return (urlParts[2] !== undefined) ? urlParts[2].split(/[^0-9a-z_\-]/i)[0] : urlParts[0];
+  }
+
+  getSafeUrlAsString(url:string):string{
+    return this.domSanitizer.sanitize(SecurityContext.URL, this.sanitiseUrl(url))!
+  }
+
+  replaceWithIframe(div:any) {
+    var iframe = document.createElement('iframe');
+    var id = div.dataset.id;
+    var url = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+    iframe.setAttribute('src', this.getSafeUrlAsString(url));
+    // applying styles using class doesnt reflect in the dom for some reason when the iframe is dynamically added,
+    // hence we add it here on style attribute directly
+    iframe.setAttribute('style',`width: 100%; aspect-ratio: 16/9;`)
+    iframe.setAttribute('frameborder', '0');
+    iframe.setAttribute('allowfullscreen', '1');
+    iframe.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture');
+    div.parentNode.replaceChild(iframe, div);
+  }
+
+  initYouTubeVideos() {
+    var playerElements = this.parent.nativeElement.querySelectorAll('.youtube-player');
+    for (var n = 0; n < playerElements.length; n++) {
+      var element:any =playerElements[n];
+      var videoId = element.id;
+      var div = document.createElement('div');
+      div.setAttribute('data-id', videoId);
+      var thumbNode = document.createElement('img');
+      if(!this.canLoadMedia){
+        thumbNode.src = '/assets/blur'+ this.blurImageId+'.png'
+        thumbNode.setAttribute('style',`width:300px; border-radius: 10px;`)
+        div.setAttribute('style',`text-align: center;`)
+      }
+      else
+        thumbNode.src = '//i.ytimg.com/vi/ID/hqdefault.jpg'.replace('ID', videoId);
+      div.appendChild(thumbNode);
+      var playButton = document.createElement('div');
+      playButton.setAttribute('class', 'play');
+      div.appendChild(playButton);
+      var that = this;
+      div.onclick = function () {
+        that.replaceWithIframe(this);
+      };
+      playerElements[n].appendChild(div);
     }
   }
 
@@ -566,7 +629,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
  hasMedia():boolean{
-  return (this.imageUrls!=null && this.imageUrls?.length > 0) || (this.videoUrls!=null && this.videoUrls?.size > 0);
+  return (this.imageUrls!=null && this.imageUrls?.length > 0) || (this.videoUrls!=null && this.videoUrls?.size > 0)
  }
 
  follow(){
