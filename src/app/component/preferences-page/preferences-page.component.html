@@ -75,7 +75,7 @@
             type="number"
             id="sats-for-zaps"
             value="{{ ndkProvider.defaultSatsForZaps }}" >
-            <clr-control-helper>These many sats will be send when you zap</clr-control-helper>
+            <clr-control-helper>These many sats will be sent when you zap</clr-control-helper>
         </clr-input-container>
         <button [clrLoading]="settingDefaultSats" [disabled]="isLoggedInUsingPubKey"
          type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button>
@@ -143,15 +143,45 @@
     </clr-accordion-content>
   </clr-accordion-panel>
 
-  <clr-accordion-panel>
+  <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
     <clr-accordion-title>My Relays</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
-        <div *ngIf="this.relayUrls && this.relayUrls.length > 0">
+        <div *ngIf="this.relays && this.relays.length > 0">
           <ul class="list-unstyled">
-            <li *ngFor="let relay of this.relayUrls">{{relay}}</li>
+            <ng-template ngFor let-item [ngForOf]="this.relays" let-i="index" >
+              <li value="index" >
+                <cds-icon class="trash-icon" status="danger" size="sm" shape="trash" title="unsubscribe" (click)="this.removeRelay(item.url)"></cds-icon>
+                <span>&nbsp;</span>
+                <cds-icon *ngIf="item.read" class="download-cloud" size="sm" shape="download-cloud" title="read"></cds-icon> 
+                <cds-icon *ngIf="item.write" class="upload-cloud" size="sm" shape="upload-cloud" title="write"></cds-icon>
+                {{item.url}}
+              </li> 
+            </ng-template>
           </ul>
         </div>
+      </form>
+      <form *ngIf="!isLoggedInUsingPubKey" clrForm onsubmit="return false">
+        <clr-input-container>
+          <label >Add Relay</label>
+          <input clrInput
+            type="text"
+            id="relay-to-add"
+            placeholder="wss://relay.example.com" />
+          <clr-control-helper>websocket url of the new relay</clr-control-helper>
+        </clr-input-container>
+        <clr-checkbox-container clrInline>
+          <label>Relay Settings</label>
+          <clr-checkbox-wrapper>
+            <label>Read</label>
+            <input type="checkbox" id="relay-read" name="relay-read" clrCheckbox checked />
+          </clr-checkbox-wrapper>
+          <clr-checkbox-wrapper>
+            <label>Write</label>
+            <input type="checkbox" id="relay-write" name="relay-write" clrCheckbox checked />
+          </clr-checkbox-wrapper>
+        </clr-checkbox-container>
+        <button [clrLoading]="addingRelay" type="submit" class="btn btn-primary" (click)="addRelay()">Add</button>
       </form>
     </clr-accordion-content>
   </clr-accordion-panel>

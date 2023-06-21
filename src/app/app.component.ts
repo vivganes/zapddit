@@ -1,5 +1,6 @@
 import { Component, ComponentRef, OnInit, OnDestroy } from '@angular/core';
 import '@cds/core/icon/register.js';
+// import {} from '@cds/core';
 import {
   ClarityIcons,
   userIcon,
@@ -25,7 +26,9 @@ import {
   floppyIcon,
   heartIcon,
   thumbsDownIcon,
-  thumbsUpIcon
+  thumbsUpIcon,
+  downloadCloudIcon,
+  uploadCloudIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
@@ -36,7 +39,7 @@ import { Constants } from './util/Constants';
 import { Subscription, BehaviorSubject } from 'rxjs';
 
 
-ClarityIcons.addIcons(thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon);
+ClarityIcons.addIcons(thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

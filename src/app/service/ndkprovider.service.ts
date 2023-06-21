@@ -338,7 +338,6 @@ export class NdkproviderService {
     // const relays = this.currentUser?.relayUrls;
     
     if (relayUrls && relayUrls.length > 0) {
-      console.log(`initializeUsingNpub creating newNDK with relays: ${relayUrls.join(',')}`)
       const newNDKParams = { signer: this.signer, explicitRelayUrls: relayUrls };
       const newNDK = new NDK(newNDKParams);
       if (this.isNip07) {
@@ -408,6 +407,26 @@ export class NdkproviderService {
     if (this.canWriteToNostr) {
       await ndkEvent.publish();
     }
+    return ndkEvent;
+  }
+
+  async updateRelays(relays: Relay[]): Promise<NDKEvent> {
+    let tags: NDKTag[] = [];
+    const ndkEvent = new NDKEvent(this.ndk);
+    relays.forEach(relay => {
+      let setting: string = '';
+      if(!relay.read && relay.write) setting = 'write';
+      else if(relay.read && !relay.write) setting = 'read';
+      tags.push(['r', relay.url, setting])
+    })
+    ndkEvent.kind = 10002;
+    ndkEvent.tags = tags;
+    if (this.currentUser) ndkEvent.pubkey = this.currentUser.hexpubkey();
+    if (this.canWriteToNostr){
+      // console.log(ndkEvent);
+      await ndkEvent.sign();
+      await ndkEvent.publish();
+    } 
     return ndkEvent;
   }
 
@@ -936,9 +955,71 @@ export class NdkproviderService {
     reactionEvent.publish();
   }
 
-  async fetchRelayEvent(hexPubKey: string): Promise<NDKEvent | undefined | null> {
-    const filter: NDKFilter = { kinds: [3], authors: [hexPubKey] };
-    return this.ndk?.fetchEvent(filter,{});
+  async fetchRelayEvent(hexPubKey: string): Promise<NDKEvent | null | undefined> {
+    let relayEvent: NDKEvent |null|undefined;
+    // nip 65 specifies a kind 10002 event to broadcast a user's subscribed relays
+    const filter: NDKFilter = { kinds: [10002], authors: [hexPubKey] };
+    relayEvent = await this.ndk?.fetchEvent(filter,{});
+    if (!relayEvent){ // failover to the damus/snort relay event
+      // some clients use kind 3 (contacts) events to broadcast a user's subscribed relays
+      const filter2: NDKFilter = { kinds: [3], authors: [hexPubKey] };
+      relayEvent = await this.ndk?.fetchEvent(filter2,{});
+    }
+    
+    return relayEvent;
+  }
+
+  processRelayContent(relay: [string, unknown]): Relay {
+    let read: boolean = true;
+    let write: boolean = true;
+    
+    const relayUrl: string = relay[0];
+    const relayName: string = relayUrl.replace('wss://', '').replace('/', '');
+    const settings = Object.entries(relay[1] as Object);
+
+    if (settings[0][0] == 'read') read = settings[0][1];
+    else if (settings[1][0] == 'read') read = settings[1][1];
+    if (settings[0][0] == 'write') write = settings[0][1];
+    else if (settings[1][0] == 'write') write = settings[1][1];
+
+    return new Relay(relayName, relayUrl, read, write);
+  }
+
+  parseRelayEventContent(content: string): Relay[] {
+    let relays: Relay[] = [];
+    const relayJSON = JSON.parse(content);
+    const rel = Object.entries(relayJSON);
+    rel.forEach(relay => {
+      const item: Relay = this.processRelayContent(relay);
+      relays.push(item);
+    })
+    return relays;
+  }
+
+  processRelayTag(tag: NDKTag): Relay {
+    let read: boolean = true;
+    let write: boolean = true;
+
+    const relayUrl: string = tag[1];
+    const relayName: string = relayUrl.replace('wss://', '').replace('/', '');
+    if (tag[2]) {
+      if(tag[2] === 'read') write = false;
+      else if (tag[2] === 'write') read = false;
+    }
+
+    return new Relay(relayName, relayUrl, read, write);
+  }
+
+  parseRelayEventTags(tags: NDKTag[]): Relay[] {
+    let relays: Relay[] = [];
+    // console.log(tags);
+    tags.forEach(tag => {
+      if(tag[0] === 'r'){
+        const item: Relay = this.processRelayTag(tag);
+        relays.push(item);
+      }
+    })
+    return relays;
   }
 
   async getUserSubscribedRelays(): Promise<Relay[]> {
@@ -947,29 +1028,39 @@ export class NdkproviderService {
     if (this.currentUser?.hexpubkey()) {
       author = this.currentUser.hexpubkey();
     }
-    const relayEvent: NDKEvent | undefined | null = await this.fetchRelayEvent(author);
-    if (relayEvent?.content) {
-      const relayJson = JSON.parse(relayEvent?.content);
-      const rel = Object.entries(relayJson);
-      rel.forEach(relay => {
-        const relayUrl: string = relay[0];
-        const relayName: string = relayUrl.replace('wss://', '').replace('/', '');
-        console.log(relayName, relayUrl);
-        const item: Relay = new Relay(relayName, relayUrl);
-        relays.push(item);
-      });
+    const relayEvent: NDKEvent | null | undefined = await this.fetchRelayEvent(author);
+    // console.log(relayEvent);
+    if(relayEvent){
+      if (relayEvent.kind === 10002) {
+        // parse tags
+        const relayTag: Relay[] = this.parseRelayEventTags(relayEvent.tags);
+        relayTag.forEach(relay => {
+          if (relays.map(x => x.url).indexOf(relay.url) === -1 && relays.map(x => x.name).indexOf(relay.name) === -1) {
+            relays.push(relay);
+          }
+        })
+      } else if (relayEvent.kind === 3)
+      {
+        // parse content
+        const contentRelays: Relay[] = this.parseRelayEventContent(relayEvent.content);
+        contentRelays.forEach(relay => {
+          if(relays.map(x => x.url).indexOf(relay.url) === -1 && relays.map(x => x.name).indexOf(relay.name) === -1){
+            relays.push(relay);
+          }
+        })        
+      }      
     }
     return relays;
   }
 
   async addRelayToDB(table: Table<Relay>, relay: Relay) {
-    table
+    await table
       .where('name')
       .equalsIgnoreCase(relay.name)
       .count()
       .then(async count => {
         if (count == 0) {
-          table.add(relay, relay.name);
+          await table.add(relay, relay.name);
           console.log(`relay added to ${table.name}`);
         } else {
           console.log('Relay already exists');

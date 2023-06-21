@@ -6,7 +6,7 @@ import { User, Relay } from '../model';
 const DATASTORE = {
   peopleIFollow: "++hexPubKey, name, displayName, pictureUrl, nip05, npub, about",
   mutedPeople:"++hexPubKey, name, displayName, pictureUrl, nip05, npub, about",
-  subscribedRelays: "++name, url"
+  subscribedRelays: "++name, url, read, write"
 };
 const VERSION = 1;
 @Injectable({
