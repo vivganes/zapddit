@@ -98,6 +98,15 @@
             <a href="{{ imageSrc }}" target="_blank"><img alt="image" imageLoader class="note-image" src="{{ imageSrc }}" /></a>
           </div>
         </div>
+        <div *ngFor="let videoSrc of videoUrls | keyvalue"  class="clr-row clr-justify-content-center">
+          <div class="flex">
+            <div class="clr-justify-content">
+              <video controls class="video">
+                <source src="{{ videoSrc.key }}" type="video/{{videoSrc.value}}">
+              </video>
+            </div>
+          </div>
+        </div>
     </div>
 
   <div *ngIf="errorMsg" class="alert alert-warning alert-sm">

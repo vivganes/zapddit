@@ -30,8 +30,8 @@ export interface OnlineVideo {
 })
 export class EventCardComponent implements OnInit, OnDestroy{
   // Regular expression patterns to match video URLs
-  private readonly youtubeRegex:RegExp = /(?:https?:\/\/)?(www\.youtube\.com|youtu\.be)\/.+$/g;
-  //private readonly youtubeRegex:RegExp = /^(https?\:\/\/)?(www\.youtube\.com|youtu\.be)\/.+$/g
+  //private readonly youtubeRegex:RegExp =  /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/gm;
+  private readonly youtubeRegex:RegExp = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/gms
   private readonly vimeoRegex:RegExp = /(?:https?:\/\/)?(?:www\.)?vimeo\.com\/(\d+)/g;
   private readonly dailymotionRegex:RegExp = /(?:https?:\/\/)?(?:www\.)?dailymotion\.com\/video\/([\w-]+)/g;
 
@@ -127,7 +127,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
   ngAfterViewInit(): void {
-    this.initYouTubeVideos();
+    setTimeout(()=>this.initYouTubeVideos(),1000);
   }
 
   addReply(reply: NDKEvent){
@@ -312,10 +312,13 @@ export class EventCardComponent implements OnInit, OnDestroy{
       var loggedInUserHexPubKey = this.ndkProvider.currentUser?.hexpubkey();
 
       this.dbService.peopleIFollow.where({hexPubKey:authorPubKey.toString()}).count().then(async count=>{
-          this.amIFollowingtheAuthor = this.canLoadMedia = count > 0;
+          this.amIFollowingtheAuthor = count > 0;
+          if(this.showMediaFromPeopleIFollow){
+            this.canLoadMedia = count > 0;
+          }
 
           // we do not want to override this flag, if user already clicked the media to view
-          if(!this.canLoadMedia){
+          if(this.showMediaFromPeopleIFollow && !this.canLoadMedia){
             this.canLoadMedia = count > 0;
           }
 
@@ -430,36 +433,37 @@ export class EventCardComponent implements OnInit, OnDestroy{
     div.parentNode.replaceChild(iframe, div);
   }
 
+  hasYoutubeVids(){
+    return (this.onlineVideoUrls!=null && this.onlineVideoUrls?.filter(i=>i.type==="youtube")?.length>0)
+  }
+
   initYouTubeVideos() {
-    var playerElements = this.parent.nativeElement.querySelectorAll('.youtube-player');
-    for (var n = 0; n < playerElements.length; n++) {
-      var element:any =playerElements[n];
-      var videoId = element.id;
-      var div = document.createElement('div');
-      div.setAttribute('data-id', videoId);
-      var thumbNode = document.createElement('img');
-      if(!this.canLoadMedia){
-        thumbNode.src = '/assets/blur'+ this.blurImageId+'.png'
-        thumbNode.setAttribute('style',`width:300px; border-radius: 10px;`)
-        div.setAttribute('style',`text-align: center;`)
-      }
-      else
+    if((!this.showMediaFromPeopleIFollow) || (this.showMediaFromPeopleIFollow && this.hasYoutubeVids() && this.canLoadMedia)){
+      var playerElements = this.parent.nativeElement.querySelectorAll('.youtube-player');
+      for (var n = 0; n < playerElements.length; n++) {
+        var element:any =playerElements[n];
+        var videoId = element.id;
+        var div = document.createElement('div');
+        div.setAttribute('data-id', videoId);
+        var thumbNode = document.createElement('img');
         thumbNode.src = '//i.ytimg.com/vi/ID/hqdefault.jpg'.replace('ID', videoId);
-      div.appendChild(thumbNode);
-      var playButton = document.createElement('div');
-      playButton.setAttribute('class', 'play');
-      div.appendChild(playButton);
-      var that = this;
-      div.onclick = function () {
-        that.replaceWithIframe(this);
-      };
-      playerElements[n].appendChild(div);
+        div.appendChild(thumbNode);
+        var playButton = document.createElement('div');
+        playButton.setAttribute('class', 'play');
+        div.appendChild(playButton);
+        var that = this;
+        div.onclick = function () {
+          that.replaceWithIframe(this);
+        };
+        playerElements[n].appendChild(div);
+      }
     }
   }
 
   clickToLoadMedia(){
-    console.log("clicked to load media")
     this.canLoadMedia = true;
+    setTimeout(()=>this.initYouTubeVideos(),1000);
+
   }
 
   async upZap() {
@@ -629,7 +633,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
  hasMedia():boolean{
-  return (this.imageUrls!=null && this.imageUrls?.length > 0) || (this.videoUrls!=null && this.videoUrls?.size > 0)
+  return (this.imageUrls!=null && this.imageUrls?.length > 0) || (this.videoUrls!=null && this.videoUrls?.size > 0) || (this.onlineVideoUrls!=null && this.onlineVideoUrls?.length > 0)
  }
 
  follow(){
