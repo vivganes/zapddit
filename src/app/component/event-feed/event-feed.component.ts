@@ -63,7 +63,7 @@ export class EventFeedComponent implements OnInit, OnDestroy {
   events: Set<NDKEvent> | undefined;
   nextEvents: Set<NDKEvent> | undefined;
   isLoggedInUsingPubKey: boolean = false;
-  chronoEventBuffer: EventBuffer<NDKEvent> = new EventBuffer<NDKEvent>();
+  chronoEventBuffer: EventBuffer<NDKEvent> = new EventBuffer<NDKEvent>(undefined,DEFAULT_REVERSE_CHRONO);
   nowShowingUptoIndex: number = 0;
   currentEventBuffer?: EventBuffer<NDKEvent>;
   advancedEventBuffers:Map<string,EventBuffer<NDKEventWithEngagement>> = new Map<string,EventBuffer<NDKEventWithEngagement>>();
@@ -391,7 +391,7 @@ export class EventFeedComponent implements OnInit, OnDestroy {
   }
 
   async populateAdvancedBufferFromEvents(eventsWithEngagement:NDKEventWithEngagement[],bufferType:string,sortLogic: SortLogic){
-    this.advancedEventBuffers.set(bufferType,new EventBuffer([...eventsWithEngagement].sort(sortLogic.compare)));
+    this.advancedEventBuffers.set(bufferType,new EventBuffer([...eventsWithEngagement].sort(sortLogic.compare), bufferType));
   }
 
   loadMoreEvents() {

@@ -1,11 +1,13 @@
 export class EventBuffer<T>{
 
     events?:T[]
+    friendlyName?:string;
 
-    constructor(events?:T[]){
+    constructor(events?:T[], friendlyName?:string){
         if(events){
             this.events = events;
         }
+        this.friendlyName = friendlyName;
     }
 
     /**
