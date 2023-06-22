@@ -127,7 +127,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
   ngAfterViewInit(): void {
-    setTimeout(()=>this.initYouTubeVideos(),1000);
+    setTimeout(()=>this.initYouTubeVideos(),3000);
   }
 
   addReply(reply: NDKEvent){
@@ -462,7 +462,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   clickToLoadMedia(){
     this.canLoadMedia = true;
-    setTimeout(()=>this.initYouTubeVideos(),1000);
+    setTimeout(()=>this.initYouTubeVideos(),3000);
 
   }
 
