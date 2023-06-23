@@ -1,5 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef,
-  ChangeDetectionStrategy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef, ViewChild } from '@angular/core';
 import { User } from 'src/app/model/user';
 import { NdkproviderService } from '../../service/ndkprovider.service';
 import { NDKUser, NDKUserProfile,NDKEvent, NDKFilter } from '@nostr-dev-kit/ndk';

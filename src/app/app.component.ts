@@ -37,7 +37,10 @@ import * as linkify from 'linkifyjs';
 import hashtag from './util/IntlHashtagLinkifyPlugin';
 import { Constants } from './util/Constants';
 import { Subscription, BehaviorSubject } from 'rxjs';
-
+import {
+  BreakpointObserver,
+  BreakpointState
+} from '@angular/cdk/layout';
 
 ClarityIcons.addIcons(thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
 @Component({
@@ -54,10 +57,11 @@ export class AppComponent implements OnInit, OnDestroy{
   isNip05Verified:boolean = false;
   isNip05VerifiedForAuthorSub:Subscription = new Subscription();
   followedTopicsEmitterSub:Subscription = new Subscription();
+  isMobileScreen:boolean = false;
 
   ndkProvider: NdkproviderService;
 
-  constructor(ndkProvider: NdkproviderService,router: Router) {
+  constructor(ndkProvider: NdkproviderService,router: Router,private breakpointObserver: BreakpointObserver) {
     this.ndkProvider = ndkProvider;
     this.router = router;
     linkify.registerPlugin('international-hashtags', hashtag);
@@ -92,6 +96,18 @@ export class AppComponent implements OnInit, OnDestroy{
 
     this.isNip05VerifiedForAuthorSub = this.ndkProvider.isNip05Verified$.subscribe(val=>{
       this.isNip05Verified = val
+    });
+
+    this.breakpointObserver
+    .observe(['(min-width: 450px)'])
+    .subscribe((state: BreakpointState) => {
+      if (state.matches) {
+        this.isMobileScreen = false;
+        console.log("larger than mobile")
+      } else {
+        this.isMobileScreen = true;
+        console.log("mobile")
+      }
     });
   }
 
