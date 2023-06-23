@@ -30,6 +30,7 @@ import { OnboardingWizardComponent } from './component/onboarding-wizard/onboard
 import { ImageLoaderDirective } from './directive/ImageLoaderDirective';
 import { ProfileComponent } from './component/profile/profile.component';
 import { AbbreviateIdPipe } from './pipe/abbreviateId.pipe';
+import { TopicComponent } from './component/topic/topic.component';
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
@@ -58,7 +59,8 @@ const componentParsers: Array<HookParserEntry> = [
     ContactCardComponent,
     OnboardingWizardComponent,
     ImageLoaderDirective,
-    ProfileComponent
+    ProfileComponent,
+    TopicComponent
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers
