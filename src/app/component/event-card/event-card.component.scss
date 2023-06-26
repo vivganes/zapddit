@@ -36,3 +36,12 @@ and (max-width : 576px) {
   width:560px;
 }
 
+.shortened-content{
+  overflow: hidden;
+  height: 300px;
+}
+
+.show-more-button{
+  bottom: 128px !important;
+  z-index:999;
+}

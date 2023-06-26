@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, SecurityContext } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, SecurityContext, AfterContentInit } from '@angular/core';
 import { NDKEvent, NDKTag, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import linkifyHtml from 'linkify-html';
@@ -81,6 +81,9 @@ export class EventCardComponent implements OnInit, OnDestroy{
   @ViewChild("parent")
   parent: ElementRef;
 
+  @ViewChild("cardBlock")
+  cardBlock: ElementRef;
+
   @Input()
   downZapEnabled: boolean | undefined;
 
@@ -88,6 +91,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   ndkProvider: NdkproviderService;
   displayedContent: string|undefined;
+  displayShowMoreButton: boolean = false;
 
   constructor(ndkProvider: NdkproviderService, private renderer: Renderer2,
     private dbService: ZappeditdbService, private router:Router, public domSanitizer:DomSanitizer,
@@ -102,6 +106,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
       this.hideNonZapReactions = true;
     }
   }
+
+  
 
   ngOnInit():void {
     this.displayedContent = this.replaceHashStyleMentionsWithComponents();
@@ -128,6 +134,16 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   ngAfterViewInit(): void {
     setTimeout(()=>this.initYouTubeVideos(),3000);
+
+    const contentHeight = this.cardBlock.nativeElement.scrollHeight;
+    console.log(contentHeight)
+    if(contentHeight >= 300){
+      this.displayShowMoreButton = true;
+    }
+  }
+
+  showMore(){
+    this.displayShowMoreButton = false;
   }
 
   addReply(reply: NDKEvent){
