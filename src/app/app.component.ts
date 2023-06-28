@@ -28,7 +28,7 @@ import {
   thumbsDownIcon,
   thumbsUpIcon,
   downloadCloudIcon,
-  uploadCloudIcon
+  uploadCloudIcon,
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';

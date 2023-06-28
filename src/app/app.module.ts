@@ -31,6 +31,8 @@ import { ImageLoaderDirective } from './directive/ImageLoaderDirective';
 import { ProfileComponent } from './component/profile/profile.component';
 import { AbbreviateIdPipe } from './pipe/abbreviateId.pipe';
 import { TopicComponent } from './component/topic/topic.component';
+import { CommunityListComponent } from './page/community-list/community-list.component';
+import { CommunityCardComponent } from './component/community-card/community-card.component';
 
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
@@ -60,7 +62,9 @@ const componentParsers: Array<HookParserEntry> = [
     OnboardingWizardComponent,
     ImageLoaderDirective,
     ProfileComponent,
-    TopicComponent
+    TopicComponent,
+    CommunityListComponent,
+    CommunityCardComponent
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers

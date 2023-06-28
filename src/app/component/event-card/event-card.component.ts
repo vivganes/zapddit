@@ -11,6 +11,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { LoginUtil } from 'src/app/util/LoginUtil';
 import { Subscription, BehaviorSubject } from 'rxjs';
+import { Community } from 'src/app/model/community';
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
@@ -78,6 +79,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   upzappingNow:boolean = false;
   downzappingNow:boolean = false;
   errorMsg?:string;
+  community?:Community;
   @ViewChild("parent")
   parent: ElementRef;
 
@@ -116,6 +118,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
     this.displayedContent = this.replaceNEventMentionsWithComponents(this.displayedContent)
     this.linkifiedContent = this.linkifyContent(this.displayedContent)
     this.getAuthor();
+    this.getCommunity();
     this.getRelatedEventsAndSegregate();
     this.getImageUrls();
     this.getVideoUrls();
@@ -353,6 +356,25 @@ export class EventCardComponent implements OnInit, OnDestroy{
       this.isNIP05Verified = await this.ndkProvider.checkIfNIP05Verified(this.nip05Address, this.authorHexPubKey);
 
     this.changeDetector.detectChanges();
+  }
+
+  async getCommunity(){
+    let tags = this.event?.getMatchingTags('a');
+    if(tags && tags.length > 0){
+      this.community = {
+        id: tags[0][1],
+        name: tags[0][1].split(':')[2],
+        creatorHexKey: tags[0][1].split(':')[1],
+      }
+
+      const communityDetails = await this.ndkProvider.getCommunityDetails(this.community.id!);
+
+      const creator = await this.ndkProvider.getProfileFromHex(this.community.creatorHexKey!)
+      this.community.creatorProfile = creator;
+      this.community.image = communityDetails?.image
+      this.community.description = communityDetails?.description
+      this.changeDetector.detectChanges();
+    }
   }
 
   getNthTag( n:number):string{
