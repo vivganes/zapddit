@@ -676,6 +676,11 @@ export class NdkproviderService {
     return this.ndk?.fetchEvents(filter,{});
   }
 
+  async fetchEventsFromCommunity(community: Community, limit?: number, since?: number, until?: number):Promise<Set<NDKEvent> | undefined> {
+    const filter: NDKFilter = { kinds: [1], '#a': [community.id!], limit: limit, since: since, until: until };
+    return this.ndk?.fetchEvents(filter,{});
+  }
+
   async fetchEventFromId(id: string) {
     if (id.startsWith('note1')) {
       id = LoginUtil.bech32ToHex(id);

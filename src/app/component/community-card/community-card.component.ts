@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 import { Community } from 'src/app/model/community';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 
@@ -12,7 +13,7 @@ export class CommunityCardComponent {
   @Input()
   community:Community;
 
-  constructor(private ndkProvider:NdkproviderService){
+  constructor(private ndkProvider:NdkproviderService, private router:Router){
 
   }
 
@@ -30,10 +31,10 @@ export class CommunityCardComponent {
   } 
   
   openCommunityPage(){
-
+      this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)   
   }
 
   openCommunityCreatorInSnort(){
-    
+    window.open('https://snort.social/e/'+this.community.creatorHexKey!,'_blank')
   }
 }

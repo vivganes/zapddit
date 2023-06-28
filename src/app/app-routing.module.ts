@@ -15,6 +15,7 @@ const routes: Routes = [
   { path: 'preferences', component: PreferencesPageComponent},
   { path: 'feed', component: EventFeedComponent },
   { path: 'communities', component: CommunityListComponent },
+  { path: 'n/:communityName/:creatorHexKey', component: EventFeedComponent },
   { path: '**', component: EventFeedComponent },
 ];
 
