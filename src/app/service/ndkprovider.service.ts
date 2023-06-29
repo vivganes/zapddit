@@ -21,7 +21,8 @@ import { LoginUtil, NewCredential } from '../util/LoginUtil';
 import { ZappeditdbService } from './zappeditdb.service';
 import { User, Relay } from '../model';
 import { Constants } from '../util/Constants';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, retry } from 'rxjs';
+import { Community } from '../model/community';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -44,7 +45,7 @@ const explicitRelayUrls = ['wss://nos.lol',
 @Injectable({
   providedIn: 'root',
 })
-export class NdkproviderService {
+export class NdkproviderService {  
   ndk: NDK | undefined;
   currentUserProfile: NDKUserProfile | undefined;
   currentUser: NDKUser | undefined;
@@ -381,7 +382,8 @@ export class NdkproviderService {
     hashtags?: string[],
     userMentionsHex?: string[],
     postMentions?: string[],
-    replyingToEvent?: NDKEvent
+    replyingToEvent?: NDKEvent,
+    community?: Community
   ): Promise<NDKEvent> {
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 1;
@@ -399,6 +401,9 @@ export class NdkproviderService {
     if (replyingToEvent) {
       tags.push(...replyingToEvent.getMatchingTags('p'));
       tags.push(['e', replyingToEvent.id, '', 'reply']);
+    }
+    if (community) {
+      tags.push(['a',community.id!])
     }
     ndkEvent.tags = tags;
     if (this.currentUser) {
@@ -619,9 +624,71 @@ export class NdkproviderService {
     return await this.dbService.mutedPeople.toArray();
   }
 
+  async getCommunityDetails(id: string): Promise<Community|undefined> {
+    const splitId = id.split(':');
+    const filter: NDKFilter = { kinds: [34550], '#d': [splitId[2]], authors:[splitId[1]] };
+    const events = await this.ndk?.fetchEvents(filter,{});
+    if(events && events.size > 0){
+      const communityEvent = events.values().next().value
+      const name = communityEvent.getMatchingTags('d')[0][1];
+      const description = communityEvent.getMatchingTags('description')[0][1];
+      const creatorHexKey = communityEvent.pubkey;
+      const image = communityEvent.getMatchingTags('image')[0][1];
+      return {
+        id: '34550:'+creatorHexKey+':'+name,
+        name:name,
+        description: description,
+        image: image,
+        creatorHexKey: creatorHexKey,        
+      }
+    }
+    return undefined;
+  }
+
+  async fetchCommunities(limit?: number, since?: number, until?: number, ownedOnly?:boolean ):Promise<Community[] | undefined>{
+    const filter: NDKFilter = { kinds: [34550], 
+      limit: limit, 
+      since:since, 
+      until:until,
+      authors: (ownedOnly? [this.currentUser?.hexpubkey()!] : undefined) 
+    };
+    const events = await this.ndk?.fetchEvents(filter,{});
+    console.log(events);
+    let returnValue = []
+    if(events){
+      for(let communityEvent of events){
+        const name = communityEvent.getMatchingTags('d')[0][1];
+        const descriptionTag = communityEvent.getMatchingTags('description')
+        let description;
+        if(descriptionTag && descriptionTag.length > 0){
+          description = descriptionTag[0][1]
+        };
+        const creatorHexKey = communityEvent.pubkey;
+        let image;
+        const imageTag = communityEvent.getMatchingTags('image');
+        if(imageTag && imageTag.length > 0){
+          image = imageTag[0][1];
+        }
+        returnValue.push({
+          id: '34550:'+creatorHexKey+':'+name,
+          name:name,
+          description: description,
+          image: image,
+          creatorHexKey: creatorHexKey,        
+        });
+      }
+    }
+    return returnValue;    
+  }
+
   async fetchEvents(tag: string, limit?: number, since?: number, until?: number): Promise<Set<NDKEvent> | undefined> {
     const filter: NDKFilter = { kinds: [1], '#t': [tag], limit: limit, since: since, until: until };
-    return this.ndk?.fetchEvents(filter);
+    return this.ndk?.fetchEvents(filter,{});
+  }
+
+  async fetchEventsFromCommunity(community: Community, limit?: number, since?: number, until?: number):Promise<Set<NDKEvent> | undefined> {
+    const filter: NDKFilter = { kinds: [1], '#a': [community.id!], limit: limit, since: since, until: until };
+    return this.ndk?.fetchEvents(filter,{});
   }
 
   async fetchEventFromId(id: string) {

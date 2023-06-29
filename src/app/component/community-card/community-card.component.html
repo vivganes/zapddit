@@ -1,0 +1,26 @@
+<div class="card">
+    <div class="card-header">
+        <img *ngIf="community.image" (click)="openCommunityPage()" alt="Community image" src="{{ community.image }}"
+            class="community-image pointer-cursor" title="Open in Snort" />
+        <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community.image == undefined"
+            class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
+            title="Open in Snort" />
+        <span class="break-words-overflow"> n/{{community.name}} <span class="smaller-text">of </span></span>
+        <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="Profile picture"
+            src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="Open in Snort" />
+        <img alt="temp avatar" (click)="openCommunityCreatorInSnort()"
+            *ngIf="community?.creatorProfile?.image == undefined" class="community-image pointer-cursor"
+            src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100" title="Open in Snort" />
+        <span class="break-words-overflow"> {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName :
+        (community.creatorProfile?.name ? community.creatorProfile?.name : (community.creatorHexKey | abbreviateId))}}</span>
+    </div>
+    <div class="card-block">
+        <div class="card-text">
+            {{community.description}}
+        </div>
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-sm btn-link" (click)="openCommunityPage()">Browse</button>
+
+    </div>
+</div>

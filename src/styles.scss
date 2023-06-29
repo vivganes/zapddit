@@ -71,6 +71,30 @@ a{
   overflow-wrap: anywhere!important
 }
 
+.smaller-text{
+  font-size: smaller;
+}
+
+.community-header {
+
+}
+
+.note-community-header{
+  font-size: 0.7rem;
+  letter-spacing: normal;
+  line-height: 1.2rem;
+}
+
+.community-image{
+  display: inline-block;
+    flex: 0 0 auto;
+    height: 2rem;
+    width: 2rem;
+    max-height: 2rem;
+    max-width: 2rem;
+    border-radius: 50%;
+}
+
 .onboarding-home-logo{
   max-width: 200px;
 

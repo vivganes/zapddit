@@ -1,0 +1,30 @@
+<div>
+    <h3 *ngIf="!showOnlyOwnedCommunities" align="center">
+        👥 Recently Created Communities
+    </h3>
+    <h3 *ngIf="showOnlyOwnedCommunities" align="center">
+        👥 Communities you created
+    </h3>
+</div>
+
+<div class="clr-row clr-justify-content-center">
+    <div *ngIf="loadingEvents" class="clr-col-12 clr-col-md-8">
+        <div class="event-loading-spinner clr-justify-content-center">
+            <span class="spinner spinner-md">Loading communities...</span>
+        </div>
+    </div>
+
+    <div *ngIf="!(loadingEvents) && communities?.length === 0" class="clr-row clr-justify-content-center">
+        <div class="alert-items">
+            <div class="alert-item static clr-justify-content-center">
+                <span *ngIf="!showOnlyOwnedCommunities" class="alert-text">No communities at all. Fishy!</span>
+                <span *ngIf="showOnlyOwnedCommunities" class="alert-text">You have not created any community so far.</span>
+            </div>
+        </div>
+    </div>
+
+    <div *ngFor="let community of communities" class="clr-col-12 clr-col-md-8">
+        <app-community-card [community]="community"></app-community-card>
+    </div>
+
+</div>

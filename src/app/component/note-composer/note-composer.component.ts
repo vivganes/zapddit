@@ -6,6 +6,7 @@ import { LoginUtil } from 'src/app/util/LoginUtil';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import Uploader from 'src/app/util/Uploader';
+import { Community } from 'src/app/model/community';
 
 const HASHTAG_REGEX=/(#[^\s!@#$%^&*()=+.\/,\[{\]};:'"?><]+)/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
@@ -32,6 +33,9 @@ export class NoteComposerComponent {
 
   @Input()
   currentTag?:string;
+
+  @Input()
+  currentCommunity?:Community;
 
   @Output()
   postedEventEmitter:  EventEmitter<NDKEvent> = new EventEmitter<NDKEvent>();
@@ -97,7 +101,7 @@ export class NoteComposerComponent {
     let hashTags = this.getHashTagsFromText(noteText);
     let userMentions = this.getUserMentionsFromText(noteText);
     let noteMentions = this.getNoteMentionsFromText(noteText);
-    let postedEvent = await this.ndkProvider.sendNote(noteText,hashTags,userMentions,noteMentions,this.parentEvent);
+    let postedEvent = await this.ndkProvider.sendNote(noteText,hashTags,userMentions,noteMentions,this.parentEvent,this.currentCommunity);
     this.isSendingNote = false;
     this.postedEventEmitter.emit(postedEvent);
     if(this.noteText){

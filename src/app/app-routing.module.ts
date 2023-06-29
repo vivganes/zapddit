@@ -5,6 +5,7 @@ import { SinglePostComponent } from './component/single-post/single-post.compone
 import { PreferencesPageComponent } from './component/preferences-page/preferences-page.component';
 import { PeopleIFollowComponent } from './component/peopleifollow/peopleifollow.component';
 import { ProfileComponent } from './component/profile/profile.component';
+import { CommunityListComponent } from './page/community-list/community-list.component';
 
 const routes: Routes = [
   { path: 't/:topic', component: EventFeedComponent },
@@ -13,6 +14,10 @@ const routes: Routes = [
   { path: '',   redirectTo: '/feed', pathMatch: 'full' }, // redirect to `first-component`
   { path: 'preferences', component: PreferencesPageComponent},
   { path: 'feed', component: EventFeedComponent },
+  { path: 'communities/discover', component: CommunityListComponent },
+  { path: 'communities/joined', component: CommunityListComponent },
+  { path: 'communities/own', component: CommunityListComponent },
+  { path: 'n/:communityName/:creatorHexKey', component: EventFeedComponent },
   { path: '**', component: EventFeedComponent },
 ];
 
