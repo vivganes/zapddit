@@ -42,10 +42,10 @@
             title="Open in Snort" />
       <span class="break-words-overflow"> {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}</span>
     </div>    
-    <div class="clr-control-container" align="center">
+    <div class="clr-control-container">
       <div class="clr-toggle-wrapper">
         <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" class="clr-toggle"  />
-        <label for="toggle1" class="clr-control-label">Unmoderated feed</label>
+        <label for="toggle1" class="clr-control-label">Show unmoderated feed</label>
       </div>      
     </div>  
   </div>
