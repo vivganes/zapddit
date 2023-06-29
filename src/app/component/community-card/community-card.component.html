@@ -21,6 +21,7 @@
     </div>
     <div class="card-footer">
         <button class="btn btn-sm btn-link" (click)="openCommunityPage()">Browse</button>
-
+        <button *ngIf="!followingNow" class="btn btn-sm btn-link" (click)="joinCommunity()">Join</button>
+        <button *ngIf="followingNow" class="btn btn-sm btn-link" (click)="leaveCommunity()">Leave</button>
     </div>
 </div>

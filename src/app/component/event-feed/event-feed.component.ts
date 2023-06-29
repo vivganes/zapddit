@@ -35,9 +35,6 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   community?: Community;
   showUnapprovedPosts:boolean = false;
 
-  @Output()
-  followChanged: EventEmitter<string> = new EventEmitter<string>();
-
   followedTopics: string[]|undefined;
   events: Set<NDKEvent> | undefined;
   nextEvents: Set<NDKEvent> | undefined;

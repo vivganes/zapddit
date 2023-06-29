@@ -5,6 +5,7 @@ export class Constants {
   public static readonly LOGGEDINUSINGPUBKEY = 'loggedInUsingPubKey';
   public static readonly TRYING_ZAPDDIT = 'tryingZapddit';
   public static readonly FOLLOWEDTOPICS = 'followedTopics';
+  public static readonly FOLLOWEDCOMMUNITIES = 'followedCommunities';
   public static readonly DOWNZAPRECIPIENTS = 'downzapRecipients';
   public static readonly DEFAULTSATSFORZAPS = 'defaultSatsForZaps';
   public static readonly MUTEDTOPICS = 'mutedTopics';

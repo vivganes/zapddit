@@ -7,11 +7,11 @@
       </a>
     </div>
     <div class="search_form">
-    <form *ngIf="isLoggedIn()" class="search"  onsubmit="return false;">
-      <label for="search_input">
-          <input id="search_input" type="text"  class="hashtag-search" placeholder="# Search hashtag ⏎" (keyup.enter)="search()">
-      </label>
-    </form>
+      <form *ngIf="isLoggedIn()" class="search"  onsubmit="return false;">
+        <label for="search_input">
+            <input id="search_input" type="text"  class="hashtag-search" placeholder="# Search hashtag ⏎" (keyup.enter)="search()">
+        </label>
+      </form>
     </div>
     <div class="header-actions">
       <a *ngIf="isLoggedIn()" href="javascript://" (click)="openWizard()" class="nav-link" aria-label="setup" title="Onboarding Wizard">
@@ -65,9 +65,9 @@
       <a clrVerticalNavLink routerLink="/communities/discover" routerLinkActive="active">
         <cds-icon shape="search" clrVerticalNavIcon></cds-icon><span class="nav-text">Discover</span>
       </a>
-      <!-- <a clrVerticalNavLink routerLink="/communities" routerLinkActive="active">
+      <a clrVerticalNavLink routerLink="/communities/joined" routerLinkActive="active">
         <cds-icon shape="internet-of-things" clrVerticalNavIcon></cds-icon><span class="nav-text">Joined</span>
-      </a> -->
+      </a>
       <a clrVerticalNavLink routerLink="/communities/own" routerLinkActive="active">
         <cds-icon shape="star" clrVerticalNavIcon></cds-icon><span class="nav-text">My own</span>
       </a>

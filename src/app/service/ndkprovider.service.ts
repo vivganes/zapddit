@@ -28,6 +28,7 @@ interface ZappedItAppData {
   followedTopics: string;
   downzapRecipients: string;
   mutedTopics:string;
+  followedCommunities:string;
 }
 
 interface MutedUserMetaData{
@@ -54,6 +55,7 @@ export class NdkproviderService {
     followedTopics: '',
     downzapRecipients: '',
     mutedTopics: '',
+    followedCommunities:''
   };
 
   isNip05Verified$ = new BehaviorSubject<boolean>(false);
@@ -64,6 +66,7 @@ export class NdkproviderService {
   loggingIn: boolean = false;
   loginError: string | undefined;
   followedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
+  followedCommunitiesEmitter: EventEmitter<string> = new EventEmitter<string>();
   peopleIFollowEmitter: NDKSubscription | undefined;
   private signer: NDKSigner | undefined = undefined;
   isNip07 = false;
@@ -653,32 +656,52 @@ export class NdkproviderService {
       authors: (ownedOnly? [this.currentUser?.hexpubkey()!] : undefined) 
     };
     const events = await this.ndk?.fetchEvents(filter,{});
-    console.log(events);
-    let returnValue = []
-    if(events){
-      for(let communityEvent of events){
+    let returnValue:Community[] = this.makeCommunitiesFromEvents(events);
+    return returnValue;    
+  }
+
+  private makeCommunitiesFromEvents(events: Set<NDKEvent> | undefined) {
+    let returnValue = [];
+    if (events) {
+      for (let communityEvent of events) {
         const name = communityEvent.getMatchingTags('d')[0][1];
-        const descriptionTag = communityEvent.getMatchingTags('description')
+        const descriptionTag = communityEvent.getMatchingTags('description');
         let description;
-        if(descriptionTag && descriptionTag.length > 0){
-          description = descriptionTag[0][1]
+        if (descriptionTag && descriptionTag.length > 0) {
+          description = descriptionTag[0][1];
         };
         const creatorHexKey = communityEvent.pubkey;
         let image;
         const imageTag = communityEvent.getMatchingTags('image');
-        if(imageTag && imageTag.length > 0){
+        if (imageTag && imageTag.length > 0) {
           image = imageTag[0][1];
         }
         returnValue.push({
-          id: '34550:'+creatorHexKey+':'+name,
-          name:name,
+          id: '34550:' + creatorHexKey + ':' + name,
+          name: name,
           description: description,
           image: image,
-          creatorHexKey: creatorHexKey,        
+          creatorHexKey: creatorHexKey,
         });
       }
     }
-    return returnValue;    
+    return returnValue;
+  }
+
+  async fetchJoinedCommunities(){
+    if(this.appData.followedCommunities === ''){
+      return [];
+    }
+    const joinedArr = this.appData.followedCommunities.split(',');
+    const authors = joinedArr.map((id)=> id.split(':')[1])
+    const names = joinedArr.map((id) => id.split(':')[2])
+    const filter:NDKFilter = {
+      kinds:[34550],
+      authors:authors,
+      '#d':names
+    }
+    const communityEvents = await this.ndk?.fetchEvents(filter,{});
+    return this.makeCommunitiesFromEvents(communityEvents);
   }
 
   async getApprovalEvents(event:NDKEvent):Promise<Set<NDKEvent>|undefined>{
@@ -747,7 +770,7 @@ export class NdkproviderService {
     throw new Error('Method not implemented.');
   }
 
-  publishAppData(followListCsv?: string, downzapRecipients?: string, mutedTopics?: string) {
+  publishAppData(followListCsv?: string, downzapRecipients?: string, mutedTopics?: string, followedCommunitiesCsv?:string) {
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 30078;
     if (this.currentUser) {
@@ -768,7 +791,14 @@ export class NdkproviderService {
       mutedTopicsToPublish = this.appData.mutedTopics;
     }
 
-    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish + '\n' + mutedTopicsToPublish;
+    let followedCommunitiesToPublish = '';
+    if (followedCommunitiesCsv !== undefined) {
+      followedCommunitiesToPublish = followedCommunitiesCsv;
+    } else {
+      followedCommunitiesToPublish = this.appData.followedCommunities;
+    }
+
+    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish + '\n' + mutedTopicsToPublish + '\n' + followedCommunitiesToPublish;
     const tag: NDKTag = ['d', 'zapddit.com'];
     ndkEvent.tags = [tag];
     if (this.canWriteToNostr) {
@@ -778,8 +808,10 @@ export class NdkproviderService {
       followedTopics: followedTopicsToPublish,
       downzapRecipients: downzapRecipientsToPublish,
       mutedTopics: mutedTopicsToPublish,
+      followedCommunities: followedCommunitiesToPublish
     };
     this.followedTopicsEmitter.emit(followedTopicsToPublish);
+    this.followedCommunitiesEmitter.emit(followedCommunitiesToPublish);
   }
 
   async followUnfollowContact(hexPubKeyToFollow: string, follow: boolean) {
@@ -841,6 +873,10 @@ export class NdkproviderService {
           case 2:
             this.appData.mutedTopics = lineWiseAppData[i];
             this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
+            break;
+          case 3:
+            this.appData.followedCommunities = lineWiseAppData[i];
+            this.followedCommunitiesEmitter.emit(this.appData.followedCommunities);
             break;
           default:
           //do nothing. irrelevant data

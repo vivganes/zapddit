@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Community } from 'src/app/model/community';
@@ -22,7 +23,7 @@ export class CommunityListComponent {
   nextEvents: Community[] | undefined;
   isLoggedInUsingPubKey:boolean = false;
   showOnlyOwnedCommunities: boolean = false;
-  showOnlyFollowedCommunities: boolean = false;
+  showOnlyJoinedCommunities: boolean = false;
 
   constructor(private ndkProvider:NdkproviderService, private router:Router){
 
@@ -34,6 +35,10 @@ export class CommunityListComponent {
       this.showOnlyOwnedCommunities = true;
     }
 
+    if(url.indexOf('/joined')>-1){
+      this.showOnlyJoinedCommunities = true;
+    }
+
     this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
       this.isLoggedInUsingPubKey = val;
     });
@@ -41,15 +46,29 @@ export class CommunityListComponent {
     this.fetchCommunities();    
   }
 
+  onLeave(community:any){
+    let cardToRemove = community as Community
+    const listAfterDelete = this.communities?.filter((c)=> c.id !== cardToRemove.id);
+    this.communities = listAfterDelete;
+  }
+
   async fetchCommunities(){
     try{
       this.loadingEvents = true;
-      this.communities = await this.ndkProvider.fetchCommunities(this.limit, undefined, this.until, this.showOnlyOwnedCommunities);
+      if(this.showOnlyJoinedCommunities){
+        this.communities = await this.fetchJoinedCommunities();
+      } else {
+        this.communities = await this.ndkProvider.fetchCommunities(this.limit, undefined, this.until, this.showOnlyOwnedCommunities);
+      }
     } catch (err){
       console.error(err);
     } finally{
       this.loadingEvents = false;
     }
+  }
+
+  async fetchJoinedCommunities():Promise<Community[]>{
+    return await this.ndkProvider.fetchJoinedCommunities();
   }
 
 }

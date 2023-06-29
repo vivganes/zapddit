@@ -1,9 +1,12 @@
 <div>
-    <h3 *ngIf="!showOnlyOwnedCommunities" align="center">
+    <h3 *ngIf="!showOnlyOwnedCommunities && !showOnlyJoinedCommunities" align="center">
         👥 Recently Created Communities
     </h3>
     <h3 *ngIf="showOnlyOwnedCommunities" align="center">
         👥 Communities you created
+    </h3>
+    <h3 *ngIf="showOnlyJoinedCommunities" align="center">
+        👥 Communities you joined
     </h3>
 </div>
 
@@ -24,7 +27,6 @@
     </div>
 
     <div *ngFor="let community of communities" class="clr-col-12 clr-col-md-8">
-        <app-community-card [community]="community"></app-community-card>
+        <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
     </div>
-
 </div>
