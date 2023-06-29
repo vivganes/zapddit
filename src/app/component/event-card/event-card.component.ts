@@ -44,6 +44,11 @@ export class EventCardComponent implements OnInit, OnDestroy{
   isQuotedEvent: boolean = false;
   @Input()
   peopleIFollowLoadedFromRelay: boolean = false;
+  @Input()
+  showUnapprovedPosts:boolean = true;
+  loadingApproval:boolean = false;
+
+  approvalEvents?:Set<NDKEvent>;
 
   SecurityContext = SecurityContext;
   nip05Address:string | undefined;
@@ -116,7 +121,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNoteMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNEventMentionsWithComponents(this.displayedContent)
-    this.linkifiedContent = this.linkifyContent(this.displayedContent)
+    this.linkifiedContent = this.linkifyContent(this.displayedContent)    
     this.getAuthor();
     this.getCommunity();
     this.getRelatedEventsAndSegregate();
@@ -142,6 +147,13 @@ export class EventCardComponent implements OnInit, OnDestroy{
     console.log(contentHeight)
     if(contentHeight >= 300){
       this.displayShowMoreButton = true;
+    }
+  }
+
+  async getApproval(){
+    const approvalEvents = await this.ndkProvider.getApprovalEvents(this.event!)
+    if(approvalEvents){
+      this.approvalEvents = approvalEvents; 
     }
   }
 
@@ -374,6 +386,12 @@ export class EventCardComponent implements OnInit, OnDestroy{
       this.community.image = communityDetails?.image
       this.community.description = communityDetails?.description
       this.changeDetector.detectChanges();
+
+      if(!this.showUnapprovedPosts){
+        this.loadingApproval = true;
+        await this.getApproval();
+        this.loadingApproval = false;
+      }
     }
   }
 

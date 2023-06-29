@@ -41,7 +41,13 @@
             class="community-image pointer-cursor" src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100"
             title="Open in Snort" />
       <span class="break-words-overflow"> {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}</span>
-    </div>
+    </div>    
+    <div class="clr-control-container" align="center">
+      <div class="clr-toggle-wrapper">
+        <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" class="clr-toggle"  />
+        <label for="toggle1" class="clr-control-label">Unmoderated feed</label>
+      </div>      
+    </div>  
   </div>
 </ng-template>
 <ng-template [ngIf]="(tag ===undefined && community === undefined)" #homefeedHeader>
@@ -83,7 +89,7 @@
 <ng-template [ngIf]="!loadingEvents">
   <div *ngFor="let event of events" class="clr-row clr-justify-content-center">
     <div class="clr-col-12 clr-col-md-8">
-      <app-event-card [event]="event" [peopleIFollowLoadedFromRelay]="peopleIFollowLoadedFromRelay" />
+      <app-event-card [event]="event" [peopleIFollowLoadedFromRelay]="peopleIFollowLoadedFromRelay" [showUnapprovedPosts]="showUnapprovedPosts" />
     </div>
   </div>
 </ng-template>

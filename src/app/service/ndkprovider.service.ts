@@ -681,6 +681,21 @@ export class NdkproviderService {
     return returnValue;    
   }
 
+  async getApprovalEvents(event:NDKEvent):Promise<Set<NDKEvent>|undefined>{
+    const aTags = event.getMatchingTags('a');
+    if(aTags){
+      const communityTags = aTags.map((aTag) => aTag[1]);
+      const filter:NDKFilter = {
+        kinds:[4550],
+        '#e':[event.id],
+        '#a':communityTags
+      }
+      const approvalEvents = await this.ndk?.fetchEvents(filter,{});
+      return approvalEvents;
+    }
+    return undefined;
+  }
+
   async fetchEvents(tag: string, limit?: number, since?: number, until?: number): Promise<Set<NDKEvent> | undefined> {
     const filter: NDKFilter = { kinds: [1], '#t': [tag], limit: limit, since: since, until: until };
     return this.ndk?.fetchEvents(filter,{});

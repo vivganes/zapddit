@@ -26,6 +26,7 @@ export class PreferencesPageComponent {
   addingRelay: boolean = false;
   loadContentFromPeopleIFollow: boolean = true;
   hideNonZapReactions: boolean = false;
+  showUnapprovedPosts: boolean = false;
   changeDetector: ChangeDetectorRef;
 
   relayUrls: string[] | undefined;
@@ -59,6 +60,10 @@ export class PreferencesPageComponent {
     var hideNonZapReactionsFromLocal = localStorage.getItem(Constants.HIDE_NONZAP_REACTIONS);
     if (hideNonZapReactionsFromLocal && hideNonZapReactionsFromLocal === 'true') {
       this.hideNonZapReactions = true;
+    }
+    var showUnapprovedPostsFromLocal = localStorage.getItem(Constants.SHOW_UNAPPROVED);
+    if (showUnapprovedPostsFromLocal && showUnapprovedPostsFromLocal === 'true') {
+      this.showUnapprovedPosts = true;
     }
     this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
       Promise.resolve().then(() => {
@@ -131,6 +136,10 @@ export class PreferencesPageComponent {
 
   onHideNonZapChange(checked: any) {
     localStorage.setItem(Constants.HIDE_NONZAP_REACTIONS, checked);
+  }
+
+  onShowUnapprovedChange(checked: any) {
+    localStorage.setItem(Constants.SHOW_UNAPPROVED, checked);
   }
 
   async getRelayList() {

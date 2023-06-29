@@ -4,7 +4,7 @@
 
 <clr-accordion [clrAccordionMultiPanel]="true">
   <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
-    <clr-accordion-title>Downzap Recipients</clr-accordion-title>
+    <clr-accordion-title>Zaps ⚡</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <clr-textarea-container>
@@ -45,43 +45,48 @@
          <button type="submit" [disabled]="isLoggedInUsingPubKey"
           class="btn btn-primary" (click)="saveDownzapRecipients()">Save</button>
     </form>
+    <form clrForm onsubmit="return false;">
+      <clr-checkbox-container clrInline>
+        <clr-checkbox-wrapper>
+          <label>{{'Hide non-zap options for upvote and downvote'}}</label>
+          <input type="checkbox" [(ngModel)]="hideNonZapReactions" id="hide-non-zap" clrCheckbox
+          placeholder="#Hide Non Zap Reactions" (ngModelChange)="onHideNonZapChange($event)" name="hideNonZap" id="hideNonZap">
+        </clr-checkbox-wrapper>
+        <clr-control-helper>Enable this option to hide non-zap upvote and downvotes for notes and comments.</clr-control-helper>
+      </clr-checkbox-container>
+    </form>
+    <form clrForm onsubmit="return false;">
+      <clr-input-container>
+          <label>No. of sats for Zaps</label>
+          <input clrInput
+          [disabled]="isLoggedInUsingPubKey"
+          type="number"
+          id="sats-for-zaps"
+          value="{{ ndkProvider.defaultSatsForZaps }}" >
+          <clr-control-helper>These many sats will be sent when you zap</clr-control-helper>
+      </clr-input-container>
+      <button [clrLoading]="settingDefaultSats" [disabled]="isLoggedInUsingPubKey"
+       type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button>
+    </form>
     </clr-accordion-content>
   </clr-accordion-panel>
 
-  <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
-    <clr-accordion-title>Only Zaps Mode ⚡</clr-accordion-title>
+  <clr-accordion-panel>
+    <clr-accordion-title>Communities</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <clr-checkbox-container clrInline>
           <clr-checkbox-wrapper>
-            <label>{{'Hide non-zap options for upvote and downvote'}}</label>
-            <input type="checkbox" [(ngModel)]="hideNonZapReactions" id="hide-non-zap" clrCheckbox
-            placeholder="#Hide Non Zap Reactions" (ngModelChange)="onHideNonZapChange($event)" name="hideNonZap" id="hideNonZap">
+            <label>Show unmoderated feed by default</label>
+            <input type="checkbox" [(ngModel)]="showUnapprovedPosts" id="show-unapproved-posts" clrCheckbox
+            (ngModelChange)="onShowUnapprovedChange($event)" name="showUnapproved" id="showUnapproved"/>
           </clr-checkbox-wrapper>
-          <clr-control-helper>Enable this option to hide non-zap upvote and downvotes for notes and comments.</clr-control-helper>
+          <clr-control-helper>Never mind about moderator approvals. Show all notes.</clr-control-helper>
         </clr-checkbox-container>
-    </form>
+      </form>    
     </clr-accordion-content>
   </clr-accordion-panel>
 
-  <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
-    <clr-accordion-title>Default sats for Zaps</clr-accordion-title>
-    <clr-accordion-content *clrIfExpanded>
-      <form clrForm onsubmit="return false;">
-        <clr-input-container>
-            <label>No. of sats for Zaps</label>
-            <input clrInput
-            [disabled]="isLoggedInUsingPubKey"
-            type="number"
-            id="sats-for-zaps"
-            value="{{ ndkProvider.defaultSatsForZaps }}" >
-            <clr-control-helper>These many sats will be sent when you zap</clr-control-helper>
-        </clr-input-container>
-        <button [clrLoading]="settingDefaultSats" [disabled]="isLoggedInUsingPubKey"
-         type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button>
-    </form>
-    </clr-accordion-content>
-  </clr-accordion-panel>
 
   <clr-accordion-panel>
     <clr-accordion-title>Muted Topics</clr-accordion-title>

@@ -33,6 +33,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
 
   @Input()
   community?: Community;
+  showUnapprovedPosts:boolean = false;
 
   @Output()
   followChanged: EventEmitter<string> = new EventEmitter<string>();
@@ -76,6 +77,10 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   constructor(ndkProvider: NdkproviderService, private topicService: TopicService,
     private route: ActivatedRoute, private router:Router) {
     this.ndkProvider = ndkProvider;
+    var showUnapprovedPostsFromLocal = localStorage.getItem(Constants.SHOW_UNAPPROVED);
+    if (showUnapprovedPostsFromLocal && showUnapprovedPostsFromLocal === 'true') {
+      this.showUnapprovedPosts = true;
+    }
 
     const followedTopicsByNdk = ndkProvider.appData.followedTopics;
     if (followedTopicsByNdk === '') {
