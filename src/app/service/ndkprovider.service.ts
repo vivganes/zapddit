@@ -382,7 +382,8 @@ export class NdkproviderService {
     hashtags?: string[],
     userMentionsHex?: string[],
     postMentions?: string[],
-    replyingToEvent?: NDKEvent
+    replyingToEvent?: NDKEvent,
+    community?: Community
   ): Promise<NDKEvent> {
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 1;
@@ -400,6 +401,9 @@ export class NdkproviderService {
     if (replyingToEvent) {
       tags.push(...replyingToEvent.getMatchingTags('p'));
       tags.push(['e', replyingToEvent.id, '', 'reply']);
+    }
+    if (community) {
+      tags.push(['a',community.id!])
     }
     ndkEvent.tags = tags;
     if (this.currentUser) {
@@ -641,9 +645,15 @@ export class NdkproviderService {
     return undefined;
   }
 
-  async fetchCommunities(limit?: number, since?: number, until?: number ):Promise<Community[] | undefined>{
-    const filter: NDKFilter = { kinds: [34550], limit: limit, since:since, until:until };
+  async fetchCommunities(limit?: number, since?: number, until?: number, ownedOnly?:boolean ):Promise<Community[] | undefined>{
+    const filter: NDKFilter = { kinds: [34550], 
+      limit: limit, 
+      since:since, 
+      until:until,
+      authors: (ownedOnly? [this.currentUser?.hexpubkey()!] : undefined) 
+    };
     const events = await this.ndk?.fetchEvents(filter,{});
+    console.log(events);
     let returnValue = []
     if(events){
       for(let communityEvent of events){

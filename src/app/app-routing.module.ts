@@ -14,7 +14,9 @@ const routes: Routes = [
   { path: '',   redirectTo: '/feed', pathMatch: 'full' }, // redirect to `first-component`
   { path: 'preferences', component: PreferencesPageComponent},
   { path: 'feed', component: EventFeedComponent },
-  { path: 'communities', component: CommunityListComponent },
+  { path: 'communities/discover', component: CommunityListComponent },
+  { path: 'communities/joined', component: CommunityListComponent },
+  { path: 'communities/own', component: CommunityListComponent },
   { path: 'n/:communityName/:creatorHexKey', component: EventFeedComponent },
   { path: '**', component: EventFeedComponent },
 ];

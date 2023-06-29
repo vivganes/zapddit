@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { Community } from 'src/app/model/community';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 
@@ -20,12 +21,19 @@ export class CommunityListComponent {
   reachedEndOfFeed : boolean = false;
   nextEvents: Community[] | undefined;
   isLoggedInUsingPubKey:boolean = false;
+  showOnlyOwnedCommunities: boolean = false;
+  showOnlyFollowedCommunities: boolean = false;
 
-  constructor(private ndkProvider:NdkproviderService){
+  constructor(private ndkProvider:NdkproviderService, private router:Router){
 
   }
 
   ngOnInit(){
+    const url = this.router.url;
+    if(url.indexOf('/own')>-1){
+      this.showOnlyOwnedCommunities = true;
+    }
+
     this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
       this.isLoggedInUsingPubKey = val;
     });
@@ -34,9 +42,14 @@ export class CommunityListComponent {
   }
 
   async fetchCommunities(){
-    this.loadingEvents = true;
-    this.communities = await this.ndkProvider.fetchCommunities(this.limit, undefined, this.until);
-    this.loadingEvents = false;
+    try{
+      this.loadingEvents = true;
+      this.communities = await this.ndkProvider.fetchCommunities(this.limit, undefined, this.until, this.showOnlyOwnedCommunities);
+    } catch (err){
+      console.error(err);
+    } finally{
+      this.loadingEvents = false;
+    }
   }
 
 }

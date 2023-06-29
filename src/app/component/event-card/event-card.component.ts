@@ -714,7 +714,17 @@ export class EventCardComponent implements OnInit, OnDestroy{
   });
  }
 
- ngOnDestroy(): void {
-  this.fetchingMutedUsersFromRelaySub.unsubscribe();
- }
+  openCommunityPage(){
+    if(this.community)
+      this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)   
+  }
+
+  openCommunityCreatorInSnort(){
+    if(this.community)
+      window.open('https://snort.social/e/'+this.community.creatorHexKey!,'_blank')
+  }
+
+  ngOnDestroy(): void {
+    this.fetchingMutedUsersFromRelaySub.unsubscribe();
+  }
 }

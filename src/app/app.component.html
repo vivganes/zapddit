@@ -61,6 +61,17 @@
         <cds-icon shape="logout" clrVerticalNavIcon></cds-icon><span class="nav-text">{{ndkProvider.isTryingZapddit ? 'Clear & Reset' : 'Logout'}}</span>
       </a>
       <div class="nav-divider"></div>
+      <label class="nav-header">Communities <span class="label label-info">BETA</span></label>
+      <a clrVerticalNavLink routerLink="/communities/discover" routerLinkActive="active">
+        <cds-icon shape="search" clrVerticalNavIcon></cds-icon><span class="nav-text">Discover</span>
+      </a>
+      <!-- <a clrVerticalNavLink routerLink="/communities" routerLinkActive="active">
+        <cds-icon shape="internet-of-things" clrVerticalNavIcon></cds-icon><span class="nav-text">Joined</span>
+      </a> -->
+      <a clrVerticalNavLink routerLink="/communities/own" routerLinkActive="active">
+        <cds-icon shape="star" clrVerticalNavIcon></cds-icon><span class="nav-text">My own</span>
+      </a>
+      <div class="nav-divider"></div>
       <label class="nav-header">Followed Topics</label>
       <app-topic *ngFor="let topic of followedTopics" [topic]="topic" [isMobileScreen]="isMobileScreen"></app-topic>
       <div class="nav-divider"></div>
@@ -71,14 +82,7 @@
     </clr-vertical-nav>
     <div class="content-area">
       <div *ngIf="isLoggedIn(); else notloggedin">
-        <div class="search_form_mobile">
-          <form *ngIf="isLoggedIn()" class="search"  onsubmit="return false;">
-            <label for="search_input_mobile">
-                <input id="search_input_mobile" type="search"  class="hashtag-search-mobile" placeholder="#️ Search hashtag ⏎" (keyup.enter)="searchFromMobile()">
-                <cds-icon shape="search"></cds-icon>
-            </label>
-          </form>
-          </div>
+        
         <router-outlet></router-outlet>
       </div>
       <ng-template #notloggedin>

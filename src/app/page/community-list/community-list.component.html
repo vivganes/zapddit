@@ -1,6 +1,9 @@
 <div>
-    <h3 align="center">
+    <h3 *ngIf="!showOnlyOwnedCommunities" align="center">
         👥 Recently Created Communities
+    </h3>
+    <h3 *ngIf="showOnlyOwnedCommunities" align="center">
+        👥 Communities you created
     </h3>
 </div>
 
@@ -14,7 +17,8 @@
     <div *ngIf="!(loadingEvents) && communities?.length === 0" class="clr-row clr-justify-content-center">
         <div class="alert-items">
             <div class="alert-item static clr-justify-content-center">
-                <span class="alert-text">No communities at all. Fishy!</span>
+                <span *ngIf="!showOnlyOwnedCommunities" class="alert-text">No communities at all. Fishy!</span>
+                <span *ngIf="showOnlyOwnedCommunities" class="alert-text">You have not created any community so far.</span>
             </div>
         </div>
     </div>

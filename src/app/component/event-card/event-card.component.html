@@ -1,17 +1,18 @@
 <div class="card" *ngIf="!mutedAuthor" #parent>
-  <div *ngIf="community" class="card-header">
-    <img *ngIf="community?.image" (click)="openAuthorInSnort()" alt="Community image"
-        src="{{ community.image }}" class="community-image pointer-cursor" title="Open in Snort" />
-    <img alt="temp community avatar" (click)="openAuthorInSnort()" *ngIf="community?.image == undefined"
+  <div *ngIf="community" class="card-header note-community-header">
+    <img *ngIf="community?.image" (click)="openCommunityPage()" alt="Community image"
+        src="{{ community.image }}" class="community-image pointer-cursor" title="Browse" />
+    <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
         class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
-        title="Open in Snort" /> 
-    n/{{community.name}} <span class="smaller-text">of </span> 
-    <img *ngIf="community?.creatorProfile?.image" (click)="openAuthorInSnort()" alt="Profile picture"
+        title="Browse" /> 
+    <span class="break-words-overflow"> n/{{community.name}} <span class="smaller-text">of </span> 
+    <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="Profile picture"
         src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="Open in Snort" />
-      <img alt="temp avatar" (click)="openAuthorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
+    <img alt="temp avatar" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
         class="community-image pointer-cursor" src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100"
         title="Open in Snort" />
-    {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey)}}
+    {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}
+    </span>
   </div>
   <div class="card-block">    
     <div class="card-media-block">

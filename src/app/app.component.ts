@@ -29,6 +29,8 @@ import {
   thumbsUpIcon,
   downloadCloudIcon,
   uploadCloudIcon,
+  internetOfThingsIcon,
+  starIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
@@ -42,7 +44,7 @@ import {
   BreakpointState
 } from '@angular/cdk/layout';
 
-ClarityIcons.addIcons(thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
+ClarityIcons.addIcons(starIcon,internetOfThingsIcon,thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -148,17 +150,6 @@ export class AppComponent implements OnInit, OnDestroy{
 
   search() {
     let topic = (<HTMLInputElement>document.getElementById('search_input')).value;
-    if(topic && topic !==''){
-      topic = topic.toLowerCase();
-      if(topic.startsWith('#')){
-        topic = topic.slice(1);
-      }
-      this.router.navigate(['t', { topic }]);
-    }
-  }
-
-  searchFromMobile() {
-    let topic = (<HTMLInputElement>document.getElementById('search_input_mobile')).value;
     if(topic && topic !==''){
       topic = topic.toLowerCase();
       if(topic.startsWith('#')){

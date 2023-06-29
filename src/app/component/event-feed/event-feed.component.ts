@@ -1,6 +1,6 @@
 import { Constants } from 'src/app/util/Constants';
 import { Component, EventEmitter, Input, Output, SimpleChanges, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { TopicService } from 'src/app/service/topic.service';
@@ -70,11 +70,11 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       if(val===false && localStorage.getItem(Constants.FOLLOWERS_FROM_RELAY)==='false'){
         this.peopleIFollowLoadedFromRelay = true;
       }
-    })
+    })  
   }
 
   constructor(ndkProvider: NdkproviderService, private topicService: TopicService,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute, private router:Router) {
     this.ndkProvider = ndkProvider;
 
     const followedTopicsByNdk = ndkProvider.appData.followedTopics;
@@ -96,9 +96,11 @@ export class EventFeedComponent implements OnInit,OnDestroy{
         const self = this;
         this.ndkProvider.getCommunityDetails(`34550:${communityCreatorHexKey}:${communityName}`).then((community)=>{
           self.community = community;
+          self.populateCommunityAuthorProfile();
           self.until = Date.now();
           self.limit = BUFFER_REFILL_PAGE_SIZE;
           self.getEventsAndFillBuffer();
+
         })
       }      
       else {
@@ -110,6 +112,13 @@ export class EventFeedComponent implements OnInit,OnDestroy{
         this.getEventsAndFillBuffer();
       }
     });
+  }
+
+  async populateCommunityAuthorProfile(){
+    if(this.community && !this.community.creatorProfile){
+      const creator = await this.ndkProvider.getProfileFromHex(this.community.creatorHexKey!)
+      this.community.creatorProfile = creator;
+    }
   }
 
   async getEventsAndFillBuffer() {
@@ -289,7 +298,28 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     this.getEventsForNextPage();
   }
 
+  openCommunityPage(){
+    if(this.community)
+      this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)   
+  }
+
+  openCommunityCreatorInSnort(){
+    if(this.community)
+      window.open('https://snort.social/e/'+this.community.creatorHexKey!,'_blank')
+  }
+
   ngOnDestroy(): void {
     this.fetchingPeopleIFollowFromRelaySub.unsubscribe();
+  }
+
+  searchFromMobile(){
+    let topic = (<HTMLInputElement>document.getElementById('search_input_mobile')).value;
+    if(topic && topic !==''){
+      topic = topic.toLowerCase();
+      if(topic.startsWith('#')){
+        topic = topic.slice(1);
+      }
+      this.router.navigate(['t', { topic }]);
+    }
   }
 }
