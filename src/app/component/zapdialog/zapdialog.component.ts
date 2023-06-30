@@ -4,6 +4,7 @@ import { NDKEvent } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import QRCodeStyling from 'qr-code-styling';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { Constants } from 'src/app/util/Constants';
 
 @Component({
   selector: 'app-zapdialog',
@@ -36,7 +37,7 @@ export class ZapdialogComponent implements OnInit {
   @Output()
   onUpzapDone = new EventEmitter<boolean>();
 
-  zapValue:number = 21;
+  zapValue:number = 1;
   disableZap :boolean =false;
   showQR:boolean = false;
   @ViewChild("canvas")
@@ -55,6 +56,14 @@ export class ZapdialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.showQR = false;
+    const satsFromLocalStorage = localStorage.getItem(Constants.DEFAULTSATSFORZAPS);
+      if (satsFromLocalStorage) {
+        try {
+          this.zapValue = Number.parseInt(satsFromLocalStorage);
+        } catch (e) {
+          console.error(e);
+        }
+      }
   }
 
   async initiateZap(){
@@ -71,7 +80,7 @@ export class ZapdialogComponent implements OnInit {
         if (this.event) {
         if(this.canvas && this.canvas?.nativeElement)
           this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
-        const invoice = await this.ndkProvider.zapRequest(this.event!);
+        const invoice = await this.ndkProvider.zapRequest(this.zapValue, this.event!);
         const qr = new QRCodeStyling({
           width:  256,
           height:  256,
@@ -103,7 +112,7 @@ export class ZapdialogComponent implements OnInit {
       if (this.event) {
         if(this.canvas && this.canvas?.nativeElement)
           this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
-        const invoice = await this.ndkProvider.downZapRequest(
+        const invoice = await this.ndkProvider.downZapRequest(this.zapValue,
             this.event,
             await this.ndkProvider.getNdkUserFromNpub(this.ndkProvider.appData.downzapRecipients),
             '-'
