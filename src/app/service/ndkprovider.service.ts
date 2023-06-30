@@ -737,13 +737,23 @@ export class NdkproviderService {
     return this.ndk?.fetchEvent(filter,{});
   }
 
-  async fetchAllFollowedEvents(
+  async fetchAllFollowedTopicEvents(
     followedTopics: string[],
     limit?: number,
     since?: number,
     until?: number
   ): Promise<Set<NDKEvent> | undefined> {
     const filter: NDKFilter = { kinds: [1], '#t': followedTopics, limit: limit, since: since, until: until };
+    return this.ndk?.fetchEvents(filter);
+  }
+
+  async fetchAllFollowedCommunityEvents(
+    followedCommunities: string[],
+    limit?: number,
+    since?: number,
+    until?: number
+  ): Promise<Set<NDKEvent> | undefined> {
+    const filter: NDKFilter = { kinds: [1], '#a': followedCommunities, limit: limit, since: since, until: until };
     return this.ndk?.fetchEvents(filter);
   }
 

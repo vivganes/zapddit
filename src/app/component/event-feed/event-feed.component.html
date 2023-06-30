@@ -54,6 +54,22 @@
   <h3 align="center">
     🏡 My Feed
   </h3>
+  
+  <div align="center">
+      <div class="clr-control-container" align="center">
+          <select id="select-full" title="feedType" clrSelect name="options" [(ngModel)]="feedType" (ngModelChange)="onChangeFeedType($event)">
+            <option [value]="feedTypeOptions[0]">Topics Feed</option>
+            <option [value]="feedTypeOptions[1]">Communities Feed</option>
+          </select>
+      </div>
+    
+    <div class="clr-control-container" align="center">
+      <div class="clr-toggle-wrapper" *ngIf="feedType === feedTypeOptions[1]">
+        <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" class="clr-toggle"  />
+        <label for="toggle1" class="clr-control-label">Show unmoderated feed</label>
+      </div>      
+    </div>
+  </div>    
 </ng-template>
 <div *ngIf="(!tag) && followedTopics?.length == 0 && !events" class="clr-row clr-justify-content-center">
   <div align="center" class="alert alert-info clr-col-12 clr-col-md-8" role="alert">
