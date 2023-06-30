@@ -1,5 +1,5 @@
 import { Constants } from 'src/app/util/Constants';
-import { Component, EventEmitter, Input, Output, SimpleChanges, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges, OnInit, OnDestroy, OnChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
@@ -9,12 +9,11 @@ import { Subscription } from 'rxjs';
 import { EventBuffer } from 'src/app/buffer/EventBuffer';
 import { ReverseChrono } from 'src/app/sortlogic/ReverseChrono';
 import { Community } from 'src/app/model/community';
+import { FeedType } from 'src/app/enum/FeedType';
 
 const BUFFER_REFILL_PAGE_SIZE = 100;
 const BUFFER_READ_PAGE_SIZE = 20;
- 
-
-@Component({
+ @Component({
   selector: 'app-event-feed',
   templateUrl: './event-feed.component.html',
   styleUrls: ['./event-feed.component.scss'],
@@ -28,12 +27,19 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   peopleIFollowLoadedFromRelay:boolean=false;
   fetchingPeopleIFollowFromRelaySub:Subscription=new Subscription();
 
+  feedTypeOptions=[
+    FeedType.TOPICS_FEED,
+    FeedType.COMMUNITIES_FEED
+  ]
+
   @Input()
   tag: string | undefined;
 
   @Input()
   community?: Community;
   showUnapprovedPosts:boolean = false;
+  followedCommunities?: string[]
+  feedType:FeedType = FeedType.COMMUNITIES_FEED;
 
   followedTopics: string[]|undefined;
   events: Set<NDKEvent> | undefined;
@@ -51,7 +57,22 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       } else {
         this.followedTopics = followedTopics.split(',');
       }
-      if(this.tag===undefined){
+      if(this.feedType == FeedType.TOPICS_FEED && this.tag===undefined){
+        this.nowShowingUptoIndex = 0;
+        this.eventBuffer.events = [];
+        this.until = Date.now();
+        this.limit = BUFFER_REFILL_PAGE_SIZE;
+        this.getEventsAndFillBuffer();
+      }
+    });
+
+    this.ndkProvider.followedCommunitiesEmitter.subscribe((followedCommunities: string) => {
+      if (followedCommunities === '') {
+        this.followedCommunities = [];
+      } else {
+        this.followedCommunities = followedCommunities.split(',');
+      }
+      if(this.feedType == FeedType.COMMUNITIES_FEED && this.followedCommunities===undefined){
         this.nowShowingUptoIndex = 0;
         this.eventBuffer.events = [];
         this.until = Date.now();
@@ -69,6 +90,14 @@ export class EventFeedComponent implements OnInit,OnDestroy{
         this.peopleIFollowLoadedFromRelay = true;
       }
     })  
+  }
+
+  onChangeFeedType(newType: FeedType){
+        this.nowShowingUptoIndex = 0;
+        this.eventBuffer.events = [];
+        this.until = Date.now();
+        this.limit = BUFFER_REFILL_PAGE_SIZE;
+        this.getEventsAndFillBuffer();
   }
 
   constructor(ndkProvider: NdkproviderService, private topicService: TopicService,
@@ -102,13 +131,12 @@ export class EventFeedComponent implements OnInit,OnDestroy{
           self.until = Date.now();
           self.limit = BUFFER_REFILL_PAGE_SIZE;
           self.getEventsAndFillBuffer();
-
         })
       }      
       else {
         this.tag = undefined;
       }
-      if(!communityName){ //hashtags or global feed
+      if(!communityName){ // global feed
         this.until = Date.now();
         this.limit = BUFFER_REFILL_PAGE_SIZE;
         this.getEventsAndFillBuffer();
@@ -123,6 +151,11 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     }
   }
 
+  public get FeedType(){
+    return FeedType;
+  }
+  
+
   async getEventsAndFillBuffer() {
     this.loadingEvents = true;
     this.loadingNextEvents = false;
@@ -133,13 +166,24 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     } else if (this.community){
       fetchedEvents = await this.ndkProvider.fetchEventsFromCommunity(this.community || '', this.limit, undefined, this.until);
     } else {
-      if(this.ndkProvider.appData.followedTopics.length > 0){
-        fetchedEvents = await this.ndkProvider.fetchAllFollowedEvents(
-          this.ndkProvider.appData.followedTopics.split(','),
-          this.limit,
-          undefined,
-          this.until
-        );       
+      if(this.feedType === FeedType.TOPICS_FEED){
+        if(this.ndkProvider.appData.followedTopics.length > 0){
+          fetchedEvents = await this.ndkProvider.fetchAllFollowedTopicEvents(
+            this.ndkProvider.appData.followedTopics.split(','),
+            this.limit,
+            undefined,
+            this.until
+          );       
+        }
+      } else if (this.feedType === FeedType.COMMUNITIES_FEED){
+        if(this.ndkProvider.appData.followedCommunities.length > 0){
+          fetchedEvents = await this.ndkProvider.fetchAllFollowedCommunityEvents(
+            this.ndkProvider.appData.followedCommunities.split(','),
+            this.limit,
+            undefined,
+            this.until
+          );       
+        }
       }
     }
     if(fetchedEvents){
@@ -148,7 +192,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       const eventsToAddToDisplay = this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1);
       if(eventsToAddToDisplay){
         this.removeMutedAndSetEvents(new Set<NDKEvent>(eventsToAddToDisplay));
-        this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
+        this.nowShowingUptoIndex += (fetchedEvents.size>BUFFER_READ_PAGE_SIZE)?BUFFER_READ_PAGE_SIZE:fetchedEvents.size;
       }
     }
     this.loadingEvents=false;
@@ -184,7 +228,6 @@ export class EventFeedComponent implements OnInit,OnDestroy{
           this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1))
         } 
       }
-      this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
 
       if(this.nextEvents && this.nextEvents.size>0){
         if(this.events){
@@ -193,6 +236,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
             mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
           }
           [...this.nextEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)).forEach(this.events.add,this.events)
+          this.nowShowingUptoIndex += (this.nextEvents.size>BUFFER_READ_PAGE_SIZE)?BUFFER_READ_PAGE_SIZE:this.nextEvents.size;
           this.loadingNextEvents = false;
           this.nextEvents =undefined;
         }
@@ -210,7 +254,6 @@ export class EventFeedComponent implements OnInit,OnDestroy{
           this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1))
         } 
       }
-      this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
 
       if(this.nextEvents && this.nextEvents.size>0){
         if(this.events){
@@ -219,29 +262,37 @@ export class EventFeedComponent implements OnInit,OnDestroy{
             mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
           }
           [...this.nextEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)).forEach(this.events.add,this.events)
+          this.nowShowingUptoIndex += (this.nextEvents.size>BUFFER_READ_PAGE_SIZE)?BUFFER_READ_PAGE_SIZE:this.nextEvents.size;
           this.loadingNextEvents = false;
           this.nextEvents =undefined;
         }
       } else {
         this.reachedEndOfFeed = true
       }
-    } else {
-      if(this.followedTopics && this.followedTopics.length > 0){
-        this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,this.nowShowingUptoIndex+BUFFER_READ_PAGE_SIZE-1))
+    } else { //HOME FEED
+      this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,this.nowShowingUptoIndex+BUFFER_READ_PAGE_SIZE-1))
       if(this.nextEvents.size === 0){
-        const nextBatch = await this.ndkProvider.fetchAllFollowedEvents(
-          this.ndkProvider.appData.followedTopics.split(','),
-          this.limit,
-          undefined,
-          this.until
-        );
+        let nextBatch;
+        if(this.feedType == FeedType.TOPICS_FEED){
+          nextBatch = await this.ndkProvider.fetchAllFollowedTopicEvents(
+            this.ndkProvider.appData.followedTopics.split(','),
+            this.limit,
+            undefined,
+            this.until
+          );
+        } else if(this.feedType === FeedType.COMMUNITIES_FEED){
+          nextBatch = await this.ndkProvider.fetchAllFollowedCommunityEvents(
+            this.ndkProvider.appData.followedCommunities.split(','),
+            this.limit,
+            undefined,
+            this.until
+          );
+        }           
         if(nextBatch){
           const sorted = [... nextBatch].sort(new ReverseChrono().compare)
           this.eventBuffer.refillWithEntries(sorted);
           this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1))
         } 
-      }
-      this.nowShowingUptoIndex += BUFFER_READ_PAGE_SIZE;
       }
       if(this.nextEvents && this.nextEvents.size>0){
         if(this.events){
@@ -250,6 +301,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
             mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',')
           }
           [...this.nextEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)).forEach(this.events.add,this.events)
+          this.nowShowingUptoIndex += (this.nextEvents.size>BUFFER_READ_PAGE_SIZE)?BUFFER_READ_PAGE_SIZE:this.nextEvents.size;
           this.loadingNextEvents = false;
           this.nextEvents =undefined;
         }

@@ -1,0 +1,4 @@
+export enum FeedType{
+    TOPICS_FEED = "TOPICS_FEED",
+    COMMUNITIES_FEED = "COMMUNITIES_FEED"
+}

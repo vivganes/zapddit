@@ -118,11 +118,13 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
 
   ngOnInit():void {
-    let tags = this.event?.getMatchingTags('a');
-    if(tags && tags.length > 0){
-      //possible community post
-      this.loadingApproval = true;
-    }
+    if(!this.showUnapprovedPosts){
+      let tags = this.event?.getMatchingTags('a');
+      if(tags && tags.length > 0){
+        //possible community post
+        this.loadingApproval = true;
+      }
+    }    
     this.displayedContent = this.replaceHashStyleMentionsWithComponents();
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNoteMentionsWithComponents(this.displayedContent)
