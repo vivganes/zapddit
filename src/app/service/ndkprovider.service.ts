@@ -46,7 +46,7 @@ const explicitRelayUrls = ['wss://nos.lol',
 @Injectable({
   providedIn: 'root',
 })
-export class NdkproviderService {  
+export class NdkproviderService {
   ndk: NDK | undefined;
   currentUserProfile: NDKUserProfile | undefined;
   currentUser: NDKUser | undefined;
@@ -267,7 +267,7 @@ export class NdkproviderService {
   }
 
   async getProfileFromNpub(npub: string): Promise<NDKUserProfile | undefined> {
-    let user = undefined;    
+    let user = undefined;
     user = this.ndk?.getUser({npub: npub});
     await user?.fetchProfile();
     return user?.profile;
@@ -281,7 +281,7 @@ export class NdkproviderService {
 
   async getNdkUserFromNpub(npub: string): Promise<NDKUser | undefined> {
     try {
-      let user: NDKUser | undefined;      
+      let user: NDKUser | undefined;
       user = this.ndk?.getUser({npub: npub});
       await user?.fetchProfile();
       return user;
@@ -338,9 +338,9 @@ export class NdkproviderService {
       relayUrls.push(x.url)
     });
     localStorage.setItem(Constants.RELAYSUBS, relayUrls.join(','));
-    
+
     // const relays = this.currentUser?.relayUrls;
-    
+
     if (relayUrls && relayUrls.length > 0) {
       const newNDKParams = { signer: this.signer, explicitRelayUrls: relayUrls };
       const newNDK = new NDK(newNDKParams);
@@ -642,22 +642,22 @@ export class NdkproviderService {
         name:name,
         description: description,
         image: image,
-        creatorHexKey: creatorHexKey,        
+        creatorHexKey: creatorHexKey,
       }
     }
     return undefined;
   }
 
   async fetchCommunities(limit?: number, since?: number, until?: number, ownedOnly?:boolean ):Promise<Community[] | undefined>{
-    const filter: NDKFilter = { kinds: [34550], 
-      limit: limit, 
-      since:since, 
+    const filter: NDKFilter = { kinds: [34550],
+      limit: limit,
+      since:since,
       until:until,
-      authors: (ownedOnly? [this.currentUser?.hexpubkey()!] : undefined) 
+      authors: (ownedOnly? [this.currentUser?.hexpubkey()!] : undefined)
     };
     const events = await this.ndk?.fetchEvents(filter,{});
     let returnValue:Community[] = this.makeCommunitiesFromEvents(events);
-    return returnValue;    
+    return returnValue;
   }
 
   private makeCommunitiesFromEvents(events: Set<NDKEvent> | undefined) {
@@ -747,6 +747,10 @@ export class NdkproviderService {
     return this.ndk?.fetchEvents(filter);
   }
 
+  async zapRequest(numberOfSats:number, event: NDKEvent): Promise<string | null> {
+    return await event.zap(numberOfSats * 1000, '+');
+  }
+
   async fetchAllFollowedCommunityEvents(
     followedCommunities: string[],
     limit?: number,
@@ -755,10 +759,6 @@ export class NdkproviderService {
   ): Promise<Set<NDKEvent> | undefined> {
     const filter: NDKFilter = { kinds: [1], '#a': followedCommunities, limit: limit, since: since, until: until };
     return this.ndk?.fetchEvents(filter);
-  }
-
-  async zapRequest(event: NDKEvent): Promise<string | null> {
-    return await event.zap(this.defaultSatsForZaps * 1000, '+');
   }
 
   async getRelatedEventsOfNote(event: NDKEvent) {
@@ -927,7 +927,7 @@ export class NdkproviderService {
   /*
   Below methods are a stop-gap copy from NDK source to support zapping non-author
   */
-  async downZapRequest(
+  async downZapRequest(numberOfSats:number,
     zappedEvent: NDKEvent,
     zapRecipient: NDKUser | undefined,
     comment?: string,
@@ -945,7 +945,7 @@ export class NdkproviderService {
 
         // set the event to null since nostr-tools doesn't support nip-33 zaps
         event: null,
-        amount: this.defaultSatsForZaps * 1000,
+        amount: numberOfSats * 1000,
         comment: comment || '',
         relays: explicitRelayUrls,
       });
@@ -971,14 +971,14 @@ export class NdkproviderService {
       const response = await fetch(
         `${zapEndpoint}?` +
           new URLSearchParams({
-            amount: (this.defaultSatsForZaps * 1000).toString(),
+            amount: (numberOfSats * 1000).toString(),
             nostr: JSON.stringify(zapRequestNostrEvent),
           })
       );
       const body = await response.json();
       return body.pr;
     } else {
-      this.zapRequest(zappedEvent);
+      this.zapRequest(numberOfSats, zappedEvent);
     }
   }
 
@@ -1042,7 +1042,7 @@ export class NdkproviderService {
         if (hexPubKey === hexPubKeyFromRemote) {
           verified = true;
           // raise this only for the current logged in user
-          if (hexPubKey === this.currentUser?.hexpubkey()) 
+          if (hexPubKey === this.currentUser?.hexpubkey())
             this.isNip05Verified$.next(true);
         }
       }
@@ -1110,14 +1110,14 @@ export class NdkproviderService {
         relayEvent = await this.ndk?.fetchEvent(filter2,{});
       }
     }
-    
+
     return relayEvent;
   }
 
   processRelayContent(relay: [string, unknown]): Relay {
     let read: boolean = true;
     let write: boolean = true;
-    
+
     const relayUrl: string = relay[0];
     const relayName: string = relayUrl.replace('wss://', '').replace('/', '');
     const settings = Object.entries(relay[1] as Object);
@@ -1192,8 +1192,8 @@ export class NdkproviderService {
           if(relays.map(x => x.url).indexOf(relay.url) === -1 && relays.map(x => x.name).indexOf(relay.name) === -1){
             relays.push(relay);
           }
-        })        
-      }      
+        })
+      }
     }
     return relays;
   }
@@ -1237,7 +1237,7 @@ export class NdkproviderService {
       subscribedRelaysFromCache?.length !== subscribedRelaysFromRelay?.length
     ) {
       await this.fetchSubscribedRelaysAndCache(subscribedRelaysFromRelay);
-    } 
+    }
     return await this.dbService.subscribedRelays.toArray();
   }
 }

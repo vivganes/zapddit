@@ -1,0 +1,91 @@
+<ng-container *ngIf="!showQR; then zap else postZap">
+
+</ng-container>
+
+<ng-template #zap>
+<clr-modal  [clrModalClosable]="true"  [clrModalOpen]="show" (clrModalOpenChange)="onChange($event)" [clrModalStaticBackdrop]="false">
+  <h3 class="modal-title center">
+    {{authorName}}
+  </h3>
+  <div class="modal-body">
+    <div class="center">
+    <img *ngIf="imageUrl" alt="Profile picture"
+      [src]="imageUrl" class="card-media-image pointer-cursor" title="Open in Snort" />
+    <img alt="temp avatar" *ngIf="imageUrl == undefined"
+      class="card-media-image pointer-cursor" src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
+      title="Open in Snort" />
+    </div>
+
+    <div class="center" *ngIf="authorNpub">
+      {{authorNpub}}
+    </div>
+
+    <div class="center" *ngIf="noteId">
+      {{noteId! | abbreviateId}}
+    </div>
+    <div class="pt-5">
+      <div class="clr-row clr-justify-content-between space-around" >
+        <button class="btn btn-primary-outline" (click)="setSats(21)">21 ⚡</button>
+        <button class="btn btn-primary-outline" (click)="setSats(69)">69 ⚡</button>
+        <button class="btn btn-primary-outline" (click)="setSats(420)">420 ⚡</button>
+        <button class="btn btn-primary-outline" (click)="setSats(1337)">1337 ⚡</button>
+      </div>
+
+      <div class="clr-row clr-justify-content-between space-around">
+        <button class="btn btn-primary-outline" (click)="setSats(5000)">5k ⚡</button>
+        <button class="btn btn-primary-outline" (click)="setSats(10000)">10k ⚡</button>
+        <button class="btn btn-primary-outline" (click)="setSats(21000)">21K ⚡</button>
+        <button class="btn btn-primary-outline" (click)="setSats(1000000)">1M ⚡</button>
+      </div>
+    </div>
+    <form clrForm onsubmit="return false;" >
+      <input clrInput
+      type="number"
+      id="sats-for-zaps" name="sats-for-zaps"
+      value="{{zapValue}}" [(ngModel)]="zapValue" placeholder="amount in sats" (ngModelChange)="zapValueChange($event)">
+  </form>
+  </div>
+  <div class="modal-footer">
+    <div *ngIf="!showQR && errorMsg" class="alert alert-warning alert-sm">
+      <button type="button" class="close" aria-label="Close">
+        <cds-icon shape="close"></cds-icon>
+      </button>
+      <div class="alert-item static">
+        <span class="alert-text">
+          {{ errorMsg }}
+        </span>
+      </div>
+    </div>
+    <button class="btn btn-lg btn-primary" [clrLoading]="zappingNow" (click)="initiateZap()" [disabled]="disableZap">
+      {{type==='upzap'?'Upzap ':'Downzap '}} <cds-icon shape="bolt" direction="up" *ngIf="type==='upzap'"></cds-icon>
+      <cds-icon shape="bolt" direction="down" *ngIf="type==='downzap'"></cds-icon>
+    </button>
+  </div>
+</clr-modal>
+</ng-template>
+
+<ng-template #postZap [ngIf]="showQR">
+  <clr-modal  [clrModalClosable]="true"  [clrModalOpen]="show" (clrModalOpenChange)="onChange($event)" [clrModalStaticBackdrop]="false">
+    <h3 class="modal-title">Scan this QR using your Lightning Wallet app</h3>
+    <div align="center" class="modal-body">
+      <div #canvas></div>
+      <div class="break-words-overflow">{{invoice! | abbreviateId }}</div>
+      <button type="button" class="btn btn-primary" (click)="openWallet()">Open Wallet</button>
+      <p></p>
+      <button type="button" class="btn btn-primary" (click)="copyInvoiceToClipboard()">Copy to clipboard</button>
+    </div>
+    <div class="modal-footer">
+      <div *ngIf="showQR && errorMsg" class="alert alert-warning alert-sm">
+        <button type="button" class="close" aria-label="Close">
+          <cds-icon shape="close"></cds-icon>
+        </button>
+        <div class="alert-item static">
+          <span class="alert-text">
+            {{ errorMsg }}
+          </span>
+        </div>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="zapDoneClicked()">Done</button>
+    </div>
+  </clr-modal>
+</ng-template>
