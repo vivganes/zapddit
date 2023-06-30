@@ -247,19 +247,6 @@
     <button class="btn btn-sm btn-icon btn-link" (click)="share()">
       <cds-icon shape="share"></cds-icon> Share
     </button>
-    <clr-modal [(clrModalOpen)]="showQR" [clrModalClosable]="false">
-      <h3 class="modal-title">Scan this QR using your Lightning Wallet app</h3>
-      <div align="center" class="modal-body">
-        <div #canvas></div>
-        <div class="break-words-overflow">{{invoice! | abbreviateId }}</div>
-        <button type="button" class="btn btn-primary" (click)="openWallet()">Open Wallet</button>
-        <p></p>
-        <button type="button" class="btn btn-primary" (click)="copyInvoiceToClipboard()">Copy to clipboard</button>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="zapDoneClicked()">Done</button>
-      </div>
-    </clr-modal>
     <clr-dropdown>
       <button class="btn btn-outline-primary" clrDropdownTrigger>
         More
@@ -286,3 +273,7 @@
       (postedEventEmitter)="addReply($event)"></app-note-composer>
   </div>
 </ng-template>
+<app-zapdialog [authorName]="(authorWithProfile?.profile?.displayName) ?
+  authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name" [noteId]="getNoteId()"
+  [imageUrl]="authorWithProfile?.profile?.image" *ngIf="showZapDialog" [show]="showZapDialog"
+  (onClose)="onClose($event)" [event]="event" (onUpzapDone)="onUpzapComplete($event)" [type]="type"></app-zapdialog>

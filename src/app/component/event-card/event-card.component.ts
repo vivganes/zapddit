@@ -51,6 +51,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   approvalEvents?:Set<NDKEvent>;
 
   SecurityContext = SecurityContext;
+  showZapDialog:boolean = false;
   nip05Address:string | undefined;
   mutedAuthor:boolean = false;
   authorWithProfile: NDKUser | undefined;
@@ -90,7 +91,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   @ViewChild("cardBlock")
   cardBlock: ElementRef;
-
+  type:string;
   @Input()
   downZapEnabled: boolean | undefined;
 
@@ -114,7 +115,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
     }
   }
 
-  
+
 
   ngOnInit():void {
     let tags = this.event?.getMatchingTags('a');
@@ -307,6 +308,10 @@ export class EventCardComponent implements OnInit, OnDestroy{
   copyNote1IdToClipboard(){
     const note1Id = LoginUtil.hexToBech32('note',this.event?.id!)
     this.clipboard.copy(note1Id);
+  }
+
+  getNoteId():string{
+    return LoginUtil.hexToBech32('note',this.event?.id!)
   }
 
   async publishLike(){
@@ -526,34 +531,26 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   }
 
-  async upZap() {
-    this.upzappingNow = true;
-    try{
-      if (this.event) {
-        this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
-        const invoice = await this.ndkProvider.zapRequest(this.event);
-        const qr = new QRCodeStyling({
-          width:  256,
-          height:  256,
-          data: invoice?invoice:undefined,
-          margin: 5,
-          type: "canvas",
-          dotsOptions: {
-            type: "rounded",
-          },
-          cornersSquareOptions: {
-            type: "extra-rounded",
-          }
-        });
-        qr.append(this.canvas?.nativeElement);
-        this.invoice = invoice;
-        this.showQR=true;
-      }
-    }catch(e:any){
-      this.errorMsg = e.message;
-    }finally{
-      this.upzappingNow = false;
-    }
+  upZap() {
+    this.showZapDialog = true;
+    this.type ='upzap';
+  }
+
+  onClose($event:any){
+    this.showZapDialog = false;
+  }
+
+  getEvent():string{
+    var seen:any[] = [];
+    return JSON.stringify(this.event,function(key, val) {
+      if (val != null && typeof val == "object") {
+           if (seen.indexOf(val) >= 0) {
+               return;
+           }
+           seen.push(val);
+       }
+       return val;
+   });
   }
 
   isDownzapEnabled(): boolean {
@@ -568,38 +565,9 @@ export class EventCardComponent implements OnInit, OnDestroy{
     this.clipboard.copy(this.invoice!);
   }
 
-  async downZap() {
-    this.downzappingNow = true;
-    try{
-      if (this.event) {
-        this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
-        const invoice = await this.ndkProvider.downZapRequest(
-            this.event,
-            await this.ndkProvider.getNdkUserFromNpub(this.ndkProvider.appData.downzapRecipients),
-            '-'
-          );
-          const qr = new QRCodeStyling({
-            width:  256,
-            height:  256,
-            data: invoice?invoice:undefined,
-            margin: 5,
-            type: "canvas",
-            dotsOptions: {
-              type: "rounded",
-            },
-            cornersSquareOptions: {
-              type: "extra-rounded",
-            }
-          });
-          qr.append(this.canvas?.nativeElement);
-          this.invoice = invoice;
-          this.showQR = true;
-      }
-    }catch(e:any){
-      this.errorMsg = e.message;
-    }finally{
-      this.downzappingNow = false;
-    }
+  downZap() {
+    this.showZapDialog = true;
+    this.type ='downzap';
   }
 
   async fetchZapsAndSegregate() {
@@ -678,8 +646,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
     return false;
   }
 
-  zapDoneClicked(){
-    this.showQR = false;
+  onUpzapComplete($event:any){
     this.downZapTotalMilliSats = this.upZapTotalMilliSats = 0;
     this.fetchZapsAndSegregate();
   }

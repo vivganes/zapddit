@@ -208,6 +208,10 @@ mention-list > ul{
     background: url('./assets/youtubeplay.png') no-repeat;
     cursor: pointer;
   }
+
+  .center-textbox{
+    margin-left:0px;
+  }
 }
 
 /* Smartphones (portrait) ----------- */
@@ -226,6 +230,11 @@ and (max-width : 320px) {
     background: url('./assets/youtubeplay.png') no-repeat;
     cursor: pointer;
   }
+
+
+.center-textbox{
+  margin-left:0px;
+}
 }
 
 @media only screen and (max-width: 768px) {
@@ -256,7 +265,9 @@ and (max-width : 320px) {
     box-shadow: 0 4px 6px -5px hsl(0, 0%, 40%), inset 0px 4px 6px -5px hsl(0, 0%, 2%)
   }
 
-
+  .center-textbox{
+    margin-left: -35px;
+  }
 }
 
 .pt-5{
@@ -297,3 +308,6 @@ and (max-width : 320px) {
     cursor: pointer;
   }
 
+.center-textbox{
+  margin-left: -35px;
+}

@@ -31,11 +31,10 @@ import { ImageLoaderDirective } from './directive/ImageLoaderDirective';
 import { ProfileComponent } from './component/profile/profile.component';
 import { AbbreviateIdPipe } from './pipe/abbreviateId.pipe';
 import { TopicComponent } from './component/topic/topic.component';
-import { CommunityListComponent } from './page/community-list/community-list.component';
 import { CommunityCardComponent } from './component/community-card/community-card.component';
-
+import { ZapdialogComponent } from './component/zapdialog/zapdialog.component';
+import { CommunityListComponent } from './page/community-list/community-list.component';
 const componentParsers: Array<HookParserEntry> = [
-  {component: HashtagComponent},
   {component: UserMentionComponent},
   {component: QuotedEventComponent}
   // ...
@@ -64,7 +63,8 @@ const componentParsers: Array<HookParserEntry> = [
     ProfileComponent,
     TopicComponent,
     CommunityListComponent,
-    CommunityCardComponent
+    CommunityCardComponent,
+    ZapdialogComponent
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers
