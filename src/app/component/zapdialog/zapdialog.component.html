@@ -58,8 +58,8 @@
       </div>
     </div>
     <button class="btn btn-lg btn-primary" [clrLoading]="zappingNow" (click)="initiateZap()" [disabled]="disableZap">
-      {{type==='upzap'?'Upzap ':'Downzap '}} <cds-icon shape="bolt" direction="up" *ngIf="type==='upzap'"></cds-icon>
-      <cds-icon shape="bolt" direction="down" *ngIf="type==='downzap'"></cds-icon>
+      {{type==='upzap'?'Upzap ':'Downzap '}} <cds-icon shape="bolt" direction="down" *ngIf="type==='upzap'"></cds-icon>
+      <cds-icon shape="bolt" direction="up" *ngIf="type==='downzap'"></cds-icon>
     </button>
   </div>
 </clr-modal>
