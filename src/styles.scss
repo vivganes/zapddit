@@ -234,6 +234,13 @@ mention-list > ul{
   .center-textbox{
     margin-left:0px;
   }
+
+
+.sats-center{
+  display: flex;
+  justify-content: center;
+  padding-left: 10px ;
+}
 }
 
 /* Smartphones (portrait) ----------- */
@@ -257,6 +264,13 @@ and (max-width : 320px) {
 .center-textbox{
   margin-left:0px;
 }
+
+.sats-center{
+  display: flex;
+  justify-content: center;
+  padding-left: 10px ;
+}
+
 }
 
 @media only screen and (max-width: 768px) {
@@ -332,4 +346,29 @@ and (max-width : 320px) {
 
 .center-textbox{
   margin-left: -35px;
+}
+
+.sats-center{
+  display: flex;
+  justify-content: center;
+}
+
+.ml-5{
+  margin-left: 20px;
+}
+
+.mt-12{
+  margin-top: 12px;
+}
+
+
+label[for="sats-for-zaps"]
+{
+    display:none;
+}
+
+@media only screen and (min-width: 1024px) {
+  .sats-width{
+    padding: 0 130px;
+  }
 }

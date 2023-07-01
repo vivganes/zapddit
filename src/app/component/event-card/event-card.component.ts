@@ -129,7 +129,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNoteMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNEventMentionsWithComponents(this.displayedContent)
-    this.linkifiedContent = this.linkifyContent(this.displayedContent)    
+    this.linkifiedContent = this.linkifyContent(this.displayedContent)
     this.getAuthor();
     this.getCommunity();
     this.getRelatedEventsAndSegregate();
@@ -160,7 +160,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   async getApproval(){
     const approvalEvents = await this.ndkProvider.getApprovalEvents(this.event!)
     if(approvalEvents){
-      this.approvalEvents = approvalEvents; 
+      this.approvalEvents = approvalEvents;
     }
   }
 
@@ -314,10 +314,6 @@ export class EventCardComponent implements OnInit, OnDestroy{
   copyNote1IdToClipboard(){
     const note1Id = LoginUtil.hexToBech32('note',this.event?.id!)
     this.clipboard.copy(note1Id);
-  }
-
-  getNoteId():string{
-    return LoginUtil.hexToBech32('note',this.event?.id!)
   }
 
   async publishLike(){
@@ -553,19 +549,6 @@ export class EventCardComponent implements OnInit, OnDestroy{
     this.showZapDialog = false;
   }
 
-  getEvent():string{
-    var seen:any[] = [];
-    return JSON.stringify(this.event,function(key, val) {
-      if (val != null && typeof val == "object") {
-           if (seen.indexOf(val) >= 0) {
-               return;
-           }
-           seen.push(val);
-       }
-       return val;
-   });
-  }
-
   isDownzapEnabled(): boolean {
     return this.ndkProvider.appData.downzapRecipients !== '';
   }
@@ -718,7 +701,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   openCommunityPage(){
     if(this.community)
-      this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)   
+      this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)
   }
 
   openCommunityCreatorInSnort(){

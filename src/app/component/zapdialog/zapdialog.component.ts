@@ -23,9 +23,6 @@ export class ZapdialogComponent implements OnInit {
   show:boolean = false;
 
   @Input()
-  noteId:string|undefined;
-
-  @Input()
   type:string | undefined;
 
   @Input()

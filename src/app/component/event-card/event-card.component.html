@@ -19,8 +19,8 @@
         src="{{ community.image }}" class="community-image pointer-cursor" title="Browse" />
     <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
         class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
-        title="Browse" /> 
-    <span class="break-words-overflow"> n/{{community.name}} <span class="smaller-text">of </span> 
+        title="Browse" />
+    <span class="break-words-overflow"> n/{{community.name}} <span class="smaller-text">of </span>
     <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="Profile picture"
         src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="Open in Snort" />
     <img alt="temp avatar" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
@@ -29,7 +29,7 @@
     {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}
     </span>
   </div>
-  <div class="card-block">    
+  <div class="card-block">
     <div class="card-media-block">
       <img *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" alt="Profile picture"
         src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" title="Open in Snort" />
@@ -84,7 +84,7 @@
         <span class="card-media-text break-words-overflow"> {{ event?.created_at | formatTimestamp }} </span>
 
       </div>
-    </div>    
+    </div>
     <div class="{{(displayShowMoreButton?'shortened-content':'')}}" #cardBlock>
     <div *ngIf="!isQuotedEvent" class="break-words-overflow pointer-cursor" [routerLink]="'/n/'+event?.id">
       <ngx-dynamic-hooks *ngIf="linkifiedContent" [content]="linkifiedContent"></ngx-dynamic-hooks>
@@ -249,6 +249,6 @@
   </div>
 </ng-template>
 <app-zapdialog [authorName]="(authorWithProfile?.profile?.displayName) ?
-  authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name" [noteId]="getNoteId()"
+  authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name"
   [imageUrl]="authorWithProfile?.profile?.image" *ngIf="showZapDialog" [show]="showZapDialog"
   (onClose)="onClose($event)" [event]="event" (onUpzapDone)="onUpzapComplete($event)" [type]="type"></app-zapdialog>
