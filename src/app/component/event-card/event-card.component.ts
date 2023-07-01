@@ -2,7 +2,6 @@ import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitte
 import { NDKEvent, NDKTag, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import linkifyHtml from 'linkify-html';
-import QRCodeStyling from 'qr-code-styling';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
 import { Constants } from 'src/app/util/Constants';
 import { Util } from 'src/app/util/Util';
@@ -46,11 +45,12 @@ export class EventCardComponent implements OnInit, OnDestroy{
   peopleIFollowLoadedFromRelay: boolean = false;
   @Input()
   showUnapprovedPosts:boolean = true;
+  @Input()
+  hideCommunityHeader: boolean = false;
   loadingApproval:boolean = false;
 
   approvalEvents?:Set<NDKEvent>;
-
-  SecurityContext = SecurityContext;
+  canModerate:boolean = false;
   showZapDialog:boolean = false;
   nip05Address:string | undefined;
   mutedAuthor:boolean = false;
@@ -152,7 +152,6 @@ export class EventCardComponent implements OnInit, OnDestroy{
     setTimeout(()=>this.initYouTubeVideos(),3000);
 
     const contentHeight = this.cardBlock.nativeElement.scrollHeight;
-    console.log(contentHeight)
     if(contentHeight >= 300){
       this.displayShowMoreButton = true;
     }
@@ -163,6 +162,11 @@ export class EventCardComponent implements OnInit, OnDestroy{
     if(approvalEvents){
       this.approvalEvents = approvalEvents; 
     }
+  }
+
+  async approveNote(){
+    const approval = await this.ndkProvider.approveNote(this.event!)
+    this.approvalEvents?.add(approval);
   }
 
   showMore(){
@@ -392,11 +396,18 @@ export class EventCardComponent implements OnInit, OnDestroy{
       }
 
       const communityDetails = await this.ndkProvider.getCommunityDetails(this.community.id!);
-
       const creator = await this.ndkProvider.getProfileFromHex(this.community.creatorHexKey!)
       this.community.creatorProfile = creator;
       this.community.image = communityDetails?.image
       this.community.description = communityDetails?.description
+      if(this.ndkProvider.currentUser?.hexpubkey()! === this.community.creatorHexKey){
+        this.canModerate = true;
+      }
+      if(this.community.moderatorHexKeys){
+        if(this.community.moderatorHexKeys?.indexOf(this.ndkProvider.currentUser?.hexpubkey()!)>-1){
+          this.canModerate = true;
+        }
+      }      
       this.changeDetector.detectChanges();
 
       if(!this.showUnapprovedPosts){

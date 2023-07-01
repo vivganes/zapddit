@@ -21,8 +21,8 @@
     <p class="card-text">Loading moderator approvals</p>
   </div>
 </div>
-<div class="card" *ngIf="!loadingApproval && !mutedAuthor && (showUnapprovedPosts?false:approvalEvents?.size===0)">
-  <div *ngIf="community" class="card-header note-community-header">
+<div class="card" *ngIf="!loadingApproval && !canModerate && !mutedAuthor && (showUnapprovedPosts?false:approvalEvents?.size===0)">
+  <div *ngIf="community && !hideCommunityHeader" class="card-header note-community-header">
     <img *ngIf="community?.image" (click)="openCommunityPage()" alt="Community image"
         src="{{ community.image }}" class="community-image pointer-cursor" title="Browse" />
     <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
@@ -42,8 +42,8 @@
     <button class="btn btn-link btn-inilne" (click)="showUnapprovedPosts = true">Show anyways</button>
   </div>
 </div>
-<div class="card" *ngIf="!(loadingApproval) && !(mutedAuthor) && (showUnapprovedPosts ? true: approvalEvents?.size!==0)" #parent>
-  <div *ngIf="community" class="card-header note-community-header">
+<div class="card" *ngIf="canModerate || (!(loadingApproval) && !(mutedAuthor) && (showUnapprovedPosts ? true: approvalEvents?.size!==0))" #parent>
+  <div *ngIf="community && !hideCommunityHeader" class="card-header note-community-header">
     <img *ngIf="community?.image" (click)="openCommunityPage()" alt="Community image"
         src="{{ community.image }}" class="community-image pointer-cursor" title="Browse" />
     <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
@@ -216,6 +216,10 @@
     </ng-template>
   </div>
   <div *ngIf="!isQuotedEvent" class="card-footer">
+    <button class="btn btn-sm btn-success btn-icon" *ngIf="canModerate && approvalEvents?.size===0" 
+      (click)="approveNote()">
+      <cds-icon shape="check-circle"></cds-icon> Approve
+    </button>
     <button class="btn btn-sm btn-icon btn-link" *ngIf="!hideNonZapReactions" [disabled]="!ndkProvider.canWriteToNostr"
       (click)="publishLike()">
       <cds-icon shape="thumbs-up"></cds-icon> {{ likes | shortNumber }} Upvote

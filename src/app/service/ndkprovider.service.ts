@@ -637,12 +637,20 @@ export class NdkproviderService {
       const description = communityEvent.getMatchingTags('description')[0][1];
       const creatorHexKey = communityEvent.pubkey;
       const image = communityEvent.getMatchingTags('image')[0][1];
+      const moderatorTagArr:NDKTag[] = communityEvent.getMatchingTags('p');
+      let moderatorHexKeys:string[] = []
+      for(let tag of moderatorTagArr) {
+        if(tag[3] && tag[3] === 'moderator'){
+          moderatorHexKeys.push(tag[1]);
+        }
+      };      
       return {
         id: '34550:'+creatorHexKey+':'+name,
         name:name,
         description: description,
         image: image,
         creatorHexKey: creatorHexKey,
+        moderatorHexKeys: moderatorHexKeys
       }
     }
     return undefined;
@@ -658,6 +666,20 @@ export class NdkproviderService {
     const events = await this.ndk?.fetchEvents(filter,{});
     let returnValue:Community[] = this.makeCommunitiesFromEvents(events);
     return returnValue;
+  }
+
+  async approveNote(event:NDKEvent):Promise<NDKEvent>{
+    const approvalEvent:NDKEvent = new NDKEvent(this.ndk);
+    approvalEvent.kind = 4550;
+    approvalEvent.tags = [
+      event.getMatchingTags('a')[0],
+      ['e', event.id],
+      ['p', event.pubkey],
+      ['k', ''+event.kind]
+    ]
+    approvalEvent.content = JSON.stringify(await event.toNostrEvent())
+    await approvalEvent.publish();
+    return approvalEvent;
   }
 
   private makeCommunitiesFromEvents(events: Set<NDKEvent> | undefined) {

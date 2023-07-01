@@ -6,5 +6,6 @@ export interface Community{
     id?:string,
     description?:string,
     image?:string,
-    creatorProfile?:NDKUserProfile
+    creatorProfile?:NDKUserProfile,
+    moderatorHexKeys?:string[]
 }
