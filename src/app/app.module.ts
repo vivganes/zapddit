@@ -34,7 +34,9 @@ import { TopicComponent } from './component/topic/topic.component';
 import { CommunityCardComponent } from './component/community-card/community-card.component';
 import { ZapdialogComponent } from './component/zapdialog/zapdialog.component';
 import { CommunityListComponent } from './page/community-list/community-list.component';
+import { HashTagFilter } from './filter/HashTagFilter';
 const componentParsers: Array<HookParserEntry> = [
+  {component: HashtagComponent},
   {component: UserMentionComponent},
   {component: QuotedEventComponent}
   // ...
