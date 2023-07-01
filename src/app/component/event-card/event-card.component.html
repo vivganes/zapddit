@@ -1,19 +1,4 @@
 <div class="card" *ngIf="loadingApproval">
-  <div *ngIf="community" class="card-header note-community-header">
-    <img *ngIf="community?.image" (click)="openCommunityPage()" alt="Community image"
-        src="{{ community.image }}" class="community-image pointer-cursor" title="Browse" />
-    <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
-        class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
-        title="Browse" /> 
-    <span class="break-words-overflow"> n/{{community.name}} <span class="smaller-text">of </span> 
-    <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="Profile picture"
-        src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="Open in Snort" />
-    <img alt="temp avatar" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
-        class="community-image pointer-cursor" src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100"
-        title="Open in Snort" />
-    {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}
-    </span>
-  </div>
   <div class="card-block">
     <div class="progress loop top">
         <progress></progress>
@@ -21,27 +6,13 @@
     <p class="card-text">Loading moderator approvals</p>
   </div>
 </div>
-<div class="card" *ngIf="!loadingApproval && !canModerate && !mutedAuthor && (showUnapprovedPosts?false:approvalEvents?.size===0)">
-  <div *ngIf="community && !hideCommunityHeader" class="card-header note-community-header">
-    <img *ngIf="community?.image" (click)="openCommunityPage()" alt="Community image"
-        src="{{ community.image }}" class="community-image pointer-cursor" title="Browse" />
-    <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
-        class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
-        title="Browse" /> 
-    <span class="break-words-overflow"> n/{{community.name}} <span class="smaller-text">of </span> 
-    <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="Profile picture"
-        src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="Open in Snort" />
-    <img alt="temp avatar" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
-        class="community-image pointer-cursor" src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100"
-        title="Open in Snort" />
-    {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}
-    </span>
-  </div>
-  <div class="card-block">    
-    <p class="card-text">This post is hidden as it is not approved by a moderator</p>
-    <button class="btn btn-link btn-inilne" (click)="showUnapprovedPosts = true">Show anyways</button>
-  </div>
+  
+<div class="hidden-card-message" *ngIf="!loadingApproval && !canModerate && !mutedAuthor && (showUnapprovedPosts?false:approvalEvents?.size===0)">
+  <span class="hidden-card-span">UNAPPROVED NOTE. <button class="btn btn-sm btn-inilne" (click)="showUnapprovedPosts = true">Show anyways</button> <br/>
+  <span *ngIf="!hideCommunityHeader"><b>Community:</b> n/{{community?.name}} by {{community?.creatorProfile?.displayName ? community?.creatorProfile?.displayName : (community?.creatorProfile?.name ? community?.creatorProfile?.name : community?.creatorHexKey | abbreviateId)}}</span>
+  </span>
 </div>
+    
 <div class="card" *ngIf="canModerate || (!(loadingApproval) && !(mutedAuthor) && (showUnapprovedPosts ? true: approvalEvents?.size!==0))" #parent>
   <div *ngIf="community && !hideCommunityHeader" class="card-header note-community-header">
     <img *ngIf="community?.image" (click)="openCommunityPage()" alt="Community image"
@@ -252,7 +223,7 @@
       <cds-icon shape="share"></cds-icon> Share
     </button>
     <clr-dropdown>
-      <button class="btn btn-outline-primary" clrDropdownTrigger>
+      <button class="btn btn-sm btn-outline-primary" clrDropdownTrigger>
         More
         <cds-icon shape="angle" direction="down"></cds-icon>
       </button>

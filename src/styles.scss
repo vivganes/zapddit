@@ -138,6 +138,28 @@ a{
   outline: none !important;
 }
 
+.hidden-card-message {
+  margin: .7em auto;
+  overflow: hidden;
+  text-align: center;
+  font-weight:300;
+}
+.hidden-card-message:before, .hidden-card-message:after {
+  content: "";
+  display: inline-block;
+  width: 50%;
+  margin: 0 .5em 0 -55%;
+  vertical-align: middle;
+  border-bottom: 2px dashed var(--clr-btn-default-color, hsl(198, 100%, 32%));
+}
+.hidden-card-message:after {
+  margin: 0 -55% 0 .5em;
+}
+.hidden-card-span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .reply-container{
   border-left-style: solid!important;
   border-left: 1px;
