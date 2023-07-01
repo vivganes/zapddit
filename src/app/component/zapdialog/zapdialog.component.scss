@@ -11,18 +11,10 @@
   padding: 0 50px;
 }
 
-.clr-input,
-.clr-input-wrapper {
-  max-width: 100%;
-  width: 100%;
-}
-
-.clr-control-container,
-.clr-input-wrapper.clr-input {
-  padding-left: 0;
-  padding-right: 0;
-}
-
 .pt-5{
   padding-top: 5px;
+}
+
+.clr-control-container, .clr-input {
+  width: 100%;
 }
