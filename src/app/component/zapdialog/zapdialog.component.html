@@ -20,30 +20,31 @@
       {{authorNpub}}
     </div>
 
-    <div class="center" *ngIf="noteId">
-      {{noteId! | abbreviateId}}
-    </div>
-    <div class="pt-5">
-      <div class="clr-row clr-justify-content-between space-around" >
+    <div class="pt-5 mt-12">
+      <div class="clr-row sats-center" >
         <button class="btn btn-primary-outline" (click)="setSats(21)">21 ⚡</button>
-        <button class="btn btn-primary-outline" (click)="setSats(69)">69 ⚡</button>
-        <button class="btn btn-primary-outline" (click)="setSats(420)">420 ⚡</button>
-        <button class="btn btn-primary-outline" (click)="setSats(1337)">1337 ⚡</button>
+        <button class="btn btn-primary-outline ml-5" (click)="setSats(69)">69 ⚡</button>
+        <button class="btn btn-primary-outline ml-5" (click)="setSats(420)">420 ⚡</button>
       </div>
 
-      <div class="clr-row clr-justify-content-between space-around">
-        <button class="btn btn-primary-outline" (click)="setSats(5000)">5k ⚡</button>
-        <button class="btn btn-primary-outline" (click)="setSats(10000)">10k ⚡</button>
-        <button class="btn btn-primary-outline" (click)="setSats(21000)">21K ⚡</button>
-        <button class="btn btn-primary-outline" (click)="setSats(1000000)">1M ⚡</button>
+      <div class="clr-row sats-center">
+        <button class="btn btn-primary-outline " (click)="setSats(5000)">5k ⚡</button>
+        <button class="btn btn-primary-outline ml-5" (click)="setSats(10000)">10k ⚡</button>
+        <button class="btn btn-primary-outline ml-5" (click)="setSats(21000)">21K ⚡</button>
       </div>
+      <form clrForm onsubmit="return false;" >
+        <div >
+          <clr-input-container class="sats-width">
+            <input clrInput
+            type="number"
+            min="1"
+            id="sats-for-zaps" name="sats-for-zaps"
+            value="{{zapValue}}" [(ngModel)]="zapValue" placeholder="amount in sats" (ngModelChange)="zapValueChange($event)">
+          </clr-input-container>
+        </div>
+    </form>
     </div>
-    <form clrForm onsubmit="return false;" >
-      <input clrInput
-      type="number"
-      id="sats-for-zaps" name="sats-for-zaps"
-      value="{{zapValue}}" [(ngModel)]="zapValue" placeholder="amount in sats" (ngModelChange)="zapValueChange($event)">
-  </form>
+
   </div>
   <div class="modal-footer">
     <div *ngIf="!showQR && errorMsg" class="alert alert-warning alert-sm">
@@ -57,8 +58,8 @@
       </div>
     </div>
     <button class="btn btn-lg btn-primary" [clrLoading]="zappingNow" (click)="initiateZap()" [disabled]="disableZap">
-      {{type==='upzap'?'Upzap ':'Downzap '}} <cds-icon shape="bolt" direction="up" *ngIf="type==='upzap'"></cds-icon>
-      <cds-icon shape="bolt" direction="down" *ngIf="type==='downzap'"></cds-icon>
+      {{type==='upzap'?'Upzap ':'Downzap '}} <cds-icon shape="bolt" direction="down" *ngIf="type==='upzap'"></cds-icon>
+      <cds-icon shape="bolt" direction="up" *ngIf="type==='downzap'"></cds-icon>
     </button>
   </div>
 </clr-modal>
