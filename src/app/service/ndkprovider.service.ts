@@ -1209,12 +1209,16 @@ export class NdkproviderService {
       } else if (relayEvent.kind === 3)
       {
         // parse content
-        const contentRelays: Relay[] = this.parseRelayEventContent(relayEvent.content);
-        contentRelays.forEach(relay => {
-          if(relays.map(x => x.url).indexOf(relay.url) === -1 && relays.map(x => x.name).indexOf(relay.name) === -1){
-            relays.push(relay);
-          }
-        })
+        try{
+          const contentRelays: Relay[] = this.parseRelayEventContent(relayEvent.content);
+          contentRelays.forEach(relay => {
+            if(relays.map(x => x.url).indexOf(relay.url) === -1 && relays.map(x => x.name).indexOf(relay.name) === -1){
+              relays.push(relay);
+            }
+          })
+        }catch(err){
+          console.log("Kind 3 event parsing error"+ err)
+        }
       }
     }
     return relays;
