@@ -396,11 +396,13 @@ export class EventCardComponent implements OnInit, OnDestroy{
       this.community.creatorProfile = creator;
       this.community.image = communityDetails?.image
       this.community.description = communityDetails?.description
-      if(this.ndkProvider.currentUser?.hexpubkey()! === this.community.creatorHexKey){
+      this.community.moderatorHexKeys = communityDetails?.moderatorHexKeys
+      const currentUserHexPubKey = this.ndkProvider.currentUser?.hexpubkey();
+      if(currentUserHexPubKey! === this.community.creatorHexKey){
         this.canModerate = true;
       }
       if(this.community.moderatorHexKeys){
-        if(this.community.moderatorHexKeys?.indexOf(this.ndkProvider.currentUser?.hexpubkey()!)>-1){
+        if(this.community.moderatorHexKeys?.indexOf(currentUserHexPubKey!)>-1){
           this.canModerate = true;
         }
       }      

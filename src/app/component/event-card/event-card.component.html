@@ -187,7 +187,7 @@
     </ng-template>
   </div>
   <div *ngIf="!isQuotedEvent" class="card-footer">
-    <button class="btn btn-sm btn-success btn-icon" *ngIf="canModerate && approvalEvents?.size===0" 
+    <button class="btn btn-sm btn-success btn-icon" *ngIf="canModerate && (!approvalEvents || approvalEvents?.size===0)" 
       (click)="approveNote()">
       <cds-icon shape="check-circle"></cds-icon> Approve
     </button>
