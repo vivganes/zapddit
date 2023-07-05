@@ -48,8 +48,10 @@ export class EventCardComponent implements OnInit, OnDestroy{
   @Input()
   hideCommunityHeader: boolean = false;
   loadingApproval:boolean = false;
+  showingApprovers:boolean = false;
 
   approvalEvents?:Set<NDKEvent>;
+  approvedModHexIds:string[] = [];
   canModerate:boolean = false;
   showZapDialog:boolean = false;
   nip05Address:string | undefined;
@@ -157,10 +159,22 @@ export class EventCardComponent implements OnInit, OnDestroy{
     }
   }
 
-  async getApproval(){
+  async getApprovals(){
     const approvalEvents = await this.ndkProvider.getApprovalEvents(this.event!)
     if(approvalEvents){
-      this.approvalEvents = approvalEvents;
+      const approvalEventsByMods = [...approvalEvents].filter((approval) => {
+        if(this.community?.moderatorHexKeys){
+          return (
+            (this.community?.moderatorHexKeys?.indexOf(approval?.pubkey) > -1) ||
+            (this.community.creatorHexKey === approval.pubkey)
+          )
+        }
+        return false;
+      })
+      this.approvalEvents = new Set(approvalEventsByMods);
+      this.approvedModHexIds = approvalEventsByMods.map((approval)=>{
+        return approval.pubkey;
+      })     
     }
   }
 
@@ -409,7 +423,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
       this.changeDetector.detectChanges();
 
       if(!this.showUnapprovedPosts){
-        await this.getApproval();
+        await this.getApprovals();
         this.loadingApproval = false;
       }
     }

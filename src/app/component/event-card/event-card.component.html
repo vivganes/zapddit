@@ -228,6 +228,7 @@
         <cds-icon shape="angle" direction="down"></cds-icon>
       </button>
       <clr-dropdown-menu clrPosition="top-left" *clrIfOpen>
+        <div *ngIf="approvedModHexIds.length>0" clrDropdownItem (click)="showingApprovers = true">Show approvers</div>
         <div clrDropdownItem (click)="openInSnort()">Open in Snort</div>
         <div clrDropdownItem (click)="copyNoteHexIdToClipboard()">Copy Hex ID</div>
         <div clrDropdownItem (click)="copyNote1IdToClipboard()">Copy note1 ID</div>
@@ -252,3 +253,16 @@
   authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name"
   [imageUrl]="authorWithProfile?.profile?.image" *ngIf="showZapDialog" [show]="showZapDialog"
   (onClose)="onClose($event)" [event]="event" (onUpzapDone)="onUpzapComplete($event)" [type]="type"></app-zapdialog>
+<clr-modal [(clrModalOpen)]="showingApprovers" [clrModalSize]="'lg'">
+    <h3 class="modal-title">Approvals Received</h3>
+    <div class="modal-body">
+        <h3>Approvers</h3>
+        <p *ngFor="let key of approvedModHexIds"><app-user-pic-and-name [hexKey]="key"></app-user-pic-and-name></p>
+        <h3>Note Content</h3>
+        <p>{{this.event?.content}}</p>
+        
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="showingApprovers= false">Ok</button>
+    </div>
+</clr-modal>
