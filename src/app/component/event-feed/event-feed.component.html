@@ -32,6 +32,8 @@
             class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
             title="Browse" /> 
       <span class="break-words-overflow"> n/{{community.name}}</span>
+      <span>&nbsp;<cds-icon class="alert-icon" shape="info-circle" (click)="showingCommunityInfo = true"></cds-icon>
+      </span>
     </h3>
     <div>
       <span class="smaller-text">Created by </span> 
@@ -130,3 +132,15 @@
 <div *ngIf="loadingEvents" class="event-loading-spinner">
   <span class="spinner spinner-md">Loading notes...</span>
 </div>
+<clr-modal [(clrModalOpen)]="showingCommunityInfo" [clrModalSize]="'lg'">
+  <h3 class="modal-title">n/{{community?.name}} by {{community?.creatorProfile?.displayName ? community?.creatorProfile?.displayName : (community?.creatorProfile?.name ? community?.creatorProfile?.name : community?.creatorHexKey | abbreviateId)}} </h3>
+  <div class="modal-body">
+      <h3>Description</h3>
+      <p>{{community?.description}}</p>
+      <h3>Moderators</h3>
+        <p *ngFor="let key of community?.moderatorHexKeys"><app-user-pic-and-name [hexKey]="key"></app-user-pic-and-name></p>
+  </div>
+  <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="showingCommunityInfo = false">Ok</button>
+  </div>
+</clr-modal>

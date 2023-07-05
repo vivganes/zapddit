@@ -40,6 +40,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   showUnapprovedPosts:boolean = false;
   followedCommunities?: string[]
   feedType:FeedType = FeedType.TOPICS_FEED;
+  showingCommunityInfo:boolean = false;
 
   followedTopics: string[]|undefined;
   events: Set<NDKEvent> | undefined;
