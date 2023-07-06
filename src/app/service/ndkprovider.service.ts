@@ -112,6 +112,10 @@ export class NdkproviderService {
     }
   }
 
+  createNDKEvent(): NDKEvent{
+    return new NDKEvent(this.ndk);
+  }
+
   private async startWithUnauthSession() {
     this.loggingIn = true;
     this.canWriteToNostr = false;
@@ -643,7 +647,7 @@ export class NdkproviderService {
         if(tag[3] && tag[3] === 'moderator'){
           moderatorHexKeys.push(tag[1]);
         }
-      };      
+      };
       return {
         id: '34550:'+creatorHexKey+':'+name,
         name:name,

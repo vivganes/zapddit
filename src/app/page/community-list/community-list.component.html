@@ -1,4 +1,8 @@
 <div>
+  <h5 class="end">
+    <button class="btn btn-primary btn-sm" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">➕ New Community</button>
+  </h5>
+  <div>
     <h3 *ngIf="!showOnlyOwnedCommunities && !showOnlyJoinedCommunities" align="center">
         👥 Recently Created Communities
     </h3>
@@ -8,6 +12,7 @@
     <h3 *ngIf="showOnlyJoinedCommunities" align="center">
         👥 Communities you joined
     </h3>
+  </div>
 </div>
 
 <div class="clr-row clr-justify-content-center">
@@ -17,7 +22,7 @@
         </div>
     </div>
 
-    <div *ngIf="!(loadingEvents) && communities?.length === 0" class="clr-row clr-justify-content-center">
+    <div *ngIf="!(loadingEvents) && communities?.length === 0" class="clr-row  page-center">
         <div class="alert-items">
             <div class="alert-item static clr-justify-content-center">
                 <span *ngIf="!showOnlyOwnedCommunities" class="alert-text">No communities at all. Fishy!</span>
@@ -30,3 +35,6 @@
         <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
     </div>
 </div>
+
+<app-create-community [show]="showCreateCommunity" (onClose)="onCloseCreateCommunity($event)"></app-create-community>
+

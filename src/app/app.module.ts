@@ -5,7 +5,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 import { MentionModule } from 'angular-mentions';
@@ -36,6 +36,7 @@ import { ZapdialogComponent } from './component/zapdialog/zapdialog.component';
 import { CommunityListComponent } from './page/community-list/community-list.component';
 import { HashTagFilter } from './filter/HashTagFilter';
 import { UserPicAndNameComponent } from './component/user-pic-and-name/user-pic-and-name.component';
+import { CreateCommunityComponent } from './component/create-community/create-community.component';
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
   {component: UserMentionComponent},
@@ -68,11 +69,12 @@ const componentParsers: Array<HookParserEntry> = [
     CommunityListComponent,
     CommunityCardComponent,
     ZapdialogComponent,
-    UserPicAndNameComponent
+    UserPicAndNameComponent,
+    CreateCommunityComponent
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers
-  }), BrowserModule, LayoutModule, FormsModule,MentionModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  }), BrowserModule, LayoutModule, FormsModule, ReactiveFormsModule, MentionModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
   enabled: !isDevMode(),
   // Register the ServiceWorker as soon as the application is stable
   // or after 30 seconds (whichever comes first).

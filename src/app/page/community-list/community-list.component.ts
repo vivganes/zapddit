@@ -24,8 +24,9 @@ export class CommunityListComponent {
   isLoggedInUsingPubKey:boolean = false;
   showOnlyOwnedCommunities: boolean = false;
   showOnlyJoinedCommunities: boolean = false;
+  showCreateCommunity:boolean = false;
 
-  constructor(private ndkProvider:NdkproviderService, private router:Router){
+  constructor(public ndkProvider:NdkproviderService, private router:Router){
 
   }
 
@@ -43,7 +44,7 @@ export class CommunityListComponent {
       this.isLoggedInUsingPubKey = val;
     });
 
-    this.fetchCommunities();    
+    this.fetchCommunities();
   }
 
   onLeave(community:any){
@@ -71,4 +72,10 @@ export class CommunityListComponent {
     return await this.ndkProvider.fetchJoinedCommunities();
   }
 
+  onCloseCreateCommunity($event:any){
+    this.showCreateCommunity = false;
+    if($event){
+      this.ngOnInit();
+    }
+  }
 }

@@ -1,0 +1,77 @@
+<ng-container >
+  <clr-modal  [clrModalClosable]="true"  [clrModalOpen]="show" (clrModalOpenChange)="onChange($event)" [clrModalStaticBackdrop]="false">
+    <h3 class="modal-title center">
+      New Community
+    </h3>
+    <div class="modal-body">
+    <div class="clr-row">
+    <form clrForm #newCommunityForm="ngForm" novalidate onsubmit="return false;" (keydown.enter)="$event.preventDefault()" >
+      <div class="clr-col-12 ptb-3">
+        <clr-input-container>
+          <label>Display Name</label>
+          <input clrInput required [(ngModel)]="newCommunity.displayName"
+          type="text" placeholder="eg: BotNostriches" (ngModelChange)="displayNameUpdate($event)"
+          id="community-display-name" name="community-display-name">
+          <cds-icon class="clr-validate-icon" shape="exclamation-circle"></cds-icon>
+        </clr-input-container>
+      </div>
+      <div class="clr-col-12 ptb-3">
+        <clr-input-container >
+          <label>Name</label>
+          <input clrInput [disabled]="true"
+          type="text" required [(ngModel)]="newCommunity.name"
+          id="community-name" name="community-name" >
+          <clr-control-helper>Please enter display name, this will be automatically populated</clr-control-helper>
+        </clr-input-container>
+      </div>
+      <div class="clr-col-12 ptb-3">
+        <clr-input-container>
+        <label>Image URL</label>
+        <input clrInput [(ngModel)]="newCommunity.image"
+          type="text" placeholder="eg: https://...png"
+          id="community-image" name="community-image" >
+        </clr-input-container>
+      </div>
+      <div class="clr-col-12 ptb-3">
+        <clr-textarea-container>
+        <label>Description</label>
+        <textarea clrTextarea
+            cols="30"
+            rows="6" [(ngModel)]="newCommunity.description"
+            id="community-description"
+            placeholder="Describe what is the community about" name="community-description"></textarea>
+        </clr-textarea-container>
+      </div>
+      <div class="clr-col-12 ptb-3">
+        <clr-textarea-container>
+        <label>Rules</label>
+        <textarea clrTextarea
+            id="community-rules"
+            cols="30"
+            rows="6" [(ngModel)]="newCommunity.rules"
+            placeholder="Describe what are the rules to post in the community" name="community-rules"></textarea>
+          </clr-textarea-container>
+      </div>
+      <div class="clr-col-12  ptb-3">
+        <clr-input-container>
+          <label>Moderators</label>
+          <clr-control-helper>
+            As the creator of the community, you will be the moderator by default.
+          </clr-control-helper>
+        </clr-input-container>
+        <div class="clr-col-6 pl-5 clr-subtext pt-10" >
+          <app-user-pic-and-name [hexKey]="newCommunity.creatorHexKey"></app-user-pic-and-name>
+          <div *ngFor="let item of this.newCommunity.moderatorHexKeys">
+                <app-user-pic-and-name [hexKey]="item"></app-user-pic-and-name>
+          </div>
+      </div>
+      </div>
+  </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary btn-sm btn-icon" (click)="onCreate()" [disabled]="createDisabled">➕ Create Community</button>
+  </div>
+</div>
+  </clr-modal>
+</ng-container>
+
