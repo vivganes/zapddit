@@ -18,7 +18,7 @@
 </div>
 
 <div class="clr-row clr-justify-content-center">
-    <div *ngIf="loadingEvents" class="clr-col-12 clr-col-md-8">
+    <div *ngIf="loadingEvents" class="clr-col-12">
         <div class="event-loading-spinner clr-justify-content-center">
             <span class="spinner spinner-md">Loading communities...</span>
         </div>
@@ -33,8 +33,8 @@
         </div>
     </div>
 
-    <div *ngFor="let community of communities" class="clr-col-12 clr-col-md-8">
-        <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
+    <div *ngFor="let community of communities" class="clr-col-12 clr-col-md-5">
+            <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
     </div>
 </div>
 

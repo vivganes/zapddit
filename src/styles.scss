@@ -75,8 +75,14 @@ a{
   font-size: smaller;
 }
 
-.community-header {
-
+.community-banner {
+  display: inline-block;
+    flex: 0 0 auto;
+    height: 2rem;
+    width: 2rem;
+    max-height: 9rem;
+    max-width: 2rem;
+    object-fit:cover;
 }
 
 .note-community-header{
