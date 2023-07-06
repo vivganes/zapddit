@@ -48,12 +48,12 @@ export class CommunityService {
     const ndkEvent = this.ndkProviderService.createNDKEvent();
     let tags: NDKTag[] = [];
 
-    tags.push(['d', newCommunity.name!.toLocaleLowerCase()]);
+    tags.push(['d', newCommunity.name!]);
 
     tags.push(['p', newCommunity.creatorHexKey!,'',this.MODERATOR]);
 
     if(newCommunity.displayName)
-    tags.push(['displayname', newCommunity.displayName!]);
+    tags.push(['name', newCommunity.displayName!]);
 
     if(newCommunity.description)
       tags.push(['description', newCommunity.description!])
