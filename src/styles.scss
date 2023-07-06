@@ -372,3 +372,15 @@ label[for="sats-for-zaps"]
     padding: 0 130px;
   }
 }
+
+.end{
+  text-align: end;
+}
+
+.page-center{
+  position: absolute;
+  left: 58%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}

@@ -4,6 +4,8 @@
     <img alt="temp avatar" (click)="openAuthorInSnort()" *ngIf="user?.profile?.image == undefined"
         class="community-image pointer-cursor" src="https://robohash.org/{{ user?.hexpubkey() }}.png?size=100x100"
         title="Open in Snort" />
-     {{ (user?.profile?.displayName) ?
-            user?.profile?.displayName:((user?.profile?.name)? user?.profile?.name : user?.hexpubkey()|abbreviateId) }}
+    <span class="pl-5">
+            {{ (user?.profile?.displayName) ?
+                    user?.profile?.displayName:((user?.profile?.name)? user?.profile?.name : user?.hexpubkey()|abbreviateId) }}
+    </span>
 </span>
