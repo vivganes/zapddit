@@ -14,4 +14,5 @@ export class Constants {
   public static readonly HIDE_NONZAP_REACTIONS = 'hideNonZapReactions';
   public static readonly SHOW_UNAPPROVED = 'showUnapproved';
   public static readonly RELAYSUBS = 'subscribedRelays';
+  public static readonly DEFAULT_FEED_IS_COMMUNITY = 'defaultFeedIsCommunity';
 }

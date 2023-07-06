@@ -109,6 +109,11 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       this.showUnapprovedPosts = true;
     }
 
+    var defaultFeedIsCommunity = localStorage.getItem(Constants.DEFAULT_FEED_IS_COMMUNITY);
+    if (defaultFeedIsCommunity && defaultFeedIsCommunity === 'true') {
+      this.feedType = FeedType.COMMUNITIES_FEED;
+    }
+
     const followedTopicsByNdk = ndkProvider.appData.followedTopics;
     if (followedTopicsByNdk === '') {
       this.followedTopics = [];

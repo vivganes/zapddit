@@ -27,6 +27,7 @@ export class PreferencesPageComponent {
   loadContentFromPeopleIFollow: boolean = true;
   hideNonZapReactions: boolean = false;
   showUnapprovedPosts: boolean = false;
+  showCommunitiesFeedByDefault:boolean = false;
   changeDetector: ChangeDetectorRef;
 
   relayUrls: string[] | undefined;
@@ -64,6 +65,10 @@ export class PreferencesPageComponent {
     var showUnapprovedPostsFromLocal = localStorage.getItem(Constants.SHOW_UNAPPROVED);
     if (showUnapprovedPostsFromLocal && showUnapprovedPostsFromLocal === 'true') {
       this.showUnapprovedPosts = true;
+    }
+    var defaultFeedIsCommunity = localStorage.getItem(Constants.DEFAULT_FEED_IS_COMMUNITY);
+    if (defaultFeedIsCommunity && defaultFeedIsCommunity === 'true') {
+      this.showCommunitiesFeedByDefault = true;
     }
     this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
       Promise.resolve().then(() => {
@@ -140,6 +145,10 @@ export class PreferencesPageComponent {
 
   onShowUnapprovedChange(checked: any) {
     localStorage.setItem(Constants.SHOW_UNAPPROVED, checked);
+  }
+
+  onDefaultFeedChange(checked: any){
+    localStorage.setItem(Constants.DEFAULT_FEED_IS_COMMUNITY, checked);
   }
 
   async getRelayList() {

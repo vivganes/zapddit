@@ -83,7 +83,18 @@
           </clr-checkbox-wrapper>
           <clr-control-helper>Never mind about moderator approvals. Show all notes.</clr-control-helper>
         </clr-checkbox-container>
-      </form>    
+      </form> 
+      
+      <form clrForm onsubmit="return false;">
+        <clr-checkbox-container clrInline>
+          <clr-checkbox-wrapper>
+            <label>{{'Set Communities Feed as your default feed'}}</label>
+            <input type="checkbox" [(ngModel)]="showCommunitiesFeedByDefault" id="default-communities-feed" clrCheckbox
+            (ngModelChange)="onDefaultFeedChange($event)" name="default-communities-feed" id="default-communities-feed">
+          </clr-checkbox-wrapper>
+          <clr-control-helper>Enable this option to see Communities by default when you go to 'My Feed' page.</clr-control-helper>
+        </clr-checkbox-container>
+      </form>
     </clr-accordion-content>
   </clr-accordion-panel>
 
