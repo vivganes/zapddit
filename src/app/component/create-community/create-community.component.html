@@ -5,11 +5,11 @@
     </h3>
     <div class="modal-body">
     <div class="clr-row">
-    <form clrForm #newCommunityForm="ngForm" novalidate onsubmit="return false;" (keydown.enter)="$event.preventDefault()" >
+    <form clrForm #newCommunityForm="ngForm" novalidate onsubmit="return false;">
       <div class="clr-col-12 ptb-3">
         <clr-input-container>
           <label>Display Name</label>
-          <input clrInput required [(ngModel)]="newCommunity.displayName"
+          <input clrInput required [(ngModel)]="newCommunity.displayName" (keydown.enter)="$event.preventDefault()"
           type="text" placeholder="eg: BotNostriches" (ngModelChange)="displayNameUpdate($event)"
           id="community-display-name" name="community-display-name">
           <cds-icon class="clr-validate-icon" shape="exclamation-circle"></cds-icon>
@@ -18,8 +18,8 @@
       <div class="clr-col-12 ptb-3">
         <clr-input-container >
           <label>Name</label>
-          <input clrInput [disabled]="true"
-          type="text" required [(ngModel)]="newCommunity.name"
+          <input clrInput [disabled]="true" (keydown.enter)="$event.preventDefault()"
+          type="text" required [value]="'n/'+ (newCommunity.name?newCommunity.name:'botnostriches')"
           id="community-name" name="community-name" >
           <clr-control-helper>Please enter display name, this will be automatically populated</clr-control-helper>
         </clr-input-container>
@@ -27,7 +27,7 @@
       <div class="clr-col-12 ptb-3">
         <clr-input-container>
         <label>Image URL</label>
-        <input clrInput [(ngModel)]="newCommunity.image"
+        <input clrInput [(ngModel)]="newCommunity.image" (keydown.enter)="$event.preventDefault()"
           type="text" placeholder="eg: https://...png"
           id="community-image" name="community-image" >
         </clr-input-container>

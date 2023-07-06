@@ -45,25 +45,24 @@ export class CommunityService {
   }
 
   async createCommunity(newCommunity:Community){
+    if (this.ndkProviderService.canWriteToNostr) {
     const ndkEvent = this.ndkProviderService.createNDKEvent();
     let tags: NDKTag[] = [];
-
     tags.push(['d', newCommunity.name!]);
-
     tags.push(['p', newCommunity.creatorHexKey!,'',this.MODERATOR]);
 
     if(newCommunity.displayName)
-    tags.push(['name', newCommunity.displayName!]);
+    tags.push(['name', newCommunity.displayName]);
 
     if(newCommunity.description)
-      tags.push(['description', newCommunity.description!])
+      tags.push(['description', newCommunity.description])
 
     if(newCommunity.image){
-      tags.push(['image', newCommunity.image!])
+      tags.push(['image', newCommunity.image])
     }
 
     if(newCommunity.rules)
-    tags.push(['rules', newCommunity.rules!])
+    tags.push(['rules', newCommunity.rules])
 
     if(newCommunity.moderatorHexKeys && newCommunity.moderatorHexKeys.length>0){
       for(let mod of newCommunity.moderatorHexKeys)
@@ -71,15 +70,8 @@ export class CommunityService {
     }
 
     ndkEvent.tags = tags;
-
     ndkEvent.kind = 34550;
-
-    if (this.ndkProviderService.canWriteToNostr) {
-      console.log(JSON.stringify(ndkEvent));
-
-      await ndkEvent.sign();
-
-      await ndkEvent.publish();
+    await ndkEvent.publish();
     }
   }
 }
