@@ -69,7 +69,9 @@
   </form>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary btn-sm btn-icon" (click)="onCreate()" [disabled]="createDisabled">➕ Create Community</button>
+   <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="onCreate()" [disabled]="createDisabled">
+      <cds-icon shape="plus-circle"></cds-icon> Create Community
+    </button>
   </div>
 </div>
   </clr-modal>
