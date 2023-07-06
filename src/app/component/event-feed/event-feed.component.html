@@ -32,7 +32,7 @@
             class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
             title="Browse" /> 
       <span class="break-words-overflow"> n/{{community.name}}</span>
-      <span>&nbsp;<cds-icon class="alert-icon" shape="info-circle" (click)="showingCommunityInfo = true"></cds-icon>
+      <span>&nbsp;<cds-icon class="alert-icon" shape="info-circle" (click)="showingCommunityInfo = true" title="Show community details"></cds-icon>
       </span>
     </h3>
     <div>
@@ -133,12 +133,15 @@
   <span class="spinner spinner-md">Loading notes...</span>
 </div>
 <clr-modal [(clrModalOpen)]="showingCommunityInfo" [clrModalSize]="'lg'">
-  <h3 class="modal-title">n/{{community?.name}} by {{community?.creatorProfile?.displayName ? community?.creatorProfile?.displayName : (community?.creatorProfile?.name ? community?.creatorProfile?.name : community?.creatorHexKey | abbreviateId)}} </h3>
+  <h3 class="modal-title">Community Details</h3>
   <div class="modal-body">
-      <h3>Description</h3>
+      <b><span class="break-words-overflow">n/{{community?.name}}</span> by {{community?.creatorProfile?.displayName ? community?.creatorProfile?.displayName : (community?.creatorProfile?.name ? community?.creatorProfile?.name : community?.creatorHexKey | abbreviateId)}}</b>
+      <h4>Description</h4>
       <p>{{community?.description}}</p>
-      <h3>Moderators</h3>
-        <p *ngFor="let key of community?.moderatorHexKeys"><app-user-pic-and-name [hexKey]="key"></app-user-pic-and-name></p>
+      <h4>Moderators</h4>
+      <p *ngFor="let key of community?.moderatorHexKeys"><app-user-pic-and-name [hexKey]="key"></app-user-pic-and-name></p>
+      <h4>Rules</h4>
+      <p>{{community?.rules}}</p>
   </div>
   <div class="modal-footer">
       <button type="button" class="btn btn-primary" (click)="showingCommunityInfo = false">Ok</button>

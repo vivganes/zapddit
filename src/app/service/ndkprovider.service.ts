@@ -639,22 +639,27 @@ export class NdkproviderService {
       const communityEvent = events.values().next().value
       const name = communityEvent.getMatchingTags('d')[0][1];
       const description = communityEvent.getMatchingTags('description')[0][1];
+      const rules = communityEvent.getMatchingTags('rules')[0][1];
       const creatorHexKey = communityEvent.pubkey;
       const image = communityEvent.getMatchingTags('image')[0][1];
       const moderatorTagArr:NDKTag[] = communityEvent.getMatchingTags('p');
       let moderatorHexKeys:string[] = []
-      for(let tag of moderatorTagArr) {
+      for(let tag of moderatorTagArr) {        
         if(tag[3] && tag[3] === 'moderator'){
           moderatorHexKeys.push(tag[1]);
         }
       };
+      if(moderatorHexKeys.indexOf(communityEvent.pubkey)===-1){
+        moderatorHexKeys.push(communityEvent.pubkey);
+      }
       return {
         id: '34550:'+creatorHexKey+':'+name,
         name:name,
         description: description,
         image: image,
         creatorHexKey: creatorHexKey,
-        moderatorHexKeys: moderatorHexKeys
+        moderatorHexKeys: moderatorHexKeys,
+        rules:rules,
       }
     }
     return undefined;
