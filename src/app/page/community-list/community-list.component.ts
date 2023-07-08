@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Community } from 'src/app/model/community';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
+import { CommunityService } from '../../service/community.service';
 
 const BUFFER_REFILL_PAGE_SIZE = 100;
 const BUFFER_READ_PAGE_SIZE = 20;
@@ -27,7 +28,7 @@ export class CommunityListComponent {
   showOnlyModeratingCommunities:boolean = false;
   showCreateCommunity:boolean = false;
 
-  constructor(public ndkProvider:NdkproviderService, private router:Router){
+  constructor(public ndkProvider:NdkproviderService, private router:Router, private communityService:CommunityService){
 
   }
 
@@ -77,7 +78,8 @@ export class CommunityListComponent {
   }
 
   async fetchJoinedCommunities():Promise<Community[]>{
-    return await this.ndkProvider.fetchJoinedCommunities();
+    //return await this.ndkProvider.fetchJoinedCommunities();
+    return await this.communityService.fetchJoinedCommunities();
   }
 
   onCloseCreateCommunity($event:any){

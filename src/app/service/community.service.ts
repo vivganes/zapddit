@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { NdkproviderService } from './ndkprovider.service';
 import { Community } from '../model/community';
 import { Constants } from '../util/Constants';
-import { NDKEvent, NDKTag } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKFilter, NDKTag } from '@nostr-dev-kit/ndk';
 
 @Injectable({
   providedIn: 'root'
@@ -72,5 +72,51 @@ export class CommunityService {
       ndkEvent.kind = 34550;
       await ndkEvent.publish();
       }
+  }
+
+  async fetchJoinedCommunities():Promise<Community[]>{
+    const filter: NDKFilter = { kinds: [30001], '#d': ["communities"], authors:[this.ndkProviderService.currentUser?.hexpubkey()!] };
+    const events = await this.ndkProviderService.ndk?.fetchEvents(filter,{});
+
+    if(events && events.size > 0){
+      const communityEvent = events.values().next().value
+      const name = communityEvent.getMatchingTags('d')[0][1];
+
+      if(name && name === "communities"){
+        const joinedCommunitiesTagArr:NDKTag[] = communityEvent.getMatchingTags('a');
+        let communities:Community[] = []
+        for(let tag of joinedCommunitiesTagArr) {
+          if(tag[1]){
+            communities.push((await this.ndkProviderService.getCommunityDetails(tag[1]))!);
+          }
+        };
+
+        return communities;
+      }
+    }
+    return [];
+  }
+
+  async fetchJoinedCommunitiesMetadata():Promise<Community[]>{
+    const filter: NDKFilter = { kinds: [30001], '#d': ["communities"], authors:[this.ndkProviderService.currentUser?.hexpubkey()!] };
+    const events = await this.ndkProviderService.ndk?.fetchEvents(filter,{});
+
+    if(events && events.size > 0){
+      const communityEvent = events.values().next().value
+      const name = communityEvent.getMatchingTags('d')[0][1];
+
+      if(name && name === "communities"){
+        const joinedCommunitiesTagArr:NDKTag[] = communityEvent.getMatchingTags('a');
+        let communities:Community[] = []
+        for(let tag of joinedCommunitiesTagArr) {
+          if(tag[1]){
+            communities.push({id: tag[1]});
+          }
+        };
+
+        return communities;
+      }
+    }
+    return [];
   }
 }
