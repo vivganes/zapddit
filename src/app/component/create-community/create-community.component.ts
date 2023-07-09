@@ -5,6 +5,7 @@ import { BehaviorSubject, debounceTime } from 'rxjs';
 import { ClrForm } from '@clr/angular';
 import { Community } from '../../model/community';
 import { CommunityService } from '../../service/community.service';
+import { LoginUtil } from 'src/app/util/LoginUtil';
 
 @Component({
   selector: 'app-create-community',
@@ -22,9 +23,12 @@ export class CreateCommunityComponent implements OnInit{
   @ViewChild("newCommunityForm")
   newCommunityForm:NgForm;
   createDisabled:boolean=true;
+  currentModSuggestionNpub:string;
 
   displayNameChange = new BehaviorSubject('');
-  newCommunity:Community={};
+  newCommunity:Community={
+    moderatorHexKeys:[]
+  };
 
   constructor(private ndkproviderService:NdkproviderService, private communityService:CommunityService){
   }
@@ -59,6 +63,16 @@ export class CreateCommunityComponent implements OnInit{
     await this.communityService.createCommunity(this.newCommunity);
     this.newCommunity={};
     this.onClose.emit(true);
+  }
+
+  addModerator(evt:any){
+    evt.preventDefault();
+    if(this.currentModSuggestionNpub.trim() !== ''){
+      const hexKey:string = LoginUtil.bech32ToHex(this.currentModSuggestionNpub.trim());
+      if(this.newCommunity.moderatorHexKeys?.indexOf(hexKey) === -1){
+        this.newCommunity.moderatorHexKeys?.push(hexKey)
+      }
+    }    
   }
 
   sanitizeDisplayName(){

@@ -37,6 +37,7 @@ import { CommunityListComponent } from './page/community-list/community-list.com
 import { HashTagFilter } from './filter/HashTagFilter';
 import { UserPicAndNameComponent } from './component/user-pic-and-name/user-pic-and-name.component';
 import { CreateCommunityComponent } from './component/create-community/create-community.component';
+import { NewLineToBrPipe } from './pipe/newLineToBr.pipe';
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
   {component: UserMentionComponent},
@@ -54,6 +55,7 @@ const componentParsers: Array<HookParserEntry> = [
     ShortNumberPipe,
     formatTimestampPipe,
     AbbreviateIdPipe,
+    NewLineToBrPipe,
     HashtagComponent,
     PreferencesPageComponent,
     LoginPageComponent,

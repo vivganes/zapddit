@@ -46,32 +46,32 @@ export class CommunityService {
 
   async createCommunity(newCommunity:Community){
     if (this.ndkProviderService.canWriteToNostr) {
-    const ndkEvent = this.ndkProviderService.createNDKEvent();
-    let tags: NDKTag[] = [];
-    tags.push(['d', newCommunity.name!]);
-    tags.push(['p', newCommunity.creatorHexKey!,'',this.MODERATOR]);
+      const ndkEvent = this.ndkProviderService.createNDKEvent();
+      let tags: NDKTag[] = [];
+      tags.push(['d', newCommunity.name!]);
+      tags.push(['p', newCommunity.creatorHexKey!,'',this.MODERATOR]);
 
-    if(newCommunity.displayName)
-    tags.push(['name', newCommunity.displayName]);
+      if(newCommunity.displayName)
+      tags.push(['name', newCommunity.displayName]);
 
-    if(newCommunity.description)
-      tags.push(['description', newCommunity.description])
+      if(newCommunity.description)
+        tags.push(['description', newCommunity.description])
 
-    if(newCommunity.image){
-      tags.push(['image', newCommunity.image])
-    }
+      if(newCommunity.image){
+        tags.push(['image', newCommunity.image])
+      }
 
-    if(newCommunity.rules)
-    tags.push(['rules', newCommunity.rules])
+      if(newCommunity.rules)
+        tags.push(['rules', newCommunity.rules])
 
-    if(newCommunity.moderatorHexKeys && newCommunity.moderatorHexKeys.length>0){
-      for(let mod of newCommunity.moderatorHexKeys)
-        tags.push(['p', mod,'',this.MODERATOR])
-    }
+      if(newCommunity.moderatorHexKeys && newCommunity.moderatorHexKeys.length>0){
+        for(let mod of newCommunity.moderatorHexKeys)
+          tags.push(['p', mod,'',this.MODERATOR])
+      }
 
-    ndkEvent.tags = tags;
-    ndkEvent.kind = 34550;
-    await ndkEvent.publish();
-    }
+      ndkEvent.tags = tags;
+      ndkEvent.kind = 34550;
+      await ndkEvent.publish();
+      }
   }
 }

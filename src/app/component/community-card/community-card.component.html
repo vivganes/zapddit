@@ -25,7 +25,7 @@
                 </span>
             </div>
             <div class="card-text break-words-overflow">
-                {{community.description}}
+                <ngx-dynamic-hooks [content]="community.description | newLineToBr "></ngx-dynamic-hooks>
             </div>
         </div>
         <div class="card-footer">
