@@ -52,7 +52,7 @@ export class CommunityCardComponent {
   }
 
   openCommunityCreatorInSnort(){
-    window.open('https://snort.social/e/'+this.community.creatorHexKey!,'_blank')
+    window.open('https://snort.social/p/'+this.community.creatorHexKey!,'_blank')
   }
 
   async joinCommunity(){

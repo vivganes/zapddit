@@ -2,14 +2,15 @@
     <div class="card">
         <div class="card-img">
             <img *ngIf="community.image" (click)="openCommunityPage()" alt="Community image" src="{{ community.image }}"
-            class="community-banner pointer-cursor" title="Open in Snort" />
+            class="community-banner pointer-cursor" title="Browse n/{{community.name}}" />
         <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community.image == undefined"
             class="community-banner pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
-            title="Open in Snort" />
+            title="Browse n/{{community.name}}" />
         </div>
         <div class="card-header">
             <span class="break-words-overflow"> n/{{community.name}} <span class="smaller-text">of </span></span>
             <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="Profile picture"
+                onerror="this.onerror=null; this.src='https\://robohash.org/unknown.png?size=100x100'"
                 src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="Open in Snort" />
             <img alt="temp avatar" (click)="openCommunityCreatorInSnort()"
                 *ngIf="community?.creatorProfile?.image == undefined" class="community-image pointer-cursor"
