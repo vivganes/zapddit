@@ -32,6 +32,7 @@ export class CommunityCardComponent {
     if(!this.community.creatorProfile){
       this.fetchCreatorProfile();
     }
+    this.fetchFollowers();
   }
 
   async fetchCreatorProfile(){
@@ -40,6 +41,11 @@ export class CommunityCardComponent {
       this.community.creatorProfile = profile;
     }
   } 
+
+  async fetchFollowers(){
+    const followers = await this.ndkProvider.fetchFollowersForCommunity(this.community.id!)
+    this.community.followersHexKeys = followers;
+  }
   
   openCommunityPage(){
       this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)   

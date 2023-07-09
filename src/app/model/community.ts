@@ -9,5 +9,6 @@ export interface Community{
     rules?:string;
     image?:string,
     creatorProfile?:NDKUserProfile,
-    moderatorHexKeys?:string[]
+    moderatorHexKeys?:string[],
+    followersHexKeys?:string[]
 }

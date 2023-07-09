@@ -677,6 +677,18 @@ export class NdkproviderService {
     return returnValue;
   }
 
+  async fetchFollowersForCommunity(communityLongId: string):Promise<string[]>{
+    const filter:NDKFilter = {
+      '#a':[communityLongId]
+    }
+    const events = await this.ndk?.fetchEvents(filter,{});
+    if(events){
+      const dedupedFollowers = new Set([...events].map((e) => e.pubkey));
+      return [...dedupedFollowers]
+    }
+    return []
+  }
+
   async approveNote(event:NDKEvent):Promise<NDKEvent>{
     const approvalEvent:NDKEvent = new NDKEvent(this.ndk);
     approvalEvent.kind = 4550;

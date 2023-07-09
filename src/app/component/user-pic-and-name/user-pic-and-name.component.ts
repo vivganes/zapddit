@@ -18,6 +18,9 @@ export class UserPicAndNameComponent {
   @Input()
   user?:NDKUser;
 
+  @Input()
+  onlyPic:boolean = false;
+
   constructor(private ndkProvider:NdkproviderService){
 
   }
