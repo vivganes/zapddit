@@ -1,9 +1,11 @@
 <div class="card" *ngIf="loadingApproval">
-  <div class="card-block">
-    <div class="progress loop top">
-        <progress></progress>
-    </div>
-    <p class="card-text">Loading moderator approvals</p>
+  <div class="card-block">   
+    <p class="card-text"> <clr-spinner clrInline>
+      Loading moderator approvals...
+    </clr-spinner>
+    <span>
+      Loading moderator approvals...
+    </span></p>
   </div>
 </div>
 
@@ -193,11 +195,11 @@
     </button>
     <button class="btn btn-sm btn-icon btn-link" *ngIf="!hideNonZapReactions" [disabled]="!ndkProvider.canWriteToNostr"
       (click)="publishLike()">
-      <cds-icon shape="thumbs-up"></cds-icon> {{ likes | shortNumber }} Upvote
+      <cds-icon shape="arrow" solid="true"></cds-icon> {{ likes | shortNumber }} Upvote
     </button>
     <button class="btn btn-sm btn-icon btn-link" *ngIf="!hideNonZapReactions" [disabled]="!ndkProvider.canWriteToNostr"
       (click)="publishDislike()">
-      <cds-icon shape="thumbs-down"></cds-icon> {{ dislikes | shortNumber }} Downvote
+      <cds-icon shape="arrow" solid="true" flip="vertical"></cds-icon> {{ dislikes | shortNumber }} Downvote
     </button>
     <button class="btn btn-sm btn-icon btn-link" [clrLoading]="upzappingNow" [disabled]="!ndkProvider.canWriteToNostr"
       (click)="upZap()">

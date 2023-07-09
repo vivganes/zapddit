@@ -24,6 +24,7 @@ export class CommunityListComponent {
   isLoggedInUsingPubKey:boolean = false;
   showOnlyOwnedCommunities: boolean = false;
   showOnlyJoinedCommunities: boolean = false;
+  showOnlyModeratingCommunities:boolean = false;
   showCreateCommunity:boolean = false;
 
   constructor(public ndkProvider:NdkproviderService, private router:Router){
@@ -38,6 +39,10 @@ export class CommunityListComponent {
 
     if(url.indexOf('/joined')>-1){
       this.showOnlyJoinedCommunities = true;
+    }
+
+    if(url.indexOf('/moderating')>-1){
+      this.showOnlyModeratingCommunities = true;
     }
 
     this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
@@ -58,7 +63,10 @@ export class CommunityListComponent {
       this.loadingEvents = true;
       if(this.showOnlyJoinedCommunities){
         this.communities = await this.fetchJoinedCommunities();
-      } else {
+      } else if (this.showOnlyModeratingCommunities){
+        this.communities = await this.ndkProvider.fetchCommunities(this.limit, undefined, this.until,undefined, this.showOnlyModeratingCommunities);
+      }
+      else {
         this.communities = await this.ndkProvider.fetchCommunities(this.limit, undefined, this.until, this.showOnlyOwnedCommunities);
       }
     } catch (err){

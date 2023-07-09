@@ -665,12 +665,13 @@ export class NdkproviderService {
     return undefined;
   }
 
-  async fetchCommunities(limit?: number, since?: number, until?: number, ownedOnly?:boolean ):Promise<Community[] | undefined>{
+  async fetchCommunities(limit?: number, since?: number, until?: number, ownedOnly?:boolean, moderatingOnly?: boolean ):Promise<Community[] | undefined>{
     const filter: NDKFilter = { kinds: [34550],
       limit: limit,
       since:since,
       until:until,
-      authors: (ownedOnly? [this.currentUser?.hexpubkey()!] : undefined)
+      authors: (ownedOnly? [this.currentUser?.hexpubkey()!] : undefined),
+      '#p':(moderatingOnly? [this.currentUser?.hexpubkey()!] : undefined)
     };
     const events = await this.ndk?.fetchEvents(filter,{});
     let returnValue:Community[] = this.makeCommunitiesFromEvents(events);

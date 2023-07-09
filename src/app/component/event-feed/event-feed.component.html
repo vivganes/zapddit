@@ -52,7 +52,14 @@
     </div>  
   </div>
 </ng-template>
-<ng-template [ngIf]="(tag ===undefined && community === undefined)" #homefeedHeader>
+<ng-template [ngIf]="loadingCommunityDetails">
+  <div align="center">
+    <span class="spinner spinner-md"></span> 
+    <p>Loading community details...</p>
+  </div>
+</ng-template>
+
+<ng-template [ngIf]="(tag ===undefined && community === undefined) && !loadingCommunityDetails" #homefeedHeader>
   <h3 align="center">
     🏡 My Feed
   </h3>
@@ -86,7 +93,7 @@
     </div>
   </div>
 </div>
-<app-note-composer *ngIf="ndkProvider.canWriteToNostr" [currentTag]="tag" (postedEventEmitter)="addEventToFeed($event)" [currentCommunity]="community"></app-note-composer>
+<app-note-composer *ngIf="ndkProvider.canWriteToNostr && !loadingCommunityDetails" [currentTag]="tag" (postedEventEmitter)="addEventToFeed($event)" [currentCommunity]="community"></app-note-composer>
 <div align="center" *ngIf="events && events.size == 0">
   <div align="center" class="alert alert-info clr-col-12 clr-col-md-8" role="alert">
     <div class="alert-items">
@@ -135,11 +142,13 @@
 <clr-modal [(clrModalOpen)]="showingCommunityInfo" [clrModalSize]="'lg'">
   <h3 class="modal-title">Community Details</h3>
   <div class="modal-body">
-      <b><span class="break-words-overflow">n/{{community?.name}}</span> by {{community?.creatorProfile?.displayName ? community?.creatorProfile?.displayName : (community?.creatorProfile?.name ? community?.creatorProfile?.name : community?.creatorHexKey | abbreviateId)}}</b>
+      <b><span class="break-words-overflow">n/{{community?.name}}</span></b> by {{community?.creatorProfile?.displayName ? community?.creatorProfile?.displayName : (community?.creatorProfile?.name ? community?.creatorProfile?.name : community?.creatorHexKey | abbreviateId)}}
       <h4>Description</h4>      
       <p><ngx-dynamic-hooks [content]="community?.description | newLineToBr "></ngx-dynamic-hooks></p>
       <h4>Moderators</h4>
-      <p *ngFor="let key of community?.moderatorHexKeys"><app-user-pic-and-name [hexKey]="key"></app-user-pic-and-name></p>
+      <div class="mt-20">
+        <span *ngFor="let key of community?.moderatorHexKeys"><app-user-pic-and-name [hexKey]="key"></app-user-pic-and-name></span>
+      </div>
       <h4>Rules</h4>
       <p><ngx-dynamic-hooks [content]="community?.rules| newLineToBr "></ngx-dynamic-hooks></p>
   </div>

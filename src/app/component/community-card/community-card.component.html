@@ -20,7 +20,7 @@
         </div>
         <div class="card-block">
             <div *ngIf="community.followersHexKeys" class="card-text break-words-overflow">
-                <span><b>{{community.followersHexKeys.length}}</b> people {{(community.followersHexKeys.length >0)? 'including':''}} </span>
+                <span><b>{{community.followersHexKeys.length | shortNumber}}</b> {{community.followersHexKeys.length===1 ? 'person':'people'}} {{(community.followersHexKeys.length >0)? 'including':''}} </span>
                 <span *ngFor="let follower of community.followersHexKeys.slice(0,3)">
                     <app-user-pic-and-name [hexKey]="follower" [onlyPic]="true"/>
                 </span>

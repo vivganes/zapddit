@@ -1,4 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+.card{
+  border-radius: 0.5rem!important;
+}
+
 .break-words-overflow {
   overflow-wrap: break-word;
 }
@@ -369,6 +373,10 @@ and (max-width : 320px) {
 
 .mt-12{
   margin-top: 12px;
+}
+
+.mt-20{
+  margin-top:20px;
 }
 
 

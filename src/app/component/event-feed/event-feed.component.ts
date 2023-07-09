@@ -37,6 +37,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
 
   @Input()
   community?: Community;
+  loadingCommunityDetails:boolean = false;
   showUnapprovedPosts:boolean = false;
   followedCommunities?: string[]
   feedType:FeedType = FeedType.TOPICS_FEED;
@@ -130,10 +131,12 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       if(topic){
       this.tag = topic.toLowerCase();
       } else if(communityName){
+        this.loadingCommunityDetails = true;
         const self = this;
         this.ndkProvider.getCommunityDetails(`34550:${communityCreatorHexKey}:${communityName}`).then((community)=>{
           self.community = community;
           self.populateCommunityAuthorProfile();
+          self.loadingCommunityDetails = false;
           self.until = Date.now();
           self.limit = BUFFER_REFILL_PAGE_SIZE;
           self.getEventsAndFillBuffer();
