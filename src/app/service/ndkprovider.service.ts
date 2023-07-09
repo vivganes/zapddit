@@ -38,7 +38,6 @@ interface MutedUserMetaData{
 
 const explicitRelayUrls = ['wss://nos.lol',
 'wss://relay.nostr.band',
-// 'wss://nostr.mutinywallet.com', // causes some errors. disabling for now.
 'wss://relay.f7z.io',
 'wss://relay.damus.io',
 'wss://nostr.mom']; //TODO: fix this
@@ -101,8 +100,6 @@ export class NdkproviderService {
             this.isNip07 = false;
             this.isLoggedInUsingPubKey$.next(true);
           } else {
-            //this.signer = new NDKNip07Signer();
-            //dont assign a signer now. we need to assign it later only
             this.isNip07 = true;
             this.canWriteToNostr = true;
           }
@@ -271,9 +268,7 @@ export class NdkproviderService {
   }
 
   async getProfileFromNpub(npub: string): Promise<NDKUserProfile | undefined> {
-    let user = undefined;
-    user = this.ndk?.getUser({npub: npub});
-    await user?.fetchProfile();
+    const user = await this.getNdkUserFromNpub(npub)
     return user?.profile;
   }
 
@@ -299,6 +294,10 @@ export class NdkproviderService {
     const user = this.ndk?.getUser({ hexpubkey });
     await user?.fetchProfile();
     return user?.profile;
+  }
+
+  async storeUserProfileInCache(user: NDKUser){
+
   }
 
   async getNdkUserFromHex(hexpubkey: string): Promise<NDKUser | undefined> {
@@ -709,11 +708,26 @@ export class NdkproviderService {
     if (events) {
       for (let communityEvent of events) {
         const name = communityEvent.getMatchingTags('d')[0][1];
+        let displayName;
+        const displayNameTags = communityEvent.getMatchingTags('name');
+        if(displayNameTags && displayNameTags.length>0){
+          displayName = displayNameTags[0][1]
+        }
         const descriptionTag = communityEvent.getMatchingTags('description');
         let description;
         if (descriptionTag && descriptionTag.length > 0) {
           description = descriptionTag[0][1];
         };
+        let rules;
+        const rulesTag = communityEvent.getMatchingTags('rules');
+        if (rulesTag && rulesTag.length > 0) {
+          rules = rulesTag[0][1];
+        };
+        let moderatorHexKeys:string[] = [];
+        const moderatorTags = communityEvent.getMatchingTags('p');
+        if(moderatorTags && moderatorTags.length > 0){
+          moderatorHexKeys = moderatorTags.map((t)=> t[1]);
+        }
         const creatorHexKey = communityEvent.pubkey;
         let image;
         const imageTag = communityEvent.getMatchingTags('image');
@@ -722,10 +736,13 @@ export class NdkproviderService {
         }
         returnValue.push({
           id: '34550:' + creatorHexKey + ':' + name,
+          displayName: displayName,
           name: name,
           description: description,
+          rules: rules,
           image: image,
           creatorHexKey: creatorHexKey,
+          moderatorHexKeys: moderatorHexKeys
         });
       }
     }

@@ -33,6 +33,8 @@
             <button class="btn btn-sm btn-link" (click)="openCommunityPage()">Browse</button>
             <button *ngIf="!followingNow" class="btn btn-sm btn-link" (click)="joinCommunity()">Join</button>
             <button *ngIf="followingNow" class="btn btn-sm btn-link" (click)="leaveCommunity()">Leave</button>
+            <button *ngIf="community.creatorHexKey === currentUserHexKey " class="btn btn-sm btn-link" (click)="showEditCommunity = true">Edit</button>
         </div>
     </div>
 </div>
+<app-create-community [show]="showEditCommunity" (onEditComplete)="editFinished($event)" (onClose)="popupClosed($event)"  [newCommunity]="community" [editMode]="true"></app-create-community>

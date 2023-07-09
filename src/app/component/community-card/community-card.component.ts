@@ -14,6 +14,8 @@ export class CommunityCardComponent {
   @Input()
   community:Community;
   followingNow:boolean = false;
+  showEditCommunity:boolean = false;
+  currentUserHexKey?:string;
 
   @Output()
   onLeave:EventEmitter<Community> = new EventEmitter<Community>();
@@ -23,6 +25,7 @@ export class CommunityCardComponent {
   }
 
   ngOnInit(){
+    this.currentUserHexKey = this.ndkProvider.currentUser?.hexpubkey();
     if(this.ndkProvider.appData.followedCommunities !== ''){
       const followedArr = this.ndkProvider.appData.followedCommunities.split(',')
       if(followedArr.findIndex((id) => this.community.id === id)>-1){
@@ -45,6 +48,15 @@ export class CommunityCardComponent {
   async fetchFollowers(){
     const followers = await this.ndkProvider.fetchFollowersForCommunity(this.community.id!)
     this.community.followersHexKeys = followers;
+  }
+
+  popupClosed(evt:any){
+    this.showEditCommunity = false;
+  }
+
+  editFinished(edited:Community){
+    this.community = edited;
+    this.showEditCommunity = false;
   }
   
   openCommunityPage(){

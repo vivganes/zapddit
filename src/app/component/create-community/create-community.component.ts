@@ -1,8 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { NdkproviderService } from '../../service/ndkprovider.service';
-import { FormControl, FormGroup, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { BehaviorSubject, debounceTime } from 'rxjs';
-import { ClrForm } from '@clr/angular';
 import { Community } from '../../model/community';
 import { CommunityService } from '../../service/community.service';
 import { LoginUtil } from 'src/app/util/LoginUtil';
@@ -21,36 +20,56 @@ export class CreateCommunityComponent implements OnInit{
   @Output()
   onClose = new EventEmitter<boolean>();
 
+  @Output()
+  onEditComplete = new EventEmitter<Community>();
+
   @ViewChild("newCommunityForm")
   newCommunityForm:NgForm;
   createDisabled:boolean=true;
   currentModSuggestionNpub:string;
+  @Input()
+  editMode:boolean = false;
 
   displayNameChange = new BehaviorSubject('');
-  newCommunity:Community={
-    moderatorHexKeys:[]
-  };
+  @Input()
+  newCommunity:Community;
 
   constructor(private ndkproviderService:NdkproviderService, private communityService:CommunityService){
   }
 
   ngOnInit(): void {
-    if(this.ndkproviderService.currentUser)
-      this.newCommunity.creatorHexKey = this.ndkproviderService.currentUser.hexpubkey();
-      this.newCommunity.moderatorHexKeys?.push(this.newCommunity.creatorHexKey!);
+    if(this.ndkproviderService.currentUser){
+      if(!this.editMode){
+        this.newCommunity = {
+          creatorHexKey: this.ndkproviderService.currentUser.hexpubkey(),
+          moderatorHexKeys:[this.ndkproviderService.currentUser.hexpubkey()]
+        }
+      } else {
+        if(this.newCommunity && !this.newCommunity.moderatorHexKeys){
+          this.newCommunity.moderatorHexKeys = [this.newCommunity.creatorHexKey!]
+        } else if (this.newCommunity.moderatorHexKeys?.indexOf(this.newCommunity.creatorHexKey!) === -1){
+          this.newCommunity.moderatorHexKeys.push(this.newCommunity.creatorHexKey!);     
+        }
+      }  
+    }
+    if(this.editMode){
+      this.createDisabled = false;
+    }    
 
-    this.displayNameChange
-        .asObservable()
-        .pipe(debounceTime(250))
-        .subscribe(value => {
-          if (value)
-          {
-            this.createDisabled=false;
-            this.sanitizeDisplayName();
-          }
-            else
-            this.createDisabled=true;
-        });
+    if(!this.editMode){
+      this.displayNameChange
+          .asObservable()
+          .pipe(debounceTime(250))
+          .subscribe(value => {
+            if (value)
+            {
+              this.createDisabled=false;
+              this.sanitizeDisplayName();
+            }
+              else
+              this.createDisabled=true;
+          });
+    }
   }
 
   onChange($event:any){
@@ -63,8 +82,11 @@ export class CreateCommunityComponent implements OnInit{
 
   async onCreate(){
     await this.communityService.createCommunity(this.newCommunity);
-    this.newCommunity={};
+    if(this.editMode){
+      this.onEditComplete.emit(this.newCommunity)
+    }
     this.onClose.emit(true);
+    this.newCommunity={};
   }
 
   addModerator(evt:any){

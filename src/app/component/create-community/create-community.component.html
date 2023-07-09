@@ -1,10 +1,10 @@
 <ng-container >
-  <clr-modal  [clrModalClosable]="true" 
+  <clr-modal
    [clrModalOpen]="show" 
    (clrModalOpenChange)="onChange($event)" 
    [clrModalStaticBackdrop]="false">
     <h3 class="modal-title center">
-      New Community
+      Create/Edit Community
     </h3>
     <div class="modal-body">
     <div class="clr-row">
@@ -16,6 +16,7 @@
         <clr-input-container>
           <label>Display Name</label>
           <input clrInput required [(ngModel)]="newCommunity.displayName" (keydown.enter)="$event.preventDefault()"
+          [disabled]="editMode"
           type="text" placeholder="eg: BotNostriches" (ngModelChange)="displayNameUpdate($event)"
           id="community-display-name" name="community-display-name">
           <cds-icon class="clr-validate-icon" shape="exclamation-circle"></cds-icon>
@@ -81,8 +82,8 @@
   </form>
   </div>
   <div class="modal-footer">
-   <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="onCreate()" [disabled]="createDisabled">
-      <cds-icon shape="plus-circle"></cds-icon> Create Community
+   <button type="button" class="btn btn-icon btn-primary" aria-label="new community" (click)="onCreate()" [disabled]="createDisabled">
+    <cds-icon *ngIf="!editMode" shape="plus-circle"></cds-icon><cds-icon *ngIf="editMode" shape="floppy"></cds-icon> {{editMode?"Save":"Create Community"}}
     </button>
   </div>
 </div>
