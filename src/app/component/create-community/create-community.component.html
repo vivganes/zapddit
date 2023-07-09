@@ -73,9 +73,8 @@
           </clr-control-helper>          
         </clr-input-container>
         <div class="clr-col-12 pl-5 clr-subtext pt-10" >
-          <app-user-pic-and-name [hexKey]="newCommunity.creatorHexKey"></app-user-pic-and-name>
           <div *ngFor="let item of this.newCommunity.moderatorHexKeys" class="pt-10 inline-display">
-                <app-user-pic-and-name [hexKey]="item"></app-user-pic-and-name>
+                <app-user-pic-and-name [hexKey]="item" [showClickableDeleteIcon]="item!==newCommunity.creatorHexKey" (deleteIconClicked)="deleteModerator($event)"></app-user-pic-and-name>
           </div>
         </div>
       </div>

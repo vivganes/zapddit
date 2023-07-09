@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 
@@ -20,6 +20,12 @@ export class UserPicAndNameComponent {
 
   @Input()
   onlyPic:boolean = false;
+
+  @Input()
+  showClickableDeleteIcon:boolean = false;
+
+  @Output()
+  deleteIconClicked:EventEmitter<NDKUser> = new EventEmitter<NDKUser>();
 
   constructor(private ndkProvider:NdkproviderService){
 
@@ -53,6 +59,10 @@ export class UserPicAndNameComponent {
 
   openAuthorInSnort(){
     window.open('https://snort.social/p/'+this.user?.npub,'_blank')
+  }
+
+  onDeleteIconClicked(evt:any){
+    this.deleteIconClicked.emit(this.user)
   }
 
 }

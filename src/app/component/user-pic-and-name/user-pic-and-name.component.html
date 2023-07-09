@@ -10,4 +10,7 @@
             {{ (user?.profile?.displayName) ?
                     user?.profile?.displayName:((user?.profile?.name)? user?.profile?.name : user?.hexpubkey()|abbreviateId) }}
     </span>
+    <span *ngIf="showClickableDeleteIcon">
+        <cds-icon  shape="window-close" status="warning" (click)="onDeleteIconClicked($event)" title="Delete"></cds-icon>
+    </span>
 </span>

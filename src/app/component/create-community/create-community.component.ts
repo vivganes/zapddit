@@ -6,6 +6,7 @@ import { ClrForm } from '@clr/angular';
 import { Community } from '../../model/community';
 import { CommunityService } from '../../service/community.service';
 import { LoginUtil } from 'src/app/util/LoginUtil';
+import { NDKUser } from '@nostr-dev-kit/ndk';
 
 @Component({
   selector: 'app-create-community',
@@ -36,6 +37,7 @@ export class CreateCommunityComponent implements OnInit{
   ngOnInit(): void {
     if(this.ndkproviderService.currentUser)
       this.newCommunity.creatorHexKey = this.ndkproviderService.currentUser.hexpubkey();
+      this.newCommunity.moderatorHexKeys?.push(this.newCommunity.creatorHexKey!);
 
     this.displayNameChange
         .asObservable()
@@ -73,6 +75,10 @@ export class CreateCommunityComponent implements OnInit{
         this.newCommunity.moderatorHexKeys?.push(hexKey)
       }
     }    
+  }
+
+  deleteModerator(user:NDKUser){
+    this.newCommunity.moderatorHexKeys = this.newCommunity.moderatorHexKeys?.filter((key) => key!==user.hexpubkey());
   }
 
   sanitizeDisplayName(){
