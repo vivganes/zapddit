@@ -7,7 +7,7 @@ export class NewLineToBrPipe implements PipeTransform {
 
     transform(text?:string): string {
         if(text)
-            return text?.replace('\n','<br/>')    
+            return text?.replaceAll('\n','<br/>')    
         else 
             return '';    
     }

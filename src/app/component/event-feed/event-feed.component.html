@@ -136,12 +136,12 @@
   <h3 class="modal-title">Community Details</h3>
   <div class="modal-body">
       <b><span class="break-words-overflow">n/{{community?.name}}</span> by {{community?.creatorProfile?.displayName ? community?.creatorProfile?.displayName : (community?.creatorProfile?.name ? community?.creatorProfile?.name : community?.creatorHexKey | abbreviateId)}}</b>
-      <h4>Description</h4>
-      <p>{{community?.description}}</p>
+      <h4>Description</h4>      
+      <p><ngx-dynamic-hooks [content]="community?.description | newLineToBr "></ngx-dynamic-hooks></p>
       <h4>Moderators</h4>
       <p *ngFor="let key of community?.moderatorHexKeys"><app-user-pic-and-name [hexKey]="key"></app-user-pic-and-name></p>
       <h4>Rules</h4>
-      <p>{{community?.rules}}</p>
+      <p><ngx-dynamic-hooks [content]="community?.rules| newLineToBr "></ngx-dynamic-hooks></p>
   </div>
   <div class="modal-footer">
       <button type="button" class="btn btn-primary" (click)="showingCommunityInfo = false">Ok</button>
