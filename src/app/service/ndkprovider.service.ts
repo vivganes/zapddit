@@ -23,6 +23,7 @@ import { User, Relay } from '../model';
 import { Constants } from '../util/Constants';
 import { BehaviorSubject, retry } from 'rxjs';
 import { Community } from '../model/community';
+import { ObjectCacheService } from './object-cache.service';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -78,7 +79,7 @@ export class NdkproviderService {
   @Output()
   launchOnboardingWizard: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  constructor(private dbService: ZappeditdbService) {
+  constructor(private dbService: ZappeditdbService, private objectCache: ObjectCacheService) {
     const npubFromLocal = localStorage.getItem(Constants.NPUB);
     const privateKey = localStorage.getItem(Constants.PRIVATEKEY);
     const loggedInPubKey = localStorage.getItem(Constants.LOGGEDINUSINGPUBKEY);
@@ -280,9 +281,17 @@ export class NdkproviderService {
 
   async getNdkUserFromNpub(npub: string): Promise<NDKUser | undefined> {
     try {
+      const entryFromCache = await this.objectCache.fetchUserWithNpub(npub);
+      if(entryFromCache){
+        return entryFromCache;
+      }
+
       let user: NDKUser | undefined;
       user = this.ndk?.getUser({npub: npub});
-      await user?.fetchProfile();
+      if(user){
+        await user?.fetchProfile();
+        this.objectCache.addUser(user)
+      }
       return user;
     } catch (e) {
       console.log(e);
@@ -291,18 +300,21 @@ export class NdkproviderService {
   }
 
   async getProfileFromHex(hexpubkey: string): Promise<NDKUserProfile | undefined> {
-    const user = this.ndk?.getUser({ hexpubkey });
-    await user?.fetchProfile();
+    const user = await this.getNdkUserFromHex(hexpubkey);
     return user?.profile;
   }
 
-  async storeUserProfileInCache(user: NDKUser){
-
-  }
-
   async getNdkUserFromHex(hexpubkey: string): Promise<NDKUser | undefined> {
+    const entryFromCache = await this.objectCache.fetchUserWithHexKey(hexpubkey);
+    if(entryFromCache){
+      return entryFromCache;
+    }
+
     const user = this.ndk?.getUser({ hexpubkey });
-    await user?.fetchProfile();
+    if(user){
+      await user?.fetchProfile();
+      this.objectCache.addUser(user);
+    }
     return user;
   }
 
@@ -1053,6 +1065,7 @@ export class NdkproviderService {
       // check if user has a profile, otherwise request it
       if (!zapRecipient.profile) {
         await zapRecipient.fetchProfile();
+        this.objectCache.addUser(zapRecipient);
       }
 
       lud06 = (zapRecipient.profile || {}).lud06;

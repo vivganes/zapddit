@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
+import { ObjectCacheService } from 'src/app/service/object-cache.service';
 
 @Component({
   selector: 'app-user-pic-and-name',
@@ -27,7 +28,7 @@ export class UserPicAndNameComponent {
   @Output()
   deleteIconClicked:EventEmitter<NDKUser> = new EventEmitter<NDKUser>();
 
-  constructor(private ndkProvider:NdkproviderService){
+  constructor(private ndkProvider:NdkproviderService, private objectCache:ObjectCacheService){
 
   }
 
@@ -42,19 +43,20 @@ export class UserPicAndNameComponent {
     }
     else{
       if(!this.user.profile){
-        this.user.fetchProfile()
+        const user = this.user;
+        this.user.fetchProfile().then((event)=>{
+          this.objectCache.addUser(user);
+        })
       }
     }
   }
 
   async populateUserUsingNpub(){
     this.user = await this.ndkProvider.getNdkUserFromNpub(this.npub!);
-    await this.user?.fetchProfile()
   }
 
   async populateUser(){
     this.user = await this.ndkProvider.getNdkUserFromHex(this.hexKey!);
-    await this.user?.fetchProfile()
   }
 
   openAuthorInSnort(){

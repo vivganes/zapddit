@@ -11,6 +11,7 @@ import {
   BreakpointState
 } from '@angular/cdk/layout';
 import { Subscription, BehaviorSubject, debounceTime } from 'rxjs';
+import { ObjectCacheService } from 'src/app/service/object-cache.service';
 
 @Component({
   selector: 'app-profile',
@@ -141,7 +142,7 @@ export class ProfileComponent implements OnInit, OnDestroy{
   }
 
   constructor(private ndkProvider:NdkproviderService, private breakpointObserver: BreakpointObserver,
-    private changeDetectorRef: ChangeDetectorRef, private dbService:ZappeditdbService) {
+    private changeDetectorRef: ChangeDetectorRef, private dbService:ZappeditdbService, private objectCache:ObjectCacheService) {
   }
 
   async fetchPeopleIMuted(){
@@ -253,6 +254,7 @@ export class ProfileComponent implements OnInit, OnDestroy{
     this.editPicture = false;
     this.showNewPicture = false;
     this.ndkProvider.currentUser?.fetchProfile();
+    this.objectCache.addUser(this.ndkProvider.currentUser!)
     this.ndkProvider.currentUserProfile = this.ndkProvider.currentUser?.profile;
   }
 
