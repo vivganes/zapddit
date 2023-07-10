@@ -15,7 +15,7 @@ const VERSION = 1;
 export class ObjectCacheService extends Dexie {
 
   //default TTL in seconds
-  defaultTTL:number = 10;
+  defaultTTL:number = 60*60; //1 hour
   users!:Table<User>;
 
   constructor() {
