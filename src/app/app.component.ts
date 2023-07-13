@@ -36,7 +36,7 @@ import {
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
-import { NDKTag, NDKUserProfile } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKTag, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as linkify from 'linkifyjs';
 import hashtag from './util/IntlHashtagLinkifyPlugin';
 import { Constants } from './util/Constants';
@@ -49,7 +49,7 @@ import {
   BreakpointState
 } from '@angular/cdk/layout';
 
-ClarityIcons.addIcons(arrowIcon,flagIcon,starIcon,internetOfThingsIcon,thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
+ClarityIcons.addIcons(starIcon,internetOfThingsIcon,thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -202,19 +202,13 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   async migrate(){
-    var event = this.ndkProvider.createNDKEvent();
-    let tags: NDKTag[] = [];
 
-    var communities = await this.migrateCommunites(tags);
-    var topics = await this.migrateTopics(tags);
-    var mutedTopics = await this.migrateMutedTopics(tags);
-    var recipients = await this.migrateDownzapRecipients(tags);
 
-    event.tags = tags;
-    event.kind = 30001;
+    var communities = await this.migrateCommunites();
+    var topics = await this.migrateTopics();
+    var mutedTopics = await this.migrateMutedTopics();
+    var recipients = await this.migrateDownzapRecipients();
 
-    await event.sign();
-    await event.publish();
 
     localStorage.setItem(Constants.DOWNZAPRECIPIENTS, recipients.join(','));
     this.ndkProvider.appData.downzapRecipients = recipients.join(',');
@@ -235,8 +229,10 @@ export class AppComponent implements OnInit, OnDestroy{
     this.ndkProvider.mutedTopicsEmitter.emit(mTopics);
   }
 
-  async migrateCommunites(tags:NDKTag[]){
+  async migrateCommunites(){
     // get from the appspecific data
+    const event = this.ndkProvider.createNDKEvent();
+    const tags:NDKTag[] = [];
     var existingCommunities = this.ndkProvider.appData.followedCommunities.split(',');
     var joinedCommunities:Community[] = [];
 
@@ -263,11 +259,19 @@ export class AppComponent implements OnInit, OnDestroy{
       if(item.id)
         tags.push(['a',`${item.id}`])
     }
+    event.tags = tags;
+    event.kind = 30001;
+    console.log(event);
+    //await event.publish();
 
     return collatedCommunites;
   }
 
-  async migrateTopics(tags:NDKTag[]){
+  async migrateTopics(){
+
+    const event = this.ndkProvider.createNDKEvent();
+    const tags:NDKTag[] = [];
+
     // get topics from the appspecific data
     var topics = this.ndkProvider.appData.followedTopics.split(',');
     var joinedTopics:string[] = [];
@@ -291,10 +295,18 @@ export class AppComponent implements OnInit, OnDestroy{
         tags.push(['t',`${item}`])
     }
 
+    event.tags = tags;
+    event.kind = 30001;
+    console.log(event);
+    //await event.publish();
+
     return collatedTopics;
   }
 
-  async migrateMutedTopics(tags:NDKTag[]){
+  async migrateMutedTopics(){
+    const event = this.ndkProvider.createNDKEvent();
+    const tags:NDKTag[] = [];
+
      // get muted topics from the appspecific data
      var existingMutedTopics = this.ndkProvider.appData.mutedTopics.split(',');
      var mutedTopics:string[] = [];
@@ -316,11 +328,18 @@ export class AppComponent implements OnInit, OnDestroy{
        if(item)
          tags.push(['t',`${item}`])
      }
+     event.tags = tags;
+     event.kind = 30001;
+     console.log(event);
+     //await event.publish();
 
      return collatedMutedTopics;
   }
 
-  async migrateDownzapRecipients(tags:NDKTag[]){
+  async migrateDownzapRecipients(){
+    const event = this.ndkProvider.createNDKEvent();
+    const tags:NDKTag[] = [];
+
     var downzapRecipients = this.ndkProvider.appData.downzapRecipients.split(',');
     var recipients:string[]=[];
 
@@ -337,6 +356,11 @@ export class AppComponent implements OnInit, OnDestroy{
       if(item)
         tags.push(['p',`${item}`])
     }
+
+    event.tags = tags;
+    event.kind = 30001;
+    console.log(event);
+    //await event.publish();
 
     return recipients;
   }
