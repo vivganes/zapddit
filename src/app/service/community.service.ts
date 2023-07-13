@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { NdkproviderService } from './ndkprovider.service';
 import { Community } from '../model/community';
 import { Constants } from '../util/Constants';
-import { NDKEvent, NDKFilter, NDKTag } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKTag } from '@nostr-dev-kit/ndk';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +29,27 @@ export class CommunityService {
     this.ndkProviderService.publishAppData(undefined, undefined, undefined, followedCommunities);
   }
 
+  async joinCommunityInteroperableList(community:Community){
+    var existing = await this.fetchJoinedCommunitiesMetadata() || [];
+    existing.push(community);
+    await this.join(existing);
+  }
+
+  async join(data:Community[]){
+    var existing = [...new Set(data)];
+    await this.buildAndPublish(existing);
+    var followedCommunities = existing.map(i=>i.id!).join(',');
+    localStorage.setItem(Constants.FOLLOWEDCOMMUNITIES,followedCommunities);
+    this.ndkProviderService.appData.followedCommunities = followedCommunities;
+    this.ndkProviderService.followedCommunitiesEmitter.emit(followedCommunities);
+  }
+
+  async joinCommunitiesInteroperableList(communities:Community[]){
+    var existing = await this.fetchJoinedCommunitiesMetadata() || [];
+    existing.push(...communities);
+    await this.join(existing);
+  }
+
   leaveCommunity(community:Community){
     let followedCommunities:string = this.ndkProviderService.appData.followedCommunities;
     if (this.ndkProviderService.appData.followedCommunities.split(',').length === 1) {
@@ -42,6 +63,11 @@ export class CommunityService {
     }
     localStorage.setItem(Constants.FOLLOWEDCOMMUNITIES,followedCommunities);
     this.ndkProviderService.publishAppData(undefined, undefined, undefined, followedCommunities);
+  }
+
+  async leaveCommunityInteroperableList(community:Community){
+    var existing = (await this.fetchJoinedCommunitiesMetadata() || []).filter(item=>item.id !== community.id!);
+    await this.join(existing);
   }
 
   async createCommunity(newCommunity:Community){
@@ -75,48 +101,56 @@ export class CommunityService {
   }
 
   async fetchJoinedCommunities():Promise<Community[]>{
-    const filter: NDKFilter = { kinds: [30001], '#d': ["communities"], authors:[this.ndkProviderService.currentUser?.hexpubkey()!] };
-    const events = await this.ndkProviderService.ndk?.fetchEvents(filter,{});
+    var communitiesArr = (await this.ndkProviderService.fetchLatestDataFromInteroperableList()).communities;
+    var communitiesDetails:Community[] = [];
 
-    if(events && events.size > 0){
-      const communityEvent = events.values().next().value
-      const name = communityEvent.getMatchingTags('d')[0][1];
-
-      if(name && name === "communities"){
-        const joinedCommunitiesTagArr:NDKTag[] = communityEvent.getMatchingTags('a');
-        let communities:Community[] = []
-        for(let tag of joinedCommunitiesTagArr) {
-          if(tag[1]){
-            communities.push((await this.ndkProviderService.getCommunityDetails(tag[1]))!);
-          }
-        };
-
-        return communities;
+    for(let tag of communitiesArr) {
+      if(tag){
+        communitiesDetails.push((await this.ndkProviderService.getCommunityDetails(tag))!);
       }
     }
-    return [];
+
+    return communitiesDetails;
   }
 
   async fetchJoinedCommunitiesMetadata():Promise<Community[]>{
-    const filter: NDKFilter = { kinds: [30001], '#d': ["communities"], authors:[this.ndkProviderService.currentUser?.hexpubkey()!] };
-    const events = await this.ndkProviderService.ndk?.fetchEvents(filter,{});
+    var communitiesArr = (await this.ndkProviderService.fetchLatestDataFromInteroperableList()).communities;
 
-    if(events && events.size > 0){
-      const communityEvent = events.values().next().value
-      const name = communityEvent.getMatchingTags('d')[0][1];
+    var communities:Community[] = [];
 
-      if(name && name === "communities"){
-        const joinedCommunitiesTagArr:NDKTag[] = communityEvent.getMatchingTags('a');
-        let communities:Community[] = []
-        for(let tag of joinedCommunitiesTagArr) {
-          if(tag[1]){
-            communities.push({id: tag[1]});
-          }
-        };
-
-        return communities;
-      }
+    for(let c of communitiesArr){
+      communities.push({id: c});
     }
-    return [];
+
+    return communities;
+  }
+
+  buildEvent(existing:Community[]): NDKEvent {
+    existing = existing.reduce((accumulator:Community[], current:Community) => {
+      if (!accumulator.find((item) => item.id === current.id)) {
+        accumulator.push(current);
+      }
+      return accumulator;
+    }, []);
+    var event = this.ndkProviderService.createNDKEvent();
+    let tags: NDKTag[] = [];
+    tags.push(['d', 'communities']);
+
+    for(let item of existing){
+      if(item.id && !(item.creatorHexKey!) && !(item.name!))
+        tags.push(['a',`${item.id}`])
+      else
+        tags.push(['a',`34450:${item.creatorHexKey}:${item.name!}`])
+    }
+
+    event.tags = tags;
+    event.kind = 30001;
+    return event;
+  }
+
+  async buildAndPublish(existing:Community[]){
+    var event = this.buildEvent(existing);
+    await event.sign();
+    await event.publish();
   }
 }
