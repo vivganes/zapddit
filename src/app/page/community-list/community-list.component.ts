@@ -27,7 +27,8 @@ export class CommunityListComponent {
   showOnlyJoinedCommunities: boolean = false;
   showCreateCommunity:boolean = false;
 
-  constructor(public ndkProvider:NdkproviderService, private router:Router, private communityService:CommunityService){
+  constructor(public ndkProvider:NdkproviderService, private router:Router,
+     private communityService:CommunityService){
 
   }
 
@@ -70,9 +71,13 @@ export class CommunityListComponent {
   }
 
   async fetchJoinedCommunities():Promise<Community[]>{
-    //return await this.ndkProvider.fetchJoinedCommunities();
-    return await this.communityService.fetchJoinedCommunities();
+    if(this.ndkProvider.appData.migrated){
+      return await this.communityService.fetchJoinedCommunities();
+    }else{
+      return await this.ndkProvider.fetchJoinedCommunities();
+    }
   }
+
 
   onCloseCreateCommunity($event:any){
     this.showCreateCommunity = false;

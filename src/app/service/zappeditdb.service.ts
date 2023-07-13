@@ -1,7 +1,7 @@
-
+import { User } from './../model/user';
 import { Injectable } from '@angular/core';
 import Dexie, { Table } from 'dexie';
-import { User, Relay } from '../model';
+import { Relay } from '../model';
 
 const DATASTORE = {
   peopleIFollow: "++hexPubKey, name, displayName, pictureUrl, nip05, npub, about",

@@ -2,7 +2,7 @@
   <h5 class="end">
     <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
         <cds-icon shape="plus-circle"></cds-icon> New Community
-    </button>  
+    </button>
   </h5>
   <div>
     <h3 *ngIf="!showOnlyOwnedCommunities && !showOnlyJoinedCommunities" align="center">
@@ -39,4 +39,3 @@
 </div>
 
 <app-create-community [show]="showCreateCommunity" (onClose)="onCloseCreateCommunity($event)"></app-create-community>
-

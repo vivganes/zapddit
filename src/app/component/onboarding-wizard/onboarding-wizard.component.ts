@@ -3,6 +3,7 @@ import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { Constants } from 'src/app/util/Constants';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { LoginUtil } from 'src/app/util/LoginUtil';
+import { TopicService } from '../../service/topic.service';
 
 @Component({
   selector: 'app-onboarding-wizard',
@@ -32,7 +33,7 @@ export class OnboardingWizardComponent {
   newUserDisplayName?:string;
   ndkProvider: NdkproviderService;
 
-  constructor(ndkProvider:NdkproviderService, private clipboard:Clipboard){
+  constructor(ndkProvider:NdkproviderService, private clipboard:Clipboard, private topicService:TopicService){
     this.ndkProvider = ndkProvider;
   }
 
@@ -108,7 +109,9 @@ export class OnboardingWizardComponent {
     localStorage.setItem(Constants.FOLLOWEDTOPICS,followedTopicsToBePublished.join(','));
     localStorage.setItem(Constants.MUTEDTOPICS,mutedTopicsToBePublished.join(','));
 
-    this.ndkProvider.publishAppData(followedTopicsToBePublished.join(','), undefined, mutedTopicsToBePublished.join(','));
+    //this.ndkProvider.publishAppData(followedTopicsToBePublished.join(','), undefined, mutedTopicsToBePublished.join(','));
+    await this.topicService.followTopicsInteroperableList(followedTopicsToBePublished);
+    await this.topicService.muteTopicsInteroperableList(mutedTopicsToBePublished);
     this.ndkProvider.setNotNewToNostr();
   }
 
@@ -121,6 +124,6 @@ export class OnboardingWizardComponent {
     this.open = false;
     this.openChange.emit(this.open)
   }
-  
+
 
 }
