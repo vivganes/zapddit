@@ -43,7 +43,7 @@ export class CommunityCardComponent {
     if(profile){
       this.community.creatorProfile = profile;
     }
-  } 
+  }
 
   async fetchFollowers(){
     const followers = await this.ndkProvider.fetchFollowersForCommunity(this.community.id!)
@@ -58,9 +58,9 @@ export class CommunityCardComponent {
     this.community = edited;
     this.showEditCommunity = false;
   }
-  
+
   openCommunityPage(){
-      this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)   
+      this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)
   }
 
   openCommunityCreatorInSnort(){
@@ -68,12 +68,21 @@ export class CommunityCardComponent {
   }
 
   async joinCommunity(){
-    await this.communityService.joinCommunity(this.community);
+    if(this.ndkProvider.appData.migrated === true){
+      await this.communityService.joinCommunityInteroperableList(this.community);
+    }
+    else{
+      await this.communityService.joinCommunity(this.community);
+    }
     this.followingNow = true;
   }
 
   async leaveCommunity(){
-    await this.communityService.leaveCommunity(this.community);
+    if(this.ndkProvider.appData.migrated === true){
+      await this.communityService.leaveCommunityInteroperableList(this.community);
+    }else{
+      await this.communityService.leaveCommunity(this.community);
+    }
     this.followingNow = false;
     this.onLeave.emit(this.community);
   }

@@ -19,6 +19,6 @@ export class TopicComponent {
   }
 
   onTopicDelete(){
-    this.topicService.unfollowTopic(this.topic);
+    this.topicService.unfollowTopicInteroperableList(this.topic);
   }
 }

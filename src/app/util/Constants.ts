@@ -9,6 +9,7 @@ export class Constants {
   public static readonly DOWNZAPRECIPIENTS = 'downzapRecipients';
   public static readonly DEFAULTSATSFORZAPS = 'defaultSatsForZaps';
   public static readonly MUTEDTOPICS = 'mutedTopics';
+  public static readonly MIGRATED = 'migrated';
   public static readonly SHOWMEDIA = 'loadMediaContentOnlyForPeopleIFollow';
   public static readonly FOLLOWERS_FROM_RELAY = 'loadingFollowersFromRelay';
   public static readonly HIDE_NONZAP_REACTIONS = 'hideNonZapReactions';
