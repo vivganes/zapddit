@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { Community } from 'src/app/model/community';
 import { CommunityService } from 'src/app/service/community.service';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
-import { CommunityEvent } from '../../model/community-event';
 
 @Component({
   selector: 'app-community-card',
@@ -69,15 +68,21 @@ export class CommunityCardComponent {
   }
 
   async joinCommunity(){
-    //await this.communityService.joinCommunity(this.community);
-    var event = new CommunityEvent(this.ndkProvider.ndk!, this.community);
-    var existing = await this.communityService.fetchJoinedCommunitiesMetadata() || [];
-    await event.buildAndPublish(existing);
+    if(this.ndkProvider.appData.migrated === true){
+      await this.communityService.joinCommunityInteroperableList(this.community);
+    }
+    else{
+      await this.communityService.joinCommunity(this.community);
+    }
     this.followingNow = true;
   }
 
   async leaveCommunity(){
-    await this.communityService.leaveCommunity(this.community);
+    if(this.ndkProvider.appData.migrated === true){
+      await this.communityService.leaveCommunityInteroperableList(this.community);
+    }else{
+      await this.communityService.leaveCommunity(this.community);
+    }
     this.followingNow = false;
     this.onLeave.emit(this.community);
   }

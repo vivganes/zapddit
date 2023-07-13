@@ -24,6 +24,6 @@ export class TopicComponent {
   onTopicDelete(evt:any){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.topicService.unfollowTopic(this.topic);
+    this.topicService.unfollowTopicInteroperableList(this.topic);
   }
 }

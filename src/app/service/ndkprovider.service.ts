@@ -19,17 +19,19 @@ import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
 import { LoginUtil, NewCredential } from '../util/LoginUtil';
 import { ZappeditdbService } from './zappeditdb.service';
-import { User, Relay } from '../model';
+import { Relay } from '../model';
 import { Constants } from '../util/Constants';
 import { BehaviorSubject, retry } from 'rxjs';
 import { Community } from '../model/community';
 import { ObjectCacheService } from './object-cache.service';
+import { User } from '../model/user';
 
 interface ZappedItAppData {
   followedTopics: string;
   downzapRecipients: string;
   mutedTopics:string;
   followedCommunities:string;
+  migrated:boolean;
 }
 
 interface MutedUserMetaData{
@@ -55,7 +57,8 @@ export class NdkproviderService {
     followedTopics: '',
     downzapRecipients: '',
     mutedTopics: '',
-    followedCommunities:''
+    followedCommunities:'',
+    migrated:false
   };
 
   isNip05Verified$ = new BehaviorSubject<boolean>(false);
@@ -75,6 +78,7 @@ export class NdkproviderService {
   isTryingZapddit: boolean = false;
   isNewToNostr: boolean = false;
   mutedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
+  appDataEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   canWriteToNostr: boolean = false;
   @Output()
   launchOnboardingWizard: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -655,7 +659,7 @@ export class NdkproviderService {
       const image = this.getTagValue('image',communityEvent);
       const moderatorTagArr:NDKTag[] = communityEvent.getMatchingTags('p');
       let moderatorHexKeys:string[] = []
-      for(let tag of moderatorTagArr) {        
+      for(let tag of moderatorTagArr) {
         if(tag[3] && tag[3] === 'moderator'){
           moderatorHexKeys.push(tag[1]);
         }
@@ -859,11 +863,12 @@ export class NdkproviderService {
     return this.ndk?.fetchEvents(filter);
   }
 
-  async muteTopic(topic: string) {
-    throw new Error('Method not implemented.');
+  deDuplicate(data:string){
+    var deduped = data.split(',');
+    return [...new Set(deduped)].join(',')
   }
 
-  publishAppData(followListCsv?: string, downzapRecipients?: string, mutedTopics?: string, followedCommunitiesCsv?:string) {
+  publishAppData(followListCsv?: string, downzapRecipients?: string, mutedTopics?: string, followedCommunitiesCsv?:string, migrateToStandardList?:boolean) {
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 30078;
     if (this.currentUser) {
@@ -871,27 +876,33 @@ export class NdkproviderService {
     }
     let followedTopicsToPublish = '';
     if (followListCsv !== undefined) {
-      followedTopicsToPublish = followListCsv;
+      followedTopicsToPublish = this.deDuplicate(followListCsv);
     } else {
-      followedTopicsToPublish = this.appData.followedTopics;
+      followedTopicsToPublish = this.deDuplicate(this.appData.followedTopics);
     }
 
-    const downzapRecipientsToPublish = downzapRecipients || this.appData.downzapRecipients;
+    const downzapRecipientsToPublish = this.deDuplicate(downzapRecipients||'') || this.deDuplicate(this.appData.downzapRecipients);
+
     let mutedTopicsToPublish = '';
     if (mutedTopics !== undefined) {
-      mutedTopicsToPublish = mutedTopics;
+      mutedTopicsToPublish = this.deDuplicate(mutedTopics);
     } else {
-      mutedTopicsToPublish = this.appData.mutedTopics;
+      mutedTopicsToPublish = this.deDuplicate(this.appData.mutedTopics);
     }
 
     let followedCommunitiesToPublish = '';
     if (followedCommunitiesCsv !== undefined) {
-      followedCommunitiesToPublish = followedCommunitiesCsv;
+      followedCommunitiesToPublish = this.deDuplicate(followedCommunitiesCsv);
     } else {
-      followedCommunitiesToPublish = this.appData.followedCommunities;
+      followedCommunitiesToPublish = this.deDuplicate(this.appData.followedCommunities);
     }
 
-    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish + '\n' + mutedTopicsToPublish + '\n' + followedCommunitiesToPublish;
+    let migrated = false;
+    if (migrateToStandardList !== undefined) {
+      migrated = migrateToStandardList;
+    }
+
+    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish + '\n' + mutedTopicsToPublish + '\n' + followedCommunitiesToPublish+ '\n' + migrateToStandardList;
     const tag: NDKTag = ['d', 'zapddit.com'];
     ndkEvent.tags = [tag];
     if (this.canWriteToNostr) {
@@ -901,7 +912,8 @@ export class NdkproviderService {
       followedTopics: followedTopicsToPublish,
       downzapRecipients: downzapRecipientsToPublish,
       mutedTopics: mutedTopicsToPublish,
-      followedCommunities: followedCommunitiesToPublish
+      followedCommunities: followedCommunitiesToPublish,
+      migrated:migrated
     };
     this.followedTopicsEmitter.emit(followedTopicsToPublish);
     this.followedCommunitiesEmitter.emit(followedCommunitiesToPublish);
@@ -953,52 +965,161 @@ export class NdkproviderService {
     return this.ndk?.fetchEvents(filter);
   }
 
+  async fetchLatestDataFromInteroperableList(){
+    const filter: NDKFilter = { kinds: [30001], '#d': ["communities","hashtags","mutehashtags", "downzaprecipients"], authors:[this.currentUser?.hexpubkey()!] };
+    const events = await this.ndk?.fetchEvents(filter,{});
+    let hashtags:string[] = []
+    let mutedhashtags:string[] = []
+    let communities:string[] = []
+    let downzapRecipients:string[] = []
+
+    const data = {hashtags:hashtags,communities:communities,mutehashtags:mutedhashtags, downzapRecipients:downzapRecipients}
+
+    if(events && events.size > 0){
+      for(var communityEvent of events.values()){
+        const name = communityEvent.getMatchingTags('d')[0][1];
+
+        if(name && name === "hashtags"){
+          const joinedHashtagsTagArr:NDKTag[] = communityEvent.getMatchingTags('t');
+          for(let tag of joinedHashtagsTagArr) {
+            if(tag[1]){
+              hashtags.push(tag[1]);
+            }
+          };
+
+          data.hashtags = [...new Set(hashtags)];
+        }
+
+        if(name && name === "communities"){
+          const joinedCommunitiesTagArr:NDKTag[] = communityEvent.getMatchingTags('a');
+
+          for(let tag of joinedCommunitiesTagArr) {
+            if(tag[1]){
+              communities.push(tag[1]);
+            }
+          };
+
+          data.communities = [...new Set(communities)];
+        }
+
+        if(name && name === "mutehashtags"){
+          const mutedHashtagsTagArr:NDKTag[] = communityEvent.getMatchingTags('t');
+
+          for(let tag of mutedHashtagsTagArr) {
+            if(tag[1]){
+              mutedhashtags.push(tag[1]);
+            }
+          };
+
+          data.mutehashtags = [...new Set(mutedhashtags)];
+        }
+
+
+        if(name && name === "downzaprecipients"){
+          const downzapRecipientsTags:NDKTag[] = communityEvent.getMatchingTags('p');
+          var cache:any = [];
+          console.log("downzaprecipients - "+JSON.stringify(communityEvent, (key, value) => {
+            if (typeof value === 'object' && value !== null) {
+              // Duplicate reference found, discard key
+              if (cache.includes(value)) return;
+
+              // Store value in our collection
+              cache.push(value);
+            }
+            return value;
+          }));
+
+          for(let tag of downzapRecipientsTags) {
+            if(tag[1]){
+              console.log("downzaprecipients - "+events)
+              downzapRecipients.push(tag[1]);
+            }
+          };
+
+          data.downzapRecipients = [...new Set(downzapRecipients)];
+        }
+      }
+    }
+    return data;
+  }
+
   async refreshAppData() {
+    const dataFromInteroperableList = await this.fetchLatestDataFromInteroperableList();
+
     const latestEvents: Set<NDKEvent> | undefined = await this.fetchLatestAppData();
     if (latestEvents && latestEvents.size > 0) {
       const latestEvent: NDKEvent = Array.from(latestEvents)[0];
       const multiLineAppData = latestEvent.content;
       const lineWiseAppData = multiLineAppData.split('\n');
-      for (let i = 0; i < lineWiseAppData.length; i++) {
-        switch (i) {
-          case 0:
-            this.appData.followedTopics = lineWiseAppData[i];
-            this.followedTopicsEmitter.emit(this.appData.followedTopics);
-            break;
-          case 1:
-            this.appData.downzapRecipients = lineWiseAppData[i];
-            break;
-          case 2:
-            this.appData.mutedTopics = lineWiseAppData[i];
-            this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
-            break;
-          case 3:
-            this.appData.followedCommunities = lineWiseAppData[i];
-            this.followedCommunitiesEmitter.emit(this.appData.followedCommunities);
-            break;
-          default:
-          //do nothing. irrelevant data
+
+      if(lineWiseAppData && lineWiseAppData.length===5){
+        this.appData.migrated = lineWiseAppData[4]==="true"
+      }
+
+      if(this.appData.migrated===true){
+        this.appData.followedTopics = dataFromInteroperableList.hashtags.join(',');
+        this.followedTopicsEmitter.emit(this.appData.followedTopics);
+
+        this.appData.downzapRecipients = dataFromInteroperableList.downzapRecipients.join(',')
+        console.log("downzaprecipients - "+dataFromInteroperableList.downzapRecipients.join(','))
+
+        this.appData.mutedTopics = dataFromInteroperableList.mutehashtags.join(',');
+        this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
+
+        this.appData.followedCommunities = dataFromInteroperableList.communities.join(',');
+        this.followedCommunitiesEmitter.emit(this.appData.followedCommunities);
+      }else{
+          for (let i = 0; i < lineWiseAppData.length; i++) {
+            switch (i) {
+              case 0:
+                this.appData.followedTopics = lineWiseAppData[i];
+                this.followedTopicsEmitter.emit(this.appData.followedTopics);
+                break;
+              case 1:
+                this.appData.downzapRecipients = lineWiseAppData[i];
+                console.log("downzaprecipients - "+this.appData.downzapRecipients)
+
+                break;
+              case 2:
+                this.appData.mutedTopics = lineWiseAppData[i];
+                this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
+                break;
+              case 3:
+                this.appData.followedCommunities = lineWiseAppData[i];
+                this.followedCommunitiesEmitter.emit(this.appData.followedCommunities);
+                break;
+
+              default:
+              //do nothing. irrelevant data
+            }
+          }
+        }
+
+        console.log('Latest follow list :' + this.appData.followedTopics);
+        localStorage.setItem(Constants.FOLLOWEDTOPICS, this.appData.followedTopics);
+
+        console.log('Latest downzap recipients:' + this.appData.downzapRecipients);
+        localStorage.setItem(Constants.DOWNZAPRECIPIENTS, this.appData.downzapRecipients);
+
+        console.log('Latest muted topics:' + this.appData.mutedTopics);
+        localStorage.setItem(Constants.MUTEDTOPICS, this.appData.mutedTopics);
+
+        localStorage.setItem(Constants.MIGRATED, this.appData.migrated.toString());
+
+        const satsFromLocalStorage = localStorage.getItem(Constants.DEFAULTSATSFORZAPS);
+        if (satsFromLocalStorage) {
+          try {
+            const numberSats = Number.parseInt(satsFromLocalStorage);
+            this.defaultSatsForZaps = numberSats;
+          } catch (e) {
+            console.error(e);
+          }
         }
       }
-      console.log('Latest follow list :' + this.appData.followedTopics);
-      localStorage.setItem(Constants.FOLLOWEDTOPICS, this.appData.followedTopics);
 
-      console.log('Latest downzap recipients:' + this.appData.downzapRecipients);
-      localStorage.setItem(Constants.DOWNZAPRECIPIENTS, this.appData.downzapRecipients);
+      this.appDataEmitter.emit(true);
 
-      console.log('Latest muted topics:' + this.appData.mutedTopics);
-      localStorage.setItem(Constants.MUTEDTOPICS, this.appData.mutedTopics);
-
-      const satsFromLocalStorage = localStorage.getItem(Constants.DEFAULTSATSFORZAPS);
-      if (satsFromLocalStorage) {
-        try {
-          const numberSats = Number.parseInt(satsFromLocalStorage);
-          this.defaultSatsForZaps = numberSats;
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
+      console.log("app data refreshed");
   }
 
   setDefaultSatsForZaps(sats: number) {
@@ -1336,6 +1457,29 @@ export class NdkproviderService {
       await this.fetchSubscribedRelaysAndCache(subscribedRelaysFromRelay);
     }
     return await this.dbService.subscribedRelays.toArray();
+  }
+
+  buildDownzapRecipientEvent(existing:string[]): NDKEvent {
+    var event = this.createNDKEvent();
+    let tags: NDKTag[] = [];
+    tags.push(['d', 'downzaprecipients']);
+
+    for(let item of existing){
+      console.log('push p tag -'+item)
+      if(item)
+        tags.push(['p',`${item}`])
+    }
+
+    event.tags = tags;
+    event.kind = 30001;
+    return event;
+  }
+
+  async buildAndPublishDownzapRecipient(existing:string[]){
+    var event = this.buildDownzapRecipientEvent(existing);
+    await event.sign();
+    await event.publish();
+    this.appData.downzapRecipients = existing[0]
   }
 }
 
