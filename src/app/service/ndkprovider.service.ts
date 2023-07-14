@@ -281,7 +281,7 @@ export class NdkproviderService {
 
   async getNdkUserFromNpub(npub: string): Promise<NDKUser | undefined> {
     try {
-      const entryFromCache = await this.objectCache.fetchUserWithNpub(npub);
+      const entryFromCache = await this.objectCache.fetchUserWithNpub(npub,this.ndk!);
       if(entryFromCache){
         return entryFromCache;
       }
@@ -897,36 +897,41 @@ export class NdkproviderService {
     this.followedCommunitiesEmitter.emit(followedCommunitiesToPublish);
   }
 
-  async followUnfollowContact(hexPubKeyToFollow: string, follow: boolean) {
-    var contactListFromCache = (await this.dbService.peopleIFollow.toArray()).map(item => item.hexPubKey);
-
-    // if it is a follow event, attach the new contact to the list or else remove from the list if found and publish
-    if (follow) {
-      contactListFromCache.push(hexPubKeyToFollow);
-    } else {
-      const index = contactListFromCache.indexOf(hexPubKeyToFollow);
-
-      if (index > -1) {
-        contactListFromCache.splice(index, 1);
+  async followUnfollowContact(hexPubKeyToFollow: string, follow: boolean){
+    const contactListFilter:NDKFilter ={
+      kinds:[3],
+      authors:[this.currentUser?.hexpubkey()!]
+    } 
+    const contactListEvents = await this.ndk?.fetchEvents(contactListFilter,{})
+    if(contactListEvents && contactListEvents.size > 0){
+      const contactListEvent = [...contactListEvents][0];
+      const contactListRawEvent = await contactListEvent.toNostrEvent();
+      var tagsForNewEvent = contactListRawEvent.tags;
+      if(follow){
+        //add a p tag
+        tagsForNewEvent.push(['p',hexPubKeyToFollow]);
+      } else {
+        tagsForNewEvent = tagsForNewEvent.filter((t) => t[1] !== hexPubKeyToFollow);
       }
-    }
 
-    var tags: NDKTag[] = contactListFromCache.map((item, index) => {
-      return ['p', item.toString()];
-    });
-
-    const ndkEvent = new NDKEvent(this.ndk);
-    if (this.currentUser) {
-      ndkEvent.pubkey = this.currentUser?.hexpubkey();
-    }
-
-    ndkEvent.tags = tags;
-    ndkEvent.kind = 3;
-    if (this.canWriteToNostr) {
-      await ndkEvent.sign();
-      return ndkEvent.publish();
-    }
-    return;
+      const eventToSend = this.createNDKEvent();
+      eventToSend.kind = 3;
+      eventToSend.tags = tagsForNewEvent;
+      console.log(eventToSend);
+      if(this.canWriteToNostr){
+        return eventToSend.publish();
+      }
+    } else {
+      const eventToSend = this.createNDKEvent();
+      eventToSend.kind = 3;
+      if(follow){
+        eventToSend.tags = [['p',hexPubKeyToFollow]];
+        console.log(eventToSend);
+        if(this.canWriteToNostr){
+          return eventToSend.publish();
+        }
+      }      
+    }    
   }
 
   fetchLatestAppData() {
@@ -1101,26 +1106,30 @@ export class NdkproviderService {
     var verificationEndpoint;
     var nip05Name;
     var verified: boolean = false;
-    if (nip05) {
-      var elements = nip05.split('@');
-      nip05Domain = elements.pop();
-      nip05Name = elements.pop();
-      verificationEndpoint = `https://${nip05Domain}/.well-known/nostr.json?name=${nip05Name}`;
-
-      var response = await fetch(`${verificationEndpoint}`);
-      const body = await response.json();
-
-      if (body['names'] && body['names'][`${nip05Name}`]) {
-        var hexPubKeyFromRemote = body['names'][`${nip05Name}`];
-
-        if (hexPubKey === hexPubKeyFromRemote) {
-          verified = true;
-          // raise this only for the current logged in user
-          if (hexPubKey === this.currentUser?.hexpubkey())
-            this.isNip05Verified$.next(true);
+    try{
+      if (nip05) {
+        var elements = nip05.split('@');
+        nip05Domain = elements.pop();
+        nip05Name = elements.pop();
+        verificationEndpoint = `https://${nip05Domain}/.well-known/nostr.json?name=${nip05Name}`;
+  
+        var response = await fetch(`${verificationEndpoint}`);
+        const body = await response.json();
+  
+        if (body['names'] && body['names'][`${nip05Name}`]) {
+          var hexPubKeyFromRemote = body['names'][`${nip05Name}`];
+  
+          if (hexPubKey === hexPubKeyFromRemote) {
+            verified = true;
+            // raise this only for the current logged in user
+            if (hexPubKey === this.currentUser?.hexpubkey())
+              this.isNip05Verified$.next(true);
+          }
         }
       }
-    }
+    } catch(e){
+      console.error(e);
+    }    
     return verified;
   }
 

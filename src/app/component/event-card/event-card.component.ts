@@ -675,20 +675,18 @@ export class EventCardComponent implements OnInit, OnDestroy{
   return (this.imageUrls!=null && this.imageUrls?.length > 0) || (this.videoUrls!=null && this.videoUrls?.size > 0) || (this.onlineVideoUrls!=null && this.onlineVideoUrls?.length > 0)
  }
 
- follow(){
+ follow(evt: any){
+  evt.stopImmediatePropagation();
   this.eventInProgress = true;
 
   this.ndkProvider.followUnfollowContact(this.authorHexPubKey!, true).then(async res=>{
+    this.amIFollowingtheAuthor = true;
     // allow the data to be propagated on the relays and then look for the change in local and relay contacts
-    setTimeout(async () =>
-    {
-      this.ndkProvider.fetchFollowersFromCache().then(()=>{
-        // wait for the user to be persisted in the db and then re-check to enable the media based on followed/unfollowed state
-        setTimeout(()=>{
-          this.eventInProgress = false;
-        },10000);
-      })
-    },10000);
+    this.dbService.peopleIFollow.add({
+      hexPubKey: this.authorHexPubKey!
+    }, this.authorHexPubKey!).then(()=>{
+      this.eventInProgress = false;
+    })
   }, err=>{
     console.log(err);
     this.eventInProgress = false;
@@ -698,9 +696,11 @@ export class EventCardComponent implements OnInit, OnDestroy{
   });
  }
 
- unFollow(){
+ unFollow(evt: any){
+  evt.stopImmediatePropagation();
   this.eventInProgress = true;
   this.ndkProvider.followUnfollowContact(this.authorHexPubKey!, false).then(async res => {
+    this.amIFollowingtheAuthor = false;
     this.dbService.peopleIFollow.where('hexPubKey').equalsIgnoreCase(this.authorHexPubKey!.toString()).delete().then(()=>{
       console.log("Contact removed")
       this.getAuthor();

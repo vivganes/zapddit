@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
+import NDK, { NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import Dexie, {  Table } from 'dexie';
 import { User } from '../model';
+import { NdkproviderService } from './ndkprovider.service';
 
 const DATASTORE = {
   users: "hexPubKey, name, displayName, nip05, npub"
@@ -45,7 +46,7 @@ export class ObjectCacheService extends Dexie {
     this.users.delete(hexPubKey)
   }
 
-  async fetchUserWithNpub(npub:string):Promise<NDKUser | undefined>{
+  async fetchUserWithNpub(npub:string, ndkToInject:NDK):Promise<NDKUser | undefined>{
     const user:User|undefined = await this.users.where('npub').equals(npub).first();
     if(user){
       console.log("hit")
@@ -58,6 +59,7 @@ export class ObjectCacheService extends Dexie {
         nip05:user.nip05
       }
       const ndkUser = new NDKUser({npub: user.npub});
+      ndkUser.ndk = ndkToInject;
       ndkUser.profile = profile;
       return ndkUser;
     }

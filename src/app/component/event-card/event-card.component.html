@@ -48,14 +48,14 @@
             <ng-template
               [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress"
-                (click)="follow()">
+                (click)="follow($event)">
                 Follow
               </button>
             </ng-template>
             <ng-template
               [ngIf]="amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress"
-                (click)="unFollow()">
+                (click)="unFollow($event)">
                 Unfollow
               </button>
             </ng-template>
@@ -69,14 +69,14 @@
             <ng-template
               [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress"
-                (click)="follow()">
+                (click)="follow($event)">
                 Follow
               </button>
             </ng-template>
             <ng-template
               [ngIf]="amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress"
-                (click)="unFollow()">
+                (click)="unFollow($event)">
                 Unfollow
               </button>
             </ng-template>
