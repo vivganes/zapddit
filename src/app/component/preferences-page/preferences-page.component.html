@@ -167,7 +167,7 @@
           <ul class="list-unstyled">
             <ng-template ngFor let-item [ngForOf]="this.relays" let-i="index" >
               <li value="index" >
-                <cds-icon class="trash-icon" status="danger" size="sm" shape="trash" title="unsubscribe" (click)="this.removeRelay(item.url)"></cds-icon>
+                <cds-icon class="trash-icon" status="danger" size="sm" shape="trash" title="unsubscribe" (click)="this.removeRelay(item.name)"></cds-icon>
                 <span>&nbsp;</span>
                 <cds-icon *ngIf="item.read" class="download-cloud" size="sm" shape="download-cloud" title="read"></cds-icon> 
                 <cds-icon *ngIf="item.write" class="upload-cloud" size="sm" shape="upload-cloud" title="write"></cds-icon>

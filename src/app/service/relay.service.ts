@@ -23,7 +23,7 @@ export class RelayService {
 
   async removeRelay(relay: string) {
     let relayList: Relay[] = [];
-    this.dbProvider.subscribedRelays.delete(relay)
+    await this.dbProvider.subscribedRelays.delete(relay)
     relayList = await this.getRelays();
     this.ndkProvider.updateRelays(relayList);
   }

@@ -420,12 +420,19 @@ export class EventCardComponent implements OnInit, OnDestroy{
           this.canModerate = true;
         }
       }      
-      this.changeDetector.detectChanges();
 
-      if(!this.showUnapprovedPosts){
+      if(!this.showUnapprovedPosts || this.canModerate){
+        this.loadingApproval = true;
         await this.getApprovals();
+        if(!this.approvalEvents || this.approvalEvents.size ===0 ){
+          await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
+          await this.getApprovals();
+        }
         this.loadingApproval = false;
       }
+
+      this.changeDetector.detectChanges();
+
     }
   }
 

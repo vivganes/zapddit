@@ -1,4 +1,4 @@
-<div class="card" *ngIf="loadingApproval">
+<div class="card" *ngIf="loadingApproval && !canModerate">
   <div class="card-block">   
     <p class="card-text"> <clr-spinner clrInline>
       Loading moderator approvals...
@@ -15,7 +15,7 @@
   </span>
 </div>
 
-<div class="card" *ngIf="canModerate || (!(loadingApproval) && !(mutedAuthor) && (showUnapprovedPosts ? true: approvalEvents?.size!==0))" #parent>
+<div class="card" *ngIf="(!(loadingApproval && !canModerate) && !(mutedAuthor) && (showUnapprovedPosts ? true: approvalEvents?.size!==0))" #parent>
   <div *ngIf="community && !hideCommunityHeader" class="card-header note-community-header">
     <img *ngIf="community?.image" (click)="openCommunityPage()" alt="Community image"
         src="{{ community.image }}" class="community-image pointer-cursor" title="Browse" />
@@ -189,7 +189,7 @@
     </ng-template>
   </div>
   <div *ngIf="!isQuotedEvent" class="card-footer">
-    <button class="btn btn-sm btn-success btn-icon" *ngIf="canModerate && (!approvalEvents || approvalEvents?.size===0)"
+    <button [clrLoading]="loadingApproval" class="btn btn-sm btn-success btn-icon" *ngIf="canModerate && (!approvalEvents || approvalEvents?.size===0)"
       (click)="approveNote()">
       <cds-icon shape="check-circle"></cds-icon> Approve
     </button>
