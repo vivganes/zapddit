@@ -780,11 +780,9 @@ export class NdkproviderService {
   async getApprovalEvents(event:NDKEvent):Promise<Set<NDKEvent>|undefined>{
     const aTags = event.getMatchingTags('a');
     if(aTags){
-      const communityTags = aTags.map((aTag) => aTag[1]);
       const filter:NDKFilter = {
         kinds:[4550],
-        '#e':[event.id],
-        '#a':communityTags
+        '#e':[event.id]      
       }
       const approvalEvents = await this.ndk?.fetchEvents(filter,{});
       return approvalEvents;

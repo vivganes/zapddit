@@ -15,7 +15,7 @@
   </span>
 </div>
 
-<div class="card" *ngIf="(!(loadingApproval && !canModerate) && !(mutedAuthor) && (showUnapprovedPosts ? true: approvalEvents?.size!==0))" #parent>
+<div class="card" *ngIf="!(!loadingApproval && !canModerate && !mutedAuthor && (showUnapprovedPosts?false:approvalEvents?.size===0))" #parent>
   <div *ngIf="community && !hideCommunityHeader" class="card-header note-community-header">
     <img *ngIf="community?.image" (click)="openCommunityPage()" alt="Community image"
         src="{{ community.image }}" class="community-image pointer-cursor" title="Browse" />
