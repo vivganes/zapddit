@@ -32,7 +32,7 @@ import {
   internetOfThingsIcon,
   starIcon,
   flagIcon,
-  arrowIcon
+  arrowIcon,
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
@@ -55,6 +55,7 @@ ClarityIcons.addIcons(arrowIcon,flagIcon,starIcon,internetOfThingsIcon,thumbsUpI
 export class AppComponent implements OnInit, OnDestroy{
   title = 'zapddit';
   private router: Router;
+  sidebarCollapsed: false;
   followedTopics: string[] = [];
   darkTheme: boolean = false;
   wizardIsOpen: boolean = false;
@@ -62,6 +63,7 @@ export class AppComponent implements OnInit, OnDestroy{
   isNip05VerifiedForAuthorSub:Subscription = new Subscription();
   followedTopicsEmitterSub:Subscription = new Subscription();
   isMobileScreen:boolean = false;
+  codePopupOpened:boolean = false;
 
   ndkProvider: NdkproviderService;
 
@@ -173,6 +175,10 @@ export class AppComponent implements OnInit, OnDestroy{
 
   logout(){
     this.ndkProvider.logout();
+  }
+
+  openCodePopup(){
+    this.codePopupOpened = true;
   }
 
   ngOnDestroy():void{

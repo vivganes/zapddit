@@ -1,4 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom right, #4d7fff 0%, var(--clr-btn-primary-border-color,hsl(198, 65%, 57%)) 100%);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #ddd;
+  border: 1px solid #ccc;
+}
+
+.icon-nav-header:hover{
+  background-color: transparent!important;
+}
+
 .card{
   border-radius: 0.5rem!important;
 }

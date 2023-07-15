@@ -1,9 +1,6 @@
-<div class="clr-row" (mouseover)="hideElement = false"
-(mouseleave)="hideElement = true">
-<a class="clr-col-9" clrVerticalNavLink  [routerLink]="['/t', topic]"
+<a clrVerticalNavLink title="{{'#'+ topic}}" [routerLink]="['/t', topic]"
       routerLinkActive="active" >
-        <cds-icon shape="hashtag" clrverticalnavicon class="nav-icon"></cds-icon>
+        <cds-icon shape="hashtag" clrVerticalNavIcon class="nav-icon"></cds-icon>
         <span class="nav-text">{{ topic }}</span>
+        <cds-icon *ngIf="!sidebarCollapsed" shape="trash" class="ml-5" style="color:red"  (click)="onTopicDelete($event)"></cds-icon>
 </a>
-<cds-icon shape="trash" class="clr-col-2 p-2" style="color:red"  [hidden]="hideElement  && !isMobileScreen" size="isMobileScreen?'lg':'md'" (click)="onTopicDelete()"></cds-icon>
-</div>

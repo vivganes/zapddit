@@ -27,8 +27,8 @@
   </clr-header>
   <div class="content-container">
     <app-onboarding-wizard [open]="wizardIsOpen" (openChange)="wizardIsOpen = !wizardIsOpen"></app-onboarding-wizard>
-    <clr-vertical-nav *ngIf="isLoggedIn()" [clr-nav-level]="1" class="custom-scroll-bar">
-      <label class="nav-header">
+    <clr-vertical-nav [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="sidebarCollapsed" *ngIf="isLoggedIn()" [clr-nav-level]="1" class="custom-scroll-bar">
+      <label class="nav-header" *ngIf="!sidebarCollapsed">
         <img
           *ngIf="ndkProvider.currentUserProfile?.image"
           [src]="ndkProvider.currentUserProfile?.image"
@@ -45,42 +45,43 @@
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile?.name">@{{ ndkProvider.currentUserProfile?.name }}</span>
           <span *ngIf="isNip05Verified" title="Verified" class="badge badge-purple ml-5">✓ <span class="clr-sr-only">NIP-05 verified</span></span>
       </label>
-      <div class="nav-divider"></div>
+      <div class="nav-divider" *ngIf="!sidebarCollapsed"></div>
 
-      <a clrVerticalNavLink routerLink="/feed" routerLinkActive="active">
-        <cds-icon shape="home" clrverticalnavicon class="nav-icon"></cds-icon><span class="nav-text">My Feed</span>
+      
+      <a title="My Feed" clrVerticalNavLink routerLink="/feed" routerLinkActive="active">
+        <cds-icon shape="home" clrVerticalNavIcon></cds-icon><span class="nav-text">My Feed</span>
       </a>
-      <a *ngIf="!ndkProvider.isTryingZapddit" clrVerticalNavLink routerLink="/profile" routerLinkActive="active">
+      <a title="Profile" *ngIf="!ndkProvider.isTryingZapddit" clrVerticalNavLink routerLink="/profile" routerLinkActive="active">
         <cds-icon shape="user" clrVerticalNavIcon></cds-icon><span class="nav-text">Profile</span>
       </a>
-      <a clrVerticalNavLink routerLink="/preferences" routerLinkActive="active">
-        <cds-icon shape="cog" clrVerticalNavIcon></cds-icon><span class="nav-text">Preferences</span>
+      <a title="Preferences" clrVerticalNavLink routerLink="/preferences" routerLinkActive="active">
+        <cds-icon  shape="cog" clrVerticalNavIcon></cds-icon><span class="nav-text">Preferences</span>
       </a>
-      <a clrVerticalNavLink href="#" (click)="logout()">
+      <a title="{{ndkProvider.isTryingZapddit ? 'Clear & Reset' : 'Logout'}}" clrVerticalNavLink href="#" (click)="logout()">
         <cds-icon shape="logout" clrVerticalNavIcon></cds-icon><span class="nav-text">{{ndkProvider.isTryingZapddit ? 'Clear & Reset' : 'Logout'}}</span>
       </a>
       <div class="nav-divider"></div>
-      <label class="nav-header">Communities <span class="label label-info">BETA</span></label>
-      <a clrVerticalNavLink routerLink="/communities/discover" routerLinkActive="active">
+      <label class="nav-header" *ngIf="!sidebarCollapsed">        
+        Communities <span class="label label-info">BETA</span></label>
+      <span title="Communities (BETA)" clrVerticalNavLink *ngIf="sidebarCollapsed" class="icon-nav-header">
+        <cds-icon shape="users" solid="true" status="info" clrVerticalNavIcon></cds-icon>
+        Communities <span class="label label-info">BETA</span>
+      </span>
+      <a title="Discover communities"  clrVerticalNavLink routerLink="/communities/discover" routerLinkActive="active">
         <cds-icon shape="search" clrVerticalNavIcon></cds-icon><span class="nav-text">Discover</span>
       </a>
-      <a clrVerticalNavLink routerLink="/communities/joined" routerLinkActive="active">
+      <a title="Joined communities" clrVerticalNavLink routerLink="/communities/joined" routerLinkActive="active">
         <cds-icon shape="internet-of-things" clrVerticalNavIcon></cds-icon><span class="nav-text">Joined</span>
       </a>
-      <a clrVerticalNavLink routerLink="/communities/own" routerLinkActive="active">
+      <a title="Communities created by me" clrVerticalNavLink routerLink="/communities/own" routerLinkActive="active">
         <cds-icon shape="star" clrVerticalNavIcon></cds-icon><span class="nav-text">Created by me</span>
       </a>
-      <a clrVerticalNavLink routerLink="/communities/moderating" routerLinkActive="active">
+      <a title="Moderating communities" clrVerticalNavLink routerLink="/communities/moderating" routerLinkActive="active">
         <cds-icon shape="flag" clrVerticalNavIcon></cds-icon><span class="nav-text">Moderating</span>
       </a>
       <div class="nav-divider"></div>
-      <label class="nav-header">Followed Topics</label>
-      <app-topic *ngFor="let topic of followedTopics" [topic]="topic" [isMobileScreen]="isMobileScreen"></app-topic>
-      <div class="nav-divider"></div>
-      <div>
-        <a><span class="nav-text">Created with 💙 by <a href="https://snort.social/p/npub1ltx67888tz7lqnxlrg06x234vjnq349tcfyp52r0lstclp548mcqnuz40t">@vivganes</a></span></a>
-      </div>
-
+      <label class="nav-header"*ngIf="!sidebarCollapsed">Followed Topics</label>
+      <app-topic *ngFor="let topic of followedTopics" [topic]="topic" [isMobileScreen]="isMobileScreen" [sidebarCollapsed]="sidebarCollapsed"></app-topic>     
     </clr-vertical-nav>
     <div class="content-area">
       <div *ngIf="isLoggedIn(); else notloggedin">

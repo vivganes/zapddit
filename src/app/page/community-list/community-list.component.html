@@ -1,22 +1,23 @@
 <div>
-  <h5 class="end">
-    <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
-        <cds-icon shape="plus-circle"></cds-icon> New Community
-    </button>  
-  </h5>
+
   <div>
     <h3 *ngIf="!showOnlyOwnedCommunities && !showOnlyJoinedCommunities && !showOnlyModeratingCommunities" align="center">
-        👥 Recently Created Communities
+        <cds-icon shape="users" size="lg" solid="true"></cds-icon> Recently Created Communities
     </h3>
     <h3 *ngIf="showOnlyOwnedCommunities" align="center">
-        👥 Communities you created
+        <cds-icon shape="users" size="lg" solid="true"></cds-icon> Communities you created
     </h3>
     <h3 *ngIf="showOnlyJoinedCommunities" align="center">
-        👥 Communities you joined
+        <cds-icon shape="users" size="lg" solid="true"></cds-icon> Communities you joined
     </h3>
     <h3 *ngIf="showOnlyModeratingCommunities" align="center">
-        👥 Communities you moderate
+        <cds-icon shape="users" size="lg" solid="true"></cds-icon> Communities you moderate
     </h3>
+    <div align="center">
+        <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
+            <cds-icon shape="plus-circle"></cds-icon> New Community
+        </button>
+    <div>      
   </div>
 </div>
 

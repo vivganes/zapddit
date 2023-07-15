@@ -15,10 +15,15 @@ export class TopicComponent {
   @Input()
   topic:string;
 
+  @Input()
+  sidebarCollapsed:boolean = false;
+
   constructor(private topicService:TopicService){
   }
 
-  onTopicDelete(){
+  onTopicDelete(evt:any){
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
     this.topicService.unfollowTopic(this.topic);
   }
 }
