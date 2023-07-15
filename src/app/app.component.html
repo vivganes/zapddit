@@ -32,6 +32,7 @@
         <img
           *ngIf="ndkProvider.currentUserProfile?.image"
           [src]="ndkProvider.currentUserProfile?.image"
+          onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'"
           class="header-profile-image"
           alt="profile" />
           <img

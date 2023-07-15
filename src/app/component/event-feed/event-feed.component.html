@@ -38,7 +38,8 @@
     <div>
       <span class="smaller-text">Created by </span> 
       <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="Profile picture"
-            src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="Open in Snort" />
+            src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="Open in Snort"
+            onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'" />
       <img alt="temp avatar" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
             class="community-image pointer-cursor" src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100"
             title="Open in Snort" />
