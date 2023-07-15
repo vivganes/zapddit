@@ -43,8 +43,7 @@
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile  && !ndkProvider.currentUserProfile?.displayName && !ndkProvider.currentUserProfile?.name && ndkProvider.currentUserNpub!=null">{{ ndkProvider.currentUserNpub.substring(0,14)+'...' }}</span>
           <span class="profile-name"  *ngIf="ndkProvider.currentUserProfile?.displayName">{{ ndkProvider.currentUserProfile?.displayName }}</span>
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile?.name">@{{ ndkProvider.currentUserProfile?.name }}</span>
-          <cds-icon shape="check-circle" solid clrverticalnavicon *ngIf="isNip05Verified">
-          </cds-icon>
+          <span *ngIf="isNip05Verified" title="Verified" class="badge badge-purple ml-5">✓ <span class="clr-sr-only">NIP-05 verified</span></span>
       </label>
       <div class="nav-divider"></div>
 

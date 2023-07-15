@@ -53,7 +53,7 @@
           class="card-media-title break-words-overflow pointer-cursor bold-text" title="Open in Snort"
           (click)="openAuthorInSnort()"> {{ (authorWithProfile?.profile?.displayName) ?
           authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name }}
-          <cds-icon shape="check-circle" solid clrverticalnavicon *ngIf="isNIP05Verified"></cds-icon>
+          <span *ngIf="isNIP05Verified" title="Verified" class="badge badge-purple">✓ <span class="clr-sr-only">NIP-05 verified</span></span>
           <span class="follow-ml8 card-media-title">
             <ng-template
               [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
@@ -74,7 +74,7 @@
         <span *ngIf="!authorWithProfile?.profile?.name && !authorWithProfile?.profile?.displayName"
           class="card-media-title break-anywhere-overflow pointer-cursor" title="Open in Snort"
           (click)="openAuthorInSnort()"> {{ event?.pubkey | abbreviateId }}
-          <cds-icon shape="check-circle" solid clrverticalnavicon *ngIf="isNIP05Verified"></cds-icon>
+          <span *ngIf="isNIP05Verified" title="Verified" class="badge badge-purple">✓ <span class="clr-sr-only">NIP-05 verified</span></span>
           <span class="follow-ml8 card-media-title">
             <ng-template
               [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">

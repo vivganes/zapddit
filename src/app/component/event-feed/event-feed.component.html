@@ -1,4 +1,4 @@
-<div *ngIf="community === undefined" class="search_form_mobile">
+<div *ngIf="(community === undefined) && (feedType !== feedTypeOptions[1] )" class="search_form_mobile">
   <form class="search"  onsubmit="return false;">
     <label for="search_input_mobile">
         <input id="search_input_mobile" type="search"  class="hashtag-search-mobile" placeholder="#️ Search hashtag ⏎" (keyup.enter)="searchFromMobile()">
@@ -93,7 +93,7 @@
     </div>
   </div>
 </div>
-<app-note-composer *ngIf="ndkProvider.canWriteToNostr && !loadingCommunityDetails" [currentTag]="tag" (postedEventEmitter)="addEventToFeed($event)" [currentCommunity]="community"></app-note-composer>
+<app-note-composer *ngIf="ndkProvider.canWriteToNostr && !loadingCommunityDetails && (feedType === feedTypeOptions[1] ? community: true)" [currentTag]="tag" (postedEventEmitter)="addEventToFeed($event)" [currentCommunity]="community"></app-note-composer>
 <div align="center" *ngIf="events && events.size == 0">
   <div align="center" class="alert alert-info clr-col-12 clr-col-md-8" role="alert">
     <div class="alert-items">
