@@ -128,11 +128,16 @@ export class TopicService {
   }
 
   async fetchFollowedTopics():Promise<string[]>{
-    return (await this.ndkProviderService.fetchLatestDataFromInteroperableList()).hashtags;
+
+    var fromStandardSource = (await this.ndkProviderService.fetchLatestDataFromInteroperableList()).hashtags;
+
+    var fromAppSource =  this.ndkProviderService.appData.followedTopics.split(',');
+
+    return [...new Set(fromStandardSource.concat(fromAppSource))];
   }
 
   async fetchMutedTopics():Promise<string[]>{
-    return (await this.ndkProviderService.fetchLatestDataFromInteroperableList()).mutehashtags;
+    return this.ndkProviderService.appData.mutedTopics.split(',');
   }
 
   buildEvent(existing:string[], muted:boolean = false): NDKEvent {

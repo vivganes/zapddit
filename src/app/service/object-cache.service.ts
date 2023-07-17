@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import NDK, { NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import Dexie, {  Table } from 'dexie';
-import { User } from '../model';
+import { User } from '../model/user';
 import { NdkproviderService } from './ndkprovider.service';
 
 const DATASTORE = {

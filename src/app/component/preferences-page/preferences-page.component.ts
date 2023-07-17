@@ -91,10 +91,7 @@ export class PreferencesPageComponent {
     let recipients = (<HTMLInputElement>document.getElementById('downzap-recipients')).value;
     let supposedUser = await this.ndkProvider.getNdkUserFromNpub(recipients);
     if (supposedUser !== undefined) {
-      if(this.ndkProvider.appData.migrated === true)
-        this.ndkProvider.buildAndPublishDownzapRecipient([recipients])
-      else
-        this.ndkProvider.publishAppData(undefined,recipients);
+        this.ndkProvider.buildAndPublishDownzapRecipient([supposedUser.hexpubkey()])
       this.downzapSetSuccessMessage =
         'Sending downzaps to ' +
         (supposedUser.profile?.displayName ? supposedUser.profile?.displayName : supposedUser.profile?.name);
@@ -122,9 +119,6 @@ export class PreferencesPageComponent {
       topic = topic.slice(1);
     }
     try {
-      if(this.ndkProvider.appData.migrated === true)
-        this.topicService.muteTopicInteroperableList(topic);
-      else
         this.topicService.muteTopic(topic);
     } catch (e) {
       console.error(e);
@@ -135,9 +129,6 @@ export class PreferencesPageComponent {
 
   unmuteTopic(topic: string) {
     try {
-      if(this.ndkProvider.appData.migrated === true)
-        this.topicService.unmuteTopicInteroperableList(topic);
-      else
         this.topicService.unmuteTopic(topic);
     } catch (e) {
       console.error(e);

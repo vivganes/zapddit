@@ -126,12 +126,8 @@ export class CommunityService {
   }
 
   buildEvent(existing:Community[]): NDKEvent {
-    existing = existing.reduce((accumulator:Community[], current:Community) => {
-      if (!accumulator.find((item) => item.id === current.id)) {
-        accumulator.push(current);
-      }
-      return accumulator;
-    }, []);
+    existing = this.ndkProviderService.deDeplicate(existing);
+
     var event = this.ndkProviderService.createNDKEvent();
     let tags: NDKTag[] = [];
     tags.push(['d', 'communities']);

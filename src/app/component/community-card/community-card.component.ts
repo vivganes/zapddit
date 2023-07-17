@@ -68,21 +68,14 @@ export class CommunityCardComponent {
   }
 
   async joinCommunity(){
-    if(this.ndkProvider.appData.migrated === true){
-      await this.communityService.joinCommunityInteroperableList(this.community);
-    }
-    else{
-      await this.communityService.joinCommunity(this.community);
-    }
+    await this.communityService.joinCommunityInteroperableList(this.community);
+
     this.followingNow = true;
   }
 
   async leaveCommunity(){
-    if(this.ndkProvider.appData.migrated === true){
-      await this.communityService.leaveCommunityInteroperableList(this.community);
-    }else{
-      await this.communityService.leaveCommunity(this.community);
-    }
+    await this.communityService.leaveCommunityInteroperableList(this.community);
+
     this.followingNow = false;
     this.onLeave.emit(this.community);
   }

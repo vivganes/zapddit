@@ -79,11 +79,14 @@ export class CommunityListComponent {
   }
 
   async fetchJoinedCommunities():Promise<Community[]>{
-    if(this.ndkProvider.appData.migrated){
-      return await this.communityService.fetchJoinedCommunities();
-    }else{
-      return await this.ndkProvider.fetchJoinedCommunities();
-    }
+
+      var fromStandardSource = await this.communityService.fetchJoinedCommunities();
+
+      var fromAppSource =  await this.ndkProvider.fetchJoinedCommunities();
+
+      var deDuplicated = this.ndkProvider.deDeplicate([...fromStandardSource].concat(fromAppSource));
+
+      return deDuplicated;
   }
 
 

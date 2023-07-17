@@ -338,19 +338,13 @@ export class EventFeedComponent implements OnInit,OnDestroy{
 
   followTopic(topic: string | undefined) {
     if (topic) {
-      if(this.ndkProvider.appData.migrated===true)
         this.topicService.followTopicInteroperableList(topic);
-      else
-        this.topicService.followTopic(topic);
     }
   }
 
   unfollowTopic(topic: string | undefined) {
     if (topic) {
-      if(this.ndkProvider.appData.migrated===true)
         this.topicService.unfollowTopicInteroperableList(topic);
-      else
-        this.topicService.unfollowTopic(topic);
     }
   }
 

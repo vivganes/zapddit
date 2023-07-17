@@ -109,9 +109,8 @@ export class OnboardingWizardComponent {
     localStorage.setItem(Constants.FOLLOWEDTOPICS,followedTopicsToBePublished.join(','));
     localStorage.setItem(Constants.MUTEDTOPICS,mutedTopicsToBePublished.join(','));
 
-    //this.ndkProvider.publishAppData(followedTopicsToBePublished.join(','), undefined, mutedTopicsToBePublished.join(','));
+    this.ndkProvider.publishAppData(undefined, undefined, mutedTopicsToBePublished.join(','));
     await this.topicService.followTopicsInteroperableList(followedTopicsToBePublished);
-    await this.topicService.muteTopicsInteroperableList(mutedTopicsToBePublished);
     this.ndkProvider.setNotNewToNostr();
   }
 
