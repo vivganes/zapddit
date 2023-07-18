@@ -93,7 +93,9 @@ export class AppComponent implements OnInit, OnDestroy{
     else {
       this.setTheme(false);
     }
-    this.setFollowedTopicsFromString(this.ndkProvider.appData.followedTopics);
+    this.topicService.fetchFollowedTopics().then(res=>{
+      this.setFollowedTopicsFromString(res.join(','));
+    })
 
     this.followedTopicsEmitterSub =  this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       this.setFollowedTopicsFromString(followedTopics);

@@ -688,7 +688,7 @@ export class NdkproviderService {
       }
       return undefined;
   }
-    
+
 
   async fetchCommunities(limit?: number, since?: number, until?: number, ownedOnly?:boolean, moderatingOnly?: boolean ):Promise<Community[] | undefined>{
     const filter: NDKFilter = { kinds: [34550],
@@ -796,7 +796,7 @@ export class NdkproviderService {
     if(aTags){
       const filter:NDKFilter = {
         kinds:[4550],
-        '#e':[event.id]      
+        '#e':[event.id]
       }
       const approvalEvents = await this.ndk?.fetchEvents(filter,{});
       return approvalEvents;
@@ -915,7 +915,7 @@ export class NdkproviderService {
     const contactListFilter:NDKFilter ={
       kinds:[3],
       authors:[this.currentUser?.hexpubkey()!]
-    } 
+    }
     const contactListEvents = await this.ndk?.fetchEvents(contactListFilter,{})
     if(contactListEvents && contactListEvents.size > 0){
       const contactListEvent = [...contactListEvents][0];
@@ -944,8 +944,8 @@ export class NdkproviderService {
         if(this.canWriteToNostr){
           return eventToSend.publish();
         }
-      }      
-    }    
+      }
+    }
   }
 
   fetchLatestAppData() {
@@ -988,7 +988,6 @@ export class NdkproviderService {
           for(let tag of joinedCommunitiesTagArr) {
             if(tag[1]){
               communities.push(tag[1]);
-              console.log('from standard source communitites - '+tag[1])
             }
           };
 
@@ -1015,6 +1014,7 @@ export class NdkproviderService {
     const dataFromInteroperableList = await this.fetchLatestDataFromInteroperableList();
     const latestEvents: Set<NDKEvent> | undefined = await this.fetchLatestAppData();
     var communities:string[] = [];
+    var topics:string[] = [];
 
     if (latestEvents && latestEvents.size > 0) {
       const latestEvent: NDKEvent = Array.from(latestEvents)[0];
@@ -1023,8 +1023,7 @@ export class NdkproviderService {
       for (let i = 0; i < lineWiseAppData.length; i++) {
         switch (i) {
           case 0:
-            this.appData.followedTopics = lineWiseAppData[i];
-            console.log("from old source topics - "+lineWiseAppData[i])
+            topics.push(...lineWiseAppData[i].split(','));
             break;
           case 1:
             this.appData.downzapRecipients = lineWiseAppData[i];
@@ -1041,8 +1040,9 @@ export class NdkproviderService {
         }
       }
 
-      this.appData.followedTopics = dataFromInteroperableList.hashtags.join(',');
-      console.log("from new source topics - "+dataFromInteroperableList.hashtags.join(','))
+      topics.push(...dataFromInteroperableList.hashtags);
+      this.appData.followedTopics = [...new Set(topics)].join(',');
+      console.log("from merged source topics- "+ this.appData.followedTopics);
       this.followedTopicsEmitter.emit(this.appData.followedTopics);
 
       this.appData.downzapRecipients = dataFromInteroperableList.downzapRecipients.join(',')
@@ -1052,8 +1052,8 @@ export class NdkproviderService {
       this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
 
       communities.concat(dataFromInteroperableList.communities.join(','));
+      console.log("from merged source communities - "+communities)
       this.appData.followedCommunities = [...new Set(communities)].join(',');
-      console.log('from source communitites - '+this.appData.followedCommunities);
       this.followedCommunitiesEmitter.emit(this.appData.followedCommunities);
 
       console.log('Latest follow list :' + this.appData.followedTopics);
@@ -1202,13 +1202,13 @@ export class NdkproviderService {
         nip05Domain = elements.pop();
         nip05Name = elements.pop();
         verificationEndpoint = `https://${nip05Domain}/.well-known/nostr.json?name=${nip05Name}`;
-  
+
         var response = await fetch(`${verificationEndpoint}`);
         const body = await response.json();
-  
+
         if (body['names'] && body['names'][`${nip05Name}`]) {
           var hexPubKeyFromRemote = body['names'][`${nip05Name}`];
-  
+
           if (hexPubKey === hexPubKeyFromRemote) {
             verified = true;
             // raise this only for the current logged in user
@@ -1219,7 +1219,7 @@ export class NdkproviderService {
       }
     } catch(e){
       console.error(e);
-    }    
+    }
     return verified;
   }
 

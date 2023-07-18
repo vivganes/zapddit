@@ -128,7 +128,6 @@ export class TopicService {
   }
 
   async fetchFollowedTopics():Promise<string[]>{
-
     var fromStandardSource = (await this.ndkProviderService.fetchLatestDataFromInteroperableList()).hashtags;
 
     var fromAppSource =  this.ndkProviderService.appData.followedTopics.split(',');
