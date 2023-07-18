@@ -648,11 +648,11 @@ export class NdkproviderService {
     const events = await this.ndk?.fetchEvents(filter,{});
     if(events && events.size > 0){
       const communityEvent = events.values().next().value
-      const name = communityEvent.getMatchingTags('d')[0][1];
-      const description = communityEvent.getMatchingTags('description')[0][1];
-      const rules = communityEvent.getMatchingTags('rules')[0][1];
+      const name = this.getTagValue('d',communityEvent);
+      const description = this.getTagValue('description',communityEvent);
+      const rules = this.getTagValue('rules',communityEvent);
       const creatorHexKey = communityEvent.pubkey;
-      const image = communityEvent.getMatchingTags('image')[0][1];
+      const image = this.getTagValue('image',communityEvent);
       const moderatorTagArr:NDKTag[] = communityEvent.getMatchingTags('p');
       let moderatorHexKeys:string[] = []
       for(let tag of moderatorTagArr) {        
@@ -675,6 +675,18 @@ export class NdkproviderService {
     }
     return undefined;
   }
+
+  getTagValue(tagName:string, event:NDKEvent){
+      const tags = event.getMatchingTags(tagName);
+      if(tags && tags.length>0){
+        const tag = tags[0]
+        if(tag && tag.length > 1){
+          return tag[1];
+        }
+      }
+      return undefined;
+  }
+    
 
   async fetchCommunities(limit?: number, since?: number, until?: number, ownedOnly?:boolean, moderatingOnly?: boolean ):Promise<Community[] | undefined>{
     const filter: NDKFilter = { kinds: [34550],
