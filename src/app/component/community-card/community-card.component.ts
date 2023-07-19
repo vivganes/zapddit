@@ -39,7 +39,7 @@ export class CommunityCardComponent {
   setIsFollowed(){
     if(this.ndkProvider.appData.followedCommunities !== ''){
       const followedArr:string[] = this.ndkProvider.appData.followedCommunities.split(',')
-      if(followedArr.some(i=>(this.community.id?.localeCompare(i)))){
+      if(followedArr.findIndex(id => this.community.id === id)>-1){
         this.followingNow = true;
       }
     }

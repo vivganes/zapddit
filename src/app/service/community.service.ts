@@ -136,7 +136,7 @@ export class CommunityService {
       if(item.id && !(item.creatorHexKey!) && !(item.name!))
         tags.push(['a',`${item.id}`])
       else
-        tags.push(['a',`34450:${item.creatorHexKey}:${item.name!}`])
+        tags.push(['a',`34550:${item.creatorHexKey}:${item.name!}`])
     }
 
     event.tags = tags;
