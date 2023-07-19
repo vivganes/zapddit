@@ -84,7 +84,7 @@ export class CommunityListComponent {
 
       var fromAppSource =  await this.ndkProvider.fetchJoinedCommunities();
 
-      var deDuplicated = this.ndkProvider.deDeplicate([...fromStandardSource].concat(fromAppSource));
+      var deDuplicated = this.ndkProvider.deDuplicateCommunities([...fromStandardSource].concat(fromAppSource));
 
       return deDuplicated;
   }

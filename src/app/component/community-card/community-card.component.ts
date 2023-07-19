@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Community } from 'src/app/model/community';
 import { CommunityService } from 'src/app/service/community.service';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
+import { Constants } from 'src/app/util/Constants';
 
 @Component({
   selector: 'app-community-card',
@@ -26,16 +27,22 @@ export class CommunityCardComponent {
 
   ngOnInit(){
     this.currentUserHexKey = this.ndkProvider.currentUser?.hexpubkey();
-    if(this.ndkProvider.appData.followedCommunities !== ''){
-      const followedArr = this.ndkProvider.appData.followedCommunities.split(',')
-      if(followedArr.findIndex((id) => this.community.id === id)>-1){
-        this.followingNow = true;
-      }
-    }
+
+    this.setIsFollowed();
+
     if(!this.community.creatorProfile){
       this.fetchCreatorProfile();
     }
     this.fetchFollowers();
+  }
+
+  setIsFollowed(){
+    if(this.ndkProvider.appData.followedCommunities !== ''){
+      const followedArr:string[] = this.ndkProvider.appData.followedCommunities.split(',')
+      if(followedArr.some(i=>(this.community.id?.localeCompare(i)))){
+        this.followingNow = true;
+      }
+    }
   }
 
   async fetchCreatorProfile(){
@@ -71,6 +78,8 @@ export class CommunityCardComponent {
     await this.communityService.joinCommunityInteroperableList(this.community);
 
     this.followingNow = true;
+
+    await this.communityService.clearCommunitiesFromAppData();
   }
 
   async leaveCommunity(){
@@ -78,5 +87,7 @@ export class CommunityCardComponent {
 
     this.followingNow = false;
     this.onLeave.emit(this.community);
+
+    await this.communityService.clearCommunitiesFromAppData();
   }
 }

@@ -29,6 +29,7 @@ export class PreferencesPageComponent {
   showUnapprovedPosts: boolean = false;
   showCommunitiesFeedByDefault:boolean = false;
   changeDetector: ChangeDetectorRef;
+  mutedTopics:string[]=[];
 
   relayUrls: string[] | undefined;
   relays: Relay[];
@@ -77,6 +78,12 @@ export class PreferencesPageComponent {
       });
     });
 
+    this.mutedTopics = this.ndkProvider.appData.mutedTopics.split(',').filter(i=>i!='');
+
+    this.ndkProvider.mutedTopicsEmitter.subscribe(topics=>{
+        this.mutedTopics = topics.split(',').filter(i=>i!='');
+    })
+
     await this.getRelayList();
   }
 
@@ -97,6 +104,13 @@ export class PreferencesPageComponent {
         (supposedUser.profile?.displayName ? supposedUser.profile?.displayName : supposedUser.profile?.name);
     } else {
       this.downzapRecipientsError = 'Invalid npub';
+    }
+
+    var recipientsCleared = localStorage.getItem(Constants.RECIPIENTS_CLEARED) || "false";
+    var data = await this.ndkProvider.fetchAppData()
+    if(recipientsCleared === "false" || data.downzapRecipients !== ''){
+      this.ndkProvider.publishAppData(data.hashtags.join(','),'',data.mutedHashtags,data.communities.join(','));
+      localStorage.setItem(Constants.RECIPIENTS_CLEARED, "true")
     }
   }
 

@@ -336,16 +336,19 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     return this.ndkProvider.isLoggedIn();
   }
 
-  followTopic(topic: string | undefined) {
+  async followTopic(topic: string | undefined) {
     if (topic) {
         this.topicService.followTopicInteroperableList(topic);
     }
+
+    await this.topicService.clearTopicsFromAppData();
   }
 
-  unfollowTopic(topic: string | undefined) {
+  async unfollowTopic(topic: string | undefined) {
     if (topic) {
         this.topicService.unfollowTopicInteroperableList(topic);
     }
+    await this.topicService.clearTopicsFromAppData();
   }
 
   isTopicFollowed(topic: string | undefined): boolean {

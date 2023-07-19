@@ -132,7 +132,7 @@ export class TopicService {
 
     var fromAppSource =  this.ndkProviderService.appData.followedTopics.split(',');
 
-    return [...new Set(fromStandardSource.concat(fromAppSource))];
+    return [...new Set(fromStandardSource.concat(fromAppSource).filter(i=>i!=''))];
   }
 
   async fetchMutedTopics():Promise<string[]>{
@@ -161,5 +161,14 @@ export class TopicService {
     var event = this.buildEvent(existing, mute);
     await event.sign();
     await event.publish();
+  }
+
+  async clearTopicsFromAppData(){
+    var topicsCleared = localStorage.getItem(Constants.TOPICS_CLEARED) || "false";
+    var data= await this.ndkProviderService.fetchAppData();
+    if(topicsCleared === "false" || (data.hashtags.length>0 && data.hashtags[0]!=='')){
+      this.ndkProviderService.publishAppData('', data.downzapRecipients, data.mutedHashtags, data.communities.join(','));
+      localStorage.setItem(Constants.TOPICS_CLEARED, "true")
+    }
   }
 }

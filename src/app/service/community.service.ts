@@ -126,7 +126,7 @@ export class CommunityService {
   }
 
   buildEvent(existing:Community[]): NDKEvent {
-    existing = this.ndkProviderService.deDeplicate(existing);
+    existing = this.ndkProviderService.deDuplicateCommunities(existing);
 
     var event = this.ndkProviderService.createNDKEvent();
     let tags: NDKTag[] = [];
@@ -149,4 +149,14 @@ export class CommunityService {
     await event.sign();
     await event.publish();
   }
+
+  async clearCommunitiesFromAppData(){
+    var communitiesCleared = localStorage.getItem(Constants.COMMUNITIES_CLEARED) || "false";
+    var data = await this.ndkProviderService.fetchAppData();
+    if(communitiesCleared === "false" || (data.communities.length>0 && data.communities[0]!=='')){
+      this.ndkProviderService.publishAppData(data.hashtags.join(','), data.downzapRecipients,data.mutedHashtags,'');
+      localStorage.setItem(Constants.COMMUNITIES_CLEARED, "true")
+    }
+  }
+
 }

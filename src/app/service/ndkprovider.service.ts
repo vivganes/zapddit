@@ -25,6 +25,7 @@ import { BehaviorSubject, retry } from 'rxjs';
 import { Community } from '../model/community';
 import { ObjectCacheService } from './object-cache.service';
 import { User } from '../model/user';
+import hashtag from '../util/IntlHashtagLinkifyPlugin';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -866,9 +867,11 @@ export class NdkproviderService {
     return [...new Set(deduped)].join(',')
   }
 
-  publishAppData(followListCsv?: string, downzapRecipients?: string, mutedTopics?: string, followedCommunitiesCsv?:string, migrateToStandardList?:boolean) {
+  async publishAppData(followListCsv?: string, downzapRecipients?: string, mutedTopics?: string, followedCommunitiesCsv?:string) {
+    var data = await this.fetchAppData();
     const ndkEvent = new NDKEvent(this.ndk);
     ndkEvent.kind = 30078;
+
     if (this.currentUser) {
       ndkEvent.pubkey = this.currentUser?.hexpubkey();
     }
@@ -876,10 +879,10 @@ export class NdkproviderService {
     if (followListCsv !== undefined) {
       followedTopicsToPublish = this.deDuplicate(followListCsv);
     } else {
-      followedTopicsToPublish = this.deDuplicate(this.appData.followedTopics);
+      followedTopicsToPublish = this.deDuplicate(data.hashtags.join(','));
     }
 
-    const downzapRecipientsToPublish = this.deDuplicate(downzapRecipients||'') || this.deDuplicate(this.appData.downzapRecipients);
+    const downzapRecipientsToPublish = this.deDuplicate(downzapRecipients||'') || this.deDuplicate(data.downzapRecipients);
 
     let mutedTopicsToPublish = '';
     if (mutedTopics !== undefined) {
@@ -892,23 +895,16 @@ export class NdkproviderService {
     if (followedCommunitiesCsv !== undefined) {
       followedCommunitiesToPublish = this.deDuplicate(followedCommunitiesCsv);
     } else {
-      followedCommunitiesToPublish = this.deDuplicate(this.appData.followedCommunities);
+      followedCommunitiesToPublish = this.deDuplicate(data.communities.join(','));
     }
 
-    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish + '\n' + mutedTopicsToPublish + '\n' + followedCommunitiesToPublish+ '\n' + migrateToStandardList;
+    ndkEvent.content = followedTopicsToPublish + '\n' + downzapRecipientsToPublish + '\n' + mutedTopicsToPublish + '\n' + followedCommunitiesToPublish;
     const tag: NDKTag = ['d', 'zapddit.com'];
     ndkEvent.tags = [tag];
     if (this.canWriteToNostr) {
       ndkEvent.publish(); // This will trigger the extension to ask the user to confirm signing.
     }
-    this.appData = {
-      followedTopics: followedTopicsToPublish,
-      downzapRecipients: downzapRecipientsToPublish,
-      mutedTopics: mutedTopicsToPublish,
-      followedCommunities: followedCommunitiesToPublish,
-    };
-    this.followedTopicsEmitter.emit(followedTopicsToPublish);
-    this.followedCommunitiesEmitter.emit(followedCommunitiesToPublish);
+    await this.refreshAppData();
   }
 
   async followUnfollowContact(hexPubKeyToFollow: string, follow: boolean){
@@ -1010,6 +1006,40 @@ export class NdkproviderService {
     return data;
   }
 
+  async fetchAppData() {
+    const latestEvents: Set<NDKEvent> | undefined = await this.fetchLatestAppData();
+    var communities:string[] = [];
+    var topics:string[] = [];
+    var downzapRecipients:string='';
+    var mutedTopics = '';
+    if (latestEvents && latestEvents.size > 0) {
+      const latestEvent: NDKEvent = Array.from(latestEvents)[0];
+      const multiLineAppData = latestEvent.content;
+      const lineWiseAppData = multiLineAppData.split('\n');
+      for (let i = 0; i < lineWiseAppData.length; i++) {
+        switch (i) {
+          case 0:
+            topics.push(...lineWiseAppData[i].split(','));
+            break;
+          case 1:
+            downzapRecipients=lineWiseAppData[i];
+            break;
+          case 2:
+            mutedTopics = lineWiseAppData[i];
+            break;
+          case 3:
+            communities.push(lineWiseAppData[i]);
+            break;
+          default:
+          //do nothing. irrelevant data
+        }
+      }
+    }
+
+    return {hashtags:topics,downzapRecipients:downzapRecipients, communities:communities, mutedHashtags:mutedTopics};
+  }
+
+
   async refreshAppData() {
     const dataFromInteroperableList = await this.fetchLatestDataFromInteroperableList();
     const latestEvents: Set<NDKEvent> | undefined = await this.fetchLatestAppData();
@@ -1033,7 +1063,7 @@ export class NdkproviderService {
             this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
             break;
           case 3:
-            communities.push(lineWiseAppData[i]);
+            communities.push(...lineWiseAppData[i].split(','));
             break;
           default:
           //do nothing. irrelevant data
@@ -1041,19 +1071,16 @@ export class NdkproviderService {
       }
 
       topics.push(...dataFromInteroperableList.hashtags);
-      this.appData.followedTopics = [...new Set(topics)].join(',');
+      this.appData.followedTopics = [...new Set(topics.filter(i=>i!=''))].join(',');
       console.log("from merged source topics- "+ this.appData.followedTopics);
       this.followedTopicsEmitter.emit(this.appData.followedTopics);
 
       this.appData.downzapRecipients = dataFromInteroperableList.downzapRecipients.join(',')
       console.log("downzaprecipients - "+dataFromInteroperableList.downzapRecipients.join(','))
 
-      this.appData.mutedTopics = dataFromInteroperableList.mutehashtags.join(',');
-      this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
-
-      communities.concat(dataFromInteroperableList.communities.join(','));
-      console.log("from merged source communities - "+communities)
+      communities.push(...dataFromInteroperableList.communities);
       this.appData.followedCommunities = [...new Set(communities)].join(',');
+      console.log("from merged source communities - "+this.appData.followedCommunities)
       this.followedCommunitiesEmitter.emit(this.appData.followedCommunities);
 
       console.log('Latest follow list :' + this.appData.followedTopics);
@@ -1441,7 +1468,7 @@ export class NdkproviderService {
     this.appData.downzapRecipients = existing[0]
   }
 
-  deDeplicate(communities:Community[]){
+  deDuplicateCommunities(communities:Community[]){
     return communities.reduce((accumulator:Community[], current:Community) => {
       if (!accumulator.find((item) => item.id === current.id)) {
         accumulator.push(current);
