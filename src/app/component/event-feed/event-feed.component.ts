@@ -91,7 +91,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       if(val===false && localStorage.getItem(Constants.FOLLOWERS_FROM_RELAY)==='false'){
         this.peopleIFollowLoadedFromRelay = true;
       }
-    })  
+    })
   }
 
   onChangeFeedType(newType: FeedType){
@@ -141,7 +141,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
           self.limit = BUFFER_REFILL_PAGE_SIZE;
           self.getEventsAndFillBuffer();
         })
-      }      
+      }
       else {
         this.tag = undefined;
       }
@@ -163,7 +163,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   public get FeedType(){
     return FeedType;
   }
-  
+
 
   async getEventsAndFillBuffer() {
     this.loadingEvents = true;
@@ -182,7 +182,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
             this.limit,
             undefined,
             this.until
-          );       
+          );
         }
       } else if (this.feedType === FeedType.COMMUNITIES_FEED){
         if(this.ndkProvider.appData.followedCommunities.length > 0){
@@ -191,7 +191,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
             this.limit,
             undefined,
             this.until
-          );       
+          );
         }
       }
     }
@@ -235,7 +235,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
           const sorted = [... nextBatch].sort(new ReverseChrono().compare)
           this.eventBuffer.refillWithEntries(sorted);
           this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1))
-        } 
+        }
       }
 
       if(this.nextEvents && this.nextEvents.size>0){
@@ -261,7 +261,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
           const sorted = [... nextBatch].sort(new ReverseChrono().compare)
           this.eventBuffer.refillWithEntries(sorted);
           this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1))
-        } 
+        }
       }
 
       if(this.nextEvents && this.nextEvents.size>0){
@@ -296,12 +296,12 @@ export class EventFeedComponent implements OnInit,OnDestroy{
             undefined,
             this.until
           );
-        }           
+        }
         if(nextBatch){
           const sorted = [... nextBatch].sort(new ReverseChrono().compare)
           this.eventBuffer.refillWithEntries(sorted);
           this.nextEvents = new Set<NDKEvent>(this.eventBuffer.getItemsWithIndexes(this.nowShowingUptoIndex,BUFFER_READ_PAGE_SIZE-1))
-        } 
+        }
       }
       if(this.nextEvents && this.nextEvents.size>0){
         if(this.events){
@@ -336,16 +336,19 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     return this.ndkProvider.isLoggedIn();
   }
 
-  followTopic(topic: string | undefined) {
+  async followTopic(topic: string | undefined) {
     if (topic) {
-      this.topicService.followTopic(topic);
+        this.topicService.followTopicInteroperableList(topic);
     }
+
+    await this.topicService.clearTopicsFromAppData();
   }
 
-  unfollowTopic(topic: string | undefined) {
+  async unfollowTopic(topic: string | undefined) {
     if (topic) {
-      this.topicService.unfollowTopic(topic);
+        this.topicService.unfollowTopicInteroperableList(topic);
     }
+    await this.topicService.clearTopicsFromAppData();
   }
 
   isTopicFollowed(topic: string | undefined): boolean {
@@ -363,7 +366,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
 
   openCommunityPage(){
     if(this.community)
-      this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)   
+      this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)
   }
 
   openCommunityCreatorInSnort(){

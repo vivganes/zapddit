@@ -29,6 +29,7 @@ export class PreferencesPageComponent {
   showUnapprovedPosts: boolean = false;
   showCommunitiesFeedByDefault:boolean = false;
   changeDetector: ChangeDetectorRef;
+  mutedTopics:string[]=[];
 
   relayUrls: string[] | undefined;
   relays: Relay[];
@@ -77,6 +78,12 @@ export class PreferencesPageComponent {
       });
     });
 
+    this.mutedTopics = this.ndkProvider.appData.mutedTopics.split(',').filter(i=>i!='');
+
+    this.ndkProvider.mutedTopicsEmitter.subscribe(topics=>{
+        this.mutedTopics = topics.split(',').filter(i=>i!='');
+    })
+
     await this.getRelayList();
   }
 
@@ -91,12 +98,19 @@ export class PreferencesPageComponent {
     let recipients = (<HTMLInputElement>document.getElementById('downzap-recipients')).value;
     let supposedUser = await this.ndkProvider.getNdkUserFromNpub(recipients);
     if (supposedUser !== undefined) {
-      this.ndkProvider.publishAppData(undefined, recipients);
+        this.ndkProvider.buildAndPublishDownzapRecipient([supposedUser.hexpubkey()])
       this.downzapSetSuccessMessage =
         'Sending downzaps to ' +
         (supposedUser.profile?.displayName ? supposedUser.profile?.displayName : supposedUser.profile?.name);
     } else {
       this.downzapRecipientsError = 'Invalid npub';
+    }
+
+    var recipientsCleared = localStorage.getItem(Constants.RECIPIENTS_CLEARED) || "false";
+    var data = await this.ndkProvider.fetchAppData()
+    if(recipientsCleared === "false" || data.downzapRecipients !== ''){
+      this.ndkProvider.publishAppData(data.hashtags.join(','),'',data.mutedHashtags,data.communities.join(','));
+      localStorage.setItem(Constants.RECIPIENTS_CLEARED, "true")
     }
   }
 
@@ -119,7 +133,7 @@ export class PreferencesPageComponent {
       topic = topic.slice(1);
     }
     try {
-      this.topicService.muteTopic(topic);
+        this.topicService.muteTopic(topic);
     } catch (e) {
       console.error(e);
     } finally {
@@ -129,7 +143,7 @@ export class PreferencesPageComponent {
 
   unmuteTopic(topic: string) {
     try {
-      this.topicService.unmuteTopic(topic);
+        this.topicService.unmuteTopic(topic);
     } catch (e) {
       console.error(e);
     }

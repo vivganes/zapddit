@@ -83,8 +83,8 @@
           </clr-checkbox-wrapper>
           <clr-control-helper>Never mind about moderator approvals. Show all notes.</clr-control-helper>
         </clr-checkbox-container>
-      </form> 
-      
+      </form>
+
       <form clrForm onsubmit="return false;">
         <clr-checkbox-container clrInline>
           <clr-checkbox-wrapper>
@@ -115,7 +115,7 @@
     </form>
     <h4>Muted Topics</h4>
     <div *ngIf="ndkProvider.appData.mutedTopics && ndkProvider.appData.mutedTopics !== ''">
-      <p *ngFor="let topic of ndkProvider.appData.mutedTopics.split(','); ">
+      <p *ngFor="let topic of mutedTopics; ">
         #{{ topic }}
         <cds-icon *ngIf="!isLoggedInUsingPubKey" class="trash-icon" status="danger" size="md" shape="trash"  title="Unmute" (click)="unmuteTopic(topic)"></cds-icon>
       </p>
@@ -169,10 +169,10 @@
               <li value="index" >
                 <cds-icon class="trash-icon" status="danger" size="sm" shape="trash" title="unsubscribe" (click)="this.removeRelay(item.name)"></cds-icon>
                 <span>&nbsp;</span>
-                <cds-icon *ngIf="item.read" class="download-cloud" size="sm" shape="download-cloud" title="read"></cds-icon> 
+                <cds-icon *ngIf="item.read" class="download-cloud" size="sm" shape="download-cloud" title="read"></cds-icon>
                 <cds-icon *ngIf="item.write" class="upload-cloud" size="sm" shape="upload-cloud" title="write"></cds-icon>
                 {{item.url}}
-              </li> 
+              </li>
             </ng-template>
           </ul>
         </div>

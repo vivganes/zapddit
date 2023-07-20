@@ -29,6 +29,27 @@ export class CommunityService {
     this.ndkProviderService.publishAppData(undefined, undefined, undefined, followedCommunities);
   }
 
+  async joinCommunityInteroperableList(community:Community){
+    var existing = await this.fetchJoinedCommunitiesMetadata() || [];
+    existing.push(community);
+    await this.join(existing);
+  }
+
+  async join(data:Community[]){
+    var existing = [...new Set(data)];
+    await this.buildAndPublish(existing);
+    var followedCommunities = existing.map(i=>i.id!).join(',');
+    localStorage.setItem(Constants.FOLLOWEDCOMMUNITIES,followedCommunities);
+    this.ndkProviderService.appData.followedCommunities = followedCommunities;
+    this.ndkProviderService.followedCommunitiesEmitter.emit(followedCommunities);
+  }
+
+  async joinCommunitiesInteroperableList(communities:Community[]){
+    var existing = await this.fetchJoinedCommunitiesMetadata() || [];
+    existing.push(...communities);
+    await this.join(existing);
+  }
+
   leaveCommunity(community:Community){
     let followedCommunities:string = this.ndkProviderService.appData.followedCommunities;
     if (this.ndkProviderService.appData.followedCommunities.split(',').length === 1) {
@@ -42,6 +63,11 @@ export class CommunityService {
     }
     localStorage.setItem(Constants.FOLLOWEDCOMMUNITIES,followedCommunities);
     this.ndkProviderService.publishAppData(undefined, undefined, undefined, followedCommunities);
+  }
+
+  async leaveCommunityInteroperableList(community:Community){
+    var existing = (await this.fetchJoinedCommunitiesMetadata() || []).filter(item=>item.id !== community.id!);
+    await this.join(existing);
   }
 
   async createCommunity(newCommunity:Community){
@@ -73,4 +99,64 @@ export class CommunityService {
       await ndkEvent.publish();
       }
   }
+
+  async fetchJoinedCommunities():Promise<Community[]>{
+    var communitiesArr = (await this.ndkProviderService.fetchLatestDataFromInteroperableList()).communities;
+    var communitiesDetails:Community[] = [];
+
+    for(let tag of communitiesArr) {
+      if(tag){
+        communitiesDetails.push((await this.ndkProviderService.getCommunityDetails(tag))!);
+      }
+    }
+
+    return communitiesDetails;
+  }
+
+  async fetchJoinedCommunitiesMetadata():Promise<Community[]>{
+    var communitiesArr = (await this.ndkProviderService.fetchLatestDataFromInteroperableList()).communities;
+
+    var communities:Community[] = [];
+
+    for(let c of communitiesArr){
+      communities.push({id: c});
+    }
+
+    return communities;
+  }
+
+  buildEvent(existing:Community[]): NDKEvent {
+    existing = this.ndkProviderService.deDuplicateCommunities(existing);
+
+    var event = this.ndkProviderService.createNDKEvent();
+    let tags: NDKTag[] = [];
+    tags.push(['d', 'communities']);
+
+    for(let item of existing){
+      if(item.id && !(item.creatorHexKey!) && !(item.name!))
+        tags.push(['a',`${item.id}`])
+      else
+        tags.push(['a',`34550:${item.creatorHexKey}:${item.name!}`])
+    }
+
+    event.tags = tags;
+    event.kind = 30001;
+    return event;
+  }
+
+  async buildAndPublish(existing:Community[]){
+    var event = this.buildEvent(existing);
+    await event.sign();
+    await event.publish();
+  }
+
+  async clearCommunitiesFromAppData(){
+    var communitiesCleared = localStorage.getItem(Constants.COMMUNITIES_CLEARED) || "false";
+    var data = await this.ndkProviderService.fetchAppData();
+    if(communitiesCleared === "false" || (data.communities.length>0 && data.communities[0]!=='')){
+      this.ndkProviderService.publishAppData(data.hashtags.join(','), data.downzapRecipients,data.mutedHashtags,'');
+      localStorage.setItem(Constants.COMMUNITIES_CLEARED, "true")
+    }
+  }
+
 }

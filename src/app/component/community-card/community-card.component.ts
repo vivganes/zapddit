@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Community } from 'src/app/model/community';
 import { CommunityService } from 'src/app/service/community.service';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
+import { Constants } from 'src/app/util/Constants';
 
 @Component({
   selector: 'app-community-card',
@@ -26,16 +27,22 @@ export class CommunityCardComponent {
 
   ngOnInit(){
     this.currentUserHexKey = this.ndkProvider.currentUser?.hexpubkey();
-    if(this.ndkProvider.appData.followedCommunities !== ''){
-      const followedArr = this.ndkProvider.appData.followedCommunities.split(',')
-      if(followedArr.findIndex((id) => this.community.id === id)>-1){
-        this.followingNow = true;
-      }
-    }
+
+    this.setIsFollowed();
+
     if(!this.community.creatorProfile){
       this.fetchCreatorProfile();
     }
     this.fetchFollowers();
+  }
+
+  setIsFollowed(){
+    if(this.ndkProvider.appData.followedCommunities !== ''){
+      const followedArr:string[] = this.ndkProvider.appData.followedCommunities.split(',')
+      if(followedArr.findIndex(id => this.community.id === id)>-1){
+        this.followingNow = true;
+      }
+    }
   }
 
   async fetchCreatorProfile(){
@@ -43,7 +50,7 @@ export class CommunityCardComponent {
     if(profile){
       this.community.creatorProfile = profile;
     }
-  } 
+  }
 
   async fetchFollowers(){
     const followers = await this.ndkProvider.fetchFollowersForCommunity(this.community.id!)
@@ -58,9 +65,9 @@ export class CommunityCardComponent {
     this.community = edited;
     this.showEditCommunity = false;
   }
-  
+
   openCommunityPage(){
-      this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)   
+      this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)
   }
 
   openCommunityCreatorInSnort(){
@@ -68,13 +75,19 @@ export class CommunityCardComponent {
   }
 
   async joinCommunity(){
-    await this.communityService.joinCommunity(this.community);
+    await this.communityService.joinCommunityInteroperableList(this.community);
+
     this.followingNow = true;
+
+    await this.communityService.clearCommunitiesFromAppData();
   }
 
   async leaveCommunity(){
-    await this.communityService.leaveCommunity(this.community);
+    await this.communityService.leaveCommunityInteroperableList(this.community);
+
     this.followingNow = false;
     this.onLeave.emit(this.community);
+
+    await this.communityService.clearCommunitiesFromAppData();
   }
 }

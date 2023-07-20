@@ -1,5 +1,7 @@
 import { Component,Input } from '@angular/core';
 import { TopicService } from '../../service/topic.service';
+import { Constants } from 'src/app/util/Constants';
+import { NdkproviderService } from '../../service/ndkprovider.service';
 
 @Component({
   selector: 'app-topic',
@@ -18,12 +20,14 @@ export class TopicComponent {
   @Input()
   sidebarCollapsed:boolean = false;
 
-  constructor(private topicService:TopicService){
+  constructor(private topicService:TopicService, private ndkProvider:NdkproviderService){
   }
 
-  onTopicDelete(evt:any){
+  async onTopicDelete(evt:any){
     evt.preventDefault();
     evt.stopImmediatePropagation();
-    this.topicService.unfollowTopic(this.topic);
+    this.topicService.unfollowTopicInteroperableList(this.topic);
+
+    await this.topicService.clearTopicsFromAppData();
   }
 }

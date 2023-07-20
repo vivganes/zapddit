@@ -1,5 +1,4 @@
 <div>
-
   <div>
     <h3 *ngIf="!showOnlyOwnedCommunities && !showOnlyJoinedCommunities && !showOnlyModeratingCommunities" align="center">
         <cds-icon shape="users" size="lg" solid="true"></cds-icon> Recently Created Communities <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
@@ -20,7 +19,7 @@
         <cds-icon shape="users" size="lg" solid="true"></cds-icon> Communities you moderate <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
             <cds-icon shape="plus-circle"></cds-icon> New Community
         </button>
-    </h3>     
+    </h3>
   </div>
 </div>
 
@@ -46,4 +45,3 @@
 </div>
 
 <app-create-community [show]="showCreateCommunity" (onClose)="onCloseCreateCommunity($event)"></app-create-community>
-

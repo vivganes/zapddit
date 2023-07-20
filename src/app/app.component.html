@@ -82,7 +82,7 @@
     </clr-vertical-nav>
     <div class="content-area">
       <div *ngIf="isLoggedIn(); else notloggedin">
-        
+
         <router-outlet></router-outlet>
       </div>
       <ng-template #notloggedin>

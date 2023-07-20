@@ -36,17 +36,20 @@ import {
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
-import { NDKUserProfile } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKTag, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as linkify from 'linkifyjs';
 import hashtag from './util/IntlHashtagLinkifyPlugin';
 import { Constants } from './util/Constants';
 import { Subscription, BehaviorSubject } from 'rxjs';
+import { CommunityService } from './service/community.service';
+import { TopicService } from './service/topic.service';
+import { Community } from './model/community';
 import {
   BreakpointObserver,
   BreakpointState
 } from '@angular/cdk/layout';
 
-ClarityIcons.addIcons(arrowIcon,flagIcon,starIcon,internetOfThingsIcon,thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
+ClarityIcons.addIcons(flagIcon, starIcon,internetOfThingsIcon,thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -65,16 +68,16 @@ export class AppComponent implements OnInit, OnDestroy{
   isMobileScreen:boolean = false;
   codePopupOpened:boolean = false;
 
-  ndkProvider: NdkproviderService;
+  constructor(public ndkProvider: NdkproviderService, router: Router,
+    private breakpointObserver: BreakpointObserver, private communityService:CommunityService, private topicService:TopicService) {
 
-  constructor(ndkProvider: NdkproviderService,router: Router,private breakpointObserver: BreakpointObserver) {
-    this.ndkProvider = ndkProvider;
     this.router = router;
     linkify.registerPlugin('international-hashtags', hashtag);
 
   }
 
   ngOnInit() :void{
+
     var mediaSetting = localStorage.getItem(Constants.SHOWMEDIA);
     if(!mediaSetting){
       localStorage.setItem(Constants.SHOWMEDIA,'true');
@@ -90,7 +93,9 @@ export class AppComponent implements OnInit, OnDestroy{
     else {
       this.setTheme(false);
     }
-    this.setFollowedTopicsFromString(this.ndkProvider.appData.followedTopics);
+    this.topicService.fetchFollowedTopics().then(res=>{
+      this.setFollowedTopicsFromString(res.join(','));
+    })
 
     this.followedTopicsEmitterSub =  this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       this.setFollowedTopicsFromString(followedTopics);
