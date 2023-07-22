@@ -81,20 +81,22 @@
     </div>
   </div>    
 </ng-template>
-<div *ngIf="(!tag) && followedTopics?.length == 0 && !events" class="clr-row clr-justify-content-center">
-  <div align="center" class="alert alert-info clr-col-12 clr-col-md-8" role="alert">
-    <div class="alert-items">
-      <div class="alert-item static clr-justify-content-center">
-        <div class="alert-icon-wrapper">
-          <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
+<div *ngIf="(feedType === feedTypeOptions[0]) && (!tag) && followedTopics?.length == 0 && !events" class="clr-row clr-justify-content-center">
+    <div class="clr-col-12 clr-col-md-8">
+        <div class="card">            
+            <div class="card-block">
+                <div align="center" class="card-text">
+                  Uh oh! No topics followed yet. Take the onboarding wizard for a test-drive?
+                  <div class="mt-20">
+                    <button class="btn btn-primary" (click)="ndkProvider.triggerOnboardingWizard()">Launch Wizard</button>
+                  </div>
+                </div>
+            </div>
         </div>
-        <span class="alert-text">No topics followed yet. May be try following some topics? Like <a
-            [routerLink]="['/t', 'coffeechain']">#coffeechain</a>?</span>
-      </div>
-    </div>
-  </div>
 </div>
-<app-note-composer *ngIf="ndkProvider.canWriteToNostr && !loadingCommunityDetails && (feedType === feedTypeOptions[1] ? community: true)" [currentTag]="tag" (postedEventEmitter)="addEventToFeed($event)" [currentCommunity]="community"></app-note-composer>
+    
+</div>
+<app-note-composer *ngIf="ndkProvider.canWriteToNostr && !loadingCommunityDetails && (feedType === feedTypeOptions[1] ? community: tag)" [currentTag]="tag" (postedEventEmitter)="addEventToFeed($event)" [currentCommunity]="community"></app-note-composer>
 <div align="center" *ngIf="events && events.size == 0">
   <div align="center" class="alert alert-info clr-col-12 clr-col-md-8" role="alert">
     <div class="alert-items">

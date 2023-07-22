@@ -375,9 +375,6 @@ export class NdkproviderService {
     if (!this.isTryingZapddit) {
       await this.refreshAppData();
     }
-    if (this.appData.followedTopics === '') {
-      this.launchOnboardingWizard.emit(true);
-    }
     this.loggingIn = false;
     //once all setup is done, then only set loggedIn=true to start rendering
     this.loggedIn = true;
@@ -396,6 +393,10 @@ export class NdkproviderService {
 
   getCurrentUserProfile(): NDKUserProfile | undefined {
     return this.currentUserProfile;
+  }
+
+  triggerOnboardingWizard(){
+    this.launchOnboardingWizard.emit(true);
   }
 
   async sendNote(
