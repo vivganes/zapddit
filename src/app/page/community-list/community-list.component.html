@@ -20,9 +20,18 @@
             <cds-icon shape="plus-circle"></cds-icon> New Community
         </button>
     </h3>
-  </div>
+  </div>  
 </div>
-
+<div class="clr-row clr-justify-content-end">
+    <div class="clr-col-md-3 clr-col-10">
+        <form class="search"  onsubmit="return false;">
+            <label for="search_input_mobile">
+                <input clrInput id="search_input" type="search"  placeholder="Search..." [(ngModel)]="searchTerm" 
+                name="search_input" (ngModelChange)="onSearchTermChange()">
+            </label>
+        </form>
+    </div>
+</div>
 <div class="clr-row clr-justify-content-center">
     <div *ngIf="loadingEvents" class="clr-col-12">
         <div class="event-loading-spinner clr-justify-content-center">
@@ -30,7 +39,7 @@
         </div>
     </div>
 
-    <div *ngIf="!(loadingEvents) && communities?.length === 0" class="clr-row  page-center">
+    <div *ngIf="!(loadingEvents) && communities?.length === 0" class="clr-row page-center">
         <div class="alert-items">
             <div class="alert-item static clr-justify-content-center">
                 <span *ngIf="!showOnlyOwnedCommunities" class="alert-text">No communities at all. Fishy!</span>
@@ -43,9 +52,19 @@
         <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
     </div> -->
 
-    <div *ngFor="let community of communities " class="clr-col-12 clr-col-md-5">
+    
+
+    <ng-template [ngIf]="searchTerm.length === 0">
+        <div *ngFor="let community of communities " class="clr-col-12 clr-col-md-5">
             <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
-    </div>
+        </div>
+    </ng-template>
+    <ng-template [ngIf]="searchTerm.length > 0">
+        <div *ngFor="let community of searchResults " class="clr-col-12 clr-col-md-5">
+            <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
+        </div>
+    </ng-template>
+    
 </div>
 
 <app-create-community [show]="showCreateCommunity" (onClose)="onCloseCreateCommunity($event)"></app-create-community>

@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, liveQuery } from 'dexie';
 import { Community } from 'src/app/model/community';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { CommunityService } from '../../service/community.service';
 import { ObjectCacheService } from 'src/app/service/object-cache.service';
+import { filter } from 'rxjs';
 
 const BUFFER_REFILL_PAGE_SIZE = 100;
 const BUFFER_READ_PAGE_SIZE = 20;
@@ -17,6 +18,7 @@ const BUFFER_READ_PAGE_SIZE = 20;
 })
 export class CommunityListComponent {
 
+  searchTerm:string='';
   communities?:Community[];
   allCommunities?:Observable<Community[]>;
   until: number | undefined = Date.now();
@@ -29,6 +31,7 @@ export class CommunityListComponent {
   showOnlyOwnedCommunities: boolean = false;
   showOnlyJoinedCommunities: boolean = false;
   showOnlyModeratingCommunities:boolean = false;
+  searchResults?:Community[];
   showCreateCommunity:boolean = false;
 
   constructor(public ndkProvider:NdkproviderService, private router:Router,
@@ -60,6 +63,28 @@ export class CommunityListComponent {
     let cardToRemove = community as Community
     const listAfterDelete = this.communities?.filter((c)=> c.id !== cardToRemove.id);
     this.communities = listAfterDelete;
+  }
+
+  onSearchTermChange(){
+    let searchFor = this.searchTerm;
+    if(searchFor.startsWith('n/')){
+      searchFor = searchFor.substring(2,searchFor.length);
+    }
+    this.populateSearchResults(searchFor);
+    
+  }
+
+  async populateSearchResults(searchFor:string){
+    const filtered = this.communities?.filter((c) => {
+      if(c.displayName && c.displayName.toLocaleLowerCase().indexOf(searchFor.toLocaleLowerCase())>-1){
+        return true;
+      }
+      if(c.name && c.name.toLocaleLowerCase().indexOf(searchFor.toLocaleLowerCase())>-1){
+        return true;
+      }
+      return false;
+    })
+    this.searchResults = filtered;
   }
 
   async fetchCommunities(){
