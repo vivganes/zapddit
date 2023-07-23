@@ -102,6 +102,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   ndkProvider: NdkproviderService;
   displayedContent: string|undefined;
   displayShowMoreButton: boolean = false;
+  hexEventId?:string;
 
   constructor(ndkProvider: NdkproviderService, private renderer: Renderer2,
     private dbService: ZappeditdbService, private router:Router, public domSanitizer:DomSanitizer,
@@ -120,6 +121,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
 
   ngOnInit():void {
+    this.hexEventId = this.event?.id;
     if(this.event?.kind === 4549){
       //community post event
       const kindTags =  this.event.getMatchingTags('k');
@@ -128,7 +130,10 @@ export class EventCardComponent implements OnInit, OnDestroy{
         kindValue = kindTags[0][1]
       }
       if(kindValue === '1'){
+        console.log('id = ' + this.event.id)
         this.event.kind = 1;
+        console.log('id = ' + this.event.id)
+
       }
     }
     if(!this.showUnapprovedPosts){
@@ -333,7 +338,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
   copyNoteHexIdToClipboard(){
-    this.clipboard.copy(this.event?.id!);
+    this.clipboard.copy(this.hexEventId!);
   }
 
   copyNote1IdToClipboard(){

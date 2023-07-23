@@ -37,6 +37,9 @@ export class NoteComposerComponent {
   @Input()
   currentCommunity?:Community;
 
+  @Input()
+  parentEventId?:string;
+
   @Output()
   postedEventEmitter:  EventEmitter<NDKEvent> = new EventEmitter<NDKEvent>();
 
@@ -101,7 +104,7 @@ export class NoteComposerComponent {
     let hashTags = this.getHashTagsFromText(noteText);
     let userMentions = this.getUserMentionsFromText(noteText);
     let noteMentions = this.getNoteMentionsFromText(noteText);
-    let postedEvent = await this.ndkProvider.sendNote(noteText,hashTags,userMentions,noteMentions,this.parentEvent,this.currentCommunity);
+    let postedEvent = await this.ndkProvider.sendNote(noteText,hashTags,userMentions,noteMentions,this.parentEvent,this.parentEventId,this.currentCommunity);
     this.isSendingNote = false;
     this.postedEventEmitter.emit(postedEvent);
     if(this.noteText){

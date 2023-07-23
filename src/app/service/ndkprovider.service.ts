@@ -408,6 +408,7 @@ export class NdkproviderService {
     userMentionsHex?: string[],
     postMentions?: string[],
     replyingToEvent?: NDKEvent,
+    replyingToEventId?:string,
     community?: Community
   ): Promise<NDKEvent> {
     const ndkEvent = new NDKEvent(this.ndk);
@@ -425,7 +426,9 @@ export class NdkproviderService {
     }
     if (replyingToEvent) {
       tags.push(...replyingToEvent.getMatchingTags('p'));
-      tags.push(['e', replyingToEvent.id, '', 'reply']);
+    }
+    if(replyingToEventId) {
+      tags.push(['e', replyingToEventId, '', 'reply']);
     }
     if (community) {
       tags.push(['a',community.id!])
@@ -830,7 +833,8 @@ export class NdkproviderService {
     if (id.startsWith('note1')) {
       id = LoginUtil.bech32ToHex(id);
     }
-    const filter: NDKFilter = { kinds: [1], ids: [id] };
+    console.log("id = "+ id);
+    const filter: NDKFilter = { kinds: [1,4549], ids: [id] };
     return this.ndk?.fetchEvent(filter,{});
   }
 

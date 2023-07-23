@@ -98,7 +98,7 @@
       </div>
     </div>
     <div class="{{(displayShowMoreButton?'shortened-content':'')}}" #cardBlock>
-    <div *ngIf="!isQuotedEvent" class="break-words-overflow pointer-cursor" [routerLink]="'/n/'+event?.id">
+    <div *ngIf="!isQuotedEvent" class="break-words-overflow pointer-cursor" [routerLink]="'/n/'+hexEventId">
       <ngx-dynamic-hooks *ngIf="linkifiedContent" [content]="linkifiedContent"></ngx-dynamic-hooks>
     </div>
     <div *ngIf="isQuotedEvent" class="break-words-overflow pointer-cursor" (click)="openQuotedEvent($event)">
@@ -239,7 +239,7 @@
         <div *ngIf="approvedModHexIds.length>0" clrDropdownItem (click)="showingApprovers = true">Show approvers</div>
         <div clrDropdownItem (click)="openInSnort()">Open in Snort</div>
         <div clrDropdownItem (click)="copyNoteHexIdToClipboard()">Copy Hex ID</div>
-        <div clrDropdownItem (click)="copyNote1IdToClipboard()">Copy note1 ID</div>
+        <div *ngIf="!community" clrDropdownItem (click)="copyNote1IdToClipboard()">Copy note1 ID</div>
       </clr-dropdown-menu>
     </clr-dropdown>
   </div>
@@ -253,7 +253,7 @@
         </div>
       </div>
     </ng-template>
-    <app-note-composer *ngIf="ndkProvider.canWriteToNostr" [isReply]="true" [parentEvent]="event"
+    <app-note-composer *ngIf="ndkProvider.canWriteToNostr" [isReply]="true" [parentEvent]="event" [parentEventId]="hexEventId"
       (postedEventEmitter)="addReply($event)"></app-note-composer>
   </div>
 </ng-template>
