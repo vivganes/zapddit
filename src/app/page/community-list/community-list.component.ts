@@ -98,6 +98,11 @@ export class CommunityListComponent {
         this.communities = await this.ndkProvider.fetchCommunities(this.limit, undefined, this.until, this.showOnlyOwnedCommunities);
       }
       else {
+        const communitiesFromCache = await this.objectCache.communities.toArray();
+        if(communitiesFromCache && communitiesFromCache.length > 0){
+          this.communities = communitiesFromCache;
+          this.loadingEvents = false;
+        }
         await this.ndkProvider.fetchCommunities();
         this.communities = await this.objectCache.communities.toArray();
       }
