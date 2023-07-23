@@ -730,15 +730,16 @@ export class NdkproviderService {
     return []
   }
 
-  async approveNote(event:NDKEvent):Promise<NDKEvent>{
+  async approveNote(event:NDKEvent, originalEventId:string, originalKind:NDKKind):Promise<NDKEvent>{
     const approvalEvent:NDKEvent = new NDKEvent(this.ndk);
     approvalEvent.kind = 4550;
     approvalEvent.tags = [
       event.getMatchingTags('a')[0],
-      ['e', event.id],
+      ['e', originalEventId],
       ['p', event.pubkey],
-      ['k', ''+event.kind]
+      ['k', ''+originalKind]
     ]
+    event.id = originalEventId;
     approvalEvent.content = JSON.stringify(await event.toNostrEvent())
     await approvalEvent.publish();
     return approvalEvent;
@@ -806,17 +807,13 @@ export class NdkproviderService {
     return this.makeCommunitiesFromEvents(communityEvents);
   }
 
-  async getApprovalEvents(event:NDKEvent):Promise<Set<NDKEvent>|undefined>{
-    const aTags = event.getMatchingTags('a');
-    if(aTags){
-      const filter:NDKFilter = {
-        kinds:[4550],
-        '#e':[event.id]
-      }
-      const approvalEvents = await this.ndk?.fetchEvents(filter,{});
-      return approvalEvents;
+  async getApprovalEvents(id:string):Promise<Set<NDKEvent>|undefined>{
+    const filter:NDKFilter = {
+      kinds:[4550],
+      '#e':[id]
     }
-    return undefined;
+    const approvalEvents = await this.ndk?.fetchEvents(filter,{});
+    return approvalEvents;
   }
 
   async fetchEvents(tag: string, limit?: number, since?: number, until?: number): Promise<Set<NDKEvent> | undefined> {

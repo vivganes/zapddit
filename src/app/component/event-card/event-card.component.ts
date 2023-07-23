@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, SecurityContext, AfterContentInit } from '@angular/core';
-import { NDKEvent, NDKTag, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKKind, NDKTag, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import linkifyHtml from 'linkify-html';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
@@ -103,6 +103,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   displayedContent: string|undefined;
   displayShowMoreButton: boolean = false;
   hexEventId?:string;
+  originalKind?:NDKKind;
 
   constructor(ndkProvider: NdkproviderService, private renderer: Renderer2,
     private dbService: ZappeditdbService, private router:Router, public domSanitizer:DomSanitizer,
@@ -122,6 +123,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   ngOnInit():void {
     this.hexEventId = this.event?.id;
+    this.originalKind = this.event?.kind;
     if(this.event?.kind === 4549){
       //community post event
       const kindTags =  this.event.getMatchingTags('k');
@@ -173,7 +175,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
   async getApprovals(){
-    const approvalEvents = await this.ndkProvider.getApprovalEvents(this.event!)
+    const approvalEvents = await this.ndkProvider.getApprovalEvents(this.hexEventId!)
     if(approvalEvents){
       const approvalEventsByMods = [...approvalEvents].filter((approval) => {
         if(this.community?.moderatorHexKeys){
@@ -192,7 +194,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
   async approveNote(){
-    const approval = await this.ndkProvider.approveNote(this.event!)
+    const approval = await this.ndkProvider.approveNote(this.event!, this.hexEventId!, this.originalKind!)
     this.approvalEvents?.add(approval);
   }
 
