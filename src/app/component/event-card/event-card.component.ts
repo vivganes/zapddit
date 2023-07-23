@@ -130,10 +130,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
         kindValue = kindTags[0][1]
       }
       if(kindValue === '1'){
-        console.log('id = ' + this.event.id)
         this.event.kind = 1;
-        console.log('id = ' + this.event.id)
-
       }
     }
     if(!this.showUnapprovedPosts){
