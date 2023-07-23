@@ -857,7 +857,7 @@ export class NdkproviderService {
     since?: number,
     until?: number
   ): Promise<Set<NDKEvent> | undefined> {
-    const filter: NDKFilter = { kinds: [1], '#a': followedCommunities, limit: limit, since: since, until: until };
+    const filter: NDKFilter = { kinds: [1,  4549], '#a': followedCommunities, limit: limit, since: since, until: until };
     return this.ndk?.fetchEvents(filter);
   }
 
@@ -1042,7 +1042,9 @@ export class NdkproviderService {
             mutedTopics = lineWiseAppData[i];
             break;
           case 3:
-            communities.push(lineWiseAppData[i]);
+            if(lineWiseAppData[i] !== ''){
+              communities.push(...lineWiseAppData[i].split(','));
+            }
             break;
           default:
           //do nothing. irrelevant data
@@ -1077,7 +1079,9 @@ export class NdkproviderService {
             this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
             break;
           case 3:
-            communities.push(...lineWiseAppData[i].split(','));
+            if(lineWiseAppData[i] !== ''){
+              communities.push(...lineWiseAppData[i].split(','));
+            }
             break;
           default:
           //do nothing. irrelevant data
