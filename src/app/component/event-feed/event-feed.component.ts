@@ -76,6 +76,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       }
       if(this.feedType == FeedType.COMMUNITIES_FEED && this.followedCommunities===undefined){
         this.nowShowingUptoIndex = 0;
+        this.events = undefined;
         this.eventBuffer.events = [];
         this.until = Date.now();
         this.limit = BUFFER_REFILL_PAGE_SIZE;
@@ -96,6 +97,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
 
   onChangeFeedType(newType: FeedType){
         this.nowShowingUptoIndex = 0;
+        this.events = undefined;
         this.eventBuffer.events = [];
         this.until = Date.now();
         this.limit = BUFFER_REFILL_PAGE_SIZE;
@@ -202,7 +204,11 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       if(eventsToAddToDisplay){
         this.removeMutedAndSetEvents(new Set<NDKEvent>(eventsToAddToDisplay));
         this.nowShowingUptoIndex += (fetchedEvents.size>BUFFER_READ_PAGE_SIZE)?BUFFER_READ_PAGE_SIZE:fetchedEvents.size;
+      } else {
+        this.events = new Set();
       }
+    } else {
+      this.events = new Set();
     }
     this.loadingEvents=false;
   }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Community } from 'src/app/model/community';
 import { CommunityService } from 'src/app/service/community.service';
@@ -17,6 +17,7 @@ export class CommunityCardComponent {
   followingNow:boolean = false;
   showEditCommunity:boolean = false;
   currentUserHexKey?:string;
+  joinOrLeaveInProgress:boolean = false;
 
   @Output()
   onLeave:EventEmitter<Community> = new EventEmitter<Community>();
@@ -33,7 +34,12 @@ export class CommunityCardComponent {
     if(!this.community.creatorProfile){
       this.fetchCreatorProfile();
     }
-    this.fetchFollowers();
+  }
+
+  onShowInViewPort({ target, visible }: { target: Element; visible: boolean }): void{
+    if(visible){
+      this.fetchFollowers();
+    }
   }
 
   setIsFollowed(){
@@ -53,8 +59,10 @@ export class CommunityCardComponent {
   }
 
   async fetchFollowers(){
-    const followers = await this.ndkProvider.fetchFollowersForCommunity(this.community.id!)
-    this.community.followersHexKeys = followers;
+    if(!this.community.followersHexKeys){
+      const followers = await this.ndkProvider.fetchFollowersForCommunity(this.community.id!)
+      this.community.followersHexKeys = followers;
+    }    
   }
 
   popupClosed(evt:any){
@@ -75,19 +83,21 @@ export class CommunityCardComponent {
   }
 
   async joinCommunity(){
-    await this.communityService.joinCommunityInteroperableList(this.community);
-
+    this.joinOrLeaveInProgress = true;
+    await this.communityService.joinCommunity(this.community);
     this.followingNow = true;
-
     await this.communityService.clearCommunitiesFromAppData();
+    this.joinOrLeaveInProgress = false;
   }
 
   async leaveCommunity(){
+    this.joinOrLeaveInProgress = true;
     await this.communityService.leaveCommunityInteroperableList(this.community);
 
     this.followingNow = false;
     this.onLeave.emit(this.community);
 
     await this.communityService.clearCommunitiesFromAppData();
+    this.joinOrLeaveInProgress = false;
   }
 }

@@ -39,7 +39,11 @@
         </div>
     </div>
 
-    <div *ngFor="let community of communities" class="clr-col-12 clr-col-md-5">
+    <!-- <div *ngFor="let community of allCommunities | async" class="clr-col-12 clr-col-md-5">
+        <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
+    </div> -->
+
+    <div *ngFor="let community of communities " class="clr-col-12 clr-col-md-5">
             <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
     </div>
 </div>

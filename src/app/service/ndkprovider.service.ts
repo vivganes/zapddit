@@ -26,6 +26,7 @@ import { Community } from '../model/community';
 import { ObjectCacheService } from './object-cache.service';
 import { User } from '../model/user';
 import hashtag from '../util/IntlHashtagLinkifyPlugin';
+import { CommunityCacheService } from './community-cache.service';
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -82,7 +83,9 @@ export class NdkproviderService {
   @Output()
   launchOnboardingWizard: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  constructor(private dbService: ZappeditdbService, private objectCache: ObjectCacheService) {
+  constructor(private dbService: ZappeditdbService, 
+    private objectCache: ObjectCacheService,
+    private communityCache: CommunityCacheService) {
     const npubFromLocal = localStorage.getItem(Constants.NPUB);
     const privateKey = localStorage.getItem(Constants.PRIVATEKEY);
     const loggedInPubKey = localStorage.getItem(Constants.LOGGEDINUSINGPUBKEY);
@@ -647,6 +650,10 @@ export class NdkproviderService {
   }
 
   async getCommunityDetails(id: string): Promise<Community|undefined> {
+    const communityFromCache = await this.communityCache.fetchCommunityWithId(id);
+    if(communityFromCache){
+      return communityFromCache;
+    }
     const splitId = id.split(':');
     const filter: NDKFilter = { kinds: [34550], '#d': [splitId[2]], authors:[splitId[1]] };
     const events = await this.ndk?.fetchEvents(filter,{});
@@ -702,6 +709,7 @@ export class NdkproviderService {
     };
     const events = await this.ndk?.fetchEvents(filter,{});
     let returnValue:Community[] = this.makeCommunitiesFromEvents(events);
+    returnValue.forEach((c) => this.communityCache.addCommunity(c));
     return returnValue;
   }
 
@@ -1469,14 +1477,7 @@ export class NdkproviderService {
     this.appData.downzapRecipients = existing[0]
   }
 
-  deDuplicateCommunities(communities:Community[]){
-    return communities.reduce((accumulator:Community[], current:Community) => {
-      if (!accumulator.find((item) => item.id === current.id)) {
-        accumulator.push(current);
-      }
-      return accumulator;
-    }, []);
-  }
+ 
 }
 
 

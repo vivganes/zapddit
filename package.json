@@ -38,6 +38,7 @@
     "linkify-plugin-hashtag": "^4.1.1",
     "linkifyjs": "^4.1.1",
     "moment": "^2.29.4",
+    "ng-in-viewport": "^16.0.0",
     "ngx-dynamic-hooks": "^2.1.0",
     "qr-code-styling": "^1.6.0-rc.1",
     "rxjs": "~7.8.0",

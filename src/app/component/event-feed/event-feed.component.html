@@ -82,21 +82,35 @@
   </div>    
 </ng-template>
 <div *ngIf="(feedType === feedTypeOptions[0]) && (!tag) && followedTopics?.length == 0 && !events" class="clr-row clr-justify-content-center">
-    <div class="clr-col-12 clr-col-md-8">
-        <div class="card">            
-            <div class="card-block">
-                <div align="center" class="card-text">
-                  Uh oh! No topics followed yet. Take the onboarding wizard for a test-drive?
-                  <div class="mt-20">
-                    <button class="btn btn-primary" (click)="ndkProvider.triggerOnboardingWizard()">Launch Wizard</button>
-                  </div>
+  <div class="clr-col-12 clr-col-md-8">
+      <div class="card">            
+          <div class="card-block">
+              <div align="center" class="card-text">
+                Uh oh! No topics followed yet. Take the onboarding wizard for a test-drive?
+                <div class="mt-20">
+                  <button class="btn btn-primary" (click)="ndkProvider.triggerOnboardingWizard()">Launch Wizard</button>
                 </div>
-            </div>
-        </div>
+              </div>
+          </div>
+      </div>
+  </div>
 </div>
-    
+
+<div *ngIf="(feedType === feedTypeOptions[1]) && (!community) && ndkProvider.appData.followedCommunities.length == 0 && !events" class="clr-row clr-justify-content-center">
+  <div class="clr-col-12 clr-col-md-8">
+      <div class="card">            
+          <div class="card-block">
+              <div align="center" class="card-text">
+                Uh oh! You have not joined any communities yet.
+                <div class="mt-20">
+                  <a class="btn btn-primary" routerLink="/communities/discover">Discover Communities</a>
+                </div>
+              </div>
+          </div>
+      </div>
+  </div>    
 </div>
-<app-note-composer *ngIf="ndkProvider.canWriteToNostr && !loadingCommunityDetails && (feedType === feedTypeOptions[1] ? community: tag)" [currentTag]="tag" (postedEventEmitter)="addEventToFeed($event)" [currentCommunity]="community"></app-note-composer>
+<app-note-composer *ngIf="ndkProvider.canWriteToNostr && !loadingCommunityDetails && (feedType === feedTypeOptions[1] ? community: false)" [currentTag]="tag" (postedEventEmitter)="addEventToFeed($event)" [currentCommunity]="community"></app-note-composer>
 <div align="center" *ngIf="events && events.size == 0">
   <div align="center" class="alert alert-info clr-col-12 clr-col-md-8" role="alert">
     <div class="alert-items">
@@ -104,15 +118,11 @@
         <div class="alert-icon-wrapper">
           <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
         </div>
-        <span class="alert-text"> No notes for you 🥲 May be try following more topics? Like <a
-            [routerLink]="['/t', 'coffeechain']">#coffeechain</a>?
+        <span class="alert-text"> No notes for you 🥲   It is possible that you could have muted topics from the preferences menu.
         </span>
       </div>
     </div>
   </div>
-</div>
-<div align="center" *ngIf="events && events.size == 0">
-  Already following topics? It is possible that you could have muted topics from the preferences menu.
 </div>
 <ng-template [ngIf]="!loadingEvents">
   <div *ngFor="let event of events" class="clr-row clr-justify-content-center">
@@ -127,7 +137,7 @@
       more</button>
   </div>
   <div *ngIf="reachedEndOfFeed" align="center" class="clr-row clr-justify-content-center">
-    <div class="alert alert-info clr-col-3" role="alert">
+    <div class="alert alert-info clr-col-12 clr-col-md-8" role="alert">
       <div class="alert-items">
         <div class="alert-item static">
           <div class="alert-icon-wrapper">

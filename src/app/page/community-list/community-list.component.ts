@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable, liveQuery } from 'dexie';
 import { Community } from 'src/app/model/community';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { CommunityService } from '../../service/community.service';
+import { ObjectCacheService } from 'src/app/service/object-cache.service';
 
 const BUFFER_REFILL_PAGE_SIZE = 100;
 const BUFFER_READ_PAGE_SIZE = 20;
@@ -16,6 +18,7 @@ const BUFFER_READ_PAGE_SIZE = 20;
 export class CommunityListComponent {
 
   communities?:Community[];
+  allCommunities?:Observable<Community[]>;
   until: number | undefined = Date.now();
   limit: number | undefined = BUFFER_REFILL_PAGE_SIZE;
   loadingEvents: boolean = false;
@@ -29,7 +32,7 @@ export class CommunityListComponent {
   showCreateCommunity:boolean = false;
 
   constructor(public ndkProvider:NdkproviderService, private router:Router,
-     private communityService:CommunityService){
+     private communityService:CommunityService, private objectCache:ObjectCacheService){
 
   }
 
@@ -50,7 +53,6 @@ export class CommunityListComponent {
     this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
       this.isLoggedInUsingPubKey = val;
     });
-
     this.fetchCommunities();
   }
 
@@ -67,9 +69,12 @@ export class CommunityListComponent {
         this.communities = await this.fetchJoinedCommunities();
       } else if (this.showOnlyModeratingCommunities){
         this.communities = await this.ndkProvider.fetchCommunities(this.limit, undefined, this.until,undefined, this.showOnlyModeratingCommunities);
+      } else if (this.showOnlyOwnedCommunities){
+        this.communities = await this.ndkProvider.fetchCommunities(this.limit, undefined, this.until, this.showOnlyOwnedCommunities);
       }
       else {
-        this.communities = await this.ndkProvider.fetchCommunities(this.limit, undefined, this.until, this.showOnlyOwnedCommunities);
+        await this.ndkProvider.fetchCommunities();
+        this.communities = await this.objectCache.communities.toArray();
       }
     } catch (err){
       console.error(err);
@@ -79,13 +84,9 @@ export class CommunityListComponent {
   }
 
   async fetchJoinedCommunities():Promise<Community[]>{
-
       var fromStandardSource = await this.communityService.fetchJoinedCommunities();
-
       var fromAppSource =  await this.ndkProvider.fetchJoinedCommunities();
-
-      var deDuplicated = this.ndkProvider.deDuplicateCommunities([...fromStandardSource].concat(fromAppSource));
-
+      var deDuplicated = this.communityService.deDuplicateCommunities([...fromStandardSource].concat(fromAppSource));
       return deDuplicated;
   }
 

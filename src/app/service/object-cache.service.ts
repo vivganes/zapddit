@@ -3,11 +3,12 @@ import NDK, { NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import Dexie, {  Table } from 'dexie';
 import { User } from '../model/user';
 import { NdkproviderService } from './ndkprovider.service';
+import { Community } from '../model/community';
 
 const DATASTORE = {
-  users: "hexPubKey, name, displayName, nip05, npub"
+  users: "hexPubKey, name, displayName, nip05, npub",
+  communities: "id,name,displayName,creatorHexKey,description"
 };
-const VERSION = 1;
 
 
 @Injectable({
@@ -18,11 +19,17 @@ export class ObjectCacheService extends Dexie {
   //default TTL in seconds
   defaultTTL:number = 60*60; //1 hour
   users!:Table<User>;
+  communities!:Table<Community>;
 
   constructor() {
     super('object-cache')
-    this.version(VERSION).stores(DATASTORE);
+    this.version(1).stores({
+      users: DATASTORE.users
+    });
+    this.version(2).stores(DATASTORE);
   }
+
+  
 
   async addUser(item:NDKUser){
     this.users.put({
@@ -42,6 +49,7 @@ export class ObjectCacheService extends Dexie {
     }, this.defaultTTL*1000);
   }
 
+ 
   deleteUserWithHexKey(hexPubKey:string){
     this.users.delete(hexPubKey)
   }

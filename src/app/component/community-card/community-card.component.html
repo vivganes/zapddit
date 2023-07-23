@@ -1,4 +1,6 @@
-<div class="clr-col-12">
+<div class="clr-col-12" inViewport
+(inViewportAction)="onShowInViewPort($event)"
+>
     <div class="card">
         <div class="card-img">
             <img *ngIf="community.image" (click)="openCommunityPage()" alt="Community image" src="{{ community.image }}"
@@ -31,7 +33,7 @@
         </div>
         <div class="card-footer">
             <button class="btn btn-sm btn-link" (click)="openCommunityPage()">Browse</button>
-            <button *ngIf="!followingNow" class="btn btn-sm btn-link" (click)="joinCommunity()">Join</button>
+            <button *ngIf="!followingNow" [clrLoading]="joinOrLeaveInProgress" class="btn btn-sm btn-link" (click)="joinCommunity()">Join</button>
             <button *ngIf="followingNow" class="btn btn-sm btn-link" (click)="leaveCommunity()">Leave</button>
             <button *ngIf="community.creatorHexKey === currentUserHexKey " class="btn btn-sm btn-link" (click)="showEditCommunity = true">Edit</button>
         </div>

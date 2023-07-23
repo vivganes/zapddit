@@ -13,61 +13,24 @@ export class CommunityService {
 
   constructor(private ndkProviderService: NdkproviderService) { }
 
-  joinCommunity(community:Community){
-    let followedCommunities:string = this.ndkProviderService.appData.followedCommunities;
-    if (this.ndkProviderService.appData.followedCommunities === '') {
-      followedCommunities = community.id!;
-    } else {
-      //parse current followedTopics as array
-      let followedArr: string[] = this.ndkProviderService.appData.followedCommunities.split(',');
-      followedArr = followedArr.concat(community.id!);
-      followedArr = [...new Set(followedArr)]; //remove dupes
-
-      followedCommunities = followedArr.join(',');
-    }
-    localStorage.setItem(Constants.FOLLOWEDCOMMUNITIES,followedCommunities);
-    this.ndkProviderService.publishAppData(undefined, undefined, undefined, followedCommunities);
+  async joinCommunity(community:Community){
+    var joinedCommunities = await this.fetchJoinedCommunitiesMetadata() || [];
+    joinedCommunities.push(community);
+    await this.publishJoiningEvent(joinedCommunities);
   }
 
-  async joinCommunityInteroperableList(community:Community){
-    var existing = await this.fetchJoinedCommunitiesMetadata() || [];
-    existing.push(community);
-    await this.join(existing);
-  }
-
-  async join(data:Community[]){
-    var existing = [...new Set(data)];
-    await this.buildAndPublish(existing);
-    var followedCommunities = existing.map(i=>i.id!).join(',');
-    localStorage.setItem(Constants.FOLLOWEDCOMMUNITIES,followedCommunities);
-    this.ndkProviderService.appData.followedCommunities = followedCommunities;
-    this.ndkProviderService.followedCommunitiesEmitter.emit(followedCommunities);
-  }
-
-  async joinCommunitiesInteroperableList(communities:Community[]){
-    var existing = await this.fetchJoinedCommunitiesMetadata() || [];
-    existing.push(...communities);
-    await this.join(existing);
-  }
-
-  leaveCommunity(community:Community){
-    let followedCommunities:string = this.ndkProviderService.appData.followedCommunities;
-    if (this.ndkProviderService.appData.followedCommunities.split(',').length === 1) {
-      followedCommunities = '';
-    } else {
-      //parse current followedTopics as array
-      let followedArr: string[] = this.ndkProviderService.appData.followedCommunities.split(',');
-      followedArr = followedArr.filter(item => item !== community.id!);
-      followedArr = [...new Set(followedArr)]; //remove dupes
-      followedCommunities = followedArr.join(',');
-    }
-    localStorage.setItem(Constants.FOLLOWEDCOMMUNITIES,followedCommunities);
-    this.ndkProviderService.publishAppData(undefined, undefined, undefined, followedCommunities);
+  async publishJoiningEvent(data:Community[]){
+    var followedCommunities = [...new Set(data)];
+    await this.publishCommunityListEvent(followedCommunities);
+    var followedCommunitiesCsv = followedCommunities.map(i=>i.id!).join(',');
+    localStorage.setItem(Constants.FOLLOWEDCOMMUNITIES,followedCommunitiesCsv);
+    this.ndkProviderService.appData.followedCommunities = followedCommunitiesCsv;
+    this.ndkProviderService.followedCommunitiesEmitter.emit(followedCommunitiesCsv);
   }
 
   async leaveCommunityInteroperableList(community:Community){
     var existing = (await this.fetchJoinedCommunitiesMetadata() || []).filter(item=>item.id !== community.id!);
-    await this.join(existing);
+    await this.publishJoiningEvent(existing);
   }
 
   async createCommunity(newCommunity:Community){
@@ -125,14 +88,14 @@ export class CommunityService {
     return communities;
   }
 
-  buildEvent(existing:Community[]): NDKEvent {
-    existing = this.ndkProviderService.deDuplicateCommunities(existing);
+  buildCommunityListEvent(existing:Community[]): NDKEvent {
+    const deDupedCommunities = this.deDuplicateCommunities(existing);
 
     var event = this.ndkProviderService.createNDKEvent();
     let tags: NDKTag[] = [];
     tags.push(['d', 'communities']);
 
-    for(let item of existing){
+    for(let item of deDupedCommunities){
       if(item.id && !(item.creatorHexKey!) && !(item.name!))
         tags.push(['a',`${item.id}`])
       else
@@ -144,8 +107,8 @@ export class CommunityService {
     return event;
   }
 
-  async buildAndPublish(existing:Community[]){
-    var event = this.buildEvent(existing);
+  async publishCommunityListEvent(existing:Community[]){
+    var event = this.buildCommunityListEvent(existing);
     await event.sign();
     await event.publish();
   }
@@ -157,6 +120,15 @@ export class CommunityService {
       this.ndkProviderService.publishAppData(data.hashtags.join(','), data.downzapRecipients,data.mutedHashtags,'');
       localStorage.setItem(Constants.COMMUNITIES_CLEARED, "true")
     }
+  }
+
+  deDuplicateCommunities(communities:Community[]){
+    return communities.reduce((accumulator:Community[], current:Community) => {
+      if (!accumulator.find((item) => item.id === current.id)) {
+        accumulator.push(current);
+      }
+      return accumulator;
+    }, []);
   }
 
 }
