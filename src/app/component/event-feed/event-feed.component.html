@@ -110,7 +110,7 @@
       </div>
   </div>    
 </div>
-<app-note-composer *ngIf="ndkProvider.canWriteToNostr && !loadingCommunityDetails && (feedType === feedTypeOptions[1] ? community: false)" [currentTag]="tag" (postedEventEmitter)="addEventToFeed($event)" [currentCommunity]="community"></app-note-composer>
+<app-note-composer *ngIf="ndkProvider.canWriteToNostr && !loadingCommunityDetails && (feedType === feedTypeOptions[1] ? community: true)" [currentTag]="tag" (postedEventEmitter)="addEventToFeed($event)" [currentCommunity]="community"></app-note-composer>
 <div align="center" *ngIf="events && events.size == 0">
   <div align="center" class="alert alert-info clr-col-12 clr-col-md-8" role="alert">
     <div class="alert-items">

@@ -120,6 +120,17 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
 
   ngOnInit():void {
+    if(this.event?.kind === 4549){
+      //community post event
+      const kindTags =  this.event.getMatchingTags('k');
+      let kindValue = "1";
+      if(kindTags && kindTags.length>0){
+        kindValue = kindTags[0][1]
+      }
+      if(kindValue === '1'){
+        this.event.kind = 1;
+      }
+    }
     if(!this.showUnapprovedPosts){
       let tags = this.event?.getMatchingTags('a');
       if(tags && tags.length > 0){

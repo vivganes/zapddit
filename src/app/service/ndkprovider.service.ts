@@ -429,6 +429,8 @@ export class NdkproviderService {
     }
     if (community) {
       tags.push(['a',community.id!])
+      tags.push(['k','1'])
+      ndkEvent.kind = 4549;
     }
     ndkEvent.tags = tags;
     if (this.currentUser) {
@@ -820,7 +822,7 @@ export class NdkproviderService {
   }
 
   async fetchEventsFromCommunity(community: Community, limit?: number, since?: number, until?: number):Promise<Set<NDKEvent> | undefined> {
-    const filter: NDKFilter = { kinds: [1], '#a': [community.id!], limit: limit, since: since, until: until };
+    const filter: NDKFilter = { kinds: [1,4549], '#a': [community.id!], limit: limit, since: since, until: until };
     return this.ndk?.fetchEvents(filter,{});
   }
 
