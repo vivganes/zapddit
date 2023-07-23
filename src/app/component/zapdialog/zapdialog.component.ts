@@ -14,6 +14,9 @@ import { Constants } from 'src/app/util/Constants';
 export class ZapdialogComponent implements OnInit {
 
   @Input()
+  eventHexId?:string;
+
+  @Input()
   authorName:string | undefined;
 
   @Input()
@@ -64,6 +67,9 @@ export class ZapdialogComponent implements OnInit {
   }
 
   async initiateZap(){
+    if(this.event){
+      this.event.id = this.eventHexId!;
+    }
     if(this.type==='upzap'){
       await this.upZap();
     }else{
@@ -114,6 +120,7 @@ export class ZapdialogComponent implements OnInit {
             await this.ndkProvider.getNdkUserFromNpub(this.ndkProvider.appData.downzapRecipients),
             '-'
           );
+          this.invoice = invoice;
           const qr = new QRCodeStyling({
             width:  256,
             height:  256,
@@ -130,7 +137,6 @@ export class ZapdialogComponent implements OnInit {
           this.showQR = true;
           setTimeout(()=>
             qr.append(this.canvas?.nativeElement),1000);
-          this.invoice = invoice;
       }
     }catch(e:any){
       this.errorMsg = e.message;

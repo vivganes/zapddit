@@ -40,6 +40,8 @@ export class ObjectCacheService extends Dexie {
       npub: item.npub,
       pictureUrl: item.profile?.image!,
       about: item.profile?.about!,
+      lud06: item.profile?.lud06!,
+      lud16: item.profile?.lud16
     }, item.hexpubkey())
 
     const self = this;

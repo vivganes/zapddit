@@ -260,7 +260,7 @@
 <app-zapdialog [authorName]="(authorWithProfile?.profile?.displayName) ?
   authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name"
   [imageUrl]="authorWithProfile?.profile?.image" *ngIf="showZapDialog" [show]="showZapDialog"
-  (onClose)="onClose($event)" [event]="event" (onUpzapDone)="onUpzapComplete($event)" [type]="type"></app-zapdialog>
+  (onClose)="onClose($event)" [event]="event" [eventHexId]="hexEventId" (onUpzapDone)="onUpzapComplete($event)" [type]="type"></app-zapdialog>
 <clr-modal [(clrModalOpen)]="showingApprovers" [clrModalSize]="'lg'">
     <h3 class="modal-title">Approvals Received</h3>
     <div class="modal-body">

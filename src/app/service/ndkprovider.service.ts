@@ -1200,7 +1200,7 @@ export class NdkproviderService {
 
     if (zapRecipient) {
       // check if user has a profile, otherwise request it
-      if (!zapRecipient.profile) {
+      if (!zapRecipient.profile || !(zapRecipient.profile.lud06 || zapRecipient.profile.lud16)) {
         await zapRecipient.fetchProfile();
         this.objectCache.addUser(zapRecipient);
       }

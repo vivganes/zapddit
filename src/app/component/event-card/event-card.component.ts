@@ -222,7 +222,6 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   async getRelatedEventsAndSegregate(){
     if(this.event){
-      let currentEvent = this.event;
       this.loadingRelatedEvents = true;
       let relatedEvents = await this.ndkProvider.getRelatedEventsOfNote(this.event);
       if(relatedEvents){
@@ -232,7 +231,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
             let replyToThisEvent = false;
             for(let tag of eTags){
               if(tag.length > 2 && tag[3] !== undefined){ // if the note uses markers
-                if(tag[1] === currentEvent.id && tag[3] === 'reply')
+                if(tag[1] === this.hexEventId && tag[3] === 'reply')
                   {
                     replyToThisEvent = true
                   }
@@ -346,16 +345,25 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
   async publishLike(){
+    if(this.event){
+      this.event.id=this.hexEventId!;
+    }
     await this.ndkProvider.publishReactionToEvent(this.event!,'+');
     this.likes++;
   }
 
   async publishDislike(){
+    if(this.event){
+      this.event.id=this.hexEventId!;
+    }
     await this.ndkProvider.publishReactionToEvent(this.event!,'-');
     this.dislikes++;
   }
 
   async share(){
+    if(this.event){
+      this.event.id=this.hexEventId!;
+    }
     var url = "https://zapddit.com/n/"+ this.event?.id
     if(navigator.share){
       navigator

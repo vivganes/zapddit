@@ -6,4 +6,6 @@ export interface User {
     nip05?:string;
     pictureUrl?:string;
     about?:string;
+    lud06?:string;
+    lud16?:string;
   }
