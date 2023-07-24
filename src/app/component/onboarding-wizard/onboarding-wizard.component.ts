@@ -81,6 +81,14 @@ export class OnboardingWizardComponent {
   }
 
   async acceptChoices(){
+    if(this.ndkProvider.isTryingZapddit){
+      this.ndkProvider.appData.followedTopics = this.suggestedTopics.join(',');
+      this.ndkProvider.followedTopicsEmitter.emit(this.ndkProvider.appData.followedTopics);
+      this.ndkProvider.appData.mutedTopics = this.muteList.join(",");
+      this.ndkProvider.mutedTopicsEmitter.emit(this.ndkProvider.appData.mutedTopics);
+      this.ndkProvider.setNotNewToNostr();
+      return;
+    }
     let alreadyFollowedTopics:string[] = []
     let followedTopicsToBePublished = []
     let alreadyFollowedTopicsString = this.ndkProvider.appData.followedTopics;

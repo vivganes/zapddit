@@ -215,7 +215,7 @@
       [disabled]="!ndkProvider.canWriteToNostr || !ndkProvider.appData.downzapRecipients" [title]="
         ndkProvider.appData.downzapRecipients
           ? 'This deposits your downzap amounts to the configured Downzap recipients'
-          : 'Setup your downzap recipient in the sidebar to downzap notes.'
+          : 'Setup your downzap recipient in the preferences to downzap notes.'
       ">
       <cds-icon shape="bolt" direction="up"></cds-icon> {{ downZapTotalMilliSats/1000 | shortNumber }} Downzap
     </button>
