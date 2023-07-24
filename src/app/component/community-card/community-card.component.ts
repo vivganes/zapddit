@@ -92,7 +92,7 @@ export class CommunityCardComponent {
 
   async leaveCommunity(){
     this.joinOrLeaveInProgress = true;
-    await this.communityService.leaveCommunityInteroperableList(this.community);
+    await this.communityService.leaveCommunity(this.community);
 
     this.followingNow = false;
     this.onLeave.emit(this.community);

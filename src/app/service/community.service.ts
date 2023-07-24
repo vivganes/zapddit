@@ -14,6 +14,18 @@ export class CommunityService {
   constructor(private ndkProviderService: NdkproviderService) { }
 
   async joinCommunity(community:Community){
+    if(this.ndkProviderService.isTryingZapddit){
+      let joinedCommunities = this.ndkProviderService.appData.followedCommunities;
+      if(joinedCommunities === ""){
+        this.ndkProviderService.appData.followedCommunities = community.id!
+      } else {
+        var communities = [...joinedCommunities.split(",")]
+        communities.push(community.id!)
+        this.ndkProviderService.appData.followedCommunities = communities.join(',');
+      }
+      this.ndkProviderService.followedCommunitiesEmitter.emit(this.ndkProviderService.appData.followedCommunities)
+      return;
+    }
     var joinedCommunities = await this.fetchJoinedCommunitiesMetadata() || [];
     joinedCommunities.push(community);
     await this.publishJoiningEvent(joinedCommunities);
@@ -28,7 +40,19 @@ export class CommunityService {
     this.ndkProviderService.followedCommunitiesEmitter.emit(followedCommunitiesCsv);
   }
 
-  async leaveCommunityInteroperableList(community:Community){
+  async leaveCommunity(community:Community){
+    if(this.ndkProviderService.isTryingZapddit){
+      let joinedCommunities = this.ndkProviderService.appData.followedCommunities;
+      if(joinedCommunities === ""){
+        return;
+      } else {
+        var communities = [...joinedCommunities.split(",")]
+        communities = communities.filter((c) => c !== community.id)
+        this.ndkProviderService.appData.followedCommunities = communities.join(',');
+        this.ndkProviderService.followedCommunitiesEmitter.emit(this.ndkProviderService.appData.followedCommunities)
+      }
+      return;
+    }
     var existing = (await this.fetchJoinedCommunitiesMetadata() || []).filter(item=>item.id !== community.id!);
     await this.publishJoiningEvent(existing);
   }
@@ -64,15 +88,18 @@ export class CommunityService {
   }
 
   async fetchJoinedCommunities():Promise<Community[]>{
-    var communitiesArr = (await this.ndkProviderService.fetchLatestDataFromInteroperableList()).communities;
+    var communitiesArr;
+    if(this.ndkProviderService.isTryingZapddit){
+      communitiesArr = this.ndkProviderService.appData.followedCommunities.split(",");
+    } else {
+      communitiesArr = (await this.ndkProviderService.fetchLatestDataFromInteroperableList()).communities;
+    }
     var communitiesDetails:Community[] = [];
-
     for(let tag of communitiesArr) {
       if(tag){
         communitiesDetails.push((await this.ndkProviderService.getCommunityDetails(tag))!);
       }
     }
-
     return communitiesDetails;
   }
 

@@ -70,10 +70,10 @@
       <a title="Joined communities" clrVerticalNavLink routerLink="/communities/joined" routerLinkActive="active">
         <cds-icon shape="internet-of-things" clrVerticalNavIcon></cds-icon><span class="nav-text">Joined</span>
       </a>
-      <a title="Communities created by me" clrVerticalNavLink routerLink="/communities/own" routerLinkActive="active">
+      <a *ngIf="!ndkProvider.isTryingZapddit"  title="Communities created by me" clrVerticalNavLink routerLink="/communities/own" routerLinkActive="active">
         <cds-icon shape="star" clrVerticalNavIcon></cds-icon><span class="nav-text">Created by me</span>
       </a>
-      <a title="Moderating communities" clrVerticalNavLink routerLink="/communities/moderating" routerLinkActive="active">
+      <a *ngIf="!ndkProvider.isTryingZapddit" title="Moderating communities" clrVerticalNavLink routerLink="/communities/moderating" routerLinkActive="active">
         <cds-icon shape="flag" clrVerticalNavIcon></cds-icon><span class="nav-text">Moderating</span>
       </a>
       <div class="nav-divider"></div>

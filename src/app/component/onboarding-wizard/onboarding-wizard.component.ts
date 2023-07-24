@@ -86,6 +86,8 @@ export class OnboardingWizardComponent {
       this.ndkProvider.followedTopicsEmitter.emit(this.ndkProvider.appData.followedTopics);
       this.ndkProvider.appData.mutedTopics = this.muteList.join(",");
       this.ndkProvider.mutedTopicsEmitter.emit(this.ndkProvider.appData.mutedTopics);
+      localStorage.setItem(Constants.FOLLOWEDTOPICS,this.ndkProvider.appData.followedTopics);
+      localStorage.setItem(Constants.MUTEDTOPICS,this.ndkProvider.appData.mutedTopics);
       this.ndkProvider.setNotNewToNostr();
       return;
     }
