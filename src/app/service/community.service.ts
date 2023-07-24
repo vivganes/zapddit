@@ -24,6 +24,7 @@ export class CommunityService {
         this.ndkProviderService.appData.followedCommunities = communities.join(',');
       }
       this.ndkProviderService.followedCommunitiesEmitter.emit(this.ndkProviderService.appData.followedCommunities)
+      localStorage.setItem(Constants.FOLLOWEDCOMMUNITIES,this.ndkProviderService.appData.followedCommunities);
       return;
     }
     var joinedCommunities = await this.fetchJoinedCommunitiesMetadata() || [];
@@ -50,6 +51,8 @@ export class CommunityService {
         communities = communities.filter((c) => c !== community.id)
         this.ndkProviderService.appData.followedCommunities = communities.join(',');
         this.ndkProviderService.followedCommunitiesEmitter.emit(this.ndkProviderService.appData.followedCommunities)
+        localStorage.setItem(Constants.FOLLOWEDCOMMUNITIES,this.ndkProviderService.appData.followedCommunities);
+
       }
       return;
     }

@@ -126,11 +126,14 @@ export class NdkproviderService {
     this.isTryingZapddit = true;
     const followedTopicsFromLocal = localStorage.getItem(Constants.FOLLOWEDTOPICS);
     const mutedTopicsFromLocal = localStorage.getItem(Constants.MUTEDTOPICS);
+    const communitiesFromLocal = localStorage.getItem(Constants.FOLLOWEDCOMMUNITIES)
     this.appData.followedTopics = followedTopicsFromLocal!;
     this.appData.mutedTopics = mutedTopicsFromLocal!;
+    this.appData.followedCommunities = communitiesFromLocal!;
     console.log(this.appData.followedTopics);
     this.followedTopicsEmitter.emit(this.appData.followedTopics);
     this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
+    this.followedCommunitiesEmitter.emit(this.appData.followedCommunities)
     this.currentUserProfile = {
       displayName: 'Lurky Lurkerson',
     };
