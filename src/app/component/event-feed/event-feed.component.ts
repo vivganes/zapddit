@@ -344,7 +344,12 @@ export class EventFeedComponent implements OnInit,OnDestroy{
 
   async followTopic(topic: string | undefined) {
     if (topic) {
-        this.topicService.followTopicInteroperableList(topic);
+      if(this.ndkProvider.isTryingZapddit){
+        this.topicService.followTryZapddit(topic);
+        return;
+      }
+
+      this.topicService.followTopicInteroperableList(topic);
     }
 
     await this.topicService.clearTopicsFromAppData();
@@ -352,7 +357,12 @@ export class EventFeedComponent implements OnInit,OnDestroy{
 
   async unfollowTopic(topic: string | undefined) {
     if (topic) {
-        this.topicService.unfollowTopicInteroperableList(topic);
+      if(this.ndkProvider.isTryingZapddit){
+        this.topicService.unFollowTryZapddit(topic);
+        return;
+      }
+
+      this.topicService.unfollowTopicInteroperableList(topic);
     }
     await this.topicService.clearTopicsFromAppData();
   }

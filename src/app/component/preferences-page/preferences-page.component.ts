@@ -133,7 +133,12 @@ export class PreferencesPageComponent {
       topic = topic.slice(1);
     }
     try {
-        this.topicService.muteTopic(topic);
+      if(this.ndkProvider.isTryingZapddit){
+        this.topicService.muteTryZapddit(topic);
+        return;
+      }
+
+      this.topicService.muteTopic(topic);
     } catch (e) {
       console.error(e);
     } finally {
@@ -143,7 +148,12 @@ export class PreferencesPageComponent {
 
   unmuteTopic(topic: string) {
     try {
-        this.topicService.unmuteTopic(topic);
+      if(this.ndkProvider.isTryingZapddit){
+        this.topicService.unmuteTryZapddit(topic);
+        return;
+      }
+
+      this.topicService.unmuteTopic(topic);
     } catch (e) {
       console.error(e);
     }

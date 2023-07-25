@@ -107,7 +107,13 @@ export class CommunityService {
   }
 
   async fetchJoinedCommunitiesMetadata():Promise<Community[]>{
-    var communitiesArr = (await this.ndkProviderService.fetchLatestDataFromInteroperableList()).communities;
+    var communitiesArr;
+
+    if(this.ndkProviderService.isTryingZapddit){
+      communitiesArr = this.ndkProviderService.appData.followedCommunities.split(",");
+    } else {
+      communitiesArr = (await this.ndkProviderService.fetchLatestDataFromInteroperableList()).communities;
+    }
 
     var communities:Community[] = [];
 
