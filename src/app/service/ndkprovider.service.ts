@@ -83,7 +83,7 @@ export class NdkproviderService {
   @Output()
   launchOnboardingWizard: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  constructor(private dbService: ZappeditdbService, 
+  constructor(private dbService: ZappeditdbService,
     private objectCache: ObjectCacheService,
     private communityCache: CommunityCacheService) {
     const npubFromLocal = localStorage.getItem(Constants.NPUB);
@@ -1057,7 +1057,15 @@ export class NdkproviderService {
 
 
   async refreshAppData() {
-    const dataFromInteroperableList = await this.fetchLatestDataFromInteroperableList();
+    let hashtags:string[] = []
+    let mutedhashtags:string[] = []
+    let initCommunities:string[] = []
+    let downzapRecipients:string[] = []
+    var dataFromInteroperableList = {hashtags:hashtags,communities:mutedhashtags,mutehashtags:initCommunities, downzapRecipients:downzapRecipients}
+
+    if(!this.isTryingZapddit)
+       dataFromInteroperableList = await this.fetchLatestDataFromInteroperableList();
+
     const latestEvents: Set<NDKEvent> | undefined = await this.fetchLatestAppData();
     var communities:string[] = [];
     var topics:string[] = [];
@@ -1109,6 +1117,9 @@ export class NdkproviderService {
 
       console.log('Latest muted topics:' + this.appData.mutedTopics);
       localStorage.setItem(Constants.MUTEDTOPICS, this.appData.mutedTopics);
+
+      console.log('Latest follow communities:' + this.appData.followedCommunities);
+      localStorage.setItem(Constants.FOLLOWEDCOMMUNITIES,this.appData.followedCommunities);
 
       const satsFromLocalStorage = localStorage.getItem(Constants.DEFAULTSATSFORZAPS);
       if (satsFromLocalStorage) {
@@ -1486,7 +1497,7 @@ export class NdkproviderService {
     this.appData.downzapRecipients = existing[0]
   }
 
- 
+
 }
 
 

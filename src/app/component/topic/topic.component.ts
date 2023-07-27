@@ -26,6 +26,12 @@ export class TopicComponent {
   async onTopicDelete(evt:any){
     evt.preventDefault();
     evt.stopImmediatePropagation();
+
+    if(this.ndkProvider.isTryingZapddit){
+      this.topicService.unFollowTryZapddit(this.topic);
+      return;
+    }
+
     this.topicService.unfollowTopicInteroperableList(this.topic);
 
     await this.topicService.clearTopicsFromAppData();

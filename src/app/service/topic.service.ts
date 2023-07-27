@@ -174,4 +174,60 @@ export class TopicService {
       localStorage.setItem(Constants.TOPICS_CLEARED, "true")
     }
   }
+
+  followTryZapddit(topic:string){
+    let followedTopics:string = this.ndkProviderService.appData.followedTopics;
+    if (this.ndkProviderService.appData.followedTopics === '') {
+      followedTopics = topic.toLowerCase();
+    } else {
+      //parse current followedTopics as array
+      let followedTopicsArr: string[] = [...followedTopics.split(',')];
+      followedTopicsArr.push(topic);
+      this.ndkProviderService.appData.followedTopics = [...new Set(followedTopicsArr)].join(','); //remove dupes
+    }
+    this.ndkProviderService.followedTopicsEmitter.emit(this.ndkProviderService.appData.followedTopics)
+    localStorage.setItem(Constants.FOLLOWEDTOPICS,this.ndkProviderService.appData.followedTopics);
+  }
+
+  unFollowTryZapddit(topic:string){
+    let followedTopics:string = this.ndkProviderService.appData.followedTopics;
+    if (this.ndkProviderService.appData.followedTopics === '') {
+      return;
+    } else {
+      //parse current followedTopics as array
+      let followedTopicsArr: string[] = [...followedTopics.split(',')];
+      followedTopicsArr = followedTopicsArr.filter(i=>i!==topic);
+      this.ndkProviderService.appData.followedTopics = [...new Set(followedTopicsArr)].join(','); //remove dupes
+      this.ndkProviderService.followedTopicsEmitter.emit(this.ndkProviderService.appData.followedTopics)
+      localStorage.setItem(Constants.FOLLOWEDTOPICS,this.ndkProviderService.appData.followedTopics);
+    }
+  }
+
+  muteTryZapddit(topic:string){
+    let mutedTopics:string = this.ndkProviderService.appData.mutedTopics;
+    if (this.ndkProviderService.appData.mutedTopics === '') {
+      mutedTopics = topic.toLowerCase();
+    } else {
+      //parse current mutedTopics as array
+      let mutedTopicsArr: string[] = [...mutedTopics.split(',')];
+      mutedTopicsArr.push(topic);
+      this.ndkProviderService.appData.mutedTopics = [...new Set(mutedTopicsArr)].join(','); //remove dupes
+    }
+    this.ndkProviderService.mutedTopicsEmitter.emit(this.ndkProviderService.appData.mutedTopics)
+    localStorage.setItem(Constants.MUTEDTOPICS,this.ndkProviderService.appData.mutedTopics);
+  }
+
+  unmuteTryZapddit(topic:string){
+    let mutedTopics:string = this.ndkProviderService.appData.mutedTopics;
+    if (this.ndkProviderService.appData.mutedTopics === '') {
+      return;
+    } else {
+      //parse current mutedTopics as array
+      let mutedTopicsArr: string[] = [...mutedTopics.split(',')];
+      mutedTopicsArr = mutedTopicsArr.filter(i=>i!==topic);
+      this.ndkProviderService.appData.mutedTopics = [...new Set(mutedTopicsArr)].join(','); //remove dupes
+      this.ndkProviderService.mutedTopicsEmitter.emit(this.ndkProviderService.appData.mutedTopics)
+      localStorage.setItem(Constants.MUTEDTOPICS,this.ndkProviderService.appData.mutedTopics);
+    }
+  }
 }
