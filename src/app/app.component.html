@@ -59,7 +59,7 @@
       </label>
       <div class="nav-divider" *ngIf="!sidebarCollapsed"></div>
 
-      <a title="My Feed" clrVerticalNavLink routerLink="/login" routerLinkActive="active">
+      <a *ngIf="ndkProvider.isTryingZapddit" title="My Feed" clrVerticalNavLink routerLink="/login" routerLinkActive="active">
         <cds-icon shape="key" clrVerticalNavIcon></cds-icon><span class="nav-text">Login</span>
       </a>
       <a title="My Feed" clrVerticalNavLink routerLink="/feed" routerLinkActive="active">

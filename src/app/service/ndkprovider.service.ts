@@ -386,18 +386,17 @@ export class NdkproviderService {
         console.log('Error in connecting NDK ' + e);
       }
     }
-    if (!this.isTryingZapddit) {
-      await this.refreshAppData();
-    }
+    this.isTryingZapddit = false;
+    await this.refreshAppData();
+
     this.loggingIn = false;
     //once all setup is done, then only set loggedIn=true to start rendering
     this.loggedIn = true;
     this.loginCompleteEmitter.emit(true);
 
-    if (!this.isTryingZapddit) {
-      this.fetchFollowersFromCache();
-      this.fetchMutedUsersFromCache();
-    }
+    this.fetchFollowersFromCache();
+    this.fetchMutedUsersFromCache();
+
 
     await this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.hexpubkey());
     
