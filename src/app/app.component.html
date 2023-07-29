@@ -23,6 +23,17 @@
       <a *ngIf="!darkTheme" href="javascript://" (click)="switchTheme()" class="nav-link" aria-label="theme">
         <cds-icon shape="moon" solid></cds-icon>
       </a>
+      <clr-dropdown>
+        <button class="nav-icon" clrDropdownTrigger aria-label="toggle settings menu">
+            <cds-icon shape="user"></cds-icon>
+            <cds-icon shape="angle" direction="down"></cds-icon>
+        </button>
+        <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+            <a *ngIf="ndkProvider.isTryingZapddit" routerLink="/login" clrDropdownItem>Login</a>
+            <a *ngIf="!ndkProvider.isTryingZapddit" routerLink="/profile" clrDropdownItem>Profile</a>
+            <a routerLink="/preferences" clrDropdownItem>Preferences</a>
+        </clr-dropdown-menu>
+    </clr-dropdown>
     </div>
   </clr-header>
   <div class="content-container">
@@ -48,7 +59,9 @@
       </label>
       <div class="nav-divider" *ngIf="!sidebarCollapsed"></div>
 
-      
+      <a title="My Feed" clrVerticalNavLink routerLink="/login" routerLinkActive="active">
+        <cds-icon shape="key" clrVerticalNavIcon></cds-icon><span class="nav-text">Login</span>
+      </a>
       <a title="My Feed" clrVerticalNavLink routerLink="/feed" routerLinkActive="active">
         <cds-icon shape="home" clrVerticalNavIcon></cds-icon><span class="nav-text">My Feed</span>
       </a>
@@ -58,8 +71,8 @@
       <a title="Preferences" clrVerticalNavLink routerLink="/preferences" routerLinkActive="active">
         <cds-icon  shape="cog" clrVerticalNavIcon></cds-icon><span class="nav-text">Preferences</span>
       </a>
-      <a title="{{ndkProvider.isTryingZapddit ? 'Clear & Reset' : 'Logout'}}" clrVerticalNavLink href="#" (click)="logout()">
-        <cds-icon shape="logout" clrVerticalNavIcon></cds-icon><span class="nav-text">{{ndkProvider.isTryingZapddit ? 'Clear & Reset' : 'Logout'}}</span>
+      <a title="{{ndkProvider.isTryingZapddit ? 'Reset Data' : 'Logout'}}" clrVerticalNavLink href="#" (click)="logout()">
+        <cds-icon shape="logout" clrVerticalNavIcon></cds-icon><span class="nav-text">{{ndkProvider.isTryingZapddit ? 'Reset Data' : 'Logout'}}</span>
       </a>
       <div class="nav-divider"></div>
       <label class="nav-header" *ngIf="!sidebarCollapsed">        
@@ -77,16 +90,19 @@
         <cds-icon shape="flag" clrVerticalNavIcon></cds-icon><span class="nav-text">Moderating</span>
       </a>
       <div class="nav-divider"></div>
-      <label class="nav-header"*ngIf="!sidebarCollapsed">Followed Topics</label>
+      <label class="nav-header"*ngIf="!sidebarCollapsed && followedTopics && followedTopics.length > 0">Followed Topics</label>
       <app-topic *ngFor="let topic of followedTopics" [topic]="topic" [isMobileScreen]="isMobileScreen" [sidebarCollapsed]="sidebarCollapsed"></app-topic>     
     </clr-vertical-nav>
     <div class="content-area">
       <div *ngIf="isLoggedIn(); else notloggedin">
-
         <router-outlet></router-outlet>
       </div>
       <ng-template #notloggedin>
-        <app-login-page></app-login-page>
+        <div align="center">
+          <span class="spinner">
+            Loading...
+          </span>
+        </div>        
       </ng-template>
     </div>
   </div>

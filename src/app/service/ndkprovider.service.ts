@@ -68,6 +68,7 @@ export class NdkproviderService {
   loggedIn: boolean = false;
   loggingIn: boolean = false;
   loginError: string | undefined;
+  loginCompleteEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   followedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
   followedCommunitiesEmitter: EventEmitter<string> = new EventEmitter<string>();
   peopleIFollowEmitter: NDKSubscription | undefined;
@@ -94,8 +95,7 @@ export class NdkproviderService {
     if (tryingZapddit && tryingZapddit == 'true') {
       this.startWithUnauthSession();
     } else {
-      if (npubFromLocal && npubFromLocal !== '') {
-        // we can login as the login has already happened
+      if (npubFromLocal && npubFromLocal !== '') {// we can login as the login has already happened
         if (privateKey && privateKey !== '') {
           this.isNip07 = false;
           this.isLoggedInUsingNsec = true;
@@ -112,6 +112,8 @@ export class NdkproviderService {
           }
           this.tryLoginUsingNpub(npubFromLocal);
         }
+      } else {
+        this.startWithUnauthSession()
       }
     }
   }
@@ -120,6 +122,7 @@ export class NdkproviderService {
     return new NDKEvent(this.ndk);
   }
 
+
   private async startWithUnauthSession() {
     this.loggingIn = true;
     this.canWriteToNostr = false;
@@ -127,9 +130,9 @@ export class NdkproviderService {
     const followedTopicsFromLocal = localStorage.getItem(Constants.FOLLOWEDTOPICS);
     const mutedTopicsFromLocal = localStorage.getItem(Constants.MUTEDTOPICS);
     const communitiesFromLocal = localStorage.getItem(Constants.FOLLOWEDCOMMUNITIES)
-    this.appData.followedTopics = followedTopicsFromLocal!;
-    this.appData.mutedTopics = mutedTopicsFromLocal!;
-    this.appData.followedCommunities = communitiesFromLocal!;
+    this.appData.followedTopics = followedTopicsFromLocal || '';
+    this.appData.mutedTopics = mutedTopicsFromLocal || '';
+    this.appData.followedCommunities = communitiesFromLocal || '';
     console.log(this.appData.followedTopics);
     this.followedTopicsEmitter.emit(this.appData.followedTopics);
     this.mutedTopicsEmitter.emit(this.appData.mutedTopics);
@@ -143,6 +146,7 @@ export class NdkproviderService {
     await this.ndk.connect(1000);
     this.loggedIn = true;
     this.loggingIn = false;
+    this.loginCompleteEmitter.emit(true);
   }
 
   attemptLoginUsingPrivateOrPubKey(enteredKey: string) {
@@ -155,11 +159,13 @@ export class NdkproviderService {
         this.signer.user().then(user => {
           localStorage.setItem(Constants.PRIVATEKEY, hexPrivateKey);
           localStorage.setItem(Constants.NPUB, user.npub);
+          this.isTryingZapddit = false;
           this.isLoggedInUsingNsec = true;
           this.canWriteToNostr = true;
           this.tryLoginUsingNpub(user.npub);
         });
       } else if (enteredKey.startsWith('npub')) {
+        this.isTryingZapddit = false;
         localStorage.setItem(Constants.NPUB, enteredKey);
         localStorage.setItem(Constants.LOGGEDINUSINGPUBKEY, 'true');
         this.isLoggedInUsingPubKey$.next(true);
@@ -214,6 +220,7 @@ export class NdkproviderService {
   attemptToGenerateNewCredential() {
     const newCredential: NewCredential = LoginUtil.generateNewCredential();
     this.attemptLoginUsingPrivateOrPubKey(newCredential.privateKey);
+    this.launchOnboardingWizard.emit(true);
   }
 
   async attemptToTryUnauthenticated() {
@@ -228,6 +235,7 @@ export class NdkproviderService {
     });
     await this.ndk.connect(1000);
     this.loggedIn = true;
+    this.loginCompleteEmitter.emit(true);
     this.launchOnboardingWizard.emit(true);
   }
 
@@ -384,6 +392,7 @@ export class NdkproviderService {
     this.loggingIn = false;
     //once all setup is done, then only set loggedIn=true to start rendering
     this.loggedIn = true;
+    this.loginCompleteEmitter.emit(true);
 
     if (!this.isTryingZapddit) {
       this.fetchFollowersFromCache();
@@ -391,6 +400,7 @@ export class NdkproviderService {
     }
 
     await this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.hexpubkey());
+    
   }
 
   isLoggedIn(): boolean {

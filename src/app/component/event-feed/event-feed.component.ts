@@ -137,6 +137,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
         const self = this;
         this.ndkProvider.getCommunityDetails(`34550:${communityCreatorHexKey}:${communityName}`).then((community)=>{
           self.community = community;
+          self.feedType = FeedType.COMMUNITIES_FEED
           self.populateCommunityAuthorProfile();
           self.loadingCommunityDetails = false;
           self.until = Date.now();

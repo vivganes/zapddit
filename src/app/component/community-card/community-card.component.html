@@ -39,4 +39,4 @@
         </div>
     </div>
 </div>
-<app-create-community [show]="showEditCommunity" (onEditComplete)="editFinished($event)" (onClose)="popupClosed($event)"  [newCommunity]="community" [editMode]="true"></app-create-community>
+<app-create-community *ngIf="ndkProvider.canWriteToNostr" [show]="showEditCommunity" (onEditComplete)="editFinished($event)" (onClose)="popupClosed($event)"  [newCommunity]="community" [editMode]="true"></app-create-community>

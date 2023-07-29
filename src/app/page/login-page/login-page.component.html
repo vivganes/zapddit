@@ -6,7 +6,7 @@
   </div>
 </div>
 
-<div *ngIf="!ndkProvider.loggingIn && !ndkProvider.loggedIn" class="clr-row clr-justify-content-center">
+<div *ngIf="!ndkProvider.loggingIn" class="clr-row clr-justify-content-center">
   <div class="clr-col-12 clr-col-md-8">
     <div class="clr-row">
       <div class="clr-col-lg-6 clr-col-12">
@@ -20,7 +20,7 @@
                 <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank">this
                   page</a>
               </p>
-              <p><button *ngIf="!ndkProvider.loggedIn" [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
+              <p><button [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
                 (click)="attemptLoginWithNip07()">Login with NIP-07
               </button></p>
             </div>
@@ -74,7 +74,7 @@
               <p>
                 You can use the same account in all the nostr clients.
               </p>
-              <p><button *ngIf="!ndkProvider.loggedIn" [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
+              <p><button [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
                 (click)="attemptGenerateNewCredential()">Create new nostr user
               </button></p>
             </div>
@@ -94,7 +94,7 @@
               <p>
                 All your settings are saved within browser's local storage and cleared when you logout.
               </p>         
-              <p><button *ngIf="!ndkProvider.loggedIn" [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
+              <p><button [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
                 (click)="attemptLoginWithoutAccount()">Try without an account
               </button></p>
             </div>

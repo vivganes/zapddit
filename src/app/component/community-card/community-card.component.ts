@@ -18,12 +18,13 @@ export class CommunityCardComponent {
   showEditCommunity:boolean = false;
   currentUserHexKey?:string;
   joinOrLeaveInProgress:boolean = false;
+  ndkProvider:NdkproviderService;
 
   @Output()
   onLeave:EventEmitter<Community> = new EventEmitter<Community>();
 
-  constructor(private ndkProvider:NdkproviderService, private router:Router, private communityService: CommunityService){
-
+  constructor(ndkProvider:NdkproviderService, private router:Router, private communityService: CommunityService){
+    this.ndkProvider = ndkProvider;
   }
 
   ngOnInit(){

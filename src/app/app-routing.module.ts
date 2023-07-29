@@ -6,11 +6,13 @@ import { PreferencesPageComponent } from './component/preferences-page/preferenc
 import { PeopleIFollowComponent } from './component/peopleifollow/peopleifollow.component';
 import { ProfileComponent } from './component/profile/profile.component';
 import { CommunityListComponent } from './page/community-list/community-list.component';
+import { LoginPageComponent } from './page/login-page/login-page.component';
 
 const routes: Routes = [
   { path: 't/:topic', component: EventFeedComponent },
+  { path: 'login', component: LoginPageComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: 'n/:noteid', component: SinglePostComponent },
+  { path: 'n/:noteid', component: SinglePostComponent },  
   { path: '',   redirectTo: '/feed', pathMatch: 'full' }, // redirect to `first-component`
   { path: 'preferences', component: PreferencesPageComponent},
   { path: 'feed', component: EventFeedComponent },
