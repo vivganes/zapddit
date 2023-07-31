@@ -7,6 +7,7 @@ import { ZappeditdbService } from '../../service/zappeditdb.service';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import Uploader from 'src/app/util/Uploader';
 import { Community } from 'src/app/model/community';
+import { ObjectCacheService } from 'src/app/service/object-cache.service';
 
 const HASHTAG_REGEX=/(#[^\s!@#$%^&*()=+.\/,\[{\]};:'"?><]+)/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
@@ -52,7 +53,7 @@ export class NoteComposerComponent {
   uploadError?: string;
   private searchTermStream = new Subject<string>();
 
-  constructor(private ndkProvider: NdkproviderService, private db: ZappeditdbService){
+  constructor(private ndkProvider: NdkproviderService, private objectCache:ObjectCacheService){
 
   }
 
@@ -88,12 +89,13 @@ export class NoteComposerComponent {
     if (!term) {
       return [];
     }
-    let usersFromCache = await this.db.peopleIFollow.toArray()
+    let usersFromCache = await this.objectCache.users.toArray();
     let filteredUsersFromCache = usersFromCache.filter((user:User)=>{
       return user.displayName?.toLocaleLowerCase().startsWith(term)
       || user.name?.toLocaleLowerCase().startsWith(term)
       || user.npub?.toLocaleLowerCase().startsWith(term)
     })
+    console.log("Result for " +term + " " +filteredUsersFromCache )
     return filteredUsersFromCache;
   }
 
