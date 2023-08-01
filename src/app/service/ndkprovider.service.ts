@@ -367,7 +367,9 @@ export class NdkproviderService {
 
     let relayUrls: string[] = [];
     userRelays.forEach(x => {
-      relayUrls.push(x.url)
+      if(x.url && x.url !== ''){
+        relayUrls.push(x.url)
+      }
     });
     localStorage.setItem(Constants.RELAYSUBS, relayUrls.join(','));
 
