@@ -2,7 +2,7 @@
 (inViewportAction)="onShowInViewPort($event)"
 >
     <div class="card">
-        <div class="card-img">
+        <div *ngIf= "showHeaderImage" class="card-img">
             <img *ngIf="community.image" (click)="openCommunityPage()" alt="Community image" src="{{ community.image }}"
             class="community-banner pointer-cursor" title="Browse n/{{community.name}}" />
         <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community.image == undefined"

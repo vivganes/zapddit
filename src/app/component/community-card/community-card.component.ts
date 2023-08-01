@@ -19,6 +19,7 @@ export class CommunityCardComponent {
   currentUserHexKey?:string;
   joinOrLeaveInProgress:boolean = false;
   ndkProvider:NdkproviderService;
+  showHeaderImage:boolean = false;
 
   @Output()
   onLeave:EventEmitter<Community> = new EventEmitter<Community>();
@@ -39,6 +40,7 @@ export class CommunityCardComponent {
 
   onShowInViewPort({ target, visible }: { target: Element; visible: boolean }): void{
     if(visible){
+      this.showHeaderImage=true;
       this.fetchFollowers();
     }
   }
