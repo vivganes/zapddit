@@ -1,23 +1,23 @@
 <div>
   <div>
     <h3 *ngIf="!showOnlyOwnedCommunities && !showOnlyJoinedCommunities && !showOnlyModeratingCommunities" align="center">
-        <cds-icon shape="users" size="lg" solid="true"></cds-icon> Recently Created Communities <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
-            <cds-icon shape="plus-circle"></cds-icon> New Community
+        <cds-icon shape="users" size="lg" solid="true"></cds-icon> <ng-container i18n>Recently Created Communities </ng-container><button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
+            <cds-icon shape="plus-circle"></cds-icon> <ng-container i18n>New Community</ng-container>
         </button>
     </h3>
     <h3 *ngIf="showOnlyOwnedCommunities" align="center">
-        <cds-icon shape="users" size="lg" solid="true"></cds-icon> Communities you created <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
-            <cds-icon shape="plus-circle"></cds-icon> New Community
+        <cds-icon shape="users" size="lg" solid="true"></cds-icon> <ng-container i18n>Communities you created</ng-container> <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
+            <cds-icon shape="plus-circle"></cds-icon> <ng-container i18n>New Community</ng-container>
         </button>
     </h3>
     <h3 *ngIf="showOnlyJoinedCommunities" align="center">
-        <cds-icon shape="users" size="lg" solid="true"></cds-icon> Communities you joined <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
-            <cds-icon shape="plus-circle"></cds-icon> New Community
+        <cds-icon shape="users" size="lg" solid="true"></cds-icon> <ng-container i18n>Communities you joined </ng-container><button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
+            <cds-icon shape="plus-circle"></cds-icon> <ng-container i18n>New Community</ng-container>
         </button>
     </h3>
     <h3 *ngIf="showOnlyModeratingCommunities" align="center">
-        <cds-icon shape="users" size="lg" solid="true"></cds-icon> Communities you moderate <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
-            <cds-icon shape="plus-circle"></cds-icon> New Community
+        <cds-icon shape="users" size="lg" solid="true"></cds-icon> <ng-container i18n>Communities you moderate </ng-container><button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
+            <cds-icon shape="plus-circle"></cds-icon> <ng-container i18n>New Community</ng-container>
         </button>
     </h3>
   </div>  
@@ -26,7 +26,7 @@
     <div class="clr-col-md-3 clr-col-10">
         <form class="search"  onsubmit="return false;">
             <label for="search_input_mobile">
-                <input clrInput id="search_input" type="search"  placeholder="🔎︎ Search..." [(ngModel)]="searchTerm" 
+                <input clrInput id="search_input" type="search"  i18n-placeholder placeholder="🔎︎ Search..." [(ngModel)]="searchTerm" 
                 name="search_input" (ngModelChange)="onSearchTermChange()">
             </label>
         </form>
@@ -35,15 +35,15 @@
 <div class="clr-row clr-justify-content-center">
     <div *ngIf="loadingEvents" class="clr-col-12">
         <div class="event-loading-spinner clr-justify-content-center">
-            <span class="spinner spinner-md">Loading communities...</span>
+            <span class="spinner spinner-md"><ng-container i18n>Loading communities...</ng-container></span>
         </div>
     </div>
 
     <div *ngIf="!(loadingEvents) && communities?.length === 0" class="clr-row page-center">
         <div class="alert-items">
             <div class="alert-item static clr-justify-content-center">
-                <span *ngIf="!showOnlyOwnedCommunities" class="alert-text">No communities at all. Fishy!</span>
-                <span *ngIf="showOnlyOwnedCommunities" class="alert-text">You have not created any community so far.</span>
+                <span *ngIf="!showOnlyOwnedCommunities" class="alert-text"><ng-container i18n>No communities at all. Fishy!</ng-container></span>
+                <span *ngIf="showOnlyOwnedCommunities" class="alert-text"><ng-container i18n>You have not created any community so far.</ng-container></span>
             </div>
         </div>
     </div>

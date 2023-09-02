@@ -4,19 +4,19 @@
     <div class="card">
         <div *ngIf= "showHeaderImage" class="card-img">
             <img *ngIf="community.image" (click)="openCommunityPage()" alt="Community image" src="{{ community.image }}"
-            class="community-banner pointer-cursor" title="Browse n/{{community.name}}" />
+            class="community-banner pointer-cursor" i18n-title title="Browse n/{{community.name}}" />
         <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community.image == undefined"
             class="community-banner pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
-            title="Browse n/{{community.name}}" />
+            i18n-title title="Browse n/{{community.name}}" />
         </div>
         <div class="card-header">
             <span class="break-words-overflow"> n/{{community.name}} <span class="smaller-text">of </span></span>
             <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="Profile picture"
                 onerror="this.onerror=null; this.src='https\://robohash.org/unknown.png?size=100x100'"
-                src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="Open in Snort" />
+                src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" i18n-title title="Open in Snort" />
             <img alt="temp avatar" (click)="openCommunityCreatorInSnort()"
                 *ngIf="community?.creatorProfile?.image == undefined" class="community-image pointer-cursor"
-                src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100" title="Open in Snort" />
+                src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100" i18n-title title="Open in Snort" />
             <span class="break-words-overflow"> {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName :
             (community.creatorProfile?.name ? community.creatorProfile?.name : (community.creatorHexKey | abbreviateId))}}</span>
         </div>
@@ -32,10 +32,10 @@
             </div>
         </div>
         <div class="card-footer">
-            <button class="btn btn-sm btn-link" (click)="openCommunityPage()">Browse</button>
-            <button *ngIf="!followingNow" [clrLoading]="joinOrLeaveInProgress" class="btn btn-sm btn-link" (click)="joinCommunity()">Join</button>
-            <button *ngIf="followingNow" class="btn btn-sm btn-link" (click)="leaveCommunity()">Leave</button>
-            <button *ngIf="community.creatorHexKey === currentUserHexKey " class="btn btn-sm btn-link" (click)="showEditCommunity = true">Edit</button>
+            <button class="btn btn-sm btn-link" (click)="openCommunityPage()" i18n>Browse</button>
+            <button *ngIf="!followingNow" [clrLoading]="joinOrLeaveInProgress" class="btn btn-sm btn-link" (click)="joinCommunity()" i18n>Join</button>
+            <button *ngIf="followingNow" class="btn btn-sm btn-link" (click)="leaveCommunity()" i18n>Leave</button>
+            <button *ngIf="community.creatorHexKey === currentUserHexKey " class="btn btn-sm btn-link" (click)="showEditCommunity = true" i18n>Edit</button>
         </div>
     </div>
 </div>

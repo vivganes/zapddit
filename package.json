@@ -49,6 +49,7 @@
     "@angular-devkit/build-angular": "^15.2.8",
     "@angular/cli": "~15.2.8",
     "@angular/compiler-cli": "^15.2.0",
+    "@angular/localize": "^15.2.9",
     "@types/debug": "^4.1.7",
     "@types/jasmine": "~4.3.0",
     "jasmine-core": "~4.5.0",

@@ -1,7 +1,7 @@
 <div *ngIf="ndkProvider.loggingIn" class="clr-row clr-justify-content-center">
   <div class="clr-col-12 clr-col-md-8">
     <div align="center" class="clr-row clr-justify-content-center">
-      <span class="spinner spinner-md">Logging in...</span>
+      <span class="spinner spinner-md" i18n>Logging in...</span>
     </div>
   </div>
 </div>
@@ -11,17 +11,17 @@
     <div class="clr-row">
       <div class="clr-col-lg-6 clr-col-12">
         <div class="card">
-          <h3 class="card-header">Secure Login (Recommended) 🔐</h3>
+          <h3 class="card-header"><ng-container i18n>Secure Login (Recommended)</ng-container> 🔐</h3>
           <div class="card-block">
-            <h4 class="card-title">NIP-07 Extension</h4>
+            <h4 class="card-title" i18n>NIP-07 Extension</h4>
             <div class="card-text">
               <p>
-                Secure login to zapddit requires a NIP-07 extension to work. Don't have a NIP-07 extension? Refer
-                <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank">this
+                <ng-container i18n>Secure login to zapddit requires a NIP-07 extension to work. Don't have a NIP-07 extension? Refer </ng-container>
+                <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank" i18n>this
                   page</a>
               </p>
               <p><button [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
-                (click)="attemptLoginWithNip07()">Login with NIP-07
+                (click)="attemptLoginWithNip07()" i18n>Login with NIP-07
               </button></p>
             </div>
           </div>
@@ -30,15 +30,15 @@
 
       <div class="clr-col-lg-6 clr-col-12">
         <div class="card">
-          <h3 class="card-header">Alternate Login 🗝️</h3>
+          <h3 class="card-header" i18n>Alternate Login 🗝️</h3>
           <div class="card-block">
-            <h4 class="card-title">Private/Public Key Login</h4>
+            <h4 class="card-title" i18n>Private/Public Key Login</h4>
             <div class="card-text">
               <form clrForm onsubmit="return false;">
                 <clr-input-container>
-                  <label>Key</label>
+                  <label i18n>Key</label>
                   <input clrInput autocomplete="current-password" type="password" required id="pkey">
-                  <clr-control-helper>Key starting with nsec(for read+write) or npub(read-only)</clr-control-helper>
+                  <clr-control-helper i18n>Key starting with nsec(for read+write) or npub(read-only)</clr-control-helper>
                 </clr-input-container>
                 <div *ngIf="ndkProvider.loginError" class="alert alert-danger" role="alert">
                   <div class="alert-items">
@@ -64,18 +64,18 @@
 
       <div class="clr-col-lg-6 clr-col-12">
         <div class="card">
-          <h3 class="card-header">New to nostr? 🙋‍♂️</h3>
+          <h3 class="card-header" i18n>New to nostr? 🙋‍♂️</h3>
           <div class="card-block">
-            <h4 class="card-title">Create a new user</h4>
+            <h4 class="card-title" i18n>Create a new user</h4>
             <div class="card-text">
-              <p>
+              <p i18n>
                 Zapddit runs on top of nostr.  Click the button below to create a new user on the nostr ecosystem.
               </p>
-              <p>
+              <p i18n>
                 You can use the same account in all the nostr clients.
               </p>
               <p><button [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
-                (click)="attemptGenerateNewCredential()">Create new nostr user
+                (click)="attemptGenerateNewCredential()" i18n>Create new nostr user
               </button></p>
             </div>
           </div>
@@ -84,18 +84,18 @@
 
       <div class="clr-col-lg-6 clr-col-12">
         <div class="card">
-          <h3 class="card-header">Try zapddit⚡</h3>
+          <h3 class="card-header" i18n>Try zapddit⚡</h3>
           <div class="card-block">
-            <h4 class="card-title">Not ready to use a nostr account yet?</h4>
+            <h4 class="card-title" i18n>Not ready to use a nostr account yet?</h4>
             <div class="card-text">
-              <p>
+              <p i18n>
                 You can have a clean lurker experience using this option.
               </p>     
-              <p>
+              <p i18n>
                 All your settings are saved within browser's local storage and cleared when you logout.
               </p>         
               <p><button [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
-                (click)="attemptLoginWithoutAccount()">Try without an account
+                (click)="attemptLoginWithoutAccount()" i18n>Try without an account
               </button></p>
             </div>
           </div>
@@ -105,9 +105,9 @@
     <div class="clr-row">
       <div class="clr-col-12">
         <div class="card card-block">
-          <h3 class="card-title">We are opensource!</h3>
+          <h3 class="card-title" i18n>We are opensource!</h3>
           <p class="card-text">
-             Find zapddit on <a href='https://github.com/vivganes/zapddit' target="_blank">Github</a>.  Found bugs? Raise them <a href='https://github.com/vivganes/zapddit/issues/new' target="_blank">here</a>.
+            <ng-container i18n>Find zapddit on </ng-container><a href='https://github.com/vivganes/zapddit' target="_blank" i18n>Github</a>.  <ng-container i18n>Found bugs? Raise them </ng-container><a href='https://github.com/vivganes/zapddit/issues/new' target="_blank" i18n>here</a>.
           </p>
       </div>
       </div>

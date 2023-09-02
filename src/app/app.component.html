@@ -9,12 +9,12 @@
     <div class="search_form">
       <form *ngIf="isLoggedIn()" class="search"  onsubmit="return false;">
         <label for="search_input">
-            <input id="search_input" type="text"  class="hashtag-search" placeholder="# Search hashtag ⏎" (keyup.enter)="search()">
+            <input id="search_input" type="text"  class="hashtag-search" i18n-placeholder placeholder="# Search hashtag ⏎" (keyup.enter)="search()">
         </label>
       </form>
     </div>
     <div class="header-actions">
-      <a *ngIf="isLoggedIn()" href="javascript://" (click)="openWizard()" class="nav-link" aria-label="setup" title="Onboarding Wizard">
+      <a *ngIf="isLoggedIn()" href="javascript://" (click)="openWizard()" class="nav-link" aria-label="setup" i18n-title title="Onboarding Wizard">
         <cds-icon shape="wand" solid></cds-icon>
       </a>
       <a *ngIf="darkTheme" href="javascript://" (click)="switchTheme()" class="nav-link" aria-label="theme">
@@ -29,9 +29,9 @@
             <cds-icon shape="angle" direction="down"></cds-icon>
         </button>
         <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-            <a *ngIf="ndkProvider.isTryingZapddit" routerLink="/login" clrDropdownItem>Login</a>
-            <a *ngIf="!ndkProvider.isTryingZapddit" routerLink="/profile" clrDropdownItem>Profile</a>
-            <a routerLink="/preferences" clrDropdownItem>Preferences</a>
+            <a *ngIf="ndkProvider.isTryingZapddit" routerLink="/login" clrDropdownItem i18n>Login</a>
+            <a *ngIf="!ndkProvider.isTryingZapddit" routerLink="/profile" clrDropdownItem i18n>Profile</a>
+            <a routerLink="/preferences" clrDropdownItem i18n>Preferences</a>
         </clr-dropdown-menu>
     </clr-dropdown>
     </div>
@@ -55,42 +55,42 @@
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile  && !ndkProvider.currentUserProfile?.displayName && !ndkProvider.currentUserProfile?.name && ndkProvider.currentUserNpub!=null">{{ ndkProvider.currentUserNpub.substring(0,14)+'...' }}</span>
           <span class="profile-name"  *ngIf="ndkProvider.currentUserProfile?.displayName">{{ ndkProvider.currentUserProfile?.displayName }}</span>
           <span class="profile-name" *ngIf="ndkProvider.currentUserProfile?.name">@{{ ndkProvider.currentUserProfile?.name }}</span>
-          <span *ngIf="isNip05Verified" title="Verified" class="badge badge-purple ml-5">✓ <span class="clr-sr-only">NIP-05 verified</span></span>
+          <span *ngIf="isNip05Verified" i18n-title title="Verified" class="badge badge-purple ml-5">✓ <span class="clr-sr-only" i18n>NIP-05 verified</span></span>
       </label>
       <div class="nav-divider" *ngIf="!sidebarCollapsed"></div>
 
-      <a *ngIf="ndkProvider.isTryingZapddit" title="My Feed" clrVerticalNavLink routerLink="/login" routerLinkActive="active">
-        <cds-icon shape="key" clrVerticalNavIcon></cds-icon><span class="nav-text">Login</span>
+      <a *ngIf="ndkProvider.isTryingZapddit" i18n-title title="My Feed" clrVerticalNavLink routerLink="/login" routerLinkActive="active">
+        <cds-icon shape="key" clrVerticalNavIcon></cds-icon><span class="nav-text" i18n>Login</span>
       </a>
-      <a title="My Feed" clrVerticalNavLink routerLink="/feed" routerLinkActive="active">
-        <cds-icon shape="home" clrVerticalNavIcon></cds-icon><span class="nav-text">My Feed</span>
+      <a i18n-title title="My Feed" clrVerticalNavLink routerLink="/feed" routerLinkActive="active">
+        <cds-icon shape="home" clrVerticalNavIcon></cds-icon><span class="nav-text" i18n>My Feed</span>
       </a>
-      <a title="Profile" *ngIf="!ndkProvider.isTryingZapddit" clrVerticalNavLink routerLink="/profile" routerLinkActive="active">
-        <cds-icon shape="user" clrVerticalNavIcon></cds-icon><span class="nav-text">Profile</span>
+      <a i18n-title title="Profile" *ngIf="!ndkProvider.isTryingZapddit" clrVerticalNavLink routerLink="/profile" routerLinkActive="active">
+        <cds-icon shape="user" clrVerticalNavIcon></cds-icon><span class="nav-text" i18n>Profile</span>
       </a>
-      <a title="Preferences" clrVerticalNavLink routerLink="/preferences" routerLinkActive="active">
-        <cds-icon  shape="cog" clrVerticalNavIcon></cds-icon><span class="nav-text">Preferences</span>
+      <a i18n-title title="Preferences" clrVerticalNavLink routerLink="/preferences" routerLinkActive="active">
+        <cds-icon  shape="cog" clrVerticalNavIcon></cds-icon><span class="nav-text" i18n>Preferences</span>
       </a>
-      <a title="{{ndkProvider.isTryingZapddit ? 'Reset Data' : 'Logout'}}" clrVerticalNavLink href="#" (click)="logout()">
+      <a i18n-title title="{{ndkProvider.isTryingZapddit ? 'Reset Data' :  'Logout'}}" clrVerticalNavLink href="#" (click)="logout()">
         <cds-icon shape="logout" clrVerticalNavIcon></cds-icon><span class="nav-text">{{ndkProvider.isTryingZapddit ? 'Reset Data' : 'Logout'}}</span>
       </a>
       <div class="nav-divider"></div>
       <label class="nav-header" *ngIf="!sidebarCollapsed">        
-        Communities <span class="label label-info">BETA</span></label>
-      <a title="Discover communities"  clrVerticalNavLink routerLink="/communities/discover" routerLinkActive="active">
-        <cds-icon shape="search" clrVerticalNavIcon></cds-icon><span class="nav-text">Discover</span>
+        <ng-container i18n>Communities </ng-container><span class="label label-info">BETA</span></label>
+      <a i18n-title title="Discover communities"  clrVerticalNavLink routerLink="/communities/discover" routerLinkActive="active">
+        <cds-icon shape="search" clrVerticalNavIcon></cds-icon><span class="nav-text" i18n>Discover</span>
       </a>
-      <a title="Joined communities" clrVerticalNavLink routerLink="/communities/joined" routerLinkActive="active">
-        <cds-icon shape="internet-of-things" clrVerticalNavIcon></cds-icon><span class="nav-text">Joined</span>
+      <a i18n-title title="Joined communities" clrVerticalNavLink routerLink="/communities/joined" routerLinkActive="active">
+        <cds-icon shape="internet-of-things" clrVerticalNavIcon></cds-icon><span class="nav-text" i18n>Joined</span>
       </a>
-      <a *ngIf="!ndkProvider.isTryingZapddit"  title="Communities created by me" clrVerticalNavLink routerLink="/communities/own" routerLinkActive="active">
-        <cds-icon shape="star" clrVerticalNavIcon></cds-icon><span class="nav-text">Created by me</span>
+      <a *ngIf="!ndkProvider.isTryingZapddit" i18n-title title="Communities created by me" clrVerticalNavLink routerLink="/communities/own" routerLinkActive="active">
+        <cds-icon shape="star" clrVerticalNavIcon></cds-icon><span class="nav-text" i18n>Created by me</span>
       </a>
-      <a *ngIf="!ndkProvider.isTryingZapddit" title="Moderating communities" clrVerticalNavLink routerLink="/communities/moderating" routerLinkActive="active">
-        <cds-icon shape="flag" clrVerticalNavIcon></cds-icon><span class="nav-text">Moderating</span>
+      <a *ngIf="!ndkProvider.isTryingZapddit" i18n-title title="Moderating communities" clrVerticalNavLink routerLink="/communities/moderating" routerLinkActive="active">
+        <cds-icon shape="flag" clrVerticalNavIcon></cds-icon><span class="nav-text" i18n>Moderating</span>
       </a>
       <div class="nav-divider"></div>
-      <label class="nav-header"*ngIf="!sidebarCollapsed && followedTopics && followedTopics.length > 0">Followed Topics</label>
+      <label class="nav-header"*ngIf="!sidebarCollapsed && followedTopics && followedTopics.length > 0" i18n>Followed Topics</label>
       <app-topic *ngFor="let topic of followedTopics" [topic]="topic" [isMobileScreen]="isMobileScreen" [sidebarCollapsed]="sidebarCollapsed"></app-topic>     
     </clr-vertical-nav>
     <div class="content-area">

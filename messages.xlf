@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="2572502584114442363" datatype="html">
+        <source># Search hashtag ⏎</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9175981895008355182" datatype="html">
+        <source>Onboarding Wizard</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2454050363478003966" datatype="html">
+        <source>Login</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4915431133669985304" datatype="html">
+        <source>Profile</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8951128623878467862" datatype="html">
+        <source>Preferences</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5014960004929658159" datatype="html">
+        <source>Verified</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3140321736945498325" datatype="html">
+        <source>NIP-05 verified</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3395371575745226500" datatype="html">
+        <source>My Feed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="187187500641108332" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ndkProvider.isTryingZapddit ? &apos;Reset Data&apos; :  &apos;Logout&apos;}}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2288012425960022276" datatype="html">
+        <source>Communities </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">79</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5344498851965440836" datatype="html">
+        <source>Discover communities</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7627544798203088407" datatype="html">
+        <source>Discover</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">81</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2270999729306978758" datatype="html">
+        <source>Joined communities</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">83</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5045572951005571111" datatype="html">
+        <source>Joined</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6106048580814541111" datatype="html">
+        <source>Communities created by me</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">86</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7347754545177118637" datatype="html">
+        <source>Created by me</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">87</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="570850924182105142" datatype="html">
+        <source>Moderating communities</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8455136381375466955" datatype="html">
+        <source>Moderating</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">90</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="481920726428058213" datatype="html">
+        <source>Followed Topics</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">93</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3848842373373346293" datatype="html">
+        <source>Browse n/<x id="INTERPOLATION" equiv-text="{{community.name}}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/community-card/community-card.component.html</context>
+          <context context-type="linenumber">7,8</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/community-card/community-card.component.html</context>
+          <context context-type="linenumber">10,11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5728112902227930565" datatype="html">
+        <source>Open in Snort</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/community-card/community-card.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/community-card/community-card.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="787163983066183218" datatype="html">
+        <source>Browse</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/community-card/community-card.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8307140841776883735" datatype="html">
+        <source>Join</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/community-card/community-card.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2273088133016853024" datatype="html">
+        <source>Leave</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/community-card/community-card.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7585826646011739428" datatype="html">
+        <source>Edit</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/community-card/community-card.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3079358425877471823" datatype="html">
+        <source>Recently Created Communities </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/community-list/community-list.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2551003300801313861" datatype="html">
+        <source>New Community</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/community-list/community-list.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/community-list/community-list.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/community-list/community-list.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/community-list/community-list.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8759690561953881910" datatype="html">
+        <source>Communities you created</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/community-list/community-list.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6260280235110651585" datatype="html">
+        <source>Communities you joined </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/community-list/community-list.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6179097933401094495" datatype="html">
+        <source>Communities you moderate </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/community-list/community-list.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6778387956640882693" datatype="html">
+        <source>🔎︎ Search...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/community-list/community-list.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7687622398945022213" datatype="html">
+        <source>Loading communities...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/community-list/community-list.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5314625273665012740" datatype="html">
+        <source>No communities at all. Fishy!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/community-list/community-list.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="939140484205749223" datatype="html">
+        <source>You have not created any community so far.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/community-list/community-list.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4155808857787573790" datatype="html">
+        <source>Logging in...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8404569649074559903" datatype="html">
+        <source>Secure Login (Recommended)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1506743874941122848" datatype="html">
+        <source>NIP-07 Extension</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4201369234175538853" datatype="html">
+        <source>Secure login to zapddit requires a NIP-07 extension to work. Don&apos;t have a NIP-07 extension? Refer </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4550930552179200130" datatype="html">
+        <source>this page</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">20,21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2067471764899751395" datatype="html">
+        <source>Login with NIP-07 </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">24,25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6363292842864749886" datatype="html">
+        <source>Alternate Login 🗝️</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1704125496598790230" datatype="html">
+        <source>Private/Public Key Login</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2176659033176029418" datatype="html">
+        <source>Key</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6742438470329423697" datatype="html">
+        <source>Key starting with nsec(for read+write) or npub(read-only)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8075784367865062337" datatype="html">
+        <source>New to nostr? 🙋‍♂️</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7166576115375994211" datatype="html">
+        <source>Create a new user</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6931392365803848018" datatype="html">
+        <source> Zapddit runs on top of nostr. Click the button below to create a new user on the nostr ecosystem. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">71,73</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6583481326168485062" datatype="html">
+        <source> You can use the same account in all the nostr clients. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">74,76</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5490041019707874143" datatype="html">
+        <source>Create new nostr user </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">78,79</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5928787653772101371" datatype="html">
+        <source>Try zapddit⚡</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">87</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6069147927452717395" datatype="html">
+        <source>Not ready to use a nostr account yet?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6404809784323058543" datatype="html">
+        <source> You can have a clean lurker experience using this option. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">91,93</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4058916993779847725" datatype="html">
+        <source> All your settings are saved within browser&apos;s local storage and cleared when you logout. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">94,96</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2546683332259022147" datatype="html">
+        <source>Try without an account </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">98,99</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4714137881940796737" datatype="html">
+        <source>We are opensource!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">108</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8140631240110122496" datatype="html">
+        <source>Find zapddit on </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3119797645194699699" datatype="html">
+        <source>Github</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4688292917687982206" datatype="html">
+        <source>Found bugs? Raise them </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="858192247408211331" datatype="html">
+        <source>here</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/page/login-page/login-page.component.html</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
