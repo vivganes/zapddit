@@ -6,21 +6,21 @@
         *ngIf="contact?.pictureUrl=== undefined"
         class="card-media-image pointer-cursor"
         src="https://robohash.org/{{ (contact?.name)?(contact?.name):'a' }}.png?size=100x100"
-        title="Open in Snort" (click)="openInSnort(contact)"/>
+        i18n-title title="Open in Snort" (click)="openInSnort(contact)"/>
         <div class="card-media-description">
           <div>
-            <span class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openInSnort(contact)"> <strong>{{ contact?.displayName }} </strong>@{{ contact?.name }} </span>
+            <span class="card-media-title break-anywhere-overflow pointer-cursor"  i18n-title title="Open in Snort" (click)="openInSnort(contact)"> <strong>{{ contact?.displayName }} </strong>@{{ contact?.name }} </span>
             <cds-icon shape="check-circle" solid clrverticalnavicon *ngIf="isNIP05Verified"></cds-icon>
-            <button class="btn btn-sm ml-10" [disabled]="eventInProgress"  (click)="unFollow(contact?.hexPubKey)" *ngIf="showFollow">
+            <button class="btn btn-sm ml-10" [disabled]="eventInProgress" i18n (click)="unFollow(contact?.hexPubKey)" *ngIf="showFollow">
               {{unfollowed?"Follow":"Unfollow"}}
             </button>
           </div>
-          <span class="card-media-meta break-anywhere-overflow"  title="Npub"><cds-icon shape="key" clrverticalnavicon class="nav-icon"></cds-icon> {{ contact?.npub}} </span>
+          <span class="card-media-meta break-anywhere-overflow" i18n-title title="Npub"><cds-icon shape="key" clrverticalnavicon class="nav-icon"></cds-icon> {{ contact?.npub}} </span>
           <span class="card-media-text break-anywhere-overflow"> {{ contact?.about }} </span>
         </div>
     </div>
     <div *ngIf="contactLoading" class="card-media-block">
-      <span class="spinner spinner-md">Loading profile...</span>
+      <span class="spinner spinner-md" i18n>Loading profile...</span>
     </div>
   </div>
 </div>
