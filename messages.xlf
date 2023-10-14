@@ -70,6 +70,14 @@
           <context context-type="sourcefile">src/app/app.component.html</context>
           <context context-type="linenumber">58</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">77</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="3395371575745226500" datatype="html">
         <source>My Feed</source>
@@ -196,12 +204,52 @@
           <context context-type="sourcefile">src/app/component/contact-card/contact-card.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">240</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/zapdialog/zapdialog.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="787163983066183218" datatype="html">
         <source>Browse</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/component/community-card/community-card.component.html</context>
           <context context-type="linenumber">35</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8307140841776883735" datatype="html">
@@ -259,12 +307,20 @@
           <context context-type="sourcefile">src/app/component/create-community/create-community.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="8953033926734869941" datatype="html">
         <source>Name</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/component/create-community/create-community.component.html</context>
           <context context-type="linenumber">27</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7634024705614143724" datatype="html">
@@ -321,6 +377,1056 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/component/create-community/create-community.component.html</context>
           <context context-type="linenumber">73,74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3221650255569627568" datatype="html">
+        <source> Loading moderator approvals... </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">7,8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7043553393455643719" datatype="html">
+        <source>UNAPPROVED NOTE</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3844531961725676090" datatype="html">
+        <source>Show anyways</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="476738099962703282" datatype="html">
+        <source>Community:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="913319780711669735" datatype="html">
+        <source>Community image</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="488424240050496615" datatype="html">
+        <source>temp community avatar</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4703848376604347254" datatype="html">
+        <source>Profile picture</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/user-pic-and-name/user-pic-and-name.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6485947133194370186" datatype="html">
+        <source>temp avatar</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/user-pic-and-name/user-pic-and-name.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7157252927991650449" datatype="html">
+        <source>This note is awaiting moderator approval</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2607565416406926368" datatype="html">
+        <source> Approve </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">39,40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7524447451832891431" datatype="html">
+        <source> Follow </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">62,63</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">83,84</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4680184347989147730" datatype="html">
+        <source> Unfollow </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">69,70</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">90,91</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3526205892584451052" datatype="html">
+        <source>image</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">119</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5329380463298953608" datatype="html">
+        <source>Media is not shown as per your preferences. Click the above image to see it. You can change this from preferences.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">127,128</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5738813800322689817" datatype="html">
+        <source> Show More </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">184,185</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4254006594111467514" datatype="html">
+        <source>Notes link copied!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">195</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2408486064684066182" datatype="html">
+        <source>Upvote</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">204</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3293909837525850046" datatype="html">
+        <source>Downvote</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">208</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8983335858779847150" datatype="html">
+        <source>Upzap</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">212</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="359709193637289796" datatype="html">
+        <source>Downzap</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">220</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8750183113573807847" datatype="html">
+        <source>Show Comments</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">222</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6002399199138617450" datatype="html">
+        <source>Hide Comments</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">227</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7419704019640008953" datatype="html">
+        <source>Share</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">231</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5937251202465808296" datatype="html">
+        <source>More</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">235</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5781342976787905112" datatype="html">
+        <source>Show approvers</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">239</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6784077628457069172" datatype="html">
+        <source>Copy Hex ID</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">241</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="422430813200111975" datatype="html">
+        <source>Copy note1 ID</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">242</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6298565071478694079" datatype="html">
+        <source>Approvals Received</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">265</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7131922858971659004" datatype="html">
+        <source>Approvers</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">267</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7727725929079930861" datatype="html">
+        <source>Note Content</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">269</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8720977247725652816" datatype="html">
+        <source>Ok</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/event-card/event-card.component.html</context>
+          <context context-type="linenumber">274</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="577881741354378060" datatype="html">
+        <source>Hey there 👋</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7700322091036996336" datatype="html">
+        <source>Welcome onboard 🫂</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8009173213530384085" datatype="html">
+        <source>I&apos;m zapddit, a topic-based nostr browser. Here, you follow topics, not people.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8782448495893373623" datatype="html">
+        <source>Travel with me, answering a few questions, while I set you up to enjoy the <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;label label-info&quot;&gt;"/>#zapddit<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>experience 🚀</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6880923933527007078" datatype="html">
+        <source>Click &apos;Next&apos; to begin.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5179670321297409626" datatype="html">
+        <source>First things first</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2573475975127480431" datatype="html">
+        <source>Backup your private key</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2418649931695519801" datatype="html">
+        <source>Click on the button below to copy your private key. Keep it in a safe place. Don&apos;t share this with anyone.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="758350520315631504" datatype="html">
+        <source>This is the key to access your nostr account across all clients.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8738732372986673558" datatype="html">
+        <source>Copy to clipboard</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">148</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/zapdialog/zapdialog.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="770690189551312516" datatype="html">
+        <source>Setup Profile</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8528259965513293198" datatype="html">
+        <source>Setup your profile</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2297688463310993102" datatype="html">
+        <source>Your Name</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2888440211212688757" datatype="html">
+        <source>Give yourself a cool name here...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1720417629363705658" datatype="html">
+        <source>This is how people will refer to you on the nostr ecosystem</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3020313957723002258" datatype="html">
+        <source>Follow list</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5700220980007536933" datatype="html">
+        <source>Who are you?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7467116841666388980" datatype="html">
+        <source>Select those that closely resemble you 👇</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1226788884256159801" datatype="html">
+        <source>I wish to start my day with a daily dose of nostr ☕</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3530509799430618445" datatype="html">
+        <source>I am a big news bug 📰</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">79</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6295126236169912589" datatype="html">
+        <source>I want memes! MEMES! 😆</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">83</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5897032175620877723" datatype="html">
+        <source>I am an ardent Bitcoin nerd 🤓</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">87</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6210407841063116619" datatype="html">
+        <source>I ❤️ food pictures 😋</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7875874080869164328" datatype="html">
+        <source>I like welcoming new users 🫂</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">95</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4155629128891810576" datatype="html">
+        <source>I need the hot goss about nostr clients 🧑‍💻</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">99</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7298009582074335389" datatype="html">
+        <source>Mute list</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">109</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9087893025233728969" datatype="html">
+        <source>What annoys you?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">113</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6730082740570462207" datatype="html">
+        <source>Choose the ones that gravely annoy you</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5422557328487307308" datatype="html">
+        <source>Bitcoin/Crypto Talk 🪙</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">119</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3266498292891303485" datatype="html">
+        <source>Weird stuff (like feet stuff) 🦶 </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">123</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3945385531783240186" datatype="html">
+        <source>Sports ⚽ </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">127</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="344136692687668621" datatype="html">
+        <source>Twitter / Bird app 🐔 </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">131</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5585516161284218841" datatype="html">
+        <source>Launch 🚀</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">141</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8630956160349088067" datatype="html">
+        <source>You are almost there!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">144</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6996341477991299416" datatype="html">
+        <source>Once you click <x id="START_BOLD_TEXT" ctype="x-b" equiv-text="&lt;b&gt;"/>Finish<x id="CLOSE_BOLD_TEXT" ctype="x-b" equiv-text="&lt;/b&gt;"/>, I will auto-follow the suggested topics below and auto-mute the topics listed at the end.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">145</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8566505865598729838" datatype="html">
+        <source>Don&apos;t worry! If you already have a zapddit setup, I won&apos;t mess it up. I won&apos;t unfollow or unmute any topic that you already followed or muted.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">152</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2560408125085469722" datatype="html">
+        <source>Topics to Follow</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">157</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4897061519275771451" datatype="html">
+        <source>Topics to Mute</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/onboarding-wizard/onboarding-wizard.component.html</context>
+          <context context-type="linenumber">166</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1128895613428133851" datatype="html">
+        <source> 🕸 People I follow </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/peopleifollow/peopleifollow.component.html</context>
+          <context context-type="linenumber">2,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5395760835669719505" datatype="html">
+        <source>You can see the people you follow here 👇</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/peopleifollow/peopleifollow.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8886467271514332833" datatype="html">
+        <source>Loading people you follow...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/peopleifollow/peopleifollow.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">150</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8793893741677971996" datatype="html">
+        <source>Not following anyone yet. May be try following some people?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/peopleifollow/peopleifollow.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">157</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="509636156182654184" datatype="html">
+        <source>like</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/peopleifollow/peopleifollow.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">157</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4227169311568615739" datatype="html">
+        <source> ⚙️ Preferences
+</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">2,3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5781893652393012687" datatype="html">
+        <source>Zaps ⚡</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7895288851136366312" datatype="html">
+        <source>Downzap Recipient&apos;s npub</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8846230257989291553" datatype="html">
+        <source>npub of the recipient</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1920449529497293651" datatype="html">
+        <source>npub of the person who will receive the sats for your downzaps</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3103789408080574980" datatype="html">
+        <source>Hide non-zap options for upvote and downvote</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5649522581288543361" datatype="html">
+        <source>#Hide Non Zap Reactions</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8474936763862137238" datatype="html">
+        <source>Enable this option to hide non-zap upvote and downvotes for notes and comments.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2310892233993226139" datatype="html">
+        <source>No. of sats for Zaps</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6826516935980151873" datatype="html">
+        <source>These many sats will be sent when you zap</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6910865064463105075" datatype="html">
+        <source>Communities</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7527697565546781403" datatype="html">
+        <source>Show unmoderated feed by default</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5607608932150736483" datatype="html">
+        <source>Never mind about moderator approvals. Show all notes.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7682941557477173794" datatype="html">
+        <source>Set Communities Feed as your default feed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5300344399809252397" datatype="html">
+        <source>Enable this option to see Communities by default when you go to &apos;My Feed&apos; page.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">95</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3457842803177135052" datatype="html">
+        <source>Muted Topics</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">103</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">117</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6241242223337359347" datatype="html">
+        <source>Hashtag to mute</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">107</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5717856739704867670" datatype="html">
+        <source>#Hashtag to mute</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">112</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2654280145284352799" datatype="html">
+        <source>Any post with this tag will not be shown by zapddit to you</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">113</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2494293689061559568" datatype="html">
+        <source>Mute</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6453471031802119612" datatype="html">
+        <source>Unmute</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">121</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5557038143352258420" datatype="html">
+        <source>No topics muted</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">124</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5128986372242099301" datatype="html">
+        <source>Media Display</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">129</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6050181604018412840" datatype="html">
+        <source>Enable this option to show media only from people you follow.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">138</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4354856922270049872" datatype="html">
+        <source>Backup Private Key</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">145</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7115558209444264618" datatype="html">
+        <source>You are not logged in using your private key. May be you have logged in using the NIP-07 extension or your public key.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">156</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8903953051138577142" datatype="html">
+        <source>My Relays</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">164</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="35944838171926867" datatype="html">
+        <source>unsubscribe</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">171</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3637945073659558487" datatype="html">
+        <source>read</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">173</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1135142783168803512" datatype="html">
+        <source>write</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">174</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4957250962707545576" datatype="html">
+        <source>Add Relay</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">183</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5790366199764779940" datatype="html">
+        <source>websocket url of the new relay</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">188</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2410070952945656233" datatype="html">
+        <source>Relay Settings</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">191</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2327592562693301723" datatype="html">
+        <source>Read</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">193</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2603482535677312633" datatype="html">
+        <source>Write</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">197</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3249513483374643425" datatype="html">
+        <source>Add</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/preferences-page/preferences-page.component.html</context>
+          <context context-type="linenumber">201</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5947540617080294665" datatype="html">
+        <source>🤓 Profile Details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="50970475773576746" datatype="html">
+        <source>npub</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4346949214603474601" datatype="html">
+        <source>Avatar URL</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8501653336129069665" datatype="html">
+        <source>Enter your new avatar url here...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6525109356951792180" datatype="html">
+        <source>Avatar</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6577646909514274018" datatype="html">
+        <source>New picture preview</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7797534522222914985" datatype="html">
+        <source>Invalid Picture URL</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9060785440572492647" datatype="html">
+        <source>Enter your display name here...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">77</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="43513258116485858" datatype="html">
+        <source>NIP05</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">83</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="837590627150602883" datatype="html">
+        <source>Enter your NIP05 address here...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1726363342938046830" datatype="html">
+        <source>About</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">96</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="59240346480204941" datatype="html">
+        <source>Give some information about yourself</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5481284030283031915" datatype="html">
+        <source>Website</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3120803418157442489" datatype="html">
+        <source>Enter your website url here...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">116</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2923718031631084989" datatype="html">
+        <source>LN Address</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">122</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6075135029417165703" datatype="html">
+        <source>Enter your LUD16 lightning address here...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">128</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3768927257183755959" datatype="html">
+        <source>Save</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">135</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4838293212606054756" datatype="html">
+        <source>🕸 People I Follow</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">145</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4526265934344329970" datatype="html">
+        <source>That&apos;s all!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">179</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">224</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">270</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8123848844729641708" datatype="html">
+        <source>🔇 People I Muted</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">190</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">235</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4577258985021731748" datatype="html">
+        <source>Loading people you muted...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">195</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">241</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3043004305306429825" datatype="html">
+        <source>Looks like you haven&apos;t muted anyone yet.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">202</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">248</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="33149636091572968" datatype="html">
+        <source>Load more</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/profile/profile.component.html</context>
+          <context context-type="linenumber">261</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7454034178211152288" datatype="html">
+        <source> Loading quoted event... </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/quoted-event/quoted-event.component.html</context>
+          <context context-type="linenumber">3,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7022070615528435141" datatype="html">
+        <source>Delete</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/user-pic-and-name/user-pic-and-name.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5430253050029009569" datatype="html">
+        <source>amount in sats</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/zapdialog/zapdialog.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7675915315209296486" datatype="html">
+        <source>Scan this QR using your Lightning Wallet app</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/zapdialog/zapdialog.component.html</context>
+          <context context-type="linenumber">70</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2464719807730549888" datatype="html">
+        <source>Open Wallet</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/zapdialog/zapdialog.component.html</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="397098723873502323" datatype="html">
+        <source>Done</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/component/zapdialog/zapdialog.component.html</context>
+          <context context-type="linenumber">89</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3079358425877471823" datatype="html">

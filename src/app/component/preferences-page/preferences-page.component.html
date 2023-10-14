@@ -1,20 +1,20 @@
-<h3 align="center">
+<h3 align="center" i18n>
     ⚙️ Preferences
 </h3>
 
 <clr-accordion class="mt-20" [clrAccordionMultiPanel]="true">
   <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
-    <clr-accordion-title>Zaps ⚡</clr-accordion-title>
+    <clr-accordion-title i18n>Zaps ⚡</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <clr-textarea-container>
-            <label>Downzap Recipient's npub</label>
+            <label i18n>Downzap Recipient's npub</label>
             <textarea clrTextarea
             [disabled]="!ndkProvider.canWriteToNostr"
             cols="50"
             id="downzap-recipients"
-            placeholder="npub of the recipient" >{{ ndkProvider.appData.downzapRecipients }}</textarea>
-            <clr-control-helper>npub of the person who will receive the sats for your downzaps</clr-control-helper>
+            i18n-placeholder placeholder="npub of the recipient" >{{ ndkProvider.appData.downzapRecipients }}</textarea>
+            <clr-control-helper i18n>npub of the person who will receive the sats for your downzaps</clr-control-helper>
         </clr-textarea-container>
 
 
@@ -48,22 +48,22 @@
     <form clrForm onsubmit="return false;">
       <clr-checkbox-container clrInline>
         <clr-checkbox-wrapper>
-          <label>{{'Hide non-zap options for upvote and downvote'}}</label>
+          <label i18n>Hide non-zap options for upvote and downvote</label>
           <input type="checkbox" [(ngModel)]="hideNonZapReactions" id="hide-non-zap" clrCheckbox
-          placeholder="#Hide Non Zap Reactions" (ngModelChange)="onHideNonZapChange($event)" name="hideNonZap" id="hideNonZap">
+          i18n-placeholder placeholder="#Hide Non Zap Reactions" (ngModelChange)="onHideNonZapChange($event)" name="hideNonZap" id="hideNonZap">
         </clr-checkbox-wrapper>
-        <clr-control-helper>Enable this option to hide non-zap upvote and downvotes for notes and comments.</clr-control-helper>
+        <clr-control-helper i18n>Enable this option to hide non-zap upvote and downvotes for notes and comments.</clr-control-helper>
       </clr-checkbox-container>
     </form>
     <form clrForm onsubmit="return false;">
       <clr-input-container>
-          <label>No. of sats for Zaps</label>
+          <label i18n>No. of sats for Zaps</label>
           <input clrInput
           [disabled]="isLoggedInUsingPubKey"
           type="number"
           id="sats-for-zaps"
           value="{{ ndkProvider.defaultSatsForZaps }}" >
-          <clr-control-helper>These many sats will be sent when you zap</clr-control-helper>
+          <clr-control-helper i18n>These many sats will be sent when you zap</clr-control-helper>
       </clr-input-container>
       <button [clrLoading]="settingDefaultSats" [disabled]="isLoggedInUsingPubKey"
        type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button>
@@ -72,27 +72,27 @@
   </clr-accordion-panel>
 
   <clr-accordion-panel>
-    <clr-accordion-title>Communities</clr-accordion-title>
+    <clr-accordion-title i18n>Communities</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <clr-checkbox-container clrInline>
           <clr-checkbox-wrapper>
-            <label>Show unmoderated feed by default</label>
+            <label i18n>Show unmoderated feed by default</label>
             <input type="checkbox" [(ngModel)]="showUnapprovedPosts" id="show-unapproved-posts" clrCheckbox
             (ngModelChange)="onShowUnapprovedChange($event)" name="showUnapproved" id="showUnapproved"/>
           </clr-checkbox-wrapper>
-          <clr-control-helper>Never mind about moderator approvals. Show all notes.</clr-control-helper>
+          <clr-control-helper i18n>Never mind about moderator approvals. Show all notes.</clr-control-helper>
         </clr-checkbox-container>
       </form>
 
       <form clrForm onsubmit="return false;">
         <clr-checkbox-container clrInline>
           <clr-checkbox-wrapper>
-            <label>{{'Set Communities Feed as your default feed'}}</label>
+            <label i18n>Set Communities Feed as your default feed</label>
             <input type="checkbox" [(ngModel)]="showCommunitiesFeedByDefault" id="default-communities-feed" clrCheckbox
             (ngModelChange)="onDefaultFeedChange($event)" name="default-communities-feed" id="default-communities-feed">
           </clr-checkbox-wrapper>
-          <clr-control-helper>Enable this option to see Communities by default when you go to 'My Feed' page.</clr-control-helper>
+          <clr-control-helper i18n>Enable this option to see Communities by default when you go to 'My Feed' page.</clr-control-helper>
         </clr-checkbox-container>
       </form>
     </clr-accordion-content>
@@ -100,32 +100,33 @@
 
 
   <clr-accordion-panel>
-    <clr-accordion-title>Muted Topics</clr-accordion-title>
+    <clr-accordion-title i18n>Muted Topics</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form *ngIf ="!isLoggedInUsingPubKey" clrForm onsubmit="return false;">
         <clr-input-container>
-            <label>Hashtag to mute</label>
+            <label i18n>Hashtag to mute</label>
             <input clrInput
             type="text"
             id="topic-to-mute"
+            i18n-placeholder
             placeholder="#Hashtag to mute">
-            <clr-control-helper>Any post with this tag will not be shown by zapddit to you</clr-control-helper>
+            <clr-control-helper i18n>Any post with this tag will not be shown by zapddit to you</clr-control-helper>
         </clr-input-container>
-        <button [clrLoading]="mutingTopic" type="submit" class="btn btn-primary" (click)="muteTopic()">Mute</button>
+        <button [clrLoading]="mutingTopic" type="submit" class="btn btn-primary" (click)="muteTopic()" i18n>Mute</button>
     </form>
-    <h4>Muted Topics</h4>
+    <h4 i18n>Muted Topics</h4>
     <div *ngIf="ndkProvider.appData.mutedTopics && ndkProvider.appData.mutedTopics !== ''">
       <p *ngFor="let topic of mutedTopics; ">
         #{{ topic }}
-        <cds-icon *ngIf="!isLoggedInUsingPubKey" class="trash-icon" status="danger" size="md" shape="trash"  title="Unmute" (click)="unmuteTopic(topic)"></cds-icon>
+        <cds-icon *ngIf="!isLoggedInUsingPubKey" class="trash-icon" status="danger" size="md" shape="trash" i18n-title title="Unmute" (click)="unmuteTopic(topic)"></cds-icon>
       </p>
     </div>
-    <p *ngIf ="!ndkProvider.appData.mutedTopics || ndkProvider.appData.mutedTopics === '' ">No topics muted</p>
+    <p *ngIf ="!ndkProvider.appData.mutedTopics || ndkProvider.appData.mutedTopics === '' " i18n>No topics muted</p>
     </clr-accordion-content>
   </clr-accordion-panel>
 
   <clr-accordion-panel>
-    <clr-accordion-title>Media Display</clr-accordion-title>
+    <clr-accordion-title i18n>Media Display</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <clr-checkbox-container clrInline>
@@ -134,17 +135,17 @@
             <input type="checkbox" [(ngModel)]="loadContentFromPeopleIFollow" id="load-media" clrCheckbox
             placeholder="#Load Media" (ngModelChange)="onMediaSettingChange($event)" name="loadContentFromPeopleIFollow" id="loadContentFromPeopleIFollow">
           </clr-checkbox-wrapper>
-          <clr-control-helper *ngIf="!ndkProvider.isTryingZapddit">Enable this option to show media only from people you follow.</clr-control-helper>
+          <clr-control-helper *ngIf="!ndkProvider.isTryingZapddit" i18n>Enable this option to show media only from people you follow.</clr-control-helper>
         </clr-checkbox-container>
     </form>
     </clr-accordion-content>
   </clr-accordion-panel>
 
   <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
-    <clr-accordion-title>Backup Private Key</clr-accordion-title>
+    <clr-accordion-title i18n>Backup Private Key</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form *ngIf ="ndkProvider.isLoggedInUsingNsec" clrForm onsubmit="return false;">
-          <button type="button" class="btn btn-primary" (click)="copyPrivateKey()">Copy to clipboard</button>
+          <button type="button" class="btn btn-primary" (click)="copyPrivateKey()" i18n>Copy to clipboard</button>
       </form>
       <div *ngIf ="!ndkProvider.isLoggedInUsingNsec" class="alert alert-warning" role="alert">
         <div class="alert-items">
@@ -152,7 +153,7 @@
                 <div class="alert-icon-wrapper">
                     <cds-icon class="alert-icon" shape="exclamation-triangle"></cds-icon>
                 </div>
-                <span class="alert-text">You are not logged in using your private key. May be you have logged in using the NIP-07 extension or your public key.</span>
+                <span class="alert-text" i18n>You are not logged in using your private key. May be you have logged in using the NIP-07 extension or your public key.</span>
             </div>
         </div>
       </div>
@@ -160,17 +161,17 @@
   </clr-accordion-panel>
 
   <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
-    <clr-accordion-title>My Relays</clr-accordion-title>
+    <clr-accordion-title i18n>My Relays</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <div *ngIf="this.relays && this.relays.length > 0">
           <ul class="list-unstyled">
             <ng-template ngFor let-item [ngForOf]="this.relays" let-i="index" >
               <li value="index" >
-                <cds-icon class="trash-icon" status="danger" size="sm" shape="trash" title="unsubscribe" (click)="this.removeRelay(item.name)"></cds-icon>
+                <cds-icon class="trash-icon" status="danger" size="sm" shape="trash" i18n-title title="unsubscribe" (click)="this.removeRelay(item.name)"></cds-icon>
                 <span>&nbsp;</span>
-                <cds-icon *ngIf="item.read" class="download-cloud" size="sm" shape="download-cloud" title="read"></cds-icon>
-                <cds-icon *ngIf="item.write" class="upload-cloud" size="sm" shape="upload-cloud" title="write"></cds-icon>
+                <cds-icon *ngIf="item.read" class="download-cloud" size="sm" shape="download-cloud" i18n-title title="read"></cds-icon>
+                <cds-icon *ngIf="item.write" class="upload-cloud" size="sm" shape="upload-cloud" i18n-title title="write"></cds-icon>
                 {{item.url}}
               </li>
             </ng-template>
@@ -179,25 +180,25 @@
       </form>
       <form *ngIf="!isLoggedInUsingPubKey" clrForm onsubmit="return false">
         <clr-input-container>
-          <label >Add Relay</label>
+          <label i18n>Add Relay</label>
           <input clrInput
             type="text"
             id="relay-to-add"
             placeholder="wss://relay.example.com" />
-          <clr-control-helper>websocket url of the new relay</clr-control-helper>
+          <clr-control-helper i18n>websocket url of the new relay</clr-control-helper>
         </clr-input-container>
         <clr-checkbox-container clrInline>
-          <label>Relay Settings</label>
+          <label i18n>Relay Settings</label>
           <clr-checkbox-wrapper>
-            <label>Read</label>
+            <label i18n>Read</label>
             <input type="checkbox" id="relay-read" name="relay-read" clrCheckbox checked />
           </clr-checkbox-wrapper>
           <clr-checkbox-wrapper>
-            <label>Write</label>
+            <label i18n>Write</label>
             <input type="checkbox" id="relay-write" name="relay-write" clrCheckbox checked />
           </clr-checkbox-wrapper>
         </clr-checkbox-container>
-        <button [clrLoading]="addingRelay" type="submit" class="btn btn-primary" (click)="addRelay()">Add</button>
+        <button [clrLoading]="addingRelay" type="submit" class="btn btn-primary" (click)="addRelay()" i18n>Add</button>
       </form>
     </clr-accordion-content>
   </clr-accordion-panel>

@@ -7,27 +7,27 @@
     <clr-wizard-button [type]="'finish'" (click)="acceptChoices()">Finish</clr-wizard-button>
 
     <clr-wizard-page>
-        <ng-template clrPageTitle>Hey there 👋</ng-template>
+        <ng-template clrPageTitle i18n>Hey there 👋</ng-template>
         <div class="card">
-            <h3 class="card-header">Welcome onboard 🫂</h3>
+            <h3 class="card-header" i18n>Welcome onboard 🫂</h3>
             <div class="card-block">
-                I'm <b>zapddit</b>, a topic-based nostr browser.  Here, you follow topics, not people.
-                <p>Travel with me, answering a few questions, while I set you up to enjoy the <span class="label label-info">#zapddit</span>experience 🚀</p>
-                <p>Click 'Next' to begin.</p>
+                <ng-container i18n>I'm zapddit, a topic-based nostr browser.  Here, you follow topics, not people.</ng-container>
+                <p i18n>Travel with me, answering a few questions, while I set you up to enjoy the <span class="label label-info">#zapddit</span>experience 🚀</p>
+                <p i18n>Click 'Next' to begin.</p>
             </div>                    
         </div>
     </clr-wizard-page>
 
     <clr-wizard-page *ngIf="ndkProvider.isNewToNostr">
-        <ng-template clrPageTitle>First things first</ng-template>
+        <ng-template clrPageTitle i18n>First things first</ng-template>
         <div class="clr-row">
             <div class="clr-col-12">
                 <div class="card">
-                    <h3 class="card-header">Backup your private key</h3>
+                    <h3 class="card-header" i18n>Backup your private key</h3>
                     <div class="card-block">
-                        Click on the button below to copy your private key. Keep it in a safe place.  Don't share this with anyone. 
-                        <p>This is the key to access your nostr account across all clients.</p>
-                        <button type="button" class="btn btn-primary" (click)="copyPrivateKey()">Copy to clipboard</button>
+                        <ng-container i18n>Click on the button below to copy your private key. Keep it in a safe place.  Don't share this with anyone.</ng-container> 
+                        <p i18n>This is the key to access your nostr account across all clients.</p>
+                        <button type="button" class="btn btn-primary" (click)="copyPrivateKey()" i18n>Copy to clipboard</button>
                     </div>                    
                 </div>
             </div>
@@ -35,22 +35,23 @@
     </clr-wizard-page>
 
     <clr-wizard-page *ngIf="ndkProvider.isNewToNostr">
-        <ng-template clrPageTitle>Setup Profile</ng-template>
+        <ng-template clrPageTitle i18n>Setup Profile</ng-template>
         <div class="clr-row">
             <div class="clr-col-12">
                 <div class="card">
-                    <h3 class="card-header">Setup your profile</h3>
+                    <h3 class="card-header" i18n>Setup your profile</h3>
                     <div class="card-block">
                         <form clrForm onsubmit="return false;">
                             <clr-input-container>
-                                <label>Your Name</label>
+                                <label i18n>Your Name</label>
                                 <input clrInput
                                 type="text"
                                 id="nostr-display-name"
                                 [(ngModel)]="newUserDisplayName"
+                                i18n-placeholder
                                 placeholder="Give yourself a cool name here..." 
                                 name="display-name">
-                                <clr-control-helper>This is how people will refer to you on the nostr ecosystem</clr-control-helper>
+                                <clr-control-helper i18n>This is how people will refer to you on the nostr ecosystem</clr-control-helper>
                             </clr-input-container>                           
                         </form>
                         
@@ -61,41 +62,41 @@
     </clr-wizard-page>
 
     <clr-wizard-page>
-        <ng-template clrPageTitle>Follow list</ng-template>
+        <ng-template clrPageTitle i18n>Follow list</ng-template>
         <div class="clr-row">
             <div class="clr-col-12">
                 <div class="card">
-                    <h3 class="card-header">Who are you?</h3>
+                    <h3 class="card-header" i18n>Who are you?</h3>
                     <div class="card-block">
-                        <h4 class="card-title">Select those that closely resemble you 👇</h4>
+                        <h4 class="card-title" i18n>Select those that closely resemble you 👇</h4>
                         <clr-checkbox-container>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="dailyDoseSeeker" [(ngModel)]="dailyDoseSeeker" (change)="updateTopics()" />
-                                <label>I wish to start my day with a daily dose of nostr ☕</label>
+                                <label i18n>I wish to start my day with a daily dose of nostr ☕</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="newsReader" [(ngModel)]="newsReader" (change)="updateTopics()" />
-                                <label>I am a big news bug 📰</label>
+                                <label i18n>I am a big news bug 📰</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="memeEnjoyer" [(ngModel)]="memeEnjoyer" (change)="updateTopics()" />
-                                <label>I want memes! MEMES! 😆</label>
+                                <label i18n>I want memes! MEMES! 😆</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="btcMaxi" [(ngModel)]="btcMaxi" (change)="updateTopics()"/>
-                                <label>I am an ardent Bitcoin nerd 🤓</label>
+                                <label i18n>I am an ardent Bitcoin nerd 🤓</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="foodLover" [(ngModel)]="foodLover" (change)="updateTopics()"/>
-                                <label>I ❤️ food pictures 😋</label>
+                                <label i18n>I ❤️ food pictures 😋</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="plebLover" [(ngModel)]="plebLover" (change)="updateTopics()"/>
-                                <label>I like welcoming new users 🫂</label>
+                                <label i18n>I like welcoming new users 🫂</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="clientsFan" [(ngModel)]="clientsFan" (change)="updateTopics()"/>
-                                <label>I need the hot goss about nostr clients 🧑‍💻</label>
+                                <label i18n>I need the hot goss about nostr clients 🧑‍💻</label>
                             </clr-checkbox-wrapper>
                           </clr-checkbox-container>
                     </div>                    
@@ -105,29 +106,29 @@
     </clr-wizard-page>
 
     <clr-wizard-page>
-        <ng-template clrPageTitle>Mute list</ng-template>
+        <ng-template clrPageTitle i18n>Mute list</ng-template>
         <div class="clr-row">
             <div class="clr-col-12">
                 <div class="card">
-                    <h3 class="card-header">What annoys you?</h3>
+                    <h3 class="card-header" i18n>What annoys you?</h3>
                     <div class="card-block">
-                        <h4 class="card-title">Choose the ones that gravely annoy you</h4>
+                        <h4 class="card-title" i18n>Choose the ones that gravely annoy you</h4>
                         <div class="card-text">
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="cryptoRepeller" [(ngModel)]="cryptoRepeller" (change)="updateMuteList()" />
-                                <label>Bitcoin/Crypto Talk 🪙</label>
+                                <label i18n>Bitcoin/Crypto Talk 🪙</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="weirdStuffRepeller" [(ngModel)]="weirdStuffRepeller" (change)="updateMuteList()" />
-                                <label>Weird stuff (like feet stuff) 🦶 </label>
+                                <label i18n>Weird stuff (like feet stuff) 🦶 </label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="nonSporter" [(ngModel)]="nonSporter" (change)="updateMuteList()" />
-                                <label>Sports ⚽ </label>
+                                <label i18n>Sports ⚽ </label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="twitterHater" [(ngModel)]="twitterHater" (change)="updateMuteList()" />
-                                <label>Twitter / Bird app 🐔 </label>
+                                <label i18n>Twitter / Bird app 🐔 </label>
                             </clr-checkbox-wrapper>
                         </div>
                     </div>                    
@@ -137,23 +138,23 @@
     </clr-wizard-page>
 
     <clr-wizard-page>
-        <ng-template clrPageTitle>Launch 🚀</ng-template>
+        <ng-template clrPageTitle i18n>Launch 🚀</ng-template>
         <div class="clr-row">
             <div class="clr-col-12">
-                <p>You are almost there!</p>
-                <p>Once you click <b>Finish</b>, I will auto-follow the suggested topics below and auto-mute the topics listed at the end.</p>
+                <p i18n>You are almost there!</p>
+                <p i18n>Once you click <b>Finish</b>, I will auto-follow the suggested topics below and auto-mute the topics listed at the end.</p>
                 <div *ngIf="!(ndkProvider.isNewToNostr || ndkProvider.isTryingZapddit)" class="alert alert-info" role="alert">
                     <div class="alert-items">
                         <div class="alert-item static">
                             <div class="alert-icon-wrapper">
                                 <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
                             </div>
-                            <span class="alert-text">Don't worry! If you already have a zapddit setup, I won't mess it up. I won't unfollow or unmute any topic that you already followed or muted.</span>
+                            <span class="alert-text" i18n>Don't worry! If you already have a zapddit setup, I won't mess it up. I won't unfollow or unmute any topic that you already followed or muted.</span>
                         </div>
                     </div>
                 </div>
                 <div class="card">
-                    <h4 class="card-header">Topics to Follow</h4>
+                    <h4 class="card-header" i18n>Topics to Follow</h4>
                     <div class="card-block">
                         <div class="card-text">
                             <span class="label label-info" *ngFor="let topic of suggestedTopics">#{{topic}}</span>
@@ -162,7 +163,7 @@
                 </div>
 
                 <div class="card">
-                    <h4 class="card-header">Topics to Mute</h4>
+                    <h4 class="card-header" i18n>Topics to Mute</h4>
                     <div class="card-block">
                         <div class="card-text">
                             <span class="label label-info" *ngFor="let topic of muteList">#{{topic}}</span>

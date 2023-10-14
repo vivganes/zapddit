@@ -3,90 +3,90 @@
     <p class="card-text"> <clr-spinner clrInline>
       Loading moderator approvals...
     </clr-spinner>
-    <span>
+    <span i18n>
       Loading moderator approvals...
     </span></p>
   </div>
 </div>
 
 <div class="hidden-card-message" *ngIf="!loadingApproval && !canModerate && !mutedAuthor && (showUnapprovedPosts?false:approvalEvents?.size===0)">
-  <span class="hidden-card-span">UNAPPROVED NOTE. <button class="btn btn-sm btn-inilne" (click)="showUnapprovedPosts = true">Show anyways</button> <br/>
-  <span *ngIf="!hideCommunityHeader"><b>Community:</b> n/{{community?.name}} by {{community?.creatorProfile?.displayName ? community?.creatorProfile?.displayName : (community?.creatorProfile?.name ? community?.creatorProfile?.name : community?.creatorHexKey | abbreviateId)}}</span>
+  <span class="hidden-card-span"><ng-container i18n>UNAPPROVED NOTE</ng-container>. <button class="btn btn-sm btn-inilne" (click)="showUnapprovedPosts = true" i18n>Show anyways</button> <br/>
+  <span *ngIf="!hideCommunityHeader"><b i18n>Community:</b> n/{{community?.name}} by {{community?.creatorProfile?.displayName ? community?.creatorProfile?.displayName : (community?.creatorProfile?.name ? community?.creatorProfile?.name : community?.creatorHexKey | abbreviateId)}}</span>
   </span>
 </div>
 
 <div class="card" *ngIf="!(!loadingApproval && !canModerate && !mutedAuthor && (showUnapprovedPosts?false:approvalEvents?.size===0))" #parent>
   <div *ngIf="community && !hideCommunityHeader" class="card-header note-community-header">
-    <img *ngIf="community?.image" (click)="openCommunityPage()" alt="Community image"
-        src="{{ community.image }}" class="community-image pointer-cursor" title="Browse" />
-    <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
+    <img *ngIf="community?.image" (click)="openCommunityPage()" i18n-alt alt="Community image"
+        src="{{ community.image }}" class="community-image pointer-cursor" i18n-title title="Browse" />
+    <img i18n-alt alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
         class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
-        title="Browse" />
+        i18n-title title="Browse" />
     <span class="break-words-overflow"> n/{{community.name}} <span class="smaller-text">of </span>
-    <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="Profile picture"
-        src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="Open in Snort" 
+    <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" i18n-alt alt="Profile picture"
+        src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" i18n-title title="Open in Snort" 
         onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'" />
-    <img alt="temp avatar" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
+    <img i18n-alt alt="temp avatar" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
         class="community-image pointer-cursor" src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100"
-        title="Open in Snort" />
+        i18n-title title="Open in Snort" />
     {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}
     </span>
   </div>
   <div class="card-header approval-header" *ngIf="!loadingApproval && canModerate && (!approvalEvents || approvalEvents?.size===0)">
     <span class="approval-header-text">
-      This note is awaiting moderator approval 
+      <ng-container i18n>This note is awaiting moderator approval</ng-container> 
       <button class="btn btn-sm btn-success"
-      (click)="approveNote()"> Approve
+      (click)="approveNote()" i18n> Approve
       </button>
     </span>
   </div>
   <div class="card-block"> 
     <div class="card-media-block">
-      <img *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" alt="Profile picture"
-        src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" title="Open in Snort" 
+      <img *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" i18n-alt alt="Profile picture"
+        src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" i18n-title title="Open in Snort" 
         onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'"/>
-      <img alt="temp avatar" (click)="openAuthorInSnort()" *ngIf="authorWithProfile?.profile?.image == undefined"
+      <img i18n-alt alt="temp avatar" (click)="openAuthorInSnort()" *ngIf="authorWithProfile?.profile?.image == undefined"
         class="card-media-image pointer-cursor" src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
-        title="Open in Snort" />
+        i18n-title title="Open in Snort" />
       <div class="card-media-description">
         <span *ngIf="authorWithProfile?.profile?.name || authorWithProfile?.profile?.displayName"
-          class="card-media-title break-words-overflow pointer-cursor bold-text" title="Open in Snort"
+          class="card-media-title break-words-overflow pointer-cursor bold-text" i18n-title title="Open in Snort"
           (click)="openAuthorInSnort()"> {{ (authorWithProfile?.profile?.displayName) ?
           authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name }}
-          <span *ngIf="isNIP05Verified" title="Verified" class="badge badge-purple">✓ <span class="clr-sr-only">NIP-05 verified</span></span>
+          <span *ngIf="isNIP05Verified" title="Verified" class="badge badge-purple">✓ <span class="clr-sr-only" i18n>NIP-05 verified</span></span>
           <span class="follow-ml8 card-media-title">
             <ng-template
               [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress"
-                (click)="follow($event)">
+                (click)="follow($event)" i18n>
                 Follow
               </button>
             </ng-template>
             <ng-template
               [ngIf]="amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress"
-                (click)="unFollow($event)">
+                (click)="unFollow($event)" i18n>
                 Unfollow
               </button>
             </ng-template>
           </span>
         </span>
         <span *ngIf="!authorWithProfile?.profile?.name && !authorWithProfile?.profile?.displayName"
-          class="card-media-title break-anywhere-overflow pointer-cursor" title="Open in Snort"
+          class="card-media-title break-anywhere-overflow pointer-cursor" i18n-title title="Open in Snort"
           (click)="openAuthorInSnort()"> {{ event?.pubkey | abbreviateId }}
-          <span *ngIf="isNIP05Verified" title="Verified" class="badge badge-purple">✓ <span class="clr-sr-only">NIP-05 verified</span></span>
+          <span *ngIf="isNIP05Verified" title="Verified" class="badge badge-purple">✓ <span class="clr-sr-only" i18n>NIP-05 verified</span></span>
           <span class="follow-ml8 card-media-title">
             <ng-template
               [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress"
-                (click)="follow($event)">
+                (click)="follow($event)" i18n>
                 Follow
               </button>
             </ng-template>
             <ng-template
               [ngIf]="amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress"
-                (click)="unFollow($event)">
+                (click)="unFollow($event)" i18n>
                 Unfollow
               </button>
             </ng-template>
@@ -116,7 +116,7 @@
       </div>
       <div class="clr-row clr-justify-content-center pt-10">
         <div class="clr-col-6" *ngIf="hasMedia() && !canLoadMedia" class="click-to-load">
-          <img alt="image" class="note-image" imageLoader (click)="clickToLoadMedia()" height="300px"
+          <img i18n-alt alt="image" class="note-image" imageLoader (click)="clickToLoadMedia()" height="300px"
             src="{{ '/assets/blur'+ blurImageId+'.png' }}" />
           <div align="center" class="alert alert-warning" role="alert">
             <div class="alert-items">
@@ -124,7 +124,7 @@
                 <div class="alert-icon-wrapper">
                   <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
                 </div>
-                <span class="alert-text">Media is not shown as per your preferences. Click the above image to see it.
+                <span class="alert-text" i18n>Media is not shown as per your preferences. Click the above image to see it.
                   You can change this from preferences.</span>
               </div>
             </div>
@@ -180,7 +180,7 @@
     </div>
     <div class="clr-row clr-justify-content-center clr-align-items-center">
       <div class="clr-col-12" align="center" *ngIf="displayShowMoreButton">
-        <button type="button" aria-label="Show More" (click)="showMore()" class="show-more-button btn btn-primary">
+        <button type="button" aria-label="Show More" (click)="showMore()" class="show-more-button btn btn-primary" i18n>
           Show More
         </button>
       </div>
@@ -192,7 +192,7 @@
             <div class="alert-icon-wrapper">
               <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
             </div>
-            <span class="alert-text">Notes link copied!</span>
+            <span class="alert-text" i18n>Notes link copied!</span>
           </div>
         </div>
       </div>
@@ -201,15 +201,15 @@
   <div *ngIf="!isQuotedEvent" class="card-footer">
     <button class="btn btn-sm btn-icon btn-link" *ngIf="!hideNonZapReactions" [disabled]="!ndkProvider.canWriteToNostr"
       (click)="publishLike()">
-      <cds-icon shape="arrow" solid="true"></cds-icon> {{ likes | shortNumber }} Upvote
+      <cds-icon shape="arrow" solid="true"></cds-icon> {{ likes | shortNumber }} <ng-container i18n>Upvote</ng-container>
     </button>
     <button class="btn btn-sm btn-icon btn-link" *ngIf="!hideNonZapReactions" [disabled]="!ndkProvider.canWriteToNostr"
       (click)="publishDislike()">
-      <cds-icon shape="arrow" solid="true" flip="vertical"></cds-icon> {{ dislikes | shortNumber }} Downvote
+      <cds-icon shape="arrow" solid="true" flip="vertical"></cds-icon> {{ dislikes | shortNumber }} <ng-container i18n>Downvote</ng-container>
     </button>
     <button class="btn btn-sm btn-icon btn-link" [clrLoading]="upzappingNow" [disabled]="!ndkProvider.canWriteToNostr"
       (click)="upZap()">
-      <cds-icon shape="bolt" direction="down"></cds-icon> {{ upZapTotalMilliSats/1000 | shortNumber }} Upzap
+      <cds-icon shape="bolt" direction="down"></cds-icon> {{ upZapTotalMilliSats/1000 | shortNumber }} <ng-container i18n>Upzap</ng-container>
     </button>
     <button class="btn btn-sm btn-icon btn-link" (click)="downZap()" [clrLoading]="downzappingNow"
       [disabled]="!ndkProvider.canWriteToNostr || !ndkProvider.appData.downzapRecipients" [title]="
@@ -217,29 +217,29 @@
           ? 'This deposits your downzap amounts to the configured Downzap recipients'
           : 'Setup your downzap recipient in the preferences to downzap notes.'
       ">
-      <cds-icon shape="bolt" direction="up"></cds-icon> {{ downZapTotalMilliSats/1000 | shortNumber }} Downzap
+      <cds-icon shape="bolt" direction="up"></cds-icon> {{ downZapTotalMilliSats/1000 | shortNumber }} <ng-container i18n>Downzap</ng-container>
     </button>
-    <button *ngIf="!showingComments" class="btn btn-sm btn-icon btn-link" title="Show Comments"
+    <button *ngIf="!showingComments" class="btn btn-sm btn-icon btn-link" i18n-title title="Show Comments"
       (click)="showComments()">
       <cds-icon shape="chat-bubble"></cds-icon> {{ replies.length>0 ? replies.length :'' }}
       Comment{{replies.length>1?'s':''}}
     </button>
-    <button *ngIf="showingComments" class="btn btn-sm btn-icon btn-link" title="Hide Comments" (click)="hideComments()">
+    <button *ngIf="showingComments" class="btn btn-sm btn-icon btn-link" i18n-title title="Hide Comments" (click)="hideComments()">
       <cds-icon shape="eye-hide"></cds-icon> {{ replies.length }} Comment{{replies.length==1?'':'s'}}
     </button>
     <button class="btn btn-sm btn-icon btn-link" (click)="share()">
-      <cds-icon shape="share"></cds-icon> Share
+      <cds-icon shape="share"></cds-icon> <ng-container i18n>Share</ng-container>
     </button>
     <clr-dropdown>
       <button class="btn btn-sm btn-outline-primary" clrDropdownTrigger>
-        More
+        <ng-container i18n>More</ng-container>
         <cds-icon shape="angle" direction="down"></cds-icon>
       </button>
       <clr-dropdown-menu clrPosition="top-left" *clrIfOpen>
-        <div *ngIf="approvedModHexIds.length>0" clrDropdownItem (click)="showingApprovers = true">Show approvers</div>
-        <div clrDropdownItem (click)="openInSnort()">Open in Snort</div>
-        <div clrDropdownItem (click)="copyNoteHexIdToClipboard()">Copy Hex ID</div>
-        <div *ngIf="!community" clrDropdownItem (click)="copyNote1IdToClipboard()">Copy note1 ID</div>
+        <div *ngIf="approvedModHexIds.length>0" clrDropdownItem (click)="showingApprovers = true" i18n>Show approvers</div>
+        <div clrDropdownItem (click)="openInSnort()" i18n>Open in Snort</div>
+        <div clrDropdownItem (click)="copyNoteHexIdToClipboard()" i18n>Copy Hex ID</div>
+        <div *ngIf="!community" clrDropdownItem (click)="copyNote1IdToClipboard()" i18n>Copy note1 ID</div>
       </clr-dropdown-menu>
     </clr-dropdown>
   </div>
@@ -262,15 +262,15 @@
   [imageUrl]="authorWithProfile?.profile?.image" *ngIf="showZapDialog" [show]="showZapDialog"
   (onClose)="onClose($event)" [event]="event" [eventHexId]="hexEventId" (onUpzapDone)="onUpzapComplete($event)" [type]="type"></app-zapdialog>
 <clr-modal [(clrModalOpen)]="showingApprovers" [clrModalSize]="'lg'">
-    <h3 class="modal-title">Approvals Received</h3>
+    <h3 class="modal-title" i18n>Approvals Received</h3>
     <div class="modal-body">
-        <h3>Approvers</h3>
+        <h3 i18n>Approvers</h3>
         <p *ngFor="let key of approvedModHexIds"><app-user-pic-and-name [hexKey]="key"></app-user-pic-and-name></p>
-        <h3>Note Content</h3>
+        <h3 i18n>Note Content</h3>
         <p>{{this.event?.content}}</p>
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="showingApprovers= false">Ok</button>
+        <button type="button" class="btn btn-primary" (click)="showingApprovers= false" i18n>Ok</button>
     </div>
 </clr-modal>

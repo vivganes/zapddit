@@ -1,29 +1,30 @@
 <div class="main-container pt-2">
   <clr-tabs #tabs>
   <clr-tab>
-      <button clrTabLink class="large-text">🤓 Profile Details</button>
+      <button clrTabLink class="large-text" i18n>🤓 Profile Details</button>
       <clr-tab-content *clrIfActive>
         <div class="clr-row pt-2">
           <div>
             <form clrForm #profileForm="ngForm" novalidate (keydown.enter)="$event.preventDefault()">
             <div class="clr-row profile-field">
-              <div class="clr-col-lg-6"><strong>npub</strong></div>
+              <div class="clr-col-lg-6"><strong i18n>npub</strong></div>
               <div class="clr-col-lg-6">{{npub}}</div>
             </div>            
             <div class="clr-row profile-field ml-4">
               <clr-input-container>
-              <label><strong>Avatar URL</strong></label>
+              <label><strong i18n>Avatar URL</strong></label>
               <input clrInput
                                 type="text"
                                 id="nostr-picture-url"
                                 [(ngModel)]="newPictureUrl"
                                 (ngModelChange)="updateNewPictureUrl($event)"
+                                i18n-placeholder
                                 placeholder="Enter your new avatar url here..."
                                 name="pictureUrl">
               </clr-input-container>
             </div>
             <div class="clr-row profile-field">
-              <div class="clr-col-lg-6 middle"><span class="text-vmiddle"><strong>Avatar</strong></span></div>
+              <div class="clr-col-lg-6 middle"><span class="text-vmiddle"><strong i18n>Avatar</strong></span></div>
               <div class="clr-col-lg-6 profile-pic">
               <img
                 *ngIf="user.image"
@@ -38,48 +39,53 @@
               </div>
             </div>
             <div class="clr-row profile-field"  *ngIf="showNewPicture">
-              <div class="clr-col-lg-6 middle"><span class="text-vmiddle"><strong>New picture preview</strong></span></div>
+              <div class="clr-col-lg-6 middle"><span class="text-vmiddle"><strong i18n>New picture preview</strong></span></div>
               <div class="clr-col-lg-6 profile-pic">
                 <img *ngIf="showNewPicture"
                 [src]="newPictureUrl"
                 class="avatar-image pointer-cursor"
+                i18n-alt
                 alt="Invalid Picture URL"/>
                 <img *ngIf="!showNewPicture"
                 src="https://images.unsplash.com/photo-1568879844413-7827cbf81261?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=20"
                 class="avatar-image"
+                i18n-alt
                 alt="Invalid Picture URL"/>
               </div>
             </div>
 
             <div class="clr-row profile-field ml-4">
               <clr-input-container>
-                <label><strong>Name</strong></label>
+                <label><strong i18n>Name</strong></label>
                 <input clrInput
                                 type="text"
                                 id="nostr-name"
                                 [(ngModel)]="user.name"
+                                i18n-placeholder
                                 placeholder="Give yourself a cool name here..."
                                 name="name" >
               </clr-input-container>
             </div>
             <div class="clr-row profile-field ml-4">
               <clr-input-container >
-              <label><strong>Display Name</strong></label>
+              <label><strong i18n>Display Name</strong></label>
               <input clrInput
                                 type="text"
                                 id="nostr-display-name"
                                 [(ngModel)]="user.displayName"
+                                i18n-placeholder
                                 placeholder="Enter your display name here..."
                                 name="displayName">
               </clr-input-container>
             </div>
             <div class="clr-row profile-field ml-4">
             <clr-input-container>
-              <label><strong>NIP05</strong></label>
+              <label><strong i18n>NIP05</strong></label>
               <input clrInput
                                 type="text"
                                 id="nostr-nip05"
                                 [(ngModel)]="user.nip05"
+                                i18n-placeholder
                                 placeholder="Enter your NIP05 address here..."
                                 name="nip05">
             </clr-input-container>
@@ -87,11 +93,12 @@
 
             <div class="clr-row profile-field ml-4">
               <clr-textarea-container>
-              <label><strong>About</strong></label>
+              <label><strong i18n>About</strong></label>
               <textarea clrTextarea
                                 class="about"
                                 id="nostr-about"
                                 [(ngModel)]="user.about"
+                                i18n-placeholder
                                 placeholder="Give some information about yourself"
                                 name="about" ></textarea>
 
@@ -100,22 +107,24 @@
 
             <div class="clr-row profile-field ml-4">
               <clr-input-container>
-                <label><strong>Website</strong></label>
+                <label><strong i18n>Website</strong></label>
                 <input clrInput
                                   type="text"
                                   id="nostr-website"
                                   [(ngModel)]="user.website"
+                                  i18n-placeholder
                                   placeholder="Enter your website url here..."
                                   name="website">
               </clr-input-container>
               </div>
               <div class="clr-row profile-field ml-4">
                 <clr-input-container>
-                  <label><strong>LN Address</strong></label>
+                  <label><strong i18n>LN Address</strong></label>
                   <input clrInput
                                     type="text"
                                     id="nostr-lud16"
                                     [(ngModel)]="user.lud16"
+                                    i18n-placeholder
                                     placeholder="Enter your LUD16 lightning address here..."
                                     name="lud16">
                 </clr-input-container>
@@ -123,7 +132,7 @@
             <div  class="clr-row profile-field">
               <div class="clr-row profile-field">
                 <button class="btn btn-primary btn-sm btn-icon" (click)="onSave()" [disabled]="saveDisabled"><cds-icon shape="floppy" class="mr-5">
-                </cds-icon>Save</button>
+                </cds-icon><ng-container i18n>Save</ng-container></button>
               </div>
             </div>
           </form>
@@ -133,19 +142,19 @@
   </clr-tab>
 
   <clr-tab>
-      <button clrTabLink class="large-text" (click)="followingTabClicked()">🕸 People I Follow</button>
+      <button clrTabLink class="large-text" (click)="followingTabClicked()" i18n>🕸 People I Follow</button>
       <clr-tab-content *clrIfActive >
         <div class="clr-row clr-justify-content-center pt-2 mb-20">
             <div *ngIf="fetchingPeopleIFollowFromRelay && loadingPeopleYouFollow" class="clr-col-12 clr-col-md-8">
               <div class="event-loading-spinner clr-justify-content-center">
-                <span class="spinner spinner-md">Loading people you follow...</span>
+                <span class="spinner spinner-md" i18n>Loading people you follow...</span>
               </div>
             </div>
 
             <div *ngIf="!fetchingPeopleIFollowFromRelay && !(loadingPeopleYouFollow) && peopleIFollow?.length === 0"  class="clr-row clr-justify-content-center">
               <div class="alert-items">
                   <div class="alert-item static clr-justify-content-center">
-                    <span class="alert-text">Not following anyone yet. May be try following some people? <br/> Like <a href="https://snort.social/p/npub1ltx67888tz7lqnxlrg06x234vjnq349tcfyp52r0lstclp548mcqnuz40t">@vivganes</a>?</span>
+                    <span class="alert-text"><ng-container i18n>Not following anyone yet. May be try following some people?</ng-container> <br/> <ng-container i18n>like</ng-container> <a href="https://snort.social/p/npub1ltx67888tz7lqnxlrg06x234vjnq349tcfyp52r0lstclp548mcqnuz40t">@vivganes</a>?</span>
                   </div>
               </div>
             </div>
@@ -167,7 +176,7 @@
                       <div class="alert-icon-wrapper">
                         <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
                       </div>
-                      <span class="alert-text">That's all!</span>
+                      <span class="alert-text" i18n>That's all!</span>
                     </div>
                   </div>
                 </div>
@@ -178,19 +187,19 @@
   </clr-tab>
 
   <clr-tab *ngIf="isMobileScreen">
-    <button clrTabLink [clrTabLinkInOverflow]="true" (click)="mutedTabClicked()" class="large-text">🔇 People I Muted</button>
+    <button clrTabLink [clrTabLinkInOverflow]="true" (click)="mutedTabClicked()" class="large-text" i18n>🔇 People I Muted</button>
     <clr-tab-content *clrIfActive >
       <div class="clr-row clr-justify-content-center pt-2 mb-20">
           <div *ngIf="fetchingMutedUsersFromRelay && loadingPeopleYouMuted" class="clr-col-12 clr-col-md-8">
             <div class="event-loading-spinner clr-justify-content-center">
-              <span class="spinner spinner-md">Loading people you muted...</span>
+              <span class="spinner spinner-md" i18n>Loading people you muted...</span>
             </div>
           </div>
 
           <div *ngIf="!fetchingMutedUsersFromRelay && !(loadingPeopleYouMuted) && peopleIMuted?.length === 0"  class="clr-row clr-justify-content-center">
             <div class="alert-items">
                 <div class="alert-item static clr-justify-content-center">
-                  <span class="alert-text">Looks like you haven't muted anyone yet.</span>
+                  <span class="alert-text" i18n>Looks like you haven't muted anyone yet.</span>
                 </div>
             </div>
           </div>
@@ -212,7 +221,7 @@
                     <div class="alert-icon-wrapper">
                       <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
                     </div>
-                    <span class="alert-text">That's all!</span>
+                    <span class="alert-text" i18n>That's all!</span>
                   </div>
                 </div>
               </div>
@@ -223,20 +232,20 @@
   </clr-tab>
 
   <clr-tab *ngIf="!isMobileScreen" >
-    <button clrTabLink (click)="mutedTabClicked()" class="large-text">🔇 People I Muted</button>
+    <button clrTabLink (click)="mutedTabClicked()" class="large-text" i18n>🔇 People I Muted</button>
     <clr-tab-content *clrIfActive >
 
       <div class="clr-row clr-justify-content-center pt-2 mb-20">
           <div *ngIf="loadingPeopleYouMuted" class="clr-col-12 clr-col-md-8">
             <div class="event-loading-spinner clr-justify-content-center">
-              <span class="spinner spinner-md">Loading people you muted...</span>
+              <span class="spinner spinner-md" i18n>Loading people you muted...</span>
             </div>
           </div>
 
           <div *ngIf="!(loadingPeopleYouMuted) && peopleIMuted?.length === 0"  class="clr-row clr-justify-content-center">
             <div class="alert-items">
                 <div class="alert-item static clr-justify-content-center">
-                  <span class="alert-text">Looks like you haven't muted anyone yet.</span>
+                  <span class="alert-text" i18n>Looks like you haven't muted anyone yet.</span>
                 </div>
             </div>
           </div>
@@ -248,7 +257,7 @@
           </div>
           <div *ngIf="!loadingPeopleYouMuted && (peopleIMuted && peopleIMuted.length>0)" class="clr-col-12 clr-col-md-8">
             <div *ngIf="peopleIMuted && peopleIMuted.length>0 && !reachedEndOfMutedPeople" align="center">
-              <button class="btn btn-info-outline" (click)="loadMoreMutedPeople()">Load
+              <button class="btn btn-info-outline" (click)="loadMoreMutedPeople()" i18n>Load
                 more</button>
             </div>
             <div *ngIf="reachedEndOfMutedPeople" align="center" class="clr-row clr-justify-content-center">
@@ -258,7 +267,7 @@
                     <div class="alert-icon-wrapper">
                       <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
                     </div>
-                    <span class="alert-text">That's all!</span>
+                    <span class="alert-text" i18n>That's all!</span>
                   </div>
                 </div>
               </div>
