@@ -2,6 +2,10 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { LayoutModule } from '@angular/cdk/layout';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -46,6 +50,12 @@ const componentParsers: Array<HookParserEntry> = [
   // ...
 ];
 
+
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -77,7 +87,14 @@ const componentParsers: Array<HookParserEntry> = [
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers
-  }), BrowserModule, InViewportModule, LayoutModule, FormsModule, ReactiveFormsModule, MentionModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  }), BrowserModule,     HttpClientModule, TranslateModule.forRoot({
+    loader: {
+      provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+    }
+  }),
+  InViewportModule, LayoutModule, FormsModule, ReactiveFormsModule, MentionModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
   enabled: !isDevMode(),
   // Register the ServiceWorker as soon as the application is stable
   // or after 30 seconds (whichever comes first).
