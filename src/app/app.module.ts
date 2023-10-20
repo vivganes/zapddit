@@ -3,6 +3,11 @@ import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { LayoutModule } from '@angular/cdk/layout';
 
+// import ngx-translate and the http loader
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {HttpClient, HttpClientModule} from '@angular/common/http';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -77,7 +82,18 @@ const componentParsers: Array<HookParserEntry> = [
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers
-  }), BrowserModule, InViewportModule, LayoutModule, FormsModule, ReactiveFormsModule, MentionModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  }), 
+  BrowserModule,
+  // ngx-translate and the loader module
+  HttpClientModule,
+  TranslateModule.forRoot({
+      loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+      }
+  }), 
+  InViewportModule, LayoutModule, FormsModule, ReactiveFormsModule, MentionModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
   enabled: !isDevMode(),
   // Register the ServiceWorker as soon as the application is stable
   // or after 30 seconds (whichever comes first).
@@ -87,3 +103,8 @@ const componentParsers: Array<HookParserEntry> = [
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+// required for AOT compilation
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http);
+}

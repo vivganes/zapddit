@@ -1,4 +1,6 @@
 import { Component, ComponentRef, OnInit, OnDestroy } from '@angular/core';
+import {TranslateService} from "@ngx-translate/core";
+
 import '@cds/core/icon/register.js';
 // import {} from '@cds/core';
 import {
@@ -68,9 +70,10 @@ export class AppComponent implements OnInit, OnDestroy{
   isMobileScreen:boolean = false;
   codePopupOpened:boolean = false;
 
-  constructor(public ndkProvider: NdkproviderService, router: Router,
+  constructor(private translate: TranslateService, public ndkProvider: NdkproviderService, router: Router,
     private breakpointObserver: BreakpointObserver, private communityService:CommunityService, private topicService:TopicService) {
-
+    translate.setDefaultLang('en');
+    translate.use('en');
     this.router = router;
     linkify.registerPlugin('international-hashtags', hashtag);
 
