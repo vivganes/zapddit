@@ -13,6 +13,7 @@ export class Constants {
   public static readonly COMMUNITIES_CLEARED = 'communitiesCleared';
   public static readonly RECIPIENTS_CLEARED = 'recipientsCleared';
   public static readonly SHOWMEDIA = 'loadMediaContentOnlyForPeopleIFollow';
+  public static readonly LANGUAGE = 'language';
   public static readonly FOLLOWERS_FROM_RELAY = 'loadingFollowersFromRelay';
   public static readonly HIDE_NONZAP_REACTIONS = 'hideNonZapReactions';
   public static readonly SHOW_UNAPPROVED = 'showUnapproved';

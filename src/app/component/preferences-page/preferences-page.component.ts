@@ -8,6 +8,7 @@ import '@cds/core/checkbox/register.js';
 import { Constants } from '../../util/Constants';
 import { LoginUtil } from 'src/app/util/LoginUtil';
 import { Relay } from "../../model";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-preferences-page',
@@ -30,6 +31,7 @@ export class PreferencesPageComponent {
   showCommunitiesFeedByDefault:boolean = false;
   changeDetector: ChangeDetectorRef;
   mutedTopics:string[]=[];
+  currentLanguage:string;
 
   relayUrls: string[] | undefined;
   relays: Relay[];
@@ -46,7 +48,8 @@ export class PreferencesPageComponent {
     topicService: TopicService,
     changeDetector: ChangeDetectorRef,
     private clipboard: Clipboard,
-    relayService: RelayService
+    relayService: RelayService,
+    private translate: TranslateService
   ) {
     this.ndkProvider = ndkProvider;
     this.topicService = topicService;
@@ -54,7 +57,19 @@ export class PreferencesPageComponent {
     this.relayService = relayService;
   }
 
+  updateLanguage(){
+    this.translate.use(this.currentLanguage)
+    localStorage.setItem(Constants.LANGUAGE, this.currentLanguage)
+  }
+
   async ngOnInit() {
+    var language = localStorage.getItem(Constants.LANGUAGE);
+    if (language != null || language != undefined || language != '') {
+      this.currentLanguage = language as string;
+      this.translate.use(this.currentLanguage)
+    } else {
+      this.currentLanguage = 'en';
+    }
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA);
     if (mediaSettings != null || mediaSettings != undefined || mediaSettings != '') {
       this.loadContentFromPeopleIFollow = Boolean(JSON.parse(mediaSettings!));

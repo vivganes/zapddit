@@ -3,6 +3,37 @@
 </h3>
 
 <clr-accordion class="mt-20" [clrAccordionMultiPanel]="true">
+
+  <clr-accordion-panel>
+    <clr-accordion-title>Language</clr-accordion-title>
+    <clr-accordion-content *clrIfExpanded>
+      <form clrForm onsubmit="return false;">
+        <clr-combobox-container>
+          <label translate>Display language</label>
+          <clr-combobox [(ngModel)]="currentLanguage" (ngModelChange)="updateLanguage()" name="language" required placeholder="Select a language">
+            <clr-options>
+              <clr-option clrValue="en">English</clr-option>
+              <clr-option clrValue="ta">தமிழ்</clr-option>
+            </clr-options>
+          </clr-combobox>
+        </clr-combobox-container>
+      </form>
+
+      <div class="alert alert-info" role="alert">
+        <div class="alert-items">
+          <div class="alert-item static">
+            <div class="alert-icon-wrapper">
+              <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+            </div>
+            <div>
+              <span class="alert-text">Missing your language?  You can add translations <a href="https://crowdin.com/project/zapddit/invite?h=967673c906e9bbbf0c0e70163ad21a831876562" target="_blank">here</a>.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </clr-accordion-content>
+  </clr-accordion-panel>
+
   <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
     <clr-accordion-title>Zaps ⚡</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>

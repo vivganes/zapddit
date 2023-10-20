@@ -69,11 +69,20 @@ export class AppComponent implements OnInit, OnDestroy{
   followedTopicsEmitterSub:Subscription = new Subscription();
   isMobileScreen:boolean = false;
   codePopupOpened:boolean = false;
+  currentLanguage:string;
 
   constructor(private translate: TranslateService, public ndkProvider: NdkproviderService, router: Router,
     private breakpointObserver: BreakpointObserver, private communityService:CommunityService, private topicService:TopicService) {
     translate.setDefaultLang('en');
-    translate.use('en');
+
+    var language = localStorage.getItem(Constants.LANGUAGE);
+    if (language != null || language != undefined || language != '') {
+      this.currentLanguage = language as string;
+      this.translate.use(this.currentLanguage)
+    } else {
+      localStorage.setItem(Constants.LANGUAGE,'en');
+      this.currentLanguage = 'en';
+    }
     this.router = router;
     linkify.registerPlugin('international-hashtags', hashtag);
 
