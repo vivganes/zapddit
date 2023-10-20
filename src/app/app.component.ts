@@ -73,7 +73,7 @@ export class AppComponent implements OnInit, OnDestroy{
   constructor(private translate: TranslateService, public ndkProvider: NdkproviderService, router: Router,
     private breakpointObserver: BreakpointObserver, private communityService:CommunityService, private topicService:TopicService) {
     translate.setDefaultLang('en');
-    translate.use('en');
+    translate.use('ta');
     this.router = router;
     linkify.registerPlugin('international-hashtags', hashtag);
 

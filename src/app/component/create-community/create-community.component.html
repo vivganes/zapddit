@@ -3,7 +3,7 @@
    [clrModalOpen]="show" 
    (clrModalOpenChange)="onChange($event)" 
    [clrModalStaticBackdrop]="false">
-    <h3 class="modal-title center">
+    <h3 class="modal-title center" translate>
       Create/Edit Community
     </h3>
     <div class="modal-body">
@@ -14,7 +14,7 @@
      onsubmit="return false;">
       <div class="clr-col-12 ptb-3">
         <clr-input-container>
-          <label>Display Name</label>
+          <label translate>Display Name</label>
           <input clrInput required [(ngModel)]="newCommunity.displayName" (keydown.enter)="$event.preventDefault()"
           [disabled]="editMode"
           type="text" placeholder="eg: BotNostriches" (ngModelChange)="displayNameUpdate($event)"
@@ -24,16 +24,16 @@
       </div>
       <div class="clr-col-12 ptb-3">
         <clr-input-container >
-          <label>Name</label>
+          <label translate>Name</label>
           <input clrInput [disabled]="true" (keydown.enter)="$event.preventDefault()"
           type="text" required [value]="'n/'+ (newCommunity.name?newCommunity.name:'botnostriches')"
           id="community-name" name="community-name" >
-          <clr-control-helper>Please enter display name, this will be automatically populated</clr-control-helper>
+          <clr-control-helper translate>Please enter display name, this will be automatically populated</clr-control-helper>
         </clr-input-container>
       </div>
       <div class="clr-col-12 ptb-3">
         <clr-input-container>
-        <label>Image URL</label>
+        <label translate>Image URL</label>
         <input clrInput [(ngModel)]="newCommunity.image" (keydown.enter)="$event.preventDefault()"
           type="text" placeholder="eg: https://...png"
           id="community-image" name="community-image" >
@@ -41,36 +41,36 @@
       </div>
       <div class="clr-col-12 ptb-3">
         <clr-textarea-container>
-        <label>Description</label>
+        <label translate>Description</label>
         <textarea clrTextarea
             cols="30"
             rows="6" [(ngModel)]="newCommunity.description"
             id="community-description"
-            placeholder="Describe what is the community about" name="community-description"></textarea>
+            placeholder="{{'Describe what is the community about' | translate}}" name="community-description"></textarea>
         </clr-textarea-container>
       </div>
       <div class="clr-col-12 ptb-3">
         <clr-textarea-container>
-        <label>Rules</label>
+        <label translate>Rules</label>
         <textarea clrTextarea
             id="community-rules"
             cols="30"
             rows="6" [(ngModel)]="newCommunity.rules"
-            placeholder="Describe what are the rules to post in the community" name="community-rules"></textarea>
+            placeholder="{{'Describe what are the rules to post in the community'|translate}}" name="community-rules"></textarea>
           </clr-textarea-container>
       </div>
       <div class="clr-col-12  ptb-3">
-        <h4>Moderators</h4>
+        <h4 translate>Moderators</h4>
       </div>
       <div class="clr-col-12  ptb-3">
         <clr-input-container>
-          <label>Add moderator</label>
+          <label translate>Add moderator</label>
           <input [(ngModel)]="currentModSuggestionNpub"
           clrInput (keydown.enter)="addModerator($event)"
           type="text"
           id="mod-npub" name="mod-npub"/>
           <clr-control-helper>
-            Paste the npub and press enter ⏎
+            {{'Paste the npub and press enter'|translate}} ⏎
           </clr-control-helper>          
         </clr-input-container>
         <div class="clr-col-12 pl-5 clr-subtext pt-10" >
@@ -83,7 +83,7 @@
   </div>
   <div class="modal-footer">
    <button type="button" class="btn btn-icon btn-primary" aria-label="new community" (click)="onCreate()" [disabled]="createDisabled">
-    <cds-icon *ngIf="!editMode" shape="plus-circle"></cds-icon><cds-icon *ngIf="editMode" shape="floppy"></cds-icon> {{editMode?"Save":"Create Community"}}
+    <cds-icon *ngIf="!editMode" shape="plus-circle"></cds-icon><cds-icon *ngIf="editMode" shape="floppy"></cds-icon> {{editMode?('Save'|translate):('Create Community'|translate)}}
     </button>
   </div>
 </div>
