@@ -3,8 +3,8 @@
 >
     <div class="card">
         <div *ngIf= "showHeaderImage" class="card-img">
-            <img *ngIf="community.image" (click)="openCommunityPage()" alt="Community image" src="{{ community.image }}"
-            class="community-banner pointer-cursor" title="Browse n/{{community.name}}" />
+            <img *ngIf="community.image" (click)="openCommunityPage()" alt="{{'Community image'|translate}}" src="{{ community.image }}"
+            class="community-banner pointer-cursor" title="{{'Browse'| translate}} n/{{community.name}}" />
         <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community.image == undefined"
             class="community-banner pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
             title="Browse n/{{community.name}}" />
@@ -22,7 +22,7 @@
         </div>
         <div class="card-block">
             <div *ngIf="community.followersHexKeys" class="card-text break-words-overflow">
-                <span><b>{{(community.followersHexKeys.length >0)? (community.followersHexKeys.length | shortNumber) : 0}}</b> {{community.followersHexKeys.length===1 ? 'person':'people'}} {{(community.followersHexKeys.length >0)? 'including':''}} </span>
+                <span><b>{{(community.followersHexKeys.length >0)? (community.followersHexKeys.length | shortNumber) : 0}}</b> {{community.followersHexKeys.length===1 ? ('person'|translate):('people'|translate)}} {{(community.followersHexKeys.length >0)? ('including'|translate):''}} </span>
                 <span *ngFor="let follower of community.followersHexKeys.slice(0,3)">
                     <app-user-pic-and-name [hexKey]="follower" [onlyPic]="true"/>
                 </span>
@@ -32,10 +32,10 @@
             </div>
         </div>
         <div class="card-footer">
-            <button class="btn btn-sm btn-link" (click)="openCommunityPage()">Browse</button>
-            <button *ngIf="!followingNow" [clrLoading]="joinOrLeaveInProgress" class="btn btn-sm btn-link" (click)="joinCommunity()">Join</button>
-            <button *ngIf="followingNow" class="btn btn-sm btn-link" (click)="leaveCommunity()">Leave</button>
-            <button *ngIf="community.creatorHexKey === currentUserHexKey " class="btn btn-sm btn-link" (click)="showEditCommunity = true">Edit</button>
+            <button class="btn btn-sm btn-link" (click)="openCommunityPage()" translate>Browse</button>
+            <button *ngIf="!followingNow" [clrLoading]="joinOrLeaveInProgress" class="btn btn-sm btn-link" (click)="joinCommunity()" translate>Join</button>
+            <button *ngIf="followingNow" class="btn btn-sm btn-link" (click)="leaveCommunity()" translate>Leave</button>
+            <button *ngIf="community.creatorHexKey === currentUserHexKey " class="btn btn-sm btn-link" (click)="showEditCommunity = true" translate>Edit</button>
         </div>
     </div>
 </div>

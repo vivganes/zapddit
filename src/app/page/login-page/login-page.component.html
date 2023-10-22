@@ -1,7 +1,7 @@
 <div *ngIf="ndkProvider.loggingIn" class="clr-row clr-justify-content-center">
   <div class="clr-col-12 clr-col-md-8">
     <div align="center" class="clr-row clr-justify-content-center">
-      <span class="spinner spinner-md">Logging in...</span>
+      <span class="spinner spinner-md" translate>Logging in...</span>
     </div>
   </div>
 </div>
@@ -11,17 +11,16 @@
     <div class="clr-row">
       <div class="clr-col-lg-6 clr-col-12">
         <div class="card">
-          <h3 class="card-header">Secure Login (Recommended) 🔐</h3>
+          <h3 class="card-header">{{'Secure Login (Recommended)'|translate}}' 🔐</h3>
           <div class="card-block">
-            <h4 class="card-title">NIP-07 Extension</h4>
+            <h4 class="card-title" translate>Nostr Extension</h4>
             <div class="card-text">
               <p>
-                Secure login to zapddit requires a NIP-07 extension to work. Don't have a NIP-07 extension? Refer
-                <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank">this
-                  page</a>
+                {{'Secure login to zapddit requires a Nostr extension to work. Don\'t have a Nostr extension?'|translate}} {{'Refer'|translate}}
+                <a href="https://github.com/nostr-protocol/nips/blob/master/07.md#implementation" target="_blank">{{'this page'|translate}}</a>
               </p>
               <p><button [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
-                (click)="attemptLoginWithNip07()">Login with NIP-07
+                (click)="attemptLoginWithNip07()" translate>Login with Nostr extension
               </button></p>
             </div>
           </div>
@@ -30,15 +29,15 @@
 
       <div class="clr-col-lg-6 clr-col-12">
         <div class="card">
-          <h3 class="card-header">Alternate Login 🗝️</h3>
+          <h3 class="card-header">{{'Alternate Login'|translate}} 🗝️</h3>
           <div class="card-block">
-            <h4 class="card-title">Private/Public Key Login</h4>
+            <h4 class="card-title" translate>Private/Public Key Login</h4>
             <div class="card-text">
               <form clrForm onsubmit="return false;">
                 <clr-input-container>
-                  <label>Key</label>
+                  <label translate>Key</label>
                   <input clrInput autocomplete="current-password" type="password" required id="pkey">
-                  <clr-control-helper>Key starting with nsec(for read+write) or npub(read-only)</clr-control-helper>
+                  <clr-control-helper translate>Key starting with nsec(for read+write) or npub(read-only)</clr-control-helper>
                 </clr-input-container>
                 <div *ngIf="ndkProvider.loginError" class="alert alert-danger" role="alert">
                   <div class="alert-items">
@@ -54,7 +53,7 @@
                 </div>
                 <div>
                   <p><button [clrLoading]="ndkProvider.loggingIn" type="submit" class="btn btn-primary"
-                    (click)="attemptLoginWithPrivateOrPubKey()">Login</button></p>
+                    (click)="attemptLoginWithPrivateOrPubKey()" translate>Login</button></p>
                 </div>
               </form>
             </div>
@@ -64,18 +63,18 @@
 
       <div class="clr-col-lg-6 clr-col-12">
         <div class="card">
-          <h3 class="card-header">New to nostr? 🙋‍♂️</h3>
+          <h3 class="card-header">{{'New to nostr?'|translate}}' 🙋‍♂️</h3>
           <div class="card-block">
-            <h4 class="card-title">Create a new user</h4>
+            <h4 class="card-title" translate>Create a new user</h4>
             <div class="card-text">
-              <p>
+              <p translate>
                 Zapddit runs on top of nostr.  Click the button below to create a new user on the nostr ecosystem.
               </p>
-              <p>
+              <p translate>
                 You can use the same account in all the nostr clients.
               </p>
               <p><button [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
-                (click)="attemptGenerateNewCredential()">Create new nostr user
+                (click)="attemptGenerateNewCredential()" translate>Create new nostr user
               </button></p>
             </div>
           </div>
@@ -84,18 +83,18 @@
 
       <div class="clr-col-lg-6 clr-col-12">
         <div class="card">
-          <h3 class="card-header">Try zapddit⚡</h3>
+          <h3 class="card-header">{{'Try zapddit'|translate}}⚡</h3>
           <div class="card-block">
-            <h4 class="card-title">Not ready to use a nostr account yet?</h4>
+            <h4 class="card-title" translate>Not ready to use a nostr account yet?</h4>
             <div class="card-text">
-              <p>
+              <p translate>
                 You can have a clean lurker experience using this option.
               </p>     
-              <p>
+              <p translate>
                 All your settings are saved within browser's local storage and cleared when you logout.
               </p>         
               <p><button [clrLoading]="ndkProvider.loggingIn" class="btn btn-primary"
-                (click)="attemptLoginWithoutAccount()">Try without an account
+                (click)="attemptLoginWithoutAccount()" translate>Try without an account
               </button></p>
             </div>
           </div>
@@ -105,9 +104,9 @@
     <div class="clr-row">
       <div class="clr-col-12">
         <div class="card card-block">
-          <h3 class="card-title">We are opensource!</h3>
+          <h3 class="card-title" translate>We are opensource!</h3>
           <p class="card-text">
-             Find zapddit on <a href='https://github.com/vivganes/zapddit' target="_blank">Github</a>.  Found bugs? Raise them <a href='https://github.com/vivganes/zapddit/issues/new' target="_blank">here</a>.
+             {{'Find zapddit on'|translate}} <a href='https://github.com/vivganes/zapddit' target="_blank">{{'Github'|translate}}</a>.  {{'Found bugs? Raise them'|translate}} <a href='https://github.com/vivganes/zapddit/issues/new' target="_blank" translate>here</a>.
           </p>
       </div>
       </div>

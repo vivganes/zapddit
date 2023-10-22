@@ -7,7 +7,7 @@
                         <textarea #noteText id='note-text' autocomplete="off"
                         (paste)="handlePaste($event)"
                         class="{{ isReply? 'compose-reply': 'compose-note' }} clr-textarea"
-                        placeholder="{{isReply? 'Comment' : 'Write'}} something interesting here..."
+                        placeholder="{{isReply? ('Comment'|translate) : ('Write'|translate)}} {{'something interesting here'|translate}}..."
                         [mentionConfig]="{ items: (searchResults$ | async) || [], labelKey: 'displayName', mentionSelect: formatSelectedUser, disableSearch: true }"
                         [mentionListTemplate]="mentionListTemplate"
                         (searchTerm)="doSearch($event)"
@@ -23,11 +23,11 @@
                 </ng-template>
             </div>
             <div class="card-footer">
-                <button class="btn btn-primary" [disabled]="(!noteText.value) || (noteText.value.trim() === '') || NoteComposerComponent.loggedInWithNpub" [clrLoading]="isSendingNote" (click)="sendNote()">Post</button>
-                <button type="button" [clrLoading]="uploadingNow" class="btn btn-icon btn-link" aria-label="attach" title="Attach Picture" (click)="attachFile()">
+                <button class="btn btn-primary" [disabled]="(!noteText.value) || (noteText.value.trim() === '') || NoteComposerComponent.loggedInWithNpub" [clrLoading]="isSendingNote" (click)="sendNote()" translate>Post</button>
+                <button type="button" [clrLoading]="uploadingNow" class="btn btn-icon btn-link" aria-label="attach" title="{{'Attach Picture'|translate}}" (click)="attachFile()">
                     <cds-icon shape="paperclip"></cds-icon>
                 </button>
-                <span *ngIf="noteSent">✅ {{ (isReply? 'Reply' : 'Note')  }} posted!</span>
+                <span *ngIf="noteSent">✅ {{ (isReply? ('Reply'|translate) : ('Note'|translate))  }} {{'posted'|translate}}!</span>
             </div>
         </div>
     </div>

@@ -1,21 +1,21 @@
 <div>
   <h3 align="center">
-    🕸 People I follow
+    🕸 {{'People I follow'|translate}}
   </h3>
-  <p align="center">You can see the people you follow here 👇</p>
+  <p align="center">{{'You can see the people you follow here'|translate}} 👇</p>
 </div>
 
 <div class="clr-row clr-justify-content-center">
   <div *ngIf="loadingPeopleYouFollow" class="clr-col-12 clr-col-md-8">
     <div class="event-loading-spinner clr-justify-content-center">
-      <span class="spinner spinner-md">Loading people you follow...</span>
+      <span class="spinner spinner-md" translate>Loading people you follow...</span>
     </div>
   </div>
 
   <div *ngIf="!(loadingPeopleYouFollow) && users?.length === 0"  class="clr-row clr-justify-content-center">
     <div class="alert-items">
         <div class="alert-item static clr-justify-content-center">
-          <span class="alert-text">Not following anyone yet. May be try following some people? <br/> Like <a href="https://snort.social/p/npub1ltx67888tz7lqnxlrg06x234vjnq349tcfyp52r0lstclp548mcqnuz40t">@vivganes</a>?</span>
+          <span class="alert-text">{{'Not following anyone yet. May be try following some people?'|translate}} <br/> {{'like'|translate}} <a href="https://snort.social/p/npub1ltx67888tz7lqnxlrg06x234vjnq349tcfyp52r0lstclp548mcqnuz40t">@vivganes</a>?</span>
         </div>
     </div>
   </div>

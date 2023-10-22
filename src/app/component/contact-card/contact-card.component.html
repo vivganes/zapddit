@@ -1,26 +1,26 @@
 <div class="card">
   <div class="card-block">
     <div *ngIf="!contactLoading" class="card-media-block">
-      <img *ngIf="contact?.pictureUrl"  alt="Profile picture" src="{{ contact?.pictureUrl }}" class="card-media-image pointer-cursor" title="Open in Snort" (click)="openInSnort(contact)"/>
+      <img *ngIf="contact?.pictureUrl"  alt="{'Profile picture'|translate}" src="{{ contact?.pictureUrl }}" class="card-media-image pointer-cursor" title="{'Open in Snort'|translate}" (click)="openInSnort(contact)"/>
       <img alt="temp avatar"
         *ngIf="contact?.pictureUrl=== undefined"
         class="card-media-image pointer-cursor"
         src="https://robohash.org/{{ (contact?.name)?(contact?.name):'a' }}.png?size=100x100"
-        title="Open in Snort" (click)="openInSnort(contact)"/>
+        title="{'Open in Snort'|translate}" (click)="openInSnort(contact)"/>
         <div class="card-media-description">
           <div>
-            <span class="card-media-title break-anywhere-overflow pointer-cursor"  title="Open in Snort" (click)="openInSnort(contact)"> <strong>{{ contact?.displayName }} </strong>@{{ contact?.name }} </span>
+            <span class="card-media-title break-anywhere-overflow pointer-cursor"  title="{'Open in Snort'|translate}" (click)="openInSnort(contact)"> <strong>{{ contact?.displayName }} </strong>@{{ contact?.name }} </span>
             <cds-icon shape="check-circle" solid clrverticalnavicon *ngIf="isNIP05Verified"></cds-icon>
             <button class="btn btn-sm ml-10" [disabled]="eventInProgress"  (click)="unFollow(contact?.hexPubKey)" *ngIf="showFollow">
-              {{unfollowed?"Follow":"Unfollow"}}
+              {{unfollowed?("Follow"|translate):("Unfollow"|translate)}}
             </button>
           </div>
-          <span class="card-media-meta break-anywhere-overflow"  title="Npub"><cds-icon shape="key" clrverticalnavicon class="nav-icon"></cds-icon> {{ contact?.npub}} </span>
+          <span class="card-media-meta break-anywhere-overflow"  title="{'npub'|translate}"><cds-icon shape="key" clrverticalnavicon class="nav-icon"></cds-icon> {{ contact?.npub}} </span>
           <span class="card-media-text break-anywhere-overflow"> {{ contact?.about }} </span>
         </div>
     </div>
     <div *ngIf="contactLoading" class="card-media-block">
-      <span class="spinner spinner-md">Loading profile...</span>
+      <span class="spinner spinner-md" translate>Loading profile...</span>
     </div>
   </div>
 </div>

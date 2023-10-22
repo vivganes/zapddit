@@ -9,11 +9,11 @@
   </h3>
   <div class="modal-body">
     <div class="center">
-    <img *ngIf="imageUrl" alt="Profile picture"
-      [src]="imageUrl" class="card-media-image pointer-cursor" title="Open in Snort" />
+    <img *ngIf="imageUrl" alt="{{'Profile picture'|translate}}"
+      [src]="imageUrl" class="card-media-image pointer-cursor" title="{{'Open in Snort'|translate}}" />
     <img alt="temp avatar" *ngIf="imageUrl == undefined"
       class="card-media-image pointer-cursor" src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
-      title="Open in Snort" />
+      title="{{'Open in Snort'|translate}}" />
     </div>
 
     <div class="center" *ngIf="authorNpub">
@@ -39,7 +39,7 @@
             type="number"
             min="1"
             id="sats-for-zaps" name="sats-for-zaps"
-            value="{{zapValue}}" [(ngModel)]="zapValue" placeholder="amount in sats" (ngModelChange)="zapValueChange($event)">
+            value="{{zapValue}}" [(ngModel)]="zapValue" placeholder="{{'Amount in sats'|translate}}" (ngModelChange)="zapValueChange($event)">
           </clr-input-container>
         </div>
     </form>
@@ -58,7 +58,7 @@
       </div>
     </div>
     <button class="btn btn-lg btn-primary" [clrLoading]="zappingNow" (click)="initiateZap()" [disabled]="disableZap">
-      {{type==='upzap'?'Upzap ':'Downzap '}} <cds-icon shape="bolt" direction="down" *ngIf="type==='upzap'"></cds-icon>
+      {{type==='upzap'?('Upzap '|translate) :('Downzap '|translate) }} <cds-icon shape="bolt" direction="down" *ngIf="type==='upzap'"></cds-icon>
       <cds-icon shape="bolt" direction="up" *ngIf="type==='downzap'"></cds-icon>
     </button>
   </div>
@@ -67,13 +67,13 @@
 
 <ng-template #postZap [ngIf]="showQR">
   <clr-modal  [clrModalClosable]="true"  [clrModalOpen]="show" (clrModalOpenChange)="onChange($event)" [clrModalStaticBackdrop]="false">
-    <h3 class="modal-title">Scan this QR using your Lightning Wallet app</h3>
+    <h3 class="modal-title" translate>Scan this QR using your Lightning Wallet app</h3>
     <div align="center" class="modal-body">
       <div #canvas></div>
       <div class="break-words-overflow">{{invoice! | abbreviateId }}</div>
-      <button type="button" class="btn btn-primary" (click)="openWallet()">Open Wallet</button>
+      <button type="button" class="btn btn-primary" (click)="openWallet()" translate>Open Wallet</button>
       <p></p>
-      <button type="button" class="btn btn-primary" (click)="copyInvoiceToClipboard()">Copy to clipboard</button>
+      <button type="button" class="btn btn-primary" (click)="copyInvoiceToClipboard()" translate>Copy to clipboard</button>
     </div>
     <div class="modal-footer">
       <div *ngIf="showQR && errorMsg" class="alert alert-warning alert-sm">
@@ -86,7 +86,7 @@
           </span>
         </div>
       </div>
-      <button type="button" class="btn btn-primary" (click)="zapDoneClicked()">Done</button>
+      <button type="button" class="btn btn-primary" (click)="zapDoneClicked()" translate>Done</button>
     </div>
   </clr-modal>
 </ng-template>

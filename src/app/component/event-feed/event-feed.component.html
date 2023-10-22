@@ -1,7 +1,7 @@
 <div *ngIf="(community === undefined) && (feedType !== feedTypeOptions[1] )" class="search_form_mobile">
   <form class="search"  onsubmit="return false;">
     <label for="search_input_mobile">
-        <input id="search_input_mobile" type="search"  class="hashtag-search-mobile" placeholder="#️ Search hashtag ⏎" (keyup.enter)="searchFromMobile()">
+        <input id="search_input_mobile" type="search"  class="hashtag-search-mobile" placeholder="#️ {{'Search hashtag'|translate}} ⏎" (keyup.enter)="searchFromMobile()">
         <cds-icon shape="search"></cds-icon>
     </label>
   </form>
@@ -12,12 +12,12 @@
     <ng-template [ngIf]="!isLoggedInUsingPubKey">
       <ng-template [ngIf]="!isTopicFollowed(tag)" [ngIfElse]="elseBlock">
         <button class="btn btn-sm btn-primary btn-icon" (click)="followTopic(tag)">
-          <cds-icon shape="plus-circle" solid></cds-icon> Follow
+          <cds-icon shape="plus-circle" solid></cds-icon> {{'Follow'|translate}}
         </button>
       </ng-template>
       <ng-template #elseBlock>
         <button class="btn btn-sm btn-warning-outline btn-icon" (click)="unfollowTopic(tag)">
-          <cds-icon shape="logout" solid></cds-icon> Unfollow
+          <cds-icon shape="logout" solid></cds-icon> {{'Unfollow'|translate}}
         </button>
       </ng-template>
     </ng-template>
@@ -26,29 +26,29 @@
 <ng-template [ngIf]="community !== undefined && tag === undefined">
   <div align="center" class="community-header">
     <h3>
-      <img *ngIf="community?.image" (click)="openCommunityPage()" alt="Community image"
-            src="{{ community.image }}" class="community-image pointer-cursor" title="Browse" />
+      <img *ngIf="community?.image" (click)="openCommunityPage()" alt="{{'Community image'|translate}}"
+            src="{{ community.image }}" class="community-image pointer-cursor" title="{{'Browse'|translate}}" />
       <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
             class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
             title="Browse" /> 
       <span class="break-words-overflow"> n/{{community.name}}</span>
-      <span>&nbsp;<cds-icon class="alert-icon" shape="info-circle" (click)="showingCommunityInfo = true" title="Show community details"></cds-icon>
+      <span>&nbsp;<cds-icon class="alert-icon" shape="info-circle" (click)="showingCommunityInfo = true" title="{{'Show community details'|translate}}"></cds-icon>
       </span>
     </h3>
     <div>
-      <span class="smaller-text">Created by </span> 
-      <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="Profile picture"
-            src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="Open in Snort"
+      <span class="smaller-text" translate>Created by </span> 
+      <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="{{'Profile picture'|translate}}"
+            src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="{{'Open in Snort'|translate}}"
             onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'" />
       <img alt="temp avatar" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
             class="community-image pointer-cursor" src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100"
-            title="Open in Snort" />
+            title="{{'Open in Snort'|translate}}" />
       <span class="break-words-overflow"> {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}</span>
     </div>    
     <div class="clr-control-container ml-5">
       <div class="clr-toggle-wrapper">
         <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" class="clr-toggle"  />
-        <label for="toggle1" class="clr-control-label">Show unmoderated feed</label>
+        <label for="toggle1" class="clr-control-label" translate>Show unmoderated feed</label>
       </div>      
     </div>  
   </div>
@@ -56,27 +56,27 @@
 <ng-template [ngIf]="loadingCommunityDetails">
   <div align="center">
     <span class="spinner spinner-md"></span> 
-    <p>Loading community details...</p>
+    <p translate>Loading community details...</p>
   </div>
 </ng-template>
 
 <ng-template [ngIf]="(tag ===undefined && community === undefined) && !loadingCommunityDetails" #homefeedHeader>
   <h3 align="center">
-    🏡 My Feed
+    🏡 {{'My Feed'|translate}}
   </h3>
   
   <div align="center">
       <div class="clr-control-container" align="center">
           <select id="select-full" title="feedType" clrSelect name="options" [(ngModel)]="feedType" (ngModelChange)="onChangeFeedType($event)">
-            <option [value]="feedTypeOptions[0]">Topics Feed</option>
-            <option [value]="feedTypeOptions[1]">Communities Feed - BETA</option>
+            <option [value]="feedTypeOptions[0]" translate>Topics Feed</option>
+            <option [value]="feedTypeOptions[1]" translate>Communities Feed - BETA</option>
           </select>
       </div>
     
     <div class="clr-control-container ml-5" align="center">
       <div class="clr-toggle-wrapper" *ngIf="feedType === feedTypeOptions[1]">
         <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" class="clr-toggle"  />
-        <label for="toggle1" class="clr-control-label">Show unmoderated feed</label>
+        <label for="toggle1" class="clr-control-label" translate>Show unmoderated feed</label>
       </div>      
     </div>
   </div>    
@@ -85,10 +85,10 @@
   <div class="clr-col-12 clr-col-md-8">
       <div class="card">            
           <div class="card-block">
-              <div align="center" class="card-text">
+              <div align="center" class="card-text" translate>
                 Uh oh! No topics followed yet. Take the discovery wizard for a test-drive?
                 <div class="mt-20">
-                  <button class="btn btn-primary" (click)="ndkProvider.triggerOnboardingWizard()">Launch Wizard</button>
+                  <button class="btn btn-primary" (click)="ndkProvider.triggerOnboardingWizard()" translate>Launch Wizard</button>
                 </div>
               </div>
           </div>
@@ -100,10 +100,10 @@
   <div class="clr-col-12 clr-col-md-8">
       <div class="card">            
           <div class="card-block">
-              <div align="center" class="card-text">
+              <div align="center" class="card-text" translate>
                 Uh oh! You have not joined any communities yet.
                 <div class="mt-20">
-                  <a class="btn btn-primary" routerLink="/communities/discover">Discover Communities</a>
+                  <a class="btn btn-primary" routerLink="/communities/discover" translate>Discover Communities</a>
                 </div>
               </div>
           </div>
@@ -118,7 +118,7 @@
         <div class="alert-icon-wrapper">
           <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
         </div>
-        <span class="alert-text"> No notes for you 🥲   It is possible that you could have muted topics from the preferences menu.
+        <span class="alert-text"> {{'No notes for you'|translate}} 🥲   It is possible that you could have muted topics from the preferences menu.
         </span>
       </div>
     </div>
@@ -133,7 +133,7 @@
 </ng-template>
 <ng-template [ngIf]="!loadingEvents && (tag || (followedTopics && followedTopics.length>0))">
   <div *ngIf="events && events.size>0 && !reachedEndOfFeed" align="center">
-    <button [clrLoading]="loadingNextEvents" class="btn btn-info-outline" (click)="loadMoreEvents()">Load
+    <button [clrLoading]="loadingNextEvents" class="btn btn-info-outline" (click)="loadMoreEvents()" translate>Load
       more</button>
   </div>
   <div *ngIf="reachedEndOfFeed" align="center" class="clr-row clr-justify-content-center">
@@ -143,29 +143,29 @@
           <div class="alert-icon-wrapper">
             <cds-icon class="alert-icon" shape="check-circle"></cds-icon>
           </div>
-          <span class="alert-text">Yaay! You reached the end of feed 😁</span>
+          <span class="alert-text">{{'Yaay! You reached the end of feed'|translate}} 😁</span>
         </div>
       </div>
     </div>
   </div>
 </ng-template>
 <div *ngIf="loadingEvents" class="event-loading-spinner">
-  <span class="spinner spinner-md">Loading notes...</span>
+  <span class="spinner spinner-md" translate>Loading notes...</span>
 </div>
 <clr-modal [(clrModalOpen)]="showingCommunityInfo" [clrModalSize]="'lg'">
-  <h3 class="modal-title">Community Details</h3>
+  <h3 class="modal-title" translate>Community Details</h3>
   <div class="modal-body">
       <b><span class="break-words-overflow">n/{{community?.name}}</span></b> by {{community?.creatorProfile?.displayName ? community?.creatorProfile?.displayName : (community?.creatorProfile?.name ? community?.creatorProfile?.name : community?.creatorHexKey | abbreviateId)}}
-      <h4>Description</h4>      
+      <h4 translate>Description</h4>      
       <p><ngx-dynamic-hooks [content]="community?.description | newLineToBr "></ngx-dynamic-hooks></p>
-      <h4>Moderators</h4>
+      <h4 translate>Moderators</h4>
       <div class="mt-20">
         <span *ngFor="let key of community?.moderatorHexKeys"><app-user-pic-and-name [hexKey]="key"></app-user-pic-and-name></span>
       </div>
-      <h4>Rules</h4>
+      <h4 translate>Rules</h4>
       <p><ngx-dynamic-hooks [content]="community?.rules| newLineToBr "></ngx-dynamic-hooks></p>
   </div>
   <div class="modal-footer">
-      <button type="button" class="btn btn-primary" (click)="showingCommunityInfo = false">Ok</button>
+      <button type="button" class="btn btn-primary" (click)="showingCommunityInfo = false" translate>Ok</button>
   </div>
 </clr-modal>

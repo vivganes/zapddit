@@ -1,16 +1,16 @@
 <h3 align="center">
-    ⚙️ Preferences
+    ⚙️ {{'Preferences'|translate}}
 </h3>
 
 <clr-accordion class="mt-20" [clrAccordionMultiPanel]="true">
 
   <clr-accordion-panel>
-    <clr-accordion-title>Language</clr-accordion-title>
+    <clr-accordion-title translate>Language</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <clr-combobox-container>
-          <label translate>Display language</label>
-          <clr-combobox [(ngModel)]="currentLanguage" (ngModelChange)="updateLanguage()" name="language" required placeholder="Select a language">
+          <label translate translate>Display language</label>
+          <clr-combobox [(ngModel)]="currentLanguage" (ngModelChange)="updateLanguage()" name="language" required placeholder="{{'Select a language'|translate}}">
             <clr-options>
               <clr-option clrValue="en">English</clr-option>
               <clr-option clrValue="ta">தமிழ்</clr-option>
@@ -26,7 +26,7 @@
               <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
             </div>
             <div>
-              <span class="alert-text">Missing your language?  You can add translations <a href="https://crowdin.com/project/zapddit/invite?h=967673c906e9bbbf0c0e70163ad21a831876562" target="_blank">here</a>.</span>
+              <span class="alert-text">{{'Missing your language?  You can add translations'|translate}} <a href="https://crowdin.com/project/zapddit/invite?h=967673c906e9bbbf0c0e70163ad21a831876562" target="_blank" translate>here</a>.</span>
             </div>
           </div>
         </div>
@@ -35,17 +35,17 @@
   </clr-accordion-panel>
 
   <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
-    <clr-accordion-title>Zaps ⚡</clr-accordion-title>
+    <clr-accordion-title>{{'Zaps'|translate}} ⚡</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <clr-textarea-container>
-            <label>Downzap Recipient's npub</label>
+            <label translate>Downzap Recipient's npub</label>
             <textarea clrTextarea
             [disabled]="!ndkProvider.canWriteToNostr"
             cols="50"
             id="downzap-recipients"
-            placeholder="npub of the recipient" >{{ ndkProvider.appData.downzapRecipients }}</textarea>
-            <clr-control-helper>npub of the person who will receive the sats for your downzaps</clr-control-helper>
+            placeholder="{{'npub of the recipient'|translate}}" >{{ ndkProvider.appData.downzapRecipients }}</textarea>
+            <clr-control-helper translate>npub of the person who will receive the sats for your downzaps</clr-control-helper>
         </clr-textarea-container>
 
 
@@ -79,51 +79,51 @@
     <form clrForm onsubmit="return false;">
       <clr-checkbox-container clrInline>
         <clr-checkbox-wrapper>
-          <label>{{'Hide non-zap options for upvote and downvote'}}</label>
+          <label>{{'Hide non-zap options for upvote and downvote'|translate}}</label>
           <input type="checkbox" [(ngModel)]="hideNonZapReactions" id="hide-non-zap" clrCheckbox
-          placeholder="#Hide Non Zap Reactions" (ngModelChange)="onHideNonZapChange($event)" name="hideNonZap" id="hideNonZap">
+          placeholder="{{'Hide Non Zap Reactions'|translate}}" (ngModelChange)="onHideNonZapChange($event)" name="hideNonZap" id="hideNonZap">
         </clr-checkbox-wrapper>
-        <clr-control-helper>Enable this option to hide non-zap upvote and downvotes for notes and comments.</clr-control-helper>
+        <clr-control-helper translate>Enable this option to hide non-zap upvote and downvotes for notes and comments.</clr-control-helper>
       </clr-checkbox-container>
     </form>
     <form clrForm onsubmit="return false;">
       <clr-input-container>
-          <label>No. of sats for Zaps</label>
+          <label translate>No. of sats for Zaps</label>
           <input clrInput
           [disabled]="isLoggedInUsingPubKey"
           type="number"
           id="sats-for-zaps"
           value="{{ ndkProvider.defaultSatsForZaps }}" >
-          <clr-control-helper>These many sats will be sent when you zap</clr-control-helper>
+          <clr-control-helper translate>These many sats will be sent when you zap</clr-control-helper>
       </clr-input-container>
       <button [clrLoading]="settingDefaultSats" [disabled]="isLoggedInUsingPubKey"
-       type="submit" class="btn btn-primary" (click)="setDefaultSats()">Save</button>
+       type="submit" class="btn btn-primary" (click)="setDefaultSats()" translate>Save</button>
     </form>
     </clr-accordion-content>
   </clr-accordion-panel>
 
   <clr-accordion-panel>
-    <clr-accordion-title>Communities</clr-accordion-title>
+    <clr-accordion-title translate>Communities</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <clr-checkbox-container clrInline>
           <clr-checkbox-wrapper>
-            <label>Show unmoderated feed by default</label>
+            <label translate>Show unmoderated feed by default</label>
             <input type="checkbox" [(ngModel)]="showUnapprovedPosts" id="show-unapproved-posts" clrCheckbox
             (ngModelChange)="onShowUnapprovedChange($event)" name="showUnapproved" id="showUnapproved"/>
           </clr-checkbox-wrapper>
-          <clr-control-helper>Never mind about moderator approvals. Show all notes.</clr-control-helper>
+          <clr-control-helper translate>Never mind about moderator approvals. Show all notes.</clr-control-helper>
         </clr-checkbox-container>
       </form>
 
       <form clrForm onsubmit="return false;">
         <clr-checkbox-container clrInline>
           <clr-checkbox-wrapper>
-            <label>{{'Set Communities Feed as your default feed'}}</label>
+            <label>{{'Set Communities Feed as your default feed'|translate}}</label>
             <input type="checkbox" [(ngModel)]="showCommunitiesFeedByDefault" id="default-communities-feed" clrCheckbox
             (ngModelChange)="onDefaultFeedChange($event)" name="default-communities-feed" id="default-communities-feed">
           </clr-checkbox-wrapper>
-          <clr-control-helper>Enable this option to see Communities by default when you go to 'My Feed' page.</clr-control-helper>
+          <clr-control-helper translate>Enable this option to see Communities by default when you go to 'My Feed' page.</clr-control-helper>
         </clr-checkbox-container>
       </form>
     </clr-accordion-content>
@@ -131,51 +131,51 @@
 
 
   <clr-accordion-panel>
-    <clr-accordion-title>Muted Topics</clr-accordion-title>
+    <clr-accordion-title translate>Muted Topics</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form *ngIf ="!isLoggedInUsingPubKey" clrForm onsubmit="return false;">
         <clr-input-container>
-            <label>Hashtag to mute</label>
+            <label translate>Hashtag to mute</label>
             <input clrInput
             type="text"
             id="topic-to-mute"
-            placeholder="#Hashtag to mute">
-            <clr-control-helper>Any post with this tag will not be shown by zapddit to you</clr-control-helper>
+            placeholder="{{'#Hashtag to mute'|translate}}">
+            <clr-control-helper translate>Any post with this tag will not be shown by zapddit to you</clr-control-helper>
         </clr-input-container>
-        <button [clrLoading]="mutingTopic" type="submit" class="btn btn-primary" (click)="muteTopic()">Mute</button>
+        <button [clrLoading]="mutingTopic" type="submit" class="btn btn-primary" (click)="muteTopic()" translate>Mute</button>
     </form>
-    <h4>Muted Topics</h4>
+    <h4 translate>Muted Topics</h4>
     <div *ngIf="ndkProvider.appData.mutedTopics && ndkProvider.appData.mutedTopics !== ''">
       <p *ngFor="let topic of mutedTopics; ">
         #{{ topic }}
-        <cds-icon *ngIf="!isLoggedInUsingPubKey" class="trash-icon" status="danger" size="md" shape="trash"  title="Unmute" (click)="unmuteTopic(topic)"></cds-icon>
+        <cds-icon *ngIf="!isLoggedInUsingPubKey" class="trash-icon" status="danger" size="md" shape="trash"  title="{{'Unmute'|translate}}" (click)="unmuteTopic(topic)"></cds-icon>
       </p>
     </div>
-    <p *ngIf ="!ndkProvider.appData.mutedTopics || ndkProvider.appData.mutedTopics === '' ">No topics muted</p>
+    <p *ngIf ="!ndkProvider.appData.mutedTopics || ndkProvider.appData.mutedTopics === '' " translate>No topics muted</p>
     </clr-accordion-content>
   </clr-accordion-panel>
 
   <clr-accordion-panel>
-    <clr-accordion-title>Media Display</clr-accordion-title>
+    <clr-accordion-title translate>Media Display</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <clr-checkbox-container clrInline>
           <clr-checkbox-wrapper>
-            <label>{{(ndkProvider.isTryingZapddit)?'Blur all media':'Blur media from people I dont follow'}}</label>
+            <label>{{(ndkProvider.isTryingZapddit)?('Blur all media'|translate):('Blur media from people I dont follow'|translate)}}</label>
             <input type="checkbox" [(ngModel)]="loadContentFromPeopleIFollow" id="load-media" clrCheckbox
-            placeholder="#Load Media" (ngModelChange)="onMediaSettingChange($event)" name="loadContentFromPeopleIFollow" id="loadContentFromPeopleIFollow">
+            placeholder="{{'Load Media'|translate}}" (ngModelChange)="onMediaSettingChange($event)" name="loadContentFromPeopleIFollow" id="loadContentFromPeopleIFollow">
           </clr-checkbox-wrapper>
-          <clr-control-helper *ngIf="!ndkProvider.isTryingZapddit">Enable this option to show media only from people you follow.</clr-control-helper>
+          <clr-control-helper *ngIf="!ndkProvider.isTryingZapddit" translate>Enable this option to show media only from people you follow.</clr-control-helper>
         </clr-checkbox-container>
     </form>
     </clr-accordion-content>
   </clr-accordion-panel>
 
   <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
-    <clr-accordion-title>Backup Private Key</clr-accordion-title>
+    <clr-accordion-title translate>Backup Private Key</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form *ngIf ="ndkProvider.isLoggedInUsingNsec" clrForm onsubmit="return false;">
-          <button type="button" class="btn btn-primary" (click)="copyPrivateKey()">Copy to clipboard</button>
+          <button type="button" class="btn btn-primary" (click)="copyPrivateKey()" translate>Copy to clipboard</button>
       </form>
       <div *ngIf ="!ndkProvider.isLoggedInUsingNsec" class="alert alert-warning" role="alert">
         <div class="alert-items">
@@ -183,7 +183,7 @@
                 <div class="alert-icon-wrapper">
                     <cds-icon class="alert-icon" shape="exclamation-triangle"></cds-icon>
                 </div>
-                <span class="alert-text">You are not logged in using your private key. May be you have logged in using the NIP-07 extension or your public key.</span>
+                <span class="alert-text" translate>You are not logged in using your private key. May be you have logged in using the NIP-07 extension or your public key.</span>
             </div>
         </div>
       </div>
@@ -191,17 +191,17 @@
   </clr-accordion-panel>
 
   <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
-    <clr-accordion-title>My Relays</clr-accordion-title>
+    <clr-accordion-title translate>My Relays</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
         <div *ngIf="this.relays && this.relays.length > 0">
           <ul class="list-unstyled">
             <ng-template ngFor let-item [ngForOf]="this.relays" let-i="index" >
               <li value="index" >
-                <cds-icon class="trash-icon" status="danger" size="sm" shape="trash" title="unsubscribe" (click)="this.removeRelay(item.name)"></cds-icon>
+                <cds-icon class="trash-icon" status="danger" size="sm" shape="trash" title="{{'Unsubscribe'|translate}}" (click)="this.removeRelay(item.name)"></cds-icon>
                 <span>&nbsp;</span>
-                <cds-icon *ngIf="item.read" class="download-cloud" size="sm" shape="download-cloud" title="read"></cds-icon>
-                <cds-icon *ngIf="item.write" class="upload-cloud" size="sm" shape="upload-cloud" title="write"></cds-icon>
+                <cds-icon *ngIf="item.read" class="download-cloud" size="sm" shape="download-cloud" title="{{'Read'|translate}}"></cds-icon>
+                <cds-icon *ngIf="item.write" class="upload-cloud" size="sm" shape="upload-cloud" title="{{'Write'|translate}}"></cds-icon>
                 {{item.url}}
               </li>
             </ng-template>
@@ -210,25 +210,25 @@
       </form>
       <form *ngIf="!isLoggedInUsingPubKey" clrForm onsubmit="return false">
         <clr-input-container>
-          <label >Add Relay</label>
+          <label translate>Add Relay</label>
           <input clrInput
             type="text"
             id="relay-to-add"
             placeholder="wss://relay.example.com" />
-          <clr-control-helper>websocket url of the new relay</clr-control-helper>
+          <clr-control-helper translate>Websocket url of the new relay</clr-control-helper>
         </clr-input-container>
         <clr-checkbox-container clrInline>
-          <label>Relay Settings</label>
+          <label translate>Relay Settings</label>
           <clr-checkbox-wrapper>
-            <label>Read</label>
+            <label translate>Read</label>
             <input type="checkbox" id="relay-read" name="relay-read" clrCheckbox checked />
           </clr-checkbox-wrapper>
           <clr-checkbox-wrapper>
-            <label>Write</label>
+            <label translate>Write</label>
             <input type="checkbox" id="relay-write" name="relay-write" clrCheckbox checked />
           </clr-checkbox-wrapper>
         </clr-checkbox-container>
-        <button [clrLoading]="addingRelay" type="submit" class="btn btn-primary" (click)="addRelay()">Add</button>
+        <button [clrLoading]="addingRelay" type="submit" class="btn btn-primary" (click)="addRelay()" translate>Add</button>
       </form>
     </clr-accordion-content>
   </clr-accordion-panel>
