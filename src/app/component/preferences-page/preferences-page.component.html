@@ -161,7 +161,7 @@
       <form clrForm onsubmit="return false;">
         <clr-checkbox-container clrInline>
           <clr-checkbox-wrapper>
-            <label>{{(ndkProvider.isTryingZapddit)?('Blur all media'|translate):('Blur media from people I dont follow'|translate)}}</label>
+            <label>{{(ndkProvider.isTryingZapddit)?('Blur all media'|translate):('Blur media from people I don\'t follow'|translate)}}</label>
             <input type="checkbox" [(ngModel)]="loadContentFromPeopleIFollow" id="load-media" clrCheckbox
             placeholder="{{'Load Media'|translate}}" (ngModelChange)="onMediaSettingChange($event)" name="loadContentFromPeopleIFollow" id="loadContentFromPeopleIFollow">
           </clr-checkbox-wrapper>
