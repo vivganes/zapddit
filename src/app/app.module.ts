@@ -44,10 +44,12 @@ import { UserPicAndNameComponent } from './component/user-pic-and-name/user-pic-
 import { CreateCommunityComponent } from './component/create-community/create-community.component';
 import { NewLineToBrPipe } from './pipe/newLineToBr.pipe';
 import { InViewportModule } from 'ng-in-viewport';
+import { ImageCardComponent } from './component/image-card/image-card.component';
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
   {component: UserMentionComponent},
-  {component: QuotedEventComponent}
+  {component: QuotedEventComponent},
+  {component: ImageCardComponent},
   // ...
 ];
 
@@ -78,7 +80,8 @@ const componentParsers: Array<HookParserEntry> = [
     CommunityCardComponent,
     ZapdialogComponent,
     UserPicAndNameComponent,
-    CreateCommunityComponent
+    CreateCommunityComponent,
+    ImageCardComponent
   ],
   imports: [DynamicHooksModule.forRoot({
     globalParsers: componentParsers

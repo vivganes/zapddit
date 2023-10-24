@@ -12,11 +12,13 @@ import { AppRoutingModule } from '../app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 import { DatePipe } from '@angular/common';
+import { ImageCardComponent } from '../component/image-card/image-card.component';
 
 const componentParsers: Array<HookParserEntry> = [
   { component: HashtagComponent },
   { component: UserMentionComponent },
   { component: QuotedEventComponent },
+  { component: ImageCardComponent},
   // ...
 ];
 

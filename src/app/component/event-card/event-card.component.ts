@@ -18,6 +18,8 @@ const NOSTR_NOTE_REGEX = /nostr:(note1[\S]*)/gi;
 
 const NOSTR_EVENT_REGEX = /nostr:(nevent1[\S]*)/gi;
 
+const IMAGE_REGEX = /https:.*?\.(?:png|jpg|svg|gif|jpeg|webp)/gi;
+
 export interface OnlineVideo {
   type:string;
   url:SafeUrl;
@@ -142,15 +144,15 @@ export class EventCardComponent implements OnInit, OnDestroy{
         this.loadingApproval = true;
       }
     }    
+    this.getAuthor();
     this.displayedContent = this.replaceHashStyleMentionsWithComponents();
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNoteMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNEventMentionsWithComponents(this.displayedContent)
+    this.displayedContent = this.replaceImagesWithComponents(this.displayedContent)
     this.linkifiedContent = this.linkifyContent(this.displayedContent)
-    this.getAuthor();
     this.getCommunity();
     this.getRelatedEventsAndSegregate();
-    this.getImageUrls();
     this.getVideoUrls();
     this.getOnlineVideoUrls();
 
@@ -163,6 +165,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
         this.getAuthor();
       }
     })
+
+    
   }
 
   ngAfterViewInit(): void {
@@ -266,25 +270,24 @@ export class EventCardComponent implements OnInit, OnDestroy{
     if(url.indexOf("youtube.com")>0){
       modifiedUrl = url.replace("watch?v=", "embed/");
     }
-
     return this.domSanitizer.bypassSecurityTrustResourceUrl(modifiedUrl)
   }
 
-  replaceHashStyleMentionsWithComponents(){
-    var returnContent = this.event?.content;
-    if(returnContent){
-      var matches = returnContent.matchAll(MENTION_REGEX);
+  replaceImagesWithComponents(content?:string): string|undefined{    
+    let displayedContent = content;
+    if(displayedContent){
+      var matches = displayedContent.matchAll(IMAGE_REGEX);
       for(let match of matches){
         try{
-          const hex = this.getNthTag(Number.parseInt(match[2]));
-          returnContent = returnContent.replaceAll(match[0],`<app-user-mention hexKey="${hex}"></app-user-mention>`)
+          const src = match[0];
+          displayedContent = displayedContent.replaceAll(src,`<app-image-card imgSrc="${src}" canLoadMedia="${this.canLoadMedia}" showMediaFromPeopleIFollow="${this.showMediaFromPeopleIFollow}" authorPubKey="${this.event?.pubkey}"></app-image-card>`)
         } catch(e){
           console.error(e);
         }
       }
-      return returnContent;
+      return displayedContent;
     }
-    return this.event?.content;
+    return content;
   }
 
   replaceNpubMentionsWithComponents(content?:string): string|undefined{
@@ -333,6 +336,23 @@ export class EventCardComponent implements OnInit, OnDestroy{
       }
     }
     return displayedContent;
+  }
+
+  replaceHashStyleMentionsWithComponents(){
+    var returnContent = this.event?.content;
+    if(returnContent){
+      var matches = returnContent.matchAll(MENTION_REGEX);
+      for(let match of matches){
+        try{
+          const hex = this.getNthTag(Number.parseInt(match[2]));
+          returnContent = returnContent.replaceAll(match[0],`<app-user-mention hexKey="${hex}"></app-user-mention>`)
+        } catch(e){
+          console.error(e);
+        }
+      }
+      return returnContent;
+    }
+    return this.event?.content;
   }
 
   copyNoteHexIdToClipboard(){
@@ -485,13 +505,6 @@ export class EventCardComponent implements OnInit, OnDestroy{
     };
     const html:string =  linkifyHtml(content || '', options);
     return html;
-  }
-
-  getImageUrls(): RegExpMatchArray | null | undefined {
-    const urlRegex = /https:.*?\.(?:png|jpg|svg|gif|jpeg|webp)/gi;
-    const imgArray = this.event?.content.match(urlRegex);
-    this.imageUrls = imgArray
-    return imgArray;
   }
 
   getVideoUrls():RegExpMatchArray | null | undefined {

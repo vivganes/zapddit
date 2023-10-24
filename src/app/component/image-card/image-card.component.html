@@ -1,0 +1,16 @@
+<div>
+<div class="clr-col-12" *ngIf="!canLoadMedia" class="click-to-load">
+    <div class="clr-col-12 clr-col-md-8">
+        <img alt="image" class="note-image" imageLoader (click)="clickToLoadMedia()" height="300px"
+        src="{{ '/assets/blur'+ blurImageId+'.png' }}" />
+    </div>
+</div>
+
+<div class="clr-col-12" *ngIf="canLoadMedia">
+    <div class="clr-col-12 clr-col-md-8">
+        <a href="{{ imgSrc }}" target="_blank"><img alt="image" imageLoader class="note-image"
+            src="{{ imgSrc }}" /></a>
+    </div>
+</div>
+
+</div>
