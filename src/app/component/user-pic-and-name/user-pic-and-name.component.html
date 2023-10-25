@@ -4,13 +4,13 @@
         src="{{ user?.profile?.image }}" class="community-image pointer-cursor" 
         onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'"
         title="{{ (user?.profile?.displayName) ?
-            user?.profile?.displayName:((user?.profile?.name)? user?.profile?.name : user?.hexpubkey()|abbreviateId) }} - {{'Open in Snort'|translate}}" />
+            user?.profile?.displayName:((user?.profile?.name)? user?.profile?.name : user?.pubkey|abbreviateId) }} - {{'Open in Snort'|translate}}" />
     <img alt="temp avatar" (click)="openAuthorInSnort()" *ngIf="user?.profile?.image == undefined"
-        class="community-image pointer-cursor" src="https://robohash.org/{{ hexKey || user?.hexpubkey() }}.png?size=100x100"
-        title="{{('Open'|translate)}} {{(hexKey || user?.hexpubkey()) | abbreviateId }} {{('in Snort'|translate)}}" />
+        class="community-image pointer-cursor" src="https://robohash.org/{{ hexKey || user?.pubkey }}.png?size=100x100"
+        title="{{('Open'|translate)}} {{(hexKey || user?.pubkey) | abbreviateId }} {{('in Snort'|translate)}}" />
     <span *ngIf="!onlyPic" class="pl-5">
             {{ (user?.profile?.displayName) ?
-                    user?.profile?.displayName:((user?.profile?.name)? user?.profile?.name : user?.hexpubkey()|abbreviateId) }}
+                    user?.profile?.displayName:((user?.profile?.name)? user?.profile?.name : user?.pubkey|abbreviateId) }}
     </span>
     <span *ngIf="showClickableDeleteIcon">
         <cds-icon  shape="window-close" status="warning" (click)="onDeleteIconClicked($event)" title="{{'Delete'|translate}}"></cds-icon>

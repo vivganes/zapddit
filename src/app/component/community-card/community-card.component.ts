@@ -29,7 +29,7 @@ export class CommunityCardComponent {
   }
 
   ngOnInit(){
-    this.currentUserHexKey = this.ndkProvider.currentUser?.hexpubkey();
+    this.currentUserHexKey = this.ndkProvider.currentUser?.pubkey;
 
     this.setIsFollowed();
 

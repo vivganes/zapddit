@@ -389,7 +389,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
     this.nip05Address = this.authorWithProfile?.profile?.nip05;
     this.changeDetector.detectChanges();
     if (authorPubKey) {
-      var loggedInUserHexPubKey = this.ndkProvider.currentUser?.hexpubkey();
+      var loggedInUserHexPubKey = this.ndkProvider.currentUser?.pubkey;
 
       this.dbService.peopleIFollow.where({hexPubKey:authorPubKey.toString()}).count().then(async count=>{
           this.amIFollowingtheAuthor = count > 0;
@@ -411,7 +411,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
         this.mutedAuthor = count > 0;
       })
 
-      this.notTheLoggedInUser = authorPubKey !== this.ndkProvider.currentUser?.hexpubkey();
+      this.notTheLoggedInUser = authorPubKey !== this.ndkProvider.currentUser?.pubkey;
     }
     if(this.nip05Address)
       this.isNIP05Verified = await this.ndkProvider.checkIfNIP05Verified(this.nip05Address, this.authorHexPubKey);
@@ -434,7 +434,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
       this.community.image = communityDetails?.image
       this.community.description = communityDetails?.description
       this.community.moderatorHexKeys = communityDetails?.moderatorHexKeys
-      const currentUserHexPubKey = this.ndkProvider.currentUser?.hexpubkey();
+      const currentUserHexPubKey = this.ndkProvider.currentUser?.pubkey;
       if(currentUserHexPubKey! === this.community.creatorHexKey){
         this.canModerate = true;
       }

@@ -41,8 +41,8 @@ export class CreateCommunityComponent implements OnInit{
     if(this.ndkproviderService.currentUser){
       if(!this.editMode){
         this.newCommunity = {
-          creatorHexKey: this.ndkproviderService.currentUser.hexpubkey(),
-          moderatorHexKeys:[this.ndkproviderService.currentUser.hexpubkey()]
+          creatorHexKey: this.ndkproviderService.currentUser.pubkey,
+          moderatorHexKeys:[this.ndkproviderService.currentUser.pubkey]
         }
       } else {
         if(this.newCommunity && !this.newCommunity.moderatorHexKeys){
@@ -100,7 +100,7 @@ export class CreateCommunityComponent implements OnInit{
   }
 
   deleteModerator(user:NDKUser){
-    this.newCommunity.moderatorHexKeys = this.newCommunity.moderatorHexKeys?.filter((key) => key!==user.hexpubkey());
+    this.newCommunity.moderatorHexKeys = this.newCommunity.moderatorHexKeys?.filter((key) => key!==user.pubkey);
   }
 
   sanitizeDisplayName(){

@@ -33,7 +33,7 @@ export class ObjectCacheService extends Dexie {
 
   async addUser(item:NDKUser){
     this.users.put({
-      hexPubKey: item.hexpubkey(),
+      hexPubKey: item.pubkey,
       name: item.profile?.name!,
       displayName: item.profile?.displayName!,
       nip05: item.profile?.nip05!,
@@ -42,12 +42,12 @@ export class ObjectCacheService extends Dexie {
       about: item.profile?.about!,
       lud06: item.profile?.lud06!,
       lud16: item.profile?.lud16
-    }, item.hexpubkey())
+    }, item.pubkey)
 
     const self = this;
     setTimeout(() => {
-      console.log("Deleting item with key "+ item.hexpubkey())
-      self.deleteUserWithHexKey(item.hexpubkey())
+      console.log("Deleting item with key "+ item.pubkey)
+      self.deleteUserWithHexKey(item.pubkey)
     }, this.defaultTTL*1000);
   }
 

@@ -77,7 +77,7 @@ export class ProfileComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
 
-    const filter:NDKFilter = { kinds: [0], authors:[this.ndkProvider.currentUser?.hexpubkey()!]}
+    const filter:NDKFilter = { kinds: [0], authors:[this.ndkProvider.currentUser?.pubkey!]}
     this.ndkProvider?.ndk?.fetchEvent(filter,{}).then(event=>{
       this.user = JSON.parse(event!.content);
       if(this.user.image){

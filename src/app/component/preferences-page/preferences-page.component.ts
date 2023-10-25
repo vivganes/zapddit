@@ -113,7 +113,7 @@ export class PreferencesPageComponent {
     let recipients = (<HTMLInputElement>document.getElementById('downzap-recipients')).value;
     let supposedUser = await this.ndkProvider.getNdkUserFromNpub(recipients);
     if (supposedUser !== undefined) {
-        this.ndkProvider.buildAndPublishDownzapRecipient([supposedUser.hexpubkey()])
+        this.ndkProvider.buildAndPublishDownzapRecipient([supposedUser.pubkey])
       this.downzapSetSuccessMessage =
         'Sending downzaps to ' +
         (supposedUser.profile?.displayName ? supposedUser.profile?.displayName : supposedUser.profile?.name);
