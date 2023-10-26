@@ -1,7 +1,12 @@
 <div>
   <div>
-    <h3 *ngIf="!showOnlyOwnedCommunities && !showOnlyJoinedCommunities && !showOnlyModeratingCommunities" align="center">
+    <h3 *ngIf="!showOnlyOwnedCommunities && !showOnlyJoinedCommunities && !showOnlyModeratingCommunities  && !showRecentlyActiveCommunities" align="center">
         <cds-icon shape="users" size="lg" solid="true"></cds-icon> {{'Recently Created Communities'|translate}} <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
+            <cds-icon shape="plus-circle"></cds-icon> {{'New Community'|translate}}
+        </button>
+    </h3>
+    <h3 *ngIf="showRecentlyActiveCommunities" align="center">
+        <cds-icon shape="users" size="lg" solid="true"></cds-icon> {{'Recently Active Communities'|translate}} <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
             <cds-icon shape="plus-circle"></cds-icon> {{'New Community'|translate}}
         </button>
     </h3>
@@ -32,6 +37,7 @@
         </form>
     </div>
 </div>
+   
 <div class="clr-row clr-justify-content-center">
     <div *ngIf="loadingEvents" class="clr-col-12">
         <div class="event-loading-spinner clr-justify-content-center">
@@ -46,14 +52,19 @@
                 <span *ngIf="showOnlyOwnedCommunities" class="alert-text" translate>You have not created any community so far.</span>
             </div>
         </div>
-    </div>    
+    </div>  
+    <ng-template [ngIf]="showRecentlyActiveCommunities"> 
+        <div *ngFor="let community of communityEventService.communityEvents | async" class="clr-col-12 clr-col-md-5" >
+            <app-community-card [id]="community.communityId" [lastActive]="community.recentActivityAt!" (onLeave)="onLeave($event)"></app-community-card>
+        </div>
+    </ng-template> 
 
-    <ng-template [ngIf]="searchTerm.length === 0">
+    <ng-template [ngIf]="!showRecentlyActiveCommunities && searchTerm.length === 0">
         <div *ngFor="let community of communities " class="clr-col-12 clr-col-md-5">
             <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
         </div>
     </ng-template>
-    <ng-template [ngIf]="searchTerm.length > 0">
+    <ng-template [ngIf]="!showRecentlyActiveCommunities && searchTerm.length > 0">
         <div *ngFor="let community of searchResults " class="clr-col-12 clr-col-md-5">
             <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
         </div>

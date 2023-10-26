@@ -1,4 +1,4 @@
-<div class="clr-col-12" inViewport
+<div class="clr-col-12" inViewport *ngIf="community"
 (inViewportAction)="onShowInViewPort($event)"
 >
     <div class="card">
@@ -21,6 +21,11 @@
             (community.creatorProfile?.name ? community.creatorProfile?.name : (community.creatorHexKey | abbreviateId))}}</span>
         </div>
         <div class="card-block">
+            <div *ngIf="lastActive" class="card-text break-words-overflow">                
+                <span class="badge badge-purple">
+                    {{'Active'|translate}} {{lastActive | formatTimestamp }}
+                  </span>
+            </div>
             <div *ngIf="community.followersHexKeys" class="card-text break-words-overflow">
                 <span><b>{{(community.followersHexKeys.length >0)? (community.followersHexKeys.length | shortNumber) : 0}}</b> {{community.followersHexKeys.length===1 ? ('person'|translate):('people'|translate)}} {{(community.followersHexKeys.length >0)? ('including'|translate):''}} </span>
                 <span *ngFor="let follower of community.followersHexKeys.slice(0,3)">
@@ -39,4 +44,14 @@
         </div>
     </div>
 </div>
-<app-create-community *ngIf="ndkProvider.canWriteToNostr" [show]="showEditCommunity" (onEditComplete)="editFinished($event)" (onClose)="popupClosed($event)"  [newCommunity]="community" [editMode]="true"></app-create-community>
+<div class="clr-col-12" inViewport *ngIf="!community">
+          <div class="card">
+            <div class="card-block">
+                <div class="card-media-block">
+                    <span class="spinner spinner-md" translate>Loading community...</span>
+                </div>
+            </div>
+          </div>
+       
+</div>
+<app-create-community *ngIf="ndkProvider.canWriteToNostr" [show]="showEditCommunity" (onEditComplete)="editFinished($event)" (onClose)="popupClosed($event)"  [newCommunity]="community!" [editMode]="true"></app-create-community>

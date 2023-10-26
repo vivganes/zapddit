@@ -27,6 +27,9 @@ import { ObjectCacheService } from './object-cache.service';
 import { User } from '../model/user';
 import hashtag from '../util/IntlHashtagLinkifyPlugin';
 import { CommunityCacheService } from './community-cache.service';
+import NDKCacheAdapterDexie from "@nostr-dev-kit/ndk-cache-dexie";
+
+const dexieAdapter = new NDKCacheAdapterDexie({ dbName: 'ndk-cache' });
 
 interface ZappedItAppData {
   followedTopics: string;
@@ -141,6 +144,7 @@ export class NdkproviderService {
       displayName: 'Lurky Lurkerson',
     };
     this.ndk = new NDK({
+      cacheAdapter: dexieAdapter,
       explicitRelayUrls: explicitRelayUrls,
     });
     await this.ndk.connect(1000);
@@ -230,7 +234,8 @@ export class NdkproviderService {
     this.currentUserProfile = {
       displayName: 'Lurky Lurkerson',
     };
-    this.ndk = new NDK({
+    this.ndk = new NDK({      
+      cacheAdapter: dexieAdapter,
       explicitRelayUrls: explicitRelayUrls,
     });
     await this.ndk.connect(1000);
@@ -258,7 +263,8 @@ export class NdkproviderService {
       this.signer = new NDKNip07Signer();
     }
 
-    const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: explicitRelayUrls };
+    const params: NDKConstructorParams = { 
+      cacheAdapter: dexieAdapter, signer: this.signer, explicitRelayUrls: explicitRelayUrls };
     this.ndk = new NDK(params);
 
     await this.ndk.connect(1000);
@@ -342,7 +348,8 @@ export class NdkproviderService {
         if(localStorage.getItem(Constants.RELAYSUBS) !== undefined) {
           relayUrls = localStorage.getItem(Constants.RELAYSUBS)?.split(',');
         }
-        const params: NDKConstructorParams = { signer: this.signer, explicitRelayUrls: relayUrls ? relayUrls : explicitRelayUrls };
+        const params: NDKConstructorParams = { 
+          cacheAdapter: dexieAdapter, signer: this.signer, explicitRelayUrls: relayUrls ? relayUrls : explicitRelayUrls };
         this.ndk = new NDK(params);
         await this.ndk.assertSigner();
         await this.ndk.connect(1000);
@@ -376,7 +383,8 @@ export class NdkproviderService {
     // const relays = this.currentUser?.relayUrls;
 
     if (relayUrls && relayUrls.length > 0) {
-      const newNDKParams = { signer: this.signer, explicitRelayUrls: relayUrls };
+      const newNDKParams = { 
+        cacheAdapter: dexieAdapter, signer: this.signer, explicitRelayUrls: relayUrls };
       const newNDK = new NDK(newNDKParams);
       if (this.isNip07) {
         await newNDK.assertSigner();
@@ -400,7 +408,7 @@ export class NdkproviderService {
     this.fetchMutedUsersFromCache();
 
 
-    await this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.hexpubkey());
+    await this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.pubkey);
     
   }
 
@@ -451,7 +459,7 @@ export class NdkproviderService {
     }
     ndkEvent.tags = tags;
     if (this.currentUser) {
-      ndkEvent.pubkey = this.currentUser?.hexpubkey();
+      ndkEvent.pubkey = this.currentUser?.pubkey;
     }
     if (this.canWriteToNostr) {
       await ndkEvent.publish();
@@ -470,7 +478,7 @@ export class NdkproviderService {
     })
     ndkEvent.kind = 10002;
     ndkEvent.tags = tags;
-    if (this.currentUser) ndkEvent.pubkey = this.currentUser.hexpubkey();
+    if (this.currentUser) ndkEvent.pubkey = this.currentUser.pubkey;
     if (this.canWriteToNostr){
       // console.log(ndkEvent);
       await ndkEvent.sign();
@@ -483,13 +491,19 @@ export class NdkproviderService {
   }
 
   setRelaysForCurrentNdk(relayTags:NDKTag[]){
-    const newNdk = new NDK({
+    const newNdk = new NDK({      
+      cacheAdapter: dexieAdapter,
       signer: this.signer,
       explicitRelayUrls: relayTags.map((tag) => tag[1])
     })
     newNdk.connect(1000).then(()=>{
       this.ndk = newNdk;
     })
+  }
+
+  createSubscriptionForCommunityEvents(){
+    //@ts-ignore
+    return this.ndk.subscribe({ kinds: [4550] });
   }
 
   async fetchFollowersAndCache(peopleIFollowFromRelay: Set<NDKUser> | undefined) {
@@ -511,7 +525,7 @@ export class NdkproviderService {
 
       var users = ndkUsersArray.map(item => {
         return {
-          hexPubKey: item.hexpubkey(),
+          hexPubKey: item.pubkey,
           // name: item.profile?.name!,
           // displayName: item.profile?.displayName!,
           // nip05: item.profile?.nip05!,
@@ -543,14 +557,14 @@ export class NdkproviderService {
   async addToDB(item: NDKUser, table: Table<User, IndexableType>) {
     table
       .where('hexPubKey')
-      .equalsIgnoreCase(item.hexpubkey())
+      .equalsIgnoreCase(item.pubkey)
       .and(user => user.displayName !== null && user.displayName !== undefined)
       .count()
       .then(async count => {
         if (count == 0) {
           table.add(
             {
-              hexPubKey: item.hexpubkey(),
+              hexPubKey: item.pubkey,
               name: item.profile?.name!,
               displayName: item.profile?.displayName!,
               nip05: item.profile?.nip05!,
@@ -584,7 +598,7 @@ export class NdkproviderService {
           var item = ndkUsersArray[i];
           if (item) {
             users.push({
-              hexPubKey: item.hexpubkey(),
+              hexPubKey: item.pubkey,
               name: item.profile?.name!,
               displayName: item.profile?.displayName!,
               nip05: item.profile?.nip05!,
@@ -657,7 +671,7 @@ export class NdkproviderService {
     var peopleIMutedFromCache = await this.dbService.mutedPeople.toArray();
     console.log('PeopleIMuted from cache ' + peopleIMutedFromCache?.length);
 
-    var peopleIMutedFromRelay = await this.fetchMuteList(this.currentUser?.hexpubkey()!);
+    var peopleIMutedFromRelay = await this.fetchMuteList(this.currentUser?.pubkey!);
 
     if (peopleIMutedFromCache?.length === 0 || peopleIMutedFromCache?.length !== peopleIMutedFromRelay?.length) {
       await this.fetchMutedPeopleAndCache(peopleIMutedFromRelay);
@@ -674,6 +688,7 @@ export class NdkproviderService {
       return communityFromCache;
     }
     const splitId = id.split(':');
+    //@ts-ignore
     const filter: NDKFilter = { kinds: [34550], '#d': [splitId[2]], authors:[splitId[1]] };
     const events = await this.ndk?.fetchEvents(filter,{});
     if(events && events.size > 0){
@@ -693,7 +708,7 @@ export class NdkproviderService {
       if(moderatorHexKeys.indexOf(communityEvent.pubkey)===-1){
         moderatorHexKeys.push(communityEvent.pubkey);
       }
-      return {
+      const communityToReturn =  {
         id: '34550:'+creatorHexKey+':'+name,
         name:name,
         description: description,
@@ -702,6 +717,8 @@ export class NdkproviderService {
         moderatorHexKeys: moderatorHexKeys,
         rules:rules,
       }
+      this.communityCache.addCommunity(communityToReturn);
+      return communityToReturn;
     }
     return undefined;
   }
@@ -719,13 +736,16 @@ export class NdkproviderService {
 
 
   async fetchCommunities(limit?: number, since?: number, until?: number, ownedOnly?:boolean, moderatingOnly?: boolean ):Promise<Community[] | undefined>{
-    const filter: NDKFilter = { kinds: [34550],
+    //@ts-ignore
+    let filter: NDKFilter = { kinds: [34550],
       limit: limit,
       since:since,
       until:until,
-      authors: (ownedOnly? [this.currentUser?.hexpubkey()!] : undefined),
-      '#p':(moderatingOnly? [this.currentUser?.hexpubkey()!] : undefined)
+      authors: (ownedOnly? [this.currentUser?.pubkey!] : undefined),
     };
+    if(moderatingOnly){
+      filter = {...filter, '#p':[this.currentUser?.pubkey!]}
+    }
     const events = await this.ndk?.fetchEvents(filter,{});
     let returnValue:Community[] = this.makeCommunitiesFromEvents(events);
     returnValue.forEach((c) => this.communityCache.addCommunity(c));
@@ -813,6 +833,7 @@ export class NdkproviderService {
     const authors = joinedArr.map((id)=> id.split(':')[1])
     const names = joinedArr.map((id) => id.split(':')[2])
     const filter:NDKFilter = {
+      //@ts-ignore
       kinds:[34550],
       authors:authors,
       '#d':names
@@ -823,7 +844,8 @@ export class NdkproviderService {
 
   async getApprovalEvents(id:string):Promise<Set<NDKEvent>|undefined>{
     const filter:NDKFilter = {
-      kinds:[4550],
+      //@ts-ignore
+      kinds:[4550], 
       '#e':[id]
     }
     const approvalEvents = await this.ndk?.fetchEvents(filter,{});
@@ -836,6 +858,7 @@ export class NdkproviderService {
   }
 
   async fetchEventsFromCommunity(community: Community, limit?: number, since?: number, until?: number):Promise<Set<NDKEvent> | undefined> {
+    //@ts-ignore
     const filter: NDKFilter = { kinds: [1,4549], '#a': [community.id!], limit: limit, since: since, until: until };
     return this.ndk?.fetchEvents(filter,{});
   }
@@ -844,6 +867,7 @@ export class NdkproviderService {
     if (id.startsWith('note1')) {
       id = LoginUtil.bech32ToHex(id);
     }
+    //@ts-ignore
     const filter: NDKFilter = { kinds: [1,4549], ids: [id] };
     return this.ndk?.fetchEvent(filter,{});
   }
@@ -868,6 +892,7 @@ export class NdkproviderService {
     since?: number,
     until?: number
   ): Promise<Set<NDKEvent> | undefined> {
+    //@ts-ignore
     const filter: NDKFilter = { kinds: [1,  4549], '#a': followedCommunities, limit: limit, since: since, until: until };
     return this.ndk?.fetchEvents(filter);
   }
@@ -898,7 +923,7 @@ export class NdkproviderService {
     ndkEvent.kind = 30078;
 
     if (this.currentUser) {
-      ndkEvent.pubkey = this.currentUser?.hexpubkey();
+      ndkEvent.pubkey = this.currentUser?.pubkey;
     }
     let followedTopicsToPublish = '';
     if (followListCsv !== undefined) {
@@ -935,7 +960,7 @@ export class NdkproviderService {
   async followUnfollowContact(hexPubKeyToFollow: string, follow: boolean){
     const contactListFilter:NDKFilter ={
       kinds:[3],
-      authors:[this.currentUser?.hexpubkey()!]
+      authors:[this.currentUser?.pubkey!]
     }
     const contactListEvents = await this.ndk?.fetchEvents(contactListFilter,{})
     if(contactListEvents && contactListEvents.size > 0){
@@ -967,19 +992,20 @@ export class NdkproviderService {
         }
       }
     }
+    return null;
   }
 
   fetchLatestAppData() {
     let authors: string[] = [];
-    if (this.currentUser?.hexpubkey()) {
-      authors = [this.currentUser.hexpubkey()];
+    if (this.currentUser?.pubkey) {
+      authors = [this.currentUser.pubkey];
     }
     const filter: NDKFilter = { kinds: [30078], '#d': ['zappedit.com', 'zapddit.com'], limit: 1, authors: authors };
     return this.ndk?.fetchEvents(filter);
   }
 
   async fetchLatestDataFromInteroperableList(){
-    const filter: NDKFilter = { kinds: [30001], '#d': ["communities", "hashtags", "downzaprecipients"], authors:[this.currentUser?.hexpubkey()!] };
+    const filter: NDKFilter = { kinds: [30001], '#d': ["communities", "hashtags", "downzaprecipients"], authors:[this.currentUser?.pubkey!] };
     const events = await this.ndk?.fetchEvents(filter,{});
     let hashtags:string[] = []
     let mutedhashtags:string[] = []
@@ -1176,7 +1202,7 @@ export class NdkproviderService {
       }
 
       const zapRequest = nip57.makeZapRequest({
-        profile: zapRecipient.hexpubkey(),
+        profile: zapRecipient.pubkey,
 
         // set the event to null since nostr-tools doesn't support nip-33 zaps
         event: null,
@@ -1279,7 +1305,7 @@ export class NdkproviderService {
           if (hexPubKey === hexPubKeyFromRemote) {
             verified = true;
             // raise this only for the current logged in user
-            if (hexPubKey === this.currentUser?.hexpubkey())
+            if (hexPubKey === this.currentUser?.pubkey)
               this.isNip05Verified$.next(true);
           }
         }
@@ -1293,7 +1319,7 @@ export class NdkproviderService {
   async saveMetadataAndFetchUserProfile(user: any, pictureUrl: string) {
     const newProfileEvent: NDKEvent = new NDKEvent(this.ndk);
     newProfileEvent.kind = 0;
-    newProfileEvent.pubkey = this.currentUser?.hexpubkey()!;
+    newProfileEvent.pubkey = this.currentUser?.pubkey!;
     let currentProfile = user;
     let currentProfileCopy = {};
 
@@ -1410,8 +1436,8 @@ export class NdkproviderService {
   async getUserSubscribedRelays(): Promise<Relay[]> {
     let relays: Relay[] = [];
     let author: string = '';
-    if (this.currentUser?.hexpubkey()) {
-      author = this.currentUser.hexpubkey();
+    if (this.currentUser?.pubkey) {
+      author = this.currentUser.pubkey;
     }
     const relayEvent: NDKEvent | null | undefined = await this.fetchRelayEvent(author);
     // console.log(relayEvent);

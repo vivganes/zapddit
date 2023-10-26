@@ -13,7 +13,14 @@ import { Constants } from 'src/app/util/Constants';
 export class CommunityCardComponent {
 
   @Input()
-  community:Community;
+  community?:Community;
+
+  @Input()
+  id: string;
+
+  @Input()
+  lastActive: number;
+
   followingNow:boolean = false;
   showEditCommunity:boolean = false;
   currentUserHexKey?:string;
@@ -29,13 +36,18 @@ export class CommunityCardComponent {
   }
 
   ngOnInit(){
-    this.currentUserHexKey = this.ndkProvider.currentUser?.hexpubkey();
+    this.currentUserHexKey = this.ndkProvider.currentUser?.pubkey;
+    if(!this.community){
+      var self = this;
+      this.ndkProvider.getCommunityDetails(this.id).then((community)=>{
+        self.community = community;
+        self.setIsFollowed();
 
-    this.setIsFollowed();
-
-    if(!this.community.creatorProfile){
-      this.fetchCreatorProfile();
-    }
+        if(!self.community?.creatorProfile){
+          self.fetchCreatorProfile();
+        }
+      })
+    }    
   }
 
   onShowInViewPort({ target, visible }: { target: Element; visible: boolean }): void{
@@ -48,22 +60,22 @@ export class CommunityCardComponent {
   setIsFollowed(){
     if(this.ndkProvider.appData.followedCommunities !== ''){
       const followedArr:string[] = this.ndkProvider.appData.followedCommunities.split(',')
-      if(followedArr.findIndex(id => this.community.id === id)>-1){
+      if(followedArr.findIndex(id => this.community?.id === id)>-1){
         this.followingNow = true;
       }
     }
   }
 
   async fetchCreatorProfile(){
-    const profile = await this.ndkProvider.getProfileFromHex(this.community.creatorHexKey!);
-    if(profile){
+    const profile = await this.ndkProvider.getProfileFromHex(this.community?.creatorHexKey!);
+    if(this.community!== undefined && profile){
       this.community.creatorProfile = profile;
     }
   }
 
   async fetchFollowers(){
-    if(!this.community.followersHexKeys){
-      const followers = await this.ndkProvider.fetchFollowersForCommunity(this.community.id!)
+    if(this.community!== undefined && !this.community?.followersHexKeys){
+      const followers = await this.ndkProvider.fetchFollowersForCommunity(this.community?.id!)
       this.community.followersHexKeys = followers;
     }    
   }
@@ -78,16 +90,16 @@ export class CommunityCardComponent {
   }
 
   openCommunityPage(){
-      this.router.navigateByUrl('n/'+this.community.name+'/'+this.community.creatorHexKey)
+      this.router.navigateByUrl('n/'+this.community?.name+'/'+this.community?.creatorHexKey)
   }
 
   openCommunityCreatorInSnort(){
-    window.open('https://snort.social/p/'+this.community.creatorHexKey!,'_blank')
+    window.open('https://snort.social/p/'+this.community?.creatorHexKey!,'_blank')
   }
 
   async joinCommunity(){
     this.joinOrLeaveInProgress = true;
-    await this.communityService.joinCommunity(this.community);
+    await this.communityService.joinCommunity(this.community!);
     this.followingNow = true;
     await this.communityService.clearCommunitiesFromAppData();
     this.joinOrLeaveInProgress = false;
@@ -95,7 +107,7 @@ export class CommunityCardComponent {
 
   async leaveCommunity(){
     this.joinOrLeaveInProgress = true;
-    await this.communityService.leaveCommunity(this.community);
+    await this.communityService.leaveCommunity(this.community!);
 
     this.followingNow = false;
     this.onLeave.emit(this.community);

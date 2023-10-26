@@ -66,7 +66,7 @@ export class PreferencesPageComponent {
     var language = localStorage.getItem(Constants.LANGUAGE);
     if (language != null || language != undefined || language != '') {
       this.currentLanguage = language as string;
-      this.translate.use(this.currentLanguage)
+      this.translate.use(this.currentLanguage || 'en')
     } else {
       this.currentLanguage = 'en';
     }
@@ -113,7 +113,7 @@ export class PreferencesPageComponent {
     let recipients = (<HTMLInputElement>document.getElementById('downzap-recipients')).value;
     let supposedUser = await this.ndkProvider.getNdkUserFromNpub(recipients);
     if (supposedUser !== undefined) {
-        this.ndkProvider.buildAndPublishDownzapRecipient([supposedUser.hexpubkey()])
+        this.ndkProvider.buildAndPublishDownzapRecipient([supposedUser.pubkey])
       this.downzapSetSuccessMessage =
         'Sending downzaps to ' +
         (supposedUser.profile?.displayName ? supposedUser.profile?.displayName : supposedUser.profile?.name);

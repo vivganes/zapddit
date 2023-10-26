@@ -15,7 +15,7 @@
       <div class="clr-col-12 ptb-3">
         <clr-input-container>
           <label translate>Display Name</label>
-          <input clrInput required [(ngModel)]="newCommunity.displayName" (keydown.enter)="$event.preventDefault()"
+          <input *ngIf="newCommunity" clrInput required [(ngModel)]="newCommunity.displayName" (keydown.enter)="$event.preventDefault()"
           [disabled]="editMode"
           type="text" placeholder="eg: BotNostriches" (ngModelChange)="displayNameUpdate($event)"
           id="community-display-name" name="community-display-name">
@@ -25,7 +25,7 @@
       <div class="clr-col-12 ptb-3">
         <clr-input-container >
           <label translate>Name</label>
-          <input clrInput [disabled]="true" (keydown.enter)="$event.preventDefault()"
+          <input  *ngIf="newCommunity" clrInput [disabled]="true" (keydown.enter)="$event.preventDefault()"
           type="text" required [value]="'n/'+ (newCommunity.name?newCommunity.name:'botnostriches')"
           id="community-name" name="community-name" >
           <clr-control-helper translate>Please enter display name, this will be automatically populated</clr-control-helper>
@@ -34,7 +34,7 @@
       <div class="clr-col-12 ptb-3">
         <clr-input-container>
         <label translate>Image URL</label>
-        <input clrInput [(ngModel)]="newCommunity.image" (keydown.enter)="$event.preventDefault()"
+        <input  *ngIf="newCommunity" clrInput [(ngModel)]="newCommunity.image" (keydown.enter)="$event.preventDefault()"
           type="text" placeholder="eg: https://...png"
           id="community-image" name="community-image" >
         </clr-input-container>
@@ -42,7 +42,7 @@
       <div class="clr-col-12 ptb-3">
         <clr-textarea-container>
         <label translate>Description</label>
-        <textarea clrTextarea
+        <textarea *ngIf="newCommunity" clrTextarea
             cols="30"
             rows="6" [(ngModel)]="newCommunity.description"
             id="community-description"
@@ -52,7 +52,7 @@
       <div class="clr-col-12 ptb-3">
         <clr-textarea-container>
         <label translate>Rules</label>
-        <textarea clrTextarea
+        <textarea  *ngIf="newCommunity" clrTextarea
             id="community-rules"
             cols="30"
             rows="6" [(ngModel)]="newCommunity.rules"
@@ -74,7 +74,7 @@
           </clr-control-helper>          
         </clr-input-container>
         <div class="clr-col-12 pl-5 clr-subtext pt-10" >
-          <div *ngFor="let item of this.newCommunity.moderatorHexKeys" class="pt-10 inline-display">
+          <div *ngFor="let item of this.newCommunity?.moderatorHexKeys" class="pt-10 inline-display">
                 <app-user-pic-and-name [hexKey]="item" [showClickableDeleteIcon]="item!==newCommunity.creatorHexKey" (deleteIconClicked)="deleteModerator($event)"></app-user-pic-and-name>
           </div>
         </div>

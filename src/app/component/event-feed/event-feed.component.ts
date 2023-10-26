@@ -176,7 +176,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     if (this.tag && this.tag !== '') {
       fetchedEvents = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
     } else if (this.community){
-      fetchedEvents = await this.ndkProvider.fetchEventsFromCommunity(this.community || '', this.limit, undefined, this.until);
+      fetchedEvents = await this.ndkProvider.fetchEventsFromCommunity(this.community, this.limit, undefined, this.until);
     } else {
       if(this.feedType === FeedType.TOPICS_FEED){
         if(this.ndkProvider.appData.followedTopics.length > 0){

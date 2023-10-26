@@ -20,6 +20,7 @@ const routes: Routes = [
   { path: 'communities/joined', component: CommunityListComponent },
   { path: 'communities/own', component: CommunityListComponent },  
   { path: 'communities/moderating', component: CommunityListComponent },
+  { path: 'communities/recently-active', component: CommunityListComponent },
   { path: 'n/:communityName/:creatorHexKey', component: EventFeedComponent },
   { path: '**', component: EventFeedComponent },
 ];
