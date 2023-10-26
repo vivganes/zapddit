@@ -27,7 +27,7 @@
     </h3>
   </div>  
 </div>
-<div class="clr-row clr-justify-content-end">
+<div *ngIf="!showRecentlyActiveCommunities" class="clr-row clr-justify-content-end">
     <div class="clr-col-md-3 clr-col-10">
         <form class="search"  onsubmit="return false;">
             <label for="search_input_mobile">
