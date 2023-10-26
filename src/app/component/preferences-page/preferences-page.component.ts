@@ -66,7 +66,7 @@ export class PreferencesPageComponent {
     var language = localStorage.getItem(Constants.LANGUAGE);
     if (language != null || language != undefined || language != '') {
       this.currentLanguage = language as string;
-      this.translate.use(this.currentLanguage)
+      this.translate.use(this.currentLanguage || 'en')
     } else {
       this.currentLanguage = 'en';
     }

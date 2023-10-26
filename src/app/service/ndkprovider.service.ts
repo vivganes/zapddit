@@ -501,6 +501,11 @@ export class NdkproviderService {
     })
   }
 
+  createSubscriptionForCommunityEvents(){
+    //@ts-ignore
+    return this.ndk.subscribe({ kinds: [4550] });
+  }
+
   async fetchFollowersAndCache(peopleIFollowFromRelay: Set<NDKUser> | undefined) {
     if (peopleIFollowFromRelay) {
       localStorage.setItem(Constants.FOLLOWERS_FROM_RELAY, 'true');
@@ -703,7 +708,7 @@ export class NdkproviderService {
       if(moderatorHexKeys.indexOf(communityEvent.pubkey)===-1){
         moderatorHexKeys.push(communityEvent.pubkey);
       }
-      return {
+      const communityToReturn =  {
         id: '34550:'+creatorHexKey+':'+name,
         name:name,
         description: description,
@@ -712,6 +717,8 @@ export class NdkproviderService {
         moderatorHexKeys: moderatorHexKeys,
         rules:rules,
       }
+      this.communityCache.addCommunity(communityToReturn);
+      return communityToReturn;
     }
     return undefined;
   }
@@ -730,13 +737,15 @@ export class NdkproviderService {
 
   async fetchCommunities(limit?: number, since?: number, until?: number, ownedOnly?:boolean, moderatingOnly?: boolean ):Promise<Community[] | undefined>{
     //@ts-ignore
-    const filter: NDKFilter = { kinds: [34550],
+    let filter: NDKFilter = { kinds: [34550],
       limit: limit,
       since:since,
       until:until,
       authors: (ownedOnly? [this.currentUser?.pubkey!] : undefined),
-      '#p':(moderatingOnly? [this.currentUser?.pubkey!] : undefined)
     };
+    if(moderatingOnly){
+      filter = {...filter, '#p':[this.currentUser?.pubkey!]}
+    }
     const events = await this.ndk?.fetchEvents(filter,{});
     let returnValue:Community[] = this.makeCommunitiesFromEvents(events);
     returnValue.forEach((c) => this.communityCache.addCommunity(c));

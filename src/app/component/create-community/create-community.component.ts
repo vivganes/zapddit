@@ -47,7 +47,7 @@ export class CreateCommunityComponent implements OnInit{
       } else {
         if(this.newCommunity && !this.newCommunity.moderatorHexKeys){
           this.newCommunity.moderatorHexKeys = [this.newCommunity.creatorHexKey!]
-        } else if (this.newCommunity.moderatorHexKeys?.indexOf(this.newCommunity.creatorHexKey!) === -1){
+        } else if (this.newCommunity?.moderatorHexKeys?.indexOf(this.newCommunity.creatorHexKey!) === -1){
           this.newCommunity.moderatorHexKeys.push(this.newCommunity.creatorHexKey!);     
         }
       }  

@@ -35,6 +35,7 @@ import {
   starIcon,
   flagIcon,
   arrowIcon,
+  bubbleExclamationIcon,
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
@@ -51,7 +52,7 @@ import {
   BreakpointState
 } from '@angular/cdk/layout';
 
-ClarityIcons.addIcons(flagIcon, starIcon,internetOfThingsIcon,thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
+ClarityIcons.addIcons(flagIcon, bubbleExclamationIcon,starIcon,internetOfThingsIcon,thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -78,7 +79,7 @@ export class AppComponent implements OnInit, OnDestroy{
     var language = localStorage.getItem(Constants.LANGUAGE);
     if (language != null || language != undefined || language != '') {
       this.currentLanguage = language as string;
-      this.translate.use(this.currentLanguage)
+      this.translate.use(this.currentLanguage || 'en')
     } else {
       localStorage.setItem(Constants.LANGUAGE,'en');
       this.currentLanguage = 'en';

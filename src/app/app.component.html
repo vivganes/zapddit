@@ -77,6 +77,9 @@
       <div class="nav-divider"></div>
       <label class="nav-header" *ngIf="!sidebarCollapsed">        
         {{'Communities'|translate}} <span class="label label-info" translate>BETA</span></label>
+      <a title="{{'Recently active communities'|translate}}"  clrVerticalNavLink routerLink="/communities/recently-active" routerLinkActive="active">
+        <cds-icon shape="bubble-exclamation" clrVerticalNavIcon></cds-icon><span class="nav-text" translate>Recently active</span>
+      </a>
       <a title="{{'Discover communities'|translate}}"  clrVerticalNavLink routerLink="/communities/discover" routerLinkActive="active">
         <cds-icon shape="search" clrVerticalNavIcon></cds-icon><span class="nav-text" translate>Discover</span>
       </a>

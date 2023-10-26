@@ -6,7 +6,7 @@ import { Community } from 'src/app/model/community';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { CommunityService } from '../../service/community.service';
 import { ObjectCacheService } from 'src/app/service/object-cache.service';
-import { filter } from 'rxjs';
+import { CommunityEventService } from 'src/app/observable-service/community-event.service';
 
 const BUFFER_REFILL_PAGE_SIZE = 100;
 const BUFFER_READ_PAGE_SIZE = 20;
@@ -31,12 +31,14 @@ export class CommunityListComponent {
   showOnlyOwnedCommunities: boolean = false;
   showOnlyJoinedCommunities: boolean = false;
   showOnlyModeratingCommunities:boolean = false;
+  showRecentlyActiveCommunities:boolean = false;
   searchResults?:Community[];
   showCreateCommunity:boolean = false;
+  communityEventService:CommunityEventService;
 
   constructor(public ndkProvider:NdkproviderService, private router:Router,
-     private communityService:CommunityService, private objectCache:ObjectCacheService){
-
+     private communityService:CommunityService, private objectCache:ObjectCacheService,  communityEventService:CommunityEventService){
+      this.communityEventService = communityEventService;
   }
 
   ngOnInit(){
@@ -51,6 +53,10 @@ export class CommunityListComponent {
 
     if(url.indexOf('/moderating')>-1){
       this.showOnlyModeratingCommunities = true;
+    }
+
+    if(url.indexOf('/recently-active')>-1){
+      this.showRecentlyActiveCommunities = true;
     }
 
     this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
