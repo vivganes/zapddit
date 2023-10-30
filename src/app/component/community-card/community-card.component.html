@@ -32,7 +32,7 @@
                     <app-user-pic-and-name [hexKey]="follower" [onlyPic]="true"/>
                 </span>
             </div>
-            <div class="card-text break-words-overflow">
+            <div *ngIf="!lastActive" class="card-text break-words-overflow">
                 <ngx-dynamic-hooks [content]="community.description | newLineToBr "></ngx-dynamic-hooks>
             </div>
         </div>
@@ -44,12 +44,20 @@
         </div>
     </div>
 </div>
-<div class="clr-col-12" inViewport *ngIf="!community">
+<div class="clr-col-12" inViewport *ngIf="!community && id">
           <div class="card">
             <div class="card-block">
                 <div class="card-media-block">
-                    <span class="spinner spinner-md" translate>Loading community...</span>
+                    {{'n/'+id.split(':')[2]}}
                 </div>
+                <div *ngIf="lastActive" class="card-text break-words-overflow">                
+                    <span class="badge badge-purple">
+                        {{'Active'|translate}} {{lastActive | formatTimestamp }}
+                      </span>
+                </div>
+            </div>
+            <div class="card-block">
+                <span class="spinner spinner-md" translate>Loading community...</span>
             </div>
           </div>
        

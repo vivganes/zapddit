@@ -20,6 +20,7 @@ export class OnboardingWizardComponent {
   dailyDoseSeeker:boolean = false;
   newsReader:boolean = false;
   memeEnjoyer:boolean =false;
+  questionAnswerer: boolean = false;
   btcMaxi:boolean = false;
   foodLover:boolean = false;
   plebLover:boolean = false;
@@ -44,6 +45,9 @@ export class OnboardingWizardComponent {
     }
     if(this.newsReader){
       newTopics.push('news','worldnews');
+    }
+    if(this.questionAnswerer){
+      newTopics.push('asknostr');
     }
     if(this.memeEnjoyer){
       newTopics.push('memechain','meme','memes')

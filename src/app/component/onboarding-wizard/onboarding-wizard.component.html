@@ -74,12 +74,16 @@
                                 <label>{{'I wish to start my day with a daily dose of nostr'|translate}} ☕</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
+                                <input type="checkbox" clrCheckbox name="memeEnjoyer" [(ngModel)]="memeEnjoyer" (change)="updateTopics()" />
+                                <label>{{'I want memes! MEMES!'|translate}} 😆</label>
+                            </clr-checkbox-wrapper>
+                            <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="newsReader" [(ngModel)]="newsReader" (change)="updateTopics()" />
                                 <label>{{'I am a big news bug'|translate}} 📰</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
-                                <input type="checkbox" clrCheckbox name="memeEnjoyer" [(ngModel)]="memeEnjoyer" (change)="updateTopics()" />
-                                <label>{{'I want memes! MEMES!'|translate}} 😆</label>
+                                <input type="checkbox" clrCheckbox name="questionAnswerer" [(ngModel)]="questionAnswerer" (change)="updateTopics()" />
+                                <label>{{'I like answering questions of others'|translate}} 🤔</label>
                             </clr-checkbox-wrapper>
                             <clr-checkbox-wrapper>
                                 <input type="checkbox" clrCheckbox name="btcMaxi" [(ngModel)]="btcMaxi" (change)="updateTopics()"/>
