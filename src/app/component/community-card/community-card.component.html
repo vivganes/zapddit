@@ -6,7 +6,7 @@
             <img *ngIf="community.image" (click)="openCommunityPage()" alt="{{'Community image'|translate}}" src="{{ community.image }}"
             class="community-banner pointer-cursor" title="{{'Browse'| translate}} n/{{community.name}}" />
         <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community.image == undefined"
-            class="community-banner pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
+            class="community-banner pointer-cursor" src="/assets/community-banner-1.png"
             title="Browse n/{{community.name}}" />
         </div>
         <div class="card-header">

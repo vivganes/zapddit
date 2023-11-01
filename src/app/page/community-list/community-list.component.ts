@@ -62,7 +62,10 @@ export class CommunityListComponent {
     this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
       this.isLoggedInUsingPubKey = val;
     });
-    this.fetchCommunities();
+
+    if(url.indexOf('/recently-active')==-1){
+      this.fetchCommunities();
+    }
   }
 
   onLeave(community:any){
