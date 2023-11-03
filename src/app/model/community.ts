@@ -6,9 +6,10 @@ export interface Community{
     displayName?:string,
     id?:string,
     description?:string,
-    rules?:string;
+    rules?:string,
     image?:string,
     creatorProfile?:NDKUserProfile,
     moderatorHexKeys?:string[],
-    followersHexKeys?:string[]
+    followersHexKeys?:string[],
+    created_at?: number
 }

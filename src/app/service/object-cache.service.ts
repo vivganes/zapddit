@@ -7,8 +7,10 @@ import { Community } from '../model/community';
 
 const DATASTORE = {
   users: "hexPubKey, name, displayName, nip05, npub",
-  communities: "id,name,displayName,creatorHexKey,description"
+  communities: "id,name,displayName,creatorHexKey,description,created_at"
 };
+
+const VERSION = 1;
 
 
 @Injectable({
@@ -26,7 +28,7 @@ export class ObjectCacheService extends Dexie {
     this.version(1).stores({
       users: DATASTORE.users
     });
-    this.version(2).stores(DATASTORE);
+    this.version(Math.round(this.verno + 2)).stores(DATASTORE);
   }
 
   

@@ -390,26 +390,31 @@ export class NdkproviderService {
         await newNDK.assertSigner();
       }
       try {
-        await newNDK.connect(1000).catch(e => console.log(e));
+        await newNDK.connect(1000)
+        .then(()=>{
+          this.isTryingZapddit = false;
+          this.refreshAppData().then(() => {
+            this.loggingIn = false;
+            //once all setup is done, then only set loggedIn=true to start rendering
+            this.loggedIn = true;
+            this.loginCompleteEmitter.emit(true);
+        
+            this.fetchFollowersFromCache();
+            this.fetchMutedUsersFromCache();
+      
+            this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.pubkey);
+            
+          });
+      
+          
+        })
+        .catch(e => console.log(e));
         this.ndk = newNDK;
       } catch (e) {
         console.log('Error in connecting NDK ' + e);
       }
     }
-    this.isTryingZapddit = false;
-    await this.refreshAppData();
-
-    this.loggingIn = false;
-    //once all setup is done, then only set loggedIn=true to start rendering
-    this.loggedIn = true;
-    this.loginCompleteEmitter.emit(true);
-
-    this.fetchFollowersFromCache();
-    this.fetchMutedUsersFromCache();
-
-
-    await this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.pubkey);
-    
+ 
   }
 
   isLoggedIn(): boolean {
@@ -818,7 +823,8 @@ export class NdkproviderService {
           rules: rules,
           image: image,
           creatorHexKey: creatorHexKey,
-          moderatorHexKeys: moderatorHexKeys
+          moderatorHexKeys: moderatorHexKeys,
+          created_at: communityEvent.created_at
         });
       }
     }
