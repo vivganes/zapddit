@@ -389,11 +389,16 @@ export class NdkproviderService {
       if (this.isNip07) {
         await newNDK.assertSigner();
       }
-      try {
-        await newNDK.connect(1000)
+      try {        
+        const oldNDK = this.ndk;
+        oldNDK?.removeAllListeners();
+        newNDK.connect(1000)
         .then(()=>{
+          console.log('ndk connected');
           this.isTryingZapddit = false;
           this.refreshAppData().then(() => {
+            console.log('refreshed app data')
+            this.ndk = newNDK;
             this.loggingIn = false;
             //once all setup is done, then only set loggedIn=true to start rendering
             this.loggedIn = true;
@@ -409,7 +414,6 @@ export class NdkproviderService {
           
         })
         .catch(e => console.log(e));
-        this.ndk = newNDK;
       } catch (e) {
         console.log('Error in connecting NDK ' + e);
       }
