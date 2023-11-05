@@ -1,7 +1,7 @@
 <div>
   <div>
     <h3 *ngIf="!showOnlyOwnedCommunities && !showOnlyJoinedCommunities && !showOnlyModeratingCommunities  && !showRecentlyActiveCommunities" align="center">
-        <cds-icon shape="users" size="lg" solid="true"></cds-icon> {{'Discover Communities'|translate}} <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
+        <cds-icon shape="users" size="lg" solid="true"></cds-icon> {{'Search Communities'|translate}} <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
             <cds-icon shape="plus-circle"></cds-icon> {{'New Community'|translate}}
         </button>
     </h3>
@@ -79,7 +79,7 @@
     <div *ngIf="!searchInProgress && discoverCommunities && searchTerm.length <=2" class="clr-row page-center">
         <div class="alert-items">
             <div class="alert-item static clr-justify-content-center">
-                <span class="alert-text" translate>Search to see communities 👆</span>
+                <span class="alert-text">{{'Search to see communities'|translate}} 👆</span>
             </div>
         </div>
     </div> 
