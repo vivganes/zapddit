@@ -20,6 +20,7 @@ export class PreferencesPageComponent {
   downzapSetSuccessMessage: string | undefined;
   topicService: TopicService;
   isLoggedInUsingPubKey: boolean = false;
+  downzapRecipientInForm?: string;
 
   ndkProvider: NdkproviderService;
   settingDefaultSats: boolean = false;
@@ -86,6 +87,7 @@ export class PreferencesPageComponent {
     if (defaultFeedIsCommunity && defaultFeedIsCommunity === 'true') {
       this.showCommunitiesFeedByDefault = true;
     }
+    this.downzapRecipientInForm = this.ndkProvider.appData.downzapRecipients;
     this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
       Promise.resolve().then(() => {
         this.isLoggedInUsingPubKey = val;
@@ -100,6 +102,13 @@ export class PreferencesPageComponent {
     })
 
     await this.getRelayList();
+  }
+
+  downZapRecipientChange(evt:any){
+    const newValue = evt.target.value;
+    console.log(newValue);
+    this.downzapRecipientInForm = newValue;
+    this.changeDetector.detectChanges();
   }
 
   copyPrivateKey() {

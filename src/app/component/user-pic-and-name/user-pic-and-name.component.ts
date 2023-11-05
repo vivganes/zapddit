@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { ObjectCacheService } from 'src/app/service/object-cache.service';
@@ -30,6 +30,12 @@ export class UserPicAndNameComponent {
 
   constructor(private ndkProvider:NdkproviderService, private objectCache:ObjectCacheService){
 
+  }
+
+  ngOnChanges(changes:SimpleChanges){
+    if(changes['npub'].currentValue !== changes['npub'].previousValue){
+      this.populateUserUsingNpub();
+    }
   }
 
   ngOnInit(){

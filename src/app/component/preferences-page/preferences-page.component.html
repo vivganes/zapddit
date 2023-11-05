@@ -44,10 +44,14 @@
             [disabled]="!ndkProvider.canWriteToNostr"
             cols="50"
             id="downzap-recipients"
-            placeholder="{{'npub of the recipient'|translate}}" >{{ ndkProvider.appData.downzapRecipients }}</textarea>
+            [(ngModel)]="downzapRecipientInForm"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="{{'npub of the recipient'|translate}}" >{{ downzapRecipientInForm }}</textarea>
             <clr-control-helper translate>npub of the person who will receive the sats for your downzaps</clr-control-helper>
         </clr-textarea-container>
-
+        <div>
+          <app-user-pic-and-name npub="{{downzapRecipientInForm}}"></app-user-pic-and-name>
+        </div>  
 
         <div *ngIf="downzapRecipientsError" class="alert alert-danger" role="alert">
           <div class="alert-items">
