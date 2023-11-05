@@ -21,6 +21,7 @@ export class CommunityListComponent {
   searchTerm:string='';
   communities?:Community[];
   allCommunities?:Observable<Community[]>;
+  isCachingCommunities:boolean;
   until: number | undefined = Date.now();
   limit: number | undefined = BUFFER_REFILL_PAGE_SIZE;
   loadingEvents: boolean = false;
@@ -35,13 +36,27 @@ export class CommunityListComponent {
   searchResults?:Community[];
   showCreateCommunity:boolean = false;
   communityEventService:CommunityEventService;
+  searchInProgress:boolean = false;
+  discoverCommunities:boolean = false;
 
   constructor(public ndkProvider:NdkproviderService, private router:Router,
      private communityService:CommunityService, private objectCache:ObjectCacheService,  communityEventService:CommunityEventService){
       this.communityEventService = communityEventService;
   }
 
+
   ngOnInit(){
+    this.ndkProvider.loadingCommunitiesEmitter$.subscribe((loading)=>{
+      if(loading){
+        console.log("Received event for true")
+        this.isCachingCommunities = true
+      } else {
+        console.log("Received event for false")
+        this.isCachingCommunities = false
+      }
+    })
+
+
     const url = this.router.url;
     if(url.indexOf('/own')>-1){
       this.showOnlyOwnedCommunities = true;
@@ -55,6 +70,10 @@ export class CommunityListComponent {
       this.showOnlyModeratingCommunities = true;
     }
 
+    if(url.indexOf('/discover')>-1){
+      this.discoverCommunities = true;
+    }
+
     if(url.indexOf('/recently-active')>-1){
       this.showRecentlyActiveCommunities = true;
     }
@@ -63,9 +82,9 @@ export class CommunityListComponent {
       this.isLoggedInUsingPubKey = val;
     });
 
-    if(url.indexOf('/recently-active')==-1){
+    if(!this.discoverCommunities && !this.showRecentlyActiveCommunities ){
       this.fetchCommunities();
-    }
+    } 
   }
 
   onLeave(community:any){
@@ -76,15 +95,20 @@ export class CommunityListComponent {
 
   onSearchTermChange(){
     let searchFor = this.searchTerm;
-    if(searchFor.startsWith('n/')){
-      searchFor = searchFor.substring(2,searchFor.length);
+    if(searchFor.length>2){
+      if(searchFor.startsWith('n/')){
+        searchFor = searchFor.substring(2,searchFor.length);
+      }
+      this.populateSearchResults(searchFor); 
     }
-    this.populateSearchResults(searchFor);
-    
+       
   }
 
   async populateSearchResults(searchFor:string){
-    const filtered = this.communities?.filter((c) => {
+    if(searchFor.length>0){
+      this.searchInProgress = true;
+      const filtered = await this.objectCache.communities?.filter((c) => {
+    //this.communities?.filter((c) => {
       if(c.displayName && c.displayName.toLocaleLowerCase().indexOf(searchFor.toLocaleLowerCase())>-1){
         return true;
       }
@@ -93,7 +117,13 @@ export class CommunityListComponent {
       }
       return false;
     })
-    this.searchResults = filtered;
+      this.searchResults = await filtered.toArray();
+      this.searchInProgress = false;
+    } else {
+      this.searchInProgress = false;
+      this.searchResults = this.communities;
+    }
+    
   }
 
   async fetchCommunities(){

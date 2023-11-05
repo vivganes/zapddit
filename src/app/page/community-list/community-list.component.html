@@ -1,7 +1,7 @@
 <div>
   <div>
     <h3 *ngIf="!showOnlyOwnedCommunities && !showOnlyJoinedCommunities && !showOnlyModeratingCommunities  && !showRecentlyActiveCommunities" align="center">
-        <cds-icon shape="users" size="lg" solid="true"></cds-icon> {{'Recently Created Communities'|translate}} <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
+        <cds-icon shape="users" size="lg" solid="true"></cds-icon> {{'Discover Communities'|translate}} <button type="button" class="btn btn-icon btn-primary btn-sm" aria-label="new community" (click)="showCreateCommunity = !showCreateCommunity" *ngIf="this.ndkProvider.canWriteToNostr">
             <cds-icon shape="plus-circle"></cds-icon> {{'New Community'|translate}}
         </button>
     </h3>
@@ -27,14 +27,30 @@
     </h3>
   </div>  
 </div>
-<div *ngIf="!showRecentlyActiveCommunities" class="clr-row clr-justify-content-end">
-    <div class="clr-col-md-3 clr-col-10">
-        <form class="search"  onsubmit="return false;">
-            <label for="search_input_mobile">
-                <input clrInput id="search_input" type="search"  placeholder="🔎︎ {{'Search'|translate}}..." [(ngModel)]="searchTerm" 
-                name="search_input" (ngModelChange)="onSearchTermChange()">
-            </label>
+<div class="clr-row clr-justify-content-end">
+    <div class="clr-col-md-5 clr-col-10">
+        <form class="search clr-form"  onsubmit="return false;">
+            <div class="clr-form-control">
+            <div class="clr-control-container {{(searchTerm.length>0 && searchTerm.length <=2)?'clr-error':''}}">
+                <div class="clr-input-wrapper">
+                    <input clrInput id="search_input" type="search"  placeholder="🔎︎ {{'Type 3 letters'|translate}}..." [(ngModel)]="searchTerm" 
+                    name="search_input" (ngModelChange)="onSearchTermChange()">
+                </div>
+                <span *ngIf="searchTerm.length>0 && searchTerm.length <=2" class="clr-subtext">Enter minimum of 3 characters</span>
+            </div> 
+            </div>  
         </form>
+    </div>
+</div>
+
+<div *ngIf="isCachingCommunities && searchTerm.length>2" class="alert alert-warning" role="alert">
+    <div class="alert-items">
+      <div class="alert-item static">
+        <div class="alert-icon-wrapper">
+          <cds-icon class="alert-icon" shape="exclamation-triangle"></cds-icon>
+        </div>
+        <span class="alert-text" translate>All communities have not yet loaded. Search results may be partial.</span>
+      </div>
     </div>
 </div>
    
@@ -45,7 +61,13 @@
         </div>
     </div>
 
-    <div *ngIf="!(loadingEvents) && communities?.length === 0" class="clr-row page-center">
+    <div *ngIf="searchInProgress" class="clr-col-12">
+        <div class="event-loading-spinner clr-justify-content-center">
+            <span class="spinner spinner-md" translate>Searching communities...</span>
+        </div>
+    </div>
+
+    <div *ngIf="!(loadingEvents) && !discoverCommunities && communities?.length === 0" class="clr-row page-center">
         <div class="alert-items">
             <div class="alert-item static clr-justify-content-center">
                 <span *ngIf="!showOnlyOwnedCommunities" class="alert-text" translate>No communities at all. Fishy!</span>
@@ -53,18 +75,28 @@
             </div>
         </div>
     </div>  
-    <ng-template [ngIf]="showRecentlyActiveCommunities"> 
-        <div *ngFor="let community of communityEventService.communityEvents | async" class="clr-col-12 clr-col-md-5" >
-            <app-community-card [id]="community.communityId" [lastActive]="community.recentActivityAt!" (onLeave)="onLeave($event)"></app-community-card>
+
+    <div *ngIf="!searchInProgress && discoverCommunities && searchTerm.length <=2" class="clr-row page-center">
+        <div class="alert-items">
+            <div class="alert-item static clr-justify-content-center">
+                <span class="alert-text" translate>Search to see communities 👆</span>
+            </div>
         </div>
+    </div> 
+    <ng-template [ngIf]="showRecentlyActiveCommunities"> 
+        <ng-template [ngIf]="!searchTerm || searchTerm.length<=2"> 
+            <div *ngFor="let community of communityEventService.communityEvents | async" class="clr-col-12 clr-col-md-5" >
+                <app-community-card [id]="community.communityId" [lastActive]="community.recentActivityAt!" (onLeave)="onLeave($event)"></app-community-card>
+            </div>
+        </ng-template>        
     </ng-template> 
 
-    <ng-template [ngIf]="!showRecentlyActiveCommunities && searchTerm.length === 0">
+    <ng-template [ngIf]="!showRecentlyActiveCommunities && searchTerm.length <=2">
         <div *ngFor="let community of communities " class="clr-col-12 clr-col-md-5">
             <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
         </div>
     </ng-template>
-    <ng-template [ngIf]="!showRecentlyActiveCommunities && searchTerm.length > 0">
+    <ng-template [ngIf]="searchTerm.length > 2">
         <div *ngFor="let community of searchResults " class="clr-col-12 clr-col-md-5">
             <app-community-card [community]="community" (onLeave)="onLeave($event)"></app-community-card>
         </div>

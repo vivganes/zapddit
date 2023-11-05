@@ -13,7 +13,9 @@ import NDK, {
   NDKSubscription,
   NDKSigner,
   NDKPrivateKeySigner,
-  NDKKind
+  NDKKind,
+  NDKRelay,
+  NDKRelayList
 } from '@nostr-dev-kit/ndk';
 import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
@@ -71,6 +73,7 @@ export class NdkproviderService {
   loggedIn: boolean = false;
   loggingIn: boolean = false;
   loginError: string | undefined;
+  loadingCommunitiesEmitter$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   loginCompleteEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   followedTopicsEmitter: EventEmitter<string> = new EventEmitter<string>();
   followedCommunitiesEmitter: EventEmitter<string> = new EventEmitter<string>();
@@ -237,6 +240,8 @@ export class NdkproviderService {
     this.ndk = new NDK({      
       cacheAdapter: dexieAdapter,
       explicitRelayUrls: explicitRelayUrls,
+      autoConnectUserRelays: true,
+      autoFetchUserMutelist: true
     });
     await this.ndk.connect(1000);
     this.loggedIn = true;
@@ -264,7 +269,11 @@ export class NdkproviderService {
     }
 
     const params: NDKConstructorParams = { 
-      cacheAdapter: dexieAdapter, signer: this.signer, explicitRelayUrls: explicitRelayUrls };
+      cacheAdapter: dexieAdapter, signer: this.signer, 
+      explicitRelayUrls: explicitRelayUrls,
+      autoConnectUserRelays: true,
+      autoFetchUserMutelist: true
+     };
     this.ndk = new NDK(params);
 
     await this.ndk.connect(1000);
@@ -349,7 +358,10 @@ export class NdkproviderService {
           relayUrls = localStorage.getItem(Constants.RELAYSUBS)?.split(',');
         }
         const params: NDKConstructorParams = { 
-          cacheAdapter: dexieAdapter, signer: this.signer, explicitRelayUrls: relayUrls ? relayUrls : explicitRelayUrls };
+          cacheAdapter: dexieAdapter, signer: this.signer, 
+          explicitRelayUrls: relayUrls ? relayUrls : explicitRelayUrls,
+          autoConnectUserRelays: true,
+          autoFetchUserMutelist: true };
         this.ndk = new NDK(params);
         await this.ndk.assertSigner();
         await this.ndk.connect(1000);
@@ -371,7 +383,7 @@ export class NdkproviderService {
     this.currentUserProfile = await this.getProfileFromNpub(npub);
     this.currentUser = await this.getNdkUserFromNpub(npub);
     const userRelays = await this.fetchSubscribedRelaysFromCache();
-
+    console.log(userRelays.length + " relays found")
     let relayUrls: string[] = [];
     userRelays.forEach(x => {
       if(x.url && x.url !== ''){
@@ -384,7 +396,10 @@ export class NdkproviderService {
 
     if (relayUrls && relayUrls.length > 0) {
       const newNDKParams = { 
-        cacheAdapter: dexieAdapter, signer: this.signer, explicitRelayUrls: relayUrls };
+        cacheAdapter: dexieAdapter, signer: this.signer,
+         explicitRelayUrls: relayUrls,
+         autoConnectUserRelays: true,
+         autoFetchUserMutelist: true };
       const newNDK = new NDK(newNDKParams);
       if (this.isNip07) {
         await newNDK.assertSigner();
@@ -392,6 +407,7 @@ export class NdkproviderService {
       try {        
         const oldNDK = this.ndk;
         oldNDK?.removeAllListeners();
+        console.log("trying to connect with new NDK...")
         newNDK.connect(1000)
         .then(()=>{
           console.log('ndk connected');
@@ -405,15 +421,15 @@ export class NdkproviderService {
             this.loginCompleteEmitter.emit(true);
         
             this.fetchFollowersFromCache();
-            this.fetchMutedUsersFromCache();
-      
+            this.fetchMutedUsersFromCache();            
             this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.pubkey);
+            this.loadCommunitiesToCache();
             
           });
       
           
         })
-        .catch(e => console.log(e));
+        .catch(e => console.log("come on.. ndk not loaded"));
       } catch (e) {
         console.log('Error in connecting NDK ' + e);
       }
@@ -503,7 +519,9 @@ export class NdkproviderService {
     const newNdk = new NDK({      
       cacheAdapter: dexieAdapter,
       signer: this.signer,
-      explicitRelayUrls: relayTags.map((tag) => tag[1])
+      explicitRelayUrls: relayTags.map((tag) => tag[1]),
+      autoConnectUserRelays: true,
+      autoFetchUserMutelist: true
     })
     newNdk.connect(1000).then(()=>{
       this.ndk = newNdk;
@@ -691,6 +709,15 @@ export class NdkproviderService {
     return await this.dbService.mutedPeople.toArray();
   }
 
+  async loadCommunitiesToCache(){
+    this.loadingCommunitiesEmitter$.next(true);
+    console.log("Loading communities to cache...");
+    this.fetchCommunities().then(()=>{
+      this.loadingCommunitiesEmitter$.next(false);
+      console.log("Cached all communities...")
+    })
+  }
+
   async getCommunityDetails(id: string): Promise<Community|undefined> {
     const communityFromCache = await this.communityCache.fetchCommunityWithId(id);
     if(communityFromCache){
@@ -792,44 +819,48 @@ export class NdkproviderService {
     let returnValue = [];
     if (events) {
       for (let communityEvent of events) {
-        const name = communityEvent.getMatchingTags('d')[0][1];
-        let displayName;
-        const displayNameTags = communityEvent.getMatchingTags('name');
-        if(displayNameTags && displayNameTags.length>0){
-          displayName = displayNameTags[0][1]
-        }
-        const descriptionTag = communityEvent.getMatchingTags('description');
-        let description;
-        if (descriptionTag && descriptionTag.length > 0) {
-          description = descriptionTag[0][1];
-        };
-        let rules;
-        const rulesTag = communityEvent.getMatchingTags('rules');
-        if (rulesTag && rulesTag.length > 0) {
-          rules = rulesTag[0][1];
-        };
-        let moderatorHexKeys:string[] = [];
-        const moderatorTags = communityEvent.getMatchingTags('p');
-        if(moderatorTags && moderatorTags.length > 0){
-          moderatorHexKeys = moderatorTags.map((t)=> t[1]);
-        }
-        const creatorHexKey = communityEvent.pubkey;
-        let image;
-        const imageTag = communityEvent.getMatchingTags('image');
-        if (imageTag && imageTag.length > 0) {
-          image = imageTag[0][1];
-        }
-        returnValue.push({
-          id: '34550:' + creatorHexKey + ':' + name,
-          displayName: displayName,
-          name: name,
-          description: description,
-          rules: rules,
-          image: image,
-          creatorHexKey: creatorHexKey,
-          moderatorHexKeys: moderatorHexKeys,
-          created_at: communityEvent.created_at
-        });
+        try{
+          const name = communityEvent.getMatchingTags('d')[0][1];
+          let displayName;
+          const displayNameTags = communityEvent.getMatchingTags('name');
+          if(displayNameTags && displayNameTags.length>0){
+            displayName = displayNameTags[0][1]
+          }
+          const descriptionTag = communityEvent.getMatchingTags('description');
+          let description;
+          if (descriptionTag && descriptionTag.length > 0) {
+            description = descriptionTag[0][1];
+          };
+          let rules;
+          const rulesTag = communityEvent.getMatchingTags('rules');
+          if (rulesTag && rulesTag.length > 0) {
+            rules = rulesTag[0][1];
+          };
+          let moderatorHexKeys:string[] = [];
+          const moderatorTags = communityEvent.getMatchingTags('p');
+          if(moderatorTags && moderatorTags.length > 0){
+            moderatorHexKeys = moderatorTags.map((t)=> t[1]);
+          }
+          const creatorHexKey = communityEvent.pubkey;
+          let image;
+          const imageTag = communityEvent.getMatchingTags('image');
+          if (imageTag && imageTag.length > 0) {
+            image = imageTag[0][1];
+          }
+          returnValue.push({
+            id: '34550:' + creatorHexKey + ':' + name,
+            displayName: displayName,
+            name: name,
+            description: description,
+            rules: rules,
+            image: image,
+            creatorHexKey: creatorHexKey,
+            moderatorHexKeys: moderatorHexKeys,
+            created_at: communityEvent.created_at
+          });
+        } catch(e){
+          console.log(e);
+        }        
       }
     }
     return returnValue;
@@ -1104,6 +1135,7 @@ export class NdkproviderService {
 
 
   async refreshAppData() {
+    console.log("refreshing app data...")
     let hashtags:string[] = []
     let mutedhashtags:string[] = []
     let initCommunities:string[] = []
@@ -1376,6 +1408,7 @@ export class NdkproviderService {
     let relayEvent: NDKEvent |null|undefined;
     // nip 65 specifies a kind 10002 event to broadcast a user's subscribed relays
     const filter: NDKFilter = { kinds: [10002], authors: [hexPubKey] };
+    console.log("trying to get user 10002 events")
     const relayEvents = (await this.ndk?.fetchEvents(filter,{}));
     if(relayEvents){
       const sortedRelayEvents = [...relayEvents].sort((a:NDKEvent,b:NDKEvent)=> b.created_at!-a.created_at!)
@@ -1383,6 +1416,7 @@ export class NdkproviderService {
       if (!relayEvent){ // failover to the damus/snort relay event
         // some clients use kind 3 (contacts) events to broadcast a user's subscribed relays
         const filter2: NDKFilter = { kinds: [3], authors: [hexPubKey] };
+        console.log("trying to get user 3 events");
         relayEvent = await this.ndk?.fetchEvent(filter2,{});
       }
     }
@@ -1444,38 +1478,26 @@ export class NdkproviderService {
   }
 
   async getUserSubscribedRelays(): Promise<Relay[]> {
-    let relays: Relay[] = [];
-    let author: string = '';
-    if (this.currentUser?.pubkey) {
-      author = this.currentUser.pubkey;
-    }
-    const relayEvent: NDKEvent | null | undefined = await this.fetchRelayEvent(author);
-    // console.log(relayEvent);
-    if(relayEvent){
-      if (relayEvent.kind === 10002) {
-        // parse tags
-        const relayTag: Relay[] = this.parseRelayEventTags(relayEvent.tags);
-        relayTag.forEach(relay => {
-          if (relays.map(x => x.url).indexOf(relay.url) === -1 && relays.map(x => x.name).indexOf(relay.name) === -1) {
-            relays.push(relay);
-          }
-        })
-      } else if (relayEvent.kind === 3)
-      {
-        // parse content
-        try{
-          const contentRelays: Relay[] = this.parseRelayEventContent(relayEvent.content);
-          contentRelays.forEach(relay => {
-            if(relays.map(x => x.url).indexOf(relay.url) === -1 && relays.map(x => x.name).indexOf(relay.name) === -1){
-              relays.push(relay);
-            }
-          })
-        }catch(err){
-          console.log("Kind 3 event parsing error"+ err)
-        }
+    try{
+      let relays: Relay[] = [];
+      let author: string = '';
+      if (this.currentUser?.pubkey) {
+        author = this.currentUser.pubkey;
       }
+      const relayListFromNdk =  await this.ndk?.activeUser?.relayList();
+      const relayEntriesFromNdk = relayListFromNdk?.relays;
+      if(relayEntriesFromNdk){
+        for (let i = 0; i<relayEntriesFromNdk.length; i++){
+          relays.push(new Relay(relayEntriesFromNdk[i],relayEntriesFromNdk[i]))
+        }
+      }      
+      return relays;
     }
-    return relays;
+    catch(e){
+      console.log("Error in fetching relay list from relay"); 
+      return [];
+    }
+    
   }
 
   async addRelayToDB(table: Table<Relay>, relay: Relay) {
@@ -1507,17 +1529,23 @@ export class NdkproviderService {
   }
 
   async fetchSubscribedRelaysFromCache(): Promise<Relay[]> {
-    var subscribedRelaysFromCache = await this.dbService.subscribedRelays.toArray();
-    console.log(`Subscribed Relays from cache : ${subscribedRelaysFromCache?.length}`);
-
-    const subscribedRelaysFromRelay: Relay[] = await this.getUserSubscribedRelays();
-
-    if (
-      subscribedRelaysFromCache?.length === 0 ||
-      subscribedRelaysFromCache?.length !== subscribedRelaysFromRelay?.length
-    ) {
-      await this.fetchSubscribedRelaysAndCache(subscribedRelaysFromRelay);
+    try{
+      var subscribedRelaysFromCache = await this.dbService.subscribedRelays.toArray();
+      console.log(`Subscribed Relays from cache : ${subscribedRelaysFromCache?.length}`);
+  
+      const subscribedRelaysFromRelay: Relay[] = await this.getUserSubscribedRelays();
+      console.log("Got user subscribed relays")
+      if (
+        subscribedRelaysFromCache?.length === 0 ||
+        subscribedRelaysFromCache?.length !== subscribedRelaysFromRelay?.length
+      ) {
+        await this.fetchSubscribedRelaysAndCache(subscribedRelaysFromRelay);
+      }
+      console.log("returning subscribed relays from cache")
+    } catch(e){
+      console.log("Error in fetching relays.."+ e)
     }
+    
     return await this.dbService.subscribedRelays.toArray();
   }
 
