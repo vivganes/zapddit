@@ -1,4 +1,4 @@
-import { Component, ComponentRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 
 import '@cds/core/icon/register.js';
@@ -36,6 +36,7 @@ import {
   flagIcon,
   arrowIcon,
   bubbleExclamationIcon,
+  bitcoinIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
@@ -51,12 +52,13 @@ import {
   BreakpointObserver,
   BreakpointState
 } from '@angular/cdk/layout';
+import { BtcConnectService } from './service/btc-connect.service';
 
-ClarityIcons.addIcons(flagIcon, bubbleExclamationIcon,starIcon,internetOfThingsIcon,thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
+ClarityIcons.addIcons(bitcoinIcon,flagIcon, bubbleExclamationIcon,starIcon,internetOfThingsIcon,thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy{
   title = 'zapddit';
@@ -73,7 +75,7 @@ export class AppComponent implements OnInit, OnDestroy{
   currentLanguage:string;
 
   constructor(private translate: TranslateService, public ndkProvider: NdkproviderService, router: Router,
-    private breakpointObserver: BreakpointObserver, private communityService:CommunityService, private topicService:TopicService) {
+    private breakpointObserver: BreakpointObserver, private communityService:CommunityService, private topicService:TopicService, private btcConnectService:BtcConnectService) {
     translate.setDefaultLang('en');
 
     var language = localStorage.getItem(Constants.LANGUAGE);

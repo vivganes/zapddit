@@ -35,6 +35,16 @@
   </clr-accordion-panel>
 
   <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
+  <clr-accordion-title>{{'Bitcoin Connect'|translate}} <cds-icon shape="bitcoin" solid="true" class="btc-icon" size="md"></cds-icon></clr-accordion-title>
+    <clr-accordion-content *clrIfExpanded>
+      <form onsubmit="return false;">
+        <bc-button app-name="zapddit"/>
+        <label>{{'Connect to upzap/downzap with minimal effort using'|translate}} <a href="https://bitcoin-connect.com/" target="_blank" translate>Bitcoin Connect</a></label>
+      </form>       
+    </clr-accordion-content>
+  </clr-accordion-panel>
+
+  <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
     <clr-accordion-title>{{'Zaps'|translate}} ⚡</clr-accordion-title>
     <clr-accordion-content *clrIfExpanded>
       <form clrForm onsubmit="return false;">
@@ -79,7 +89,7 @@
         </div>
          <button type="submit" [disabled]="isLoggedInUsingPubKey"
           class="btn btn-primary" (click)="saveDownzapRecipients()">Save</button>
-    </form>
+    </form>   
     <form clrForm onsubmit="return false;">
       <clr-checkbox-container clrInline>
         <clr-checkbox-wrapper>
@@ -105,6 +115,8 @@
     </form>
     </clr-accordion-content>
   </clr-accordion-panel>
+
+  
 
   <clr-accordion-panel>
     <clr-accordion-title translate>Communities</clr-accordion-title>
