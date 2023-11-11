@@ -93,7 +93,10 @@
           </span>
         </span>
 
-        <span class="card-media-text break-words-overflow"> {{ event?.created_at | formatTimestamp }} </span>
+        <span class="card-media-text break-words-overflow"> {{ event?.created_at | formatTimestamp }}
+          <span title="{{'Relay URL'| translate}}"><cds-icon shape="connect" solid="true"
+              class="connect-icon"></cds-icon>{{event?.relay?.url}}</span> </span>
+
 
       </div>
     </div>

@@ -36,7 +36,8 @@ import {
   flagIcon,
   arrowIcon,
   bubbleExclamationIcon,
-  bitcoinIcon
+  bitcoinIcon,
+  connectIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { Router } from '@angular/router';
@@ -47,14 +48,46 @@ import { Constants } from './util/Constants';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { CommunityService } from './service/community.service';
 import { TopicService } from './service/topic.service';
-import { Community } from './model/community';
 import {
   BreakpointObserver,
   BreakpointState
 } from '@angular/cdk/layout';
 import { BtcConnectService } from './service/btc-connect.service';
 
-ClarityIcons.addIcons(bitcoinIcon,flagIcon, bubbleExclamationIcon,starIcon,internetOfThingsIcon,thumbsUpIcon,heartIcon, thumbsDownIcon, floppyIcon, noteIcon, userIcon, boltIcon, plusCircleIcon, logoutIcon, hashtagIcon, homeIcon, cogIcon, usersIcon, sunIcon, moonIcon, searchIcon, keyIcon, copyIcon,imageIcon, trashIcon, shareIcon, chatBubbleIcon, paperclipIcon, wandIcon, downloadCloudIcon, uploadCloudIcon);
+ClarityIcons.addIcons(
+  connectIcon,
+  bitcoinIcon,
+  flagIcon,
+  bubbleExclamationIcon,
+  starIcon,
+  internetOfThingsIcon,
+  thumbsUpIcon,
+  heartIcon,
+  thumbsDownIcon,
+  floppyIcon,
+  noteIcon,
+  userIcon,
+  boltIcon,
+  plusCircleIcon,
+  logoutIcon,
+  hashtagIcon,
+  homeIcon,
+  cogIcon,
+  usersIcon,
+  sunIcon,
+  moonIcon,
+  searchIcon,
+  keyIcon,
+  copyIcon,
+  imageIcon,
+  trashIcon,
+  shareIcon,
+  chatBubbleIcon,
+  paperclipIcon,
+  wandIcon,
+  downloadCloudIcon,
+  uploadCloudIcon
+);
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
