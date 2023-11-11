@@ -36,6 +36,7 @@
     "@nostr-dev-kit/ndk": "^2.0.3",
     "@nostr-dev-kit/ndk-cache-dexie": "^2.0.3",
     "@types/linkifyjs": "^2.1.4",
+    "angular-animations": "^0.11.0",
     "angular-mentions": "^1.5.0",
     "bech32": "^2.0.0",
     "dexie": "^3.2.3",

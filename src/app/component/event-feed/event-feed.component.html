@@ -7,50 +7,56 @@
   </form>
 </div>
 <ng-template [ngIf]="tag !== undefined && community === undefined">
-  <h3 align="center">
-    #{{ tag }}
-    <ng-template [ngIf]="!isLoggedInUsingPubKey">
-      <ng-template [ngIf]="!isTopicFollowed(tag)" [ngIfElse]="elseBlock">
-        <button class="btn btn-sm btn-primary btn-icon" (click)="followTopic(tag)">
-          <cds-icon shape="plus-circle" solid></cds-icon> {{'Follow'|translate}}
-        </button>
-      </ng-template>
-      <ng-template #elseBlock>
-        <button class="btn btn-sm btn-warning-outline btn-icon" (click)="unfollowTopic(tag)">
-          <cds-icon shape="logout" solid></cds-icon> {{'Unfollow'|translate}}
-        </button>
-      </ng-template>
-    </ng-template>
-  </h3>
+  <div class="clr-row clr-justify-content-center">
+    <div class="clr-col-12 clr-col-md-8">
+      <h3>
+        #{{ tag }}
+        <ng-template [ngIf]="!isLoggedInUsingPubKey">
+          <ng-template [ngIf]="!isTopicFollowed(tag)" [ngIfElse]="elseBlock">
+            <button class="btn btn-sm btn-primary btn-icon" (click)="followTopic(tag)">
+              <cds-icon shape="plus-circle" solid></cds-icon> {{'Follow'|translate}}
+            </button>
+          </ng-template>
+          <ng-template #elseBlock>
+            <button class="btn btn-sm btn-warning-outline btn-icon" (click)="unfollowTopic(tag)">
+              <cds-icon shape="logout" solid></cds-icon> {{'Unfollow'|translate}}
+            </button>
+          </ng-template>
+        </ng-template>
+      </h3>
+    </div>
+  </div>
 </ng-template>
 <ng-template [ngIf]="community !== undefined && tag === undefined">
-  <div align="center" class="community-header">
-    <h3>
-      <img *ngIf="community?.image" (click)="openCommunityPage()" alt="{{'Community image'|translate}}"
-            src="{{ community.image }}" class="community-image pointer-cursor" title="{{'Browse'|translate}}" />
-      <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
-            class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
-            title="Browse" /> 
-      <span class="break-words-overflow"> n/{{community.name}}</span>
-      <span>&nbsp;<cds-icon class="alert-icon" shape="info-circle" (click)="showingCommunityInfo = true" title="{{'Show community details'|translate}}"></cds-icon>
-      </span>
-    </h3>
-    <div>
-      <span class="smaller-text" translate>Created by </span> 
-      <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="{{'Profile picture'|translate}}"
-            src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="{{'Open in Snort'|translate}}"
-            onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'" />
-      <img alt="temp avatar" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
-            class="community-image pointer-cursor" src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100"
-            title="{{'Open in Snort'|translate}}" />
-      <span class="break-words-overflow"> {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}</span>
-    </div>    
-    <div class="clr-control-container ml-5">
-      <div class="clr-toggle-wrapper">
-        <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" class="clr-toggle"  />
-        <label for="toggle1" class="clr-control-label" translate>Show unmoderated feed</label>
-      </div>      
-    </div>  
+  <div class="clr-row clr-justify-content-center">
+    <div class="community-header clr-col-12 clr-col-md-8">
+      <h3>
+        <img *ngIf="community?.image" (click)="openCommunityPage()" alt="{{'Community image'|translate}}"
+              src="{{ community.image }}" class="community-image pointer-cursor" title="{{'Browse'|translate}}" />
+        <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
+              class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
+              title="Browse" /> 
+        <span class="break-words-overflow"> n/{{community.name}}</span>
+        <span>&nbsp;<cds-icon class="alert-icon" shape="info-circle" (click)="showingCommunityInfo = true" title="{{'Show community details'|translate}}"></cds-icon>
+        </span>
+      </h3>
+      <div>
+        <span class="smaller-text" translate>Created by </span> 
+        <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="{{'Profile picture'|translate}}"
+              src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="{{'Open in Snort'|translate}}"
+              onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'" />
+        <img alt="temp avatar" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
+              class="community-image pointer-cursor" src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100"
+              title="{{'Open in Snort'|translate}}" />
+        <span class="break-words-overflow"> {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}</span>
+      </div>    
+      <div class="clr-control-container ml-5">
+        <div class="clr-toggle-wrapper">
+          <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" class="clr-toggle"  />
+          <label for="toggle1" class="clr-control-label" translate>Show unmoderated feed</label>
+        </div>      
+      </div>  
+    </div>
   </div>
 </ng-template>
 <ng-template [ngIf]="loadingCommunityDetails">
@@ -61,23 +67,20 @@
 </ng-template>
 
 <ng-template [ngIf]="(tag ===undefined && community === undefined) && !loadingCommunityDetails" #homefeedHeader>
-  <h3 align="center">
-    🏡 {{'My Feed'|translate}}
-  </h3>
-  
-  <div align="center">
-      <div class="clr-control-container" align="center">
-          <select id="select-full" title="feedType" clrSelect name="options" [(ngModel)]="feedType" (ngModelChange)="onChangeFeedType($event)">
-            <option [value]="feedTypeOptions[0]" translate>Topics Feed</option>
-            <option [value]="feedTypeOptions[1]" translate>Communities Feed - BETA</option>
-          </select>
+  <div class="clr-row clr-justify-content-center">
+    <div class="clr-col-12 clr-col-md-8">
+      <div class="clr-control-container">
+        <select id="select-full" title="{{'Feed type'|translate}}" clrSelect name="options" [(ngModel)]="feedType" (ngModelChange)="onChangeFeedType($event)" class="giant-text-in-select">
+          <option [value]="feedTypeOptions[0]">#️⃣ {{'Topics Feed'|translate}}</option>
+          <option [value]="feedTypeOptions[1]">🫂 {{'Communities Feed'|translate}} - BETA</option>
+        </select>
       </div>
-    
-    <div class="clr-control-container ml-5" align="center">
-      <div class="clr-toggle-wrapper" *ngIf="feedType === feedTypeOptions[1]">
-        <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" class="clr-toggle"  />
-        <label for="toggle1" class="clr-control-label" translate>Show unmoderated feed</label>
-      </div>      
+      <div class="clr-control-container ml-5">
+        <div class="clr-toggle-wrapper" *ngIf="feedType === feedTypeOptions[1]">
+          <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" class="clr-toggle"  />
+          <label for="toggle1" class="clr-control-label" translate>Show unmoderated feed</label>
+        </div>      
+      </div>
     </div>
   </div>    
 </ng-template>
