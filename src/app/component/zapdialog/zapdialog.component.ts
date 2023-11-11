@@ -84,23 +84,21 @@ export class ZapdialogComponent implements OnInit {
         if(this.canvas && this.canvas?.nativeElement)
           this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
         const invoice = await this.ndkProvider.zapRequest(this.zapValue, this.event!);
-        const qr = new QRCodeStyling({
-          width:  256,
-          height:  256,
-          data: invoice?invoice:undefined,
-          margin: 5,
-          type: "canvas",
-          dotsOptions: {
-            type: "rounded",
-          },
-          cornersSquareOptions: {
-            type: "extra-rounded",
-          }
-        });
-        this.showQR=true;
-        setTimeout(()=>
-        qr.append(this.canvas?.nativeElement),1000);
         this.invoice = invoice;
+        if(window.hasOwnProperty('webln')){
+          //@ts-ignore
+          if(window.webln.connected){
+            //@ts-ignore
+            const result = await window.webln.sendPayment(this.invoice);
+            if(!result?.preimage) {
+              throw new Error('Payment failed. Please try again');
+            } else {
+              this.zapDoneClicked();
+            }
+            return;
+          }
+        }
+        this.openQRDialog(invoice);
       }
     }catch(e:any){
       this.errorMsg = e.message;
@@ -121,28 +119,44 @@ export class ZapdialogComponent implements OnInit {
             '-'
           );
           this.invoice = invoice;
-          const qr = new QRCodeStyling({
-            width:  256,
-            height:  256,
-            data: invoice?invoice:undefined,
-            margin: 5,
-            type: "canvas",
-            dotsOptions: {
-              type: "rounded",
-            },
-            cornersSquareOptions: {
-              type: "extra-rounded",
+          if(window.hasOwnProperty('webln')){
+            //@ts-ignore
+            if(window.webln.connected){
+              //@ts-ignore
+              const result = await window.webln.sendPayment(this.invoice);
+              if(!result?.preimage) {
+                throw new Error('Payment failed. Please try again');
+              } else {
+                this.zapDoneClicked();
+              }
+              return;
             }
-          });
-          this.showQR = true;
-          setTimeout(()=>
-            qr.append(this.canvas?.nativeElement),1000);
+          }
+          this.openQRDialog(invoice);
       }
     }catch(e:any){
       this.errorMsg = e.message;
     }finally{
       this.zappingNow = false;
     }
+  }
+
+  private openQRDialog(invoice: any) {
+    const qr = new QRCodeStyling({
+      width: 256,
+      height: 256,
+      data: invoice ? invoice : undefined,
+      margin: 5,
+      type: "canvas",
+      dotsOptions: {
+        type: "rounded",
+      },
+      cornersSquareOptions: {
+        type: "extra-rounded",
+      }
+    });
+    this.showQR = true;
+    setTimeout(() => qr.append(this.canvas?.nativeElement), 1000);
   }
 
   zapValueChange(event:any){

@@ -1,4 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
+html{
+  --bc-color-brand: #196ce7;
+  --bc-color-brand-dark: #3994ff; /* use a different brand color in dark mode */
+  --bc-brand-mix: 100%; /* how much to mix the brand color with default foreground color */
+}
+
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -40,6 +46,10 @@
 
 .overflow-hidden {
   overflow:hidden
+}
+
+.btc-icon{
+  --color: #F9A136;
 }
 
 .note-image {

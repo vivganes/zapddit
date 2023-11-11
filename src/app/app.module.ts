@@ -1,8 +1,8 @@
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { NgModule, isDevMode } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { LayoutModule } from '@angular/cdk/layout';
-
+import "@getalby/bitcoin-connect";
 // import ngx-translate and the http loader
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
@@ -101,6 +101,7 @@ const componentParsers: Array<HookParserEntry> = [
 })],
   providers: [],
   bootstrap: [AppComponent],
+  schemas:[CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {}
 

@@ -119,8 +119,6 @@ export class EventCardComponent implements OnInit, OnDestroy{
     }
   }
 
-
-
   ngOnInit():void {
     this.hexEventId = this.event?.id;
     this.originalKind = this.event?.kind;
