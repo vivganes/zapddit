@@ -69,12 +69,12 @@
 <ng-template [ngIf]="(tag ===undefined && community === undefined) && !loadingCommunityDetails" #homefeedHeader>
   <div class="clr-row clr-justify-content-center">
     <div class="clr-col-12 clr-col-md-8">
-      <div class="clr-control-container">
-        <select id="select-full" title="{{'Feed type'|translate}}" clrSelect name="options" [(ngModel)]="feedType" (ngModelChange)="onChangeFeedType($event)" class="giant-text-in-select">
+      <clr-select-container>
+        <select  id="select-full" title="{{'Feed type'|translate}}" clrSelect name="options" [(ngModel)]="feedType" (ngModelChange)="onChangeFeedType($event)" class="giant-text-in-select select-feed-type">
           <option [value]="feedTypeOptions[0]">#️⃣ {{'Topics Feed'|translate}}</option>
           <option [value]="feedTypeOptions[1]">🫂 {{'Communities Feed'|translate}} - BETA</option>
         </select>
-      </div>
+      </clr-select-container>      
       <div class="clr-control-container ml-5">
         <div class="clr-toggle-wrapper" *ngIf="feedType === feedTypeOptions[1]">
           <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" class="clr-toggle"  />

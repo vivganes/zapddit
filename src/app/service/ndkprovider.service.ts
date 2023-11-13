@@ -130,6 +130,7 @@ export class NdkproviderService {
 
 
   private async startWithUnauthSession() {
+    this.loginCompleteEmitter.emit(false);
     this.loggingIn = true;
     this.canWriteToNostr = false;
     this.isTryingZapddit = true;
@@ -158,6 +159,7 @@ export class NdkproviderService {
 
   attemptLoginUsingPrivateOrPubKey(enteredKey: string) {
     try {
+      this.loginCompleteEmitter.emit(false);
       this.loggingIn = true;
       this.loginError = undefined;
       const hexPrivateKey = this.validateAndGetHexKey(enteredKey);
@@ -417,22 +419,20 @@ export class NdkproviderService {
             this.ndk = newNDK;
             this.loggingIn = false;
             //once all setup is done, then only set loggedIn=true to start rendering
-            this.loggedIn = true;
-            this.loginCompleteEmitter.emit(true);
-        
-            this.fetchFollowersFromCache();
-            this.fetchMutedUsersFromCache();            
-            this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.pubkey);
-            this.loadCommunitiesToCache();
-            
+            this.startRendering();            
           });
-      
-          
         })
         .catch(e => console.log("come on.. ndk not loaded"));
       } catch (e) {
         console.log('Error in connecting NDK ' + e);
       }
+    } else {
+      this.refreshAppData().then(() => {
+        console.log('refreshed app data')
+        this.loggingIn = false;
+        //once all setup is done, then only set loggedIn=true to start rendering
+        this.startRendering();            
+      });
     }
  
   }
@@ -490,6 +490,16 @@ export class NdkproviderService {
       await ndkEvent.publish();
     }
     return ndkEvent;
+  }
+
+  private startRendering() {
+    this.loggedIn = true;
+    this.loginCompleteEmitter.emit(true);
+
+    this.fetchFollowersFromCache();
+    this.fetchMutedUsersFromCache();
+    this.checkIfNIP05Verified(this.currentUserProfile?.nip05, this.currentUser?.pubkey);
+    this.loadCommunitiesToCache();
   }
 
   async updateRelays(relays: Relay[]): Promise<NDKEvent> {
