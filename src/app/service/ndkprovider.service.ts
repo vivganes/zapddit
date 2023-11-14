@@ -908,10 +908,20 @@ export class NdkproviderService {
     return this.ndk?.fetchEvents(filter,{});
   }
 
-  async fetchEventsFromCommunity(community: Community, limit?: number, since?: number, until?: number):Promise<Set<NDKEvent> | undefined> {
+  async fetchEventsFromCommunityUnmoderated(community: Community, limit?: number, since?: number, until?: number):Promise<Set<NDKEvent> | undefined> {
     //@ts-ignore
     const filter: NDKFilter = { kinds: [1,4549], '#a': [community.id!], limit: limit, since: since, until: until };
     return this.ndk?.fetchEvents(filter,{});
+  }
+
+  async fetchEventsFromCommunity(community: Community, limit?: number, since?: number, until?: number):Promise<Set<NDKEvent> | undefined> {
+    //@ts-ignore
+    const filter: NDKFilter = { kinds: [4550], '#a': [community.id!], limit: limit, since: since, until: until };
+    const events = await this.ndk?.fetchEvents(filter,{});
+    if(events){
+      return new Set([...events].map((e)=> this.extractEventFromApprovalEvent(e)));
+    }
+    return undefined;
   }
 
   async fetchEventFromId(id: string) {
@@ -938,6 +948,35 @@ export class NdkproviderService {
   }
 
   async fetchAllFollowedCommunityEvents(
+    followedCommunities: string[],
+    limit?: number,
+    since?: number,
+    until?: number
+  ): Promise<Set<NDKEvent> | undefined> {
+    //@ts-ignore
+    const filter: NDKFilter = { kinds: [4550], '#a': followedCommunities, limit: limit, since: since, until: until };
+    const events =  await this.ndk?.fetchEvents(filter);
+    if(events){
+      return new Set([...events].map((e)=> this.extractEventFromApprovalEvent(e)));
+    }
+    return undefined;
+  }
+
+  extractEventFromApprovalEvent(event:NDKEvent){
+    if(event.kind == 4550){
+      try{
+        let sourceEvent = JSON.parse(event.content);
+        let returnedEvent =  new NDKEvent(this.ndk, sourceEvent);  
+        returnedEvent.relay = event.relay;
+        return returnedEvent;
+      }catch(e){
+        return event;
+      }          
+    }
+    return event;
+  }
+
+  async fetchAllFollowedCommunityEventsUnmoderated(
     followedCommunities: string[],
     limit?: number,
     since?: number,

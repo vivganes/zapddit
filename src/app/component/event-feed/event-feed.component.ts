@@ -60,11 +60,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
         this.followedTopics = followedTopics.split(',');
       }
       if(this.feedType == FeedType.TOPICS_FEED && this.tag===undefined){
-        this.nowShowingUptoIndex = 0;
-        this.eventBuffer.events = [];
-        this.until = Date.now();
-        this.limit = BUFFER_REFILL_PAGE_SIZE;
-        this.getEventsAndFillBuffer();
+        this.loadFeedFromBeginning();
       }
     });
 
@@ -94,6 +90,16 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       }
     })
   }
+
+   loadFeedFromBeginning() {
+     console.log("Loading feed from beginning")
+     this.events?.clear();
+     this.nowShowingUptoIndex = 0;
+     this.eventBuffer.events = [];
+     this.until = Date.now();
+     this.limit = BUFFER_REFILL_PAGE_SIZE;
+     this.getEventsAndFillBuffer();
+   }
 
   onChangeFeedType(newType: FeedType){
         this.nowShowingUptoIndex = 0;
@@ -176,7 +182,11 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     if (this.tag && this.tag !== '') {
       fetchedEvents = await this.ndkProvider.fetchEvents(this.tag || '', this.limit, undefined, this.until);
     } else if (this.community){
-      fetchedEvents = await this.ndkProvider.fetchEventsFromCommunity(this.community, this.limit, undefined, this.until);
+      if(this.showUnapprovedPosts){
+        fetchedEvents = await this.ndkProvider.fetchEventsFromCommunityUnmoderated(this.community, this.limit, undefined, this.until);
+      } else {
+        fetchedEvents = await this.ndkProvider.fetchEventsFromCommunity(this.community, this.limit, undefined, this.until);
+      }
     } else {
       if(this.feedType === FeedType.TOPICS_FEED){
         if(this.ndkProvider.appData.followedTopics.length > 0){
@@ -189,12 +199,23 @@ export class EventFeedComponent implements OnInit,OnDestroy{
         }
       } else if (this.feedType === FeedType.COMMUNITIES_FEED){
         if(this.ndkProvider.appData.followedCommunities.length > 0){
-          fetchedEvents = await this.ndkProvider.fetchAllFollowedCommunityEvents(
-            this.ndkProvider.appData.followedCommunities.split(','),
-            this.limit,
-            undefined,
-            this.until
-          );
+          console.log("SHOW UNAPPROVED POSTS: "+ this.showUnapprovedPosts)
+          if(this.showUnapprovedPosts){
+            fetchedEvents = await this.ndkProvider.fetchAllFollowedCommunityEventsUnmoderated(
+              this.ndkProvider.appData.followedCommunities.split(','),
+              this.limit,
+              undefined,
+              this.until
+            );
+          } else {
+            fetchedEvents = await this.ndkProvider.fetchAllFollowedCommunityEvents(
+              this.ndkProvider.appData.followedCommunities.split(','),
+              this.limit,
+              undefined,
+              this.until
+            );
+          }
+          
         }
       }
     }

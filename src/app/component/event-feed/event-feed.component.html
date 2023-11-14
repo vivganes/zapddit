@@ -52,7 +52,7 @@
       </div>    
       <div class="clr-control-container ml-5">
         <div class="clr-toggle-wrapper">
-          <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" class="clr-toggle"  />
+          <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" (ngModelChange)="loadFeedFromBeginning()" class="clr-toggle"  />
           <label for="toggle1" class="clr-control-label" translate>Show unmoderated feed</label>
         </div>      
       </div>  
@@ -77,7 +77,7 @@
       </clr-select-container>      
       <div class="clr-control-container ml-5">
         <div class="clr-toggle-wrapper" *ngIf="feedType === feedTypeOptions[1]">
-          <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" class="clr-toggle"  />
+          <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" (ngModelChange)="loadFeedFromBeginning()" class="clr-toggle"  />
           <label for="toggle1" class="clr-control-label" translate>Show unmoderated feed</label>
         </div>      
       </div>
