@@ -285,6 +285,11 @@ export class EventCardComponent implements OnInit, OnDestroy{
     return this.event?.content;
   }
 
+  async copyEventJson(){
+    await this.clipboard.copy(JSON.stringify(await this.event?.toNostrEvent()!));
+    this.linkCopied = true;
+  }
+
   replaceNpubMentionsWithComponents(content?:string): string|undefined{
     let displayedContent = content;
     if(displayedContent){

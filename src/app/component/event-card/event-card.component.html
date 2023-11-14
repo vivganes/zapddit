@@ -1,14 +1,3 @@
-<div class="card" *ngIf="loadingApproval && !canModerate">
-  <div class="card-block">   
-    <p class="card-text"> <clr-spinner clrInline translate>
-      Loading moderator approvals...
-    </clr-spinner>
-    <span translate>
-      Loading moderator approvals...
-    </span></p>
-  </div>
-</div>
-
 <div class="hidden-card-message" *ngIf="!loadingApproval && !canModerate && !mutedAuthor && (showUnapprovedPosts?false:approvalEvents?.size===0)">
   <span class="hidden-card-span">{{'UNAPPROVED NOTE'|translate}}. <button class="btn btn-sm btn-inilne" (click)="showUnapprovedPosts = true" translate>Show anyways</button> <br/>
   <span *ngIf="!hideCommunityHeader"><b translate>Community:</b> n/{{community?.name}} by {{community?.creatorProfile?.displayName ? community?.creatorProfile?.displayName : (community?.creatorProfile?.name ? community?.creatorProfile?.name : community?.creatorHexKey | abbreviateId)}}</span>
@@ -195,7 +184,7 @@
             <div class="alert-icon-wrapper">
               <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
             </div>
-            <span class="alert-text">Notes link copied!</span>
+            <span class="alert-text">Copied!</span>
           </div>
         </div>
       </div>
@@ -243,6 +232,7 @@
         <div clrDropdownItem (click)="openInSnort()">Open in Snort</div>
         <div clrDropdownItem (click)="copyNoteHexIdToClipboard()">Copy Hex ID</div>
         <div *ngIf="!community" clrDropdownItem (click)="copyNote1IdToClipboard()">Copy note1 ID</div>
+        <div clrDropdownItem (click)="copyEventJson()">Copy Event JSON</div>
       </clr-dropdown-menu>
     </clr-dropdown>
   </div>
