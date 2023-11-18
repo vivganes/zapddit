@@ -89,11 +89,27 @@ html{
   border-radius: 50%;
 }
 
+.img-container{
+  position: relative;
+  text-align: center;
+}
+
+.text-img-overlay-centered {
+  position: absolute;
+  color:#000;
+  top: 50%;
+  border-radius: 0.25rem;
+  background-color:#e6e6fa61;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .card-text{
 font-size:var(--cds-global-typography-message-font-size);
 font-weight:var(--cds-global-typography-message-font-weight);
 line-height:var(--cds-global-typography-message-line-height);
 letter-spacing:var(--cds-global-typography-message-letter-spacing);
+--color:#000
 }
 
 .header-profile-image {
