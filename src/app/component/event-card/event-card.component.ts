@@ -126,7 +126,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   ngOnInit():void {
     this.breakpointObserver
-    .observe(['(min-width: 800px)'])
+    .observe(['(min-width: 900px)'])
     .subscribe((state: BreakpointState) => {
       if (state.matches) {
         this.isMobileScreen = false;
