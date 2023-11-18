@@ -11,6 +11,10 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { LoginUtil } from 'src/app/util/LoginUtil';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { Community } from 'src/app/model/community';
+import {
+  BreakpointObserver,
+  BreakpointState
+} from '@angular/cdk/layout';
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
@@ -49,7 +53,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   hideCommunityHeader: boolean = false;
   loadingApproval:boolean = false;
   showingApprovers:boolean = false;
-
+  isMobileScreen:boolean = false;
   approvalEvents?:Set<NDKEvent>;
   approvedModHexIds:string[] = [];
   canModerate:boolean = false;
@@ -107,7 +111,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
 
   constructor(ndkProvider: NdkproviderService, private renderer: Renderer2,
     private dbService: ZappeditdbService, private router:Router, public domSanitizer:DomSanitizer,
-      private clipboard: Clipboard, private changeDetector:ChangeDetectorRef) {
+      private clipboard: Clipboard, private changeDetector:ChangeDetectorRef,
+      private breakpointObserver: BreakpointObserver) {
     this.ndkProvider = ndkProvider;
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
     if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
@@ -120,6 +125,18 @@ export class EventCardComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit():void {
+    this.breakpointObserver
+    .observe(['(min-width: 800px)'])
+    .subscribe((state: BreakpointState) => {
+      if (state.matches) {
+        this.isMobileScreen = false;
+        console.log("larger than mobile")
+      } else {
+        this.isMobileScreen = true;
+        console.log("mobile")
+      }
+    });
+
     this.hexEventId = this.event?.id;
     this.originalKind = this.event?.kind;
     if(this.event?.kind === 4549){
@@ -144,6 +161,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNoteMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNEventMentionsWithComponents(this.displayedContent)
+    this.displayedContent = this.displayedContent?.replace('\n','<br/>')
     this.linkifiedContent = this.linkifyContent(this.displayedContent)
     this.getAuthor();
     this.getCommunity();

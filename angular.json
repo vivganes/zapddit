@@ -32,7 +32,7 @@
               "src/.well-known"
             ],
             "styles": [
-              "src/styles.scss"
+              "node_modules/@clr/ui/clr-ui.min.css", "src/styles.scss"
             ],
             "scripts": [],
             "serviceWorker": true,
@@ -99,7 +99,7 @@
               "src/.well-known"
             ],
             "styles": [
-              "src/styles.scss"
+              "node_modules/@clr/ui/clr-ui.min.css", "src/styles.scss"
             ],
             "scripts": []
           }

@@ -6,15 +6,15 @@
         <span class="title main-title-font">zapddit</span>
       </a>
     </div>
-    <div class="search_form">
-      <form *ngIf="isLoggedIn()" class="search"  onsubmit="return false;">
-        <label for="search_input">
-            <input id="search_input" type="text"  class="hashtag-search" placeholder="{{'# '+ ('Search hashtag'| translate) + ' ⏎'}}" (keyup.enter)="search()">
-        </label>
-      </form>
-    </div>
+
+    <form *ngIf="isLoggedIn() && !isMobileScreen" class="search" spellcheck="false"  onsubmit="return false;">
+      <label for="search_input">
+          <input id="search_input" type="text"  placeholder="{{'# '+ ('Search hashtag'| translate) + ' ⏎'}}" (keyup.enter)="search()">
+      </label>
+    </form>
+
     <div class="header-actions">
-      <a *ngIf="isLoggedIn()" href="javascript://" (click)="openWizard()" class="nav-link" aria-label="setup" title="{{'Onboarding Wizard' | translate}}">
+      <a *ngIf="isLoggedIn() && !isMobileScreen" href="javascript://" (click)="openWizard()" class="nav-link" aria-label="setup" title="{{'Onboarding Wizard' | translate}}">
         <cds-icon shape="wand" solid></cds-icon>
       </a>
       <a *ngIf="darkTheme" href="javascript://" (click)="switchTheme()" class="nav-link" aria-label="theme">
@@ -30,8 +30,14 @@
         </button>
         <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
             <a *ngIf="ndkProvider.isTryingZapddit" routerLink="/login" clrDropdownItem translate>Login</a>
+            <a href="javascript://" (click)="openWizard()" aria-label="setup" clrDropdownItem translate>
+              Onboarding Wizard
+            </a>
             <a *ngIf="!ndkProvider.isTryingZapddit" routerLink="/profile" clrDropdownItem translate>Profile</a>
             <a routerLink="/preferences" clrDropdownItem translate>Preferences</a>
+            <a href="javascript://" (click)="logout()" aria-label="logout" clrDropdownItem translate>
+              Logout
+            </a>
         </clr-dropdown-menu>
     </clr-dropdown>
     </div>

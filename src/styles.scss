@@ -1,8 +1,21 @@
+@import '@clr/ui/clr-ui.css';
+
 /* You can add global styles to this file, and also import other style files */
 html{
   --bc-color-brand: #196ce7;
   --bc-color-brand-dark: #3994ff; /* use a different brand color in dark mode */
   --bc-brand-mix: 100%; /* how much to mix the brand color with default foreground color */
+}
+
+// In the dark theme, these aliases are mapped to different values
+[cds-theme~='dark'] {
+  --clr-card-border-color:#262f33;
+}
+
+[cds-theme]{
+  --clr-header-search-border-hover:transparent;
+  --clr-header-search-border-active:transparent;
+  --clr-header-search-input-font-size:1.3rem;
 }
 
 ::-webkit-scrollbar {
@@ -74,6 +87,13 @@ html{
 
 .card-media-image {
   border-radius: 50%;
+}
+
+.card-text{
+font-size:var(--cds-global-typography-message-font-size);
+font-weight:var(--cds-global-typography-message-font-weight);
+line-height:var(--cds-global-typography-message-line-height);
+letter-spacing:var(--cds-global-typography-message-letter-spacing);
 }
 
 .header-profile-image {

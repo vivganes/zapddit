@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy} from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 
 import '@cds/core/icon/register.js';
@@ -53,6 +53,7 @@ import {
   BreakpointState
 } from '@angular/cdk/layout';
 import { BtcConnectService } from './service/btc-connect.service';
+import { DOCUMENT } from '@angular/common';
 
 ClarityIcons.addIcons(
   connectIcon,
@@ -108,7 +109,8 @@ export class AppComponent implements OnInit, OnDestroy{
   currentLanguage:string;
 
   constructor(private translate: TranslateService, public ndkProvider: NdkproviderService, router: Router,
-    private breakpointObserver: BreakpointObserver, private communityService:CommunityService, private topicService:TopicService, private btcConnectService:BtcConnectService) {
+    private breakpointObserver: BreakpointObserver, private communityService:CommunityService, 
+    private topicService:TopicService, private btcConnectService:BtcConnectService, @Inject(DOCUMENT) private document: Document) {
     translate.setDefaultLang('en');
 
     var language = localStorage.getItem(Constants.LANGUAGE);
@@ -183,9 +185,7 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   setTheme(dark:boolean){
-    if((document.getElementById('zapddit-theme'))){
-      (<any>document.getElementById('zapddit-theme')).href="/assets/clr-ui"+(dark?"-dark":"")+".css";
-    }
+    this.document.body.setAttribute('cds-theme',(dark?'dark':'light'))
     this.darkTheme = dark;
   }
 

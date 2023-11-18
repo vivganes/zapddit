@@ -90,10 +90,10 @@
       </div>
     </div>
     <div class="{{(displayShowMoreButton?'shortened-content':'')}}" #cardBlock>
-    <div *ngIf="!isQuotedEvent" class="break-words-overflow pointer-cursor" [routerLink]="'/n/'+hexEventId">
+    <div *ngIf="!isQuotedEvent" class="break-words-overflow pointer-cursor card-text" [routerLink]="'/n/'+hexEventId">
       <ngx-dynamic-hooks *ngIf="linkifiedContent" [content]="linkifiedContent"></ngx-dynamic-hooks>
     </div>
-    <div *ngIf="isQuotedEvent" class="break-words-overflow pointer-cursor" (click)="openQuotedEvent($event)">
+    <div *ngIf="isQuotedEvent" class="break-words-overflow pointer-cursor card-text" (click)="openQuotedEvent($event)">
       <ngx-dynamic-hooks *ngIf="linkifiedContent" [content]="linkifiedContent"></ngx-dynamic-hooks>
     </div>
 
@@ -193,15 +193,15 @@
   <div *ngIf="!isQuotedEvent" class="card-footer">
     <button class="btn btn-sm btn-icon btn-link" *ngIf="!hideNonZapReactions" [disabled]="!ndkProvider.canWriteToNostr"
       (click)="publishLike()">
-      <cds-icon shape="arrow" solid="true"></cds-icon> {{ likes | shortNumber }} Upvote
+      <cds-icon shape="arrow" solid="true"></cds-icon> {{ likes | shortNumber }}{{isMobileScreen?'':' '+'Upvote'}}
     </button>
     <button class="btn btn-sm btn-icon btn-link" *ngIf="!hideNonZapReactions" [disabled]="!ndkProvider.canWriteToNostr"
       (click)="publishDislike()">
-      <cds-icon shape="arrow" solid="true" flip="vertical"></cds-icon> {{ dislikes | shortNumber }} Downvote
+      <cds-icon shape="arrow" solid="true" flip="vertical"></cds-icon> {{ dislikes | shortNumber }}{{isMobileScreen?'':' '+'Downvote'}}
     </button>
     <button class="btn btn-sm btn-icon btn-link" [clrLoading]="upzappingNow" [disabled]="!ndkProvider.canWriteToNostr"
       (click)="upZap()">
-      <cds-icon shape="bolt" direction="down"></cds-icon> {{ upZapTotalMilliSats/1000 | shortNumber }} Upzap
+      <cds-icon shape="bolt" direction="down"></cds-icon> {{ upZapTotalMilliSats/1000 | shortNumber }}{{isMobileScreen?'':' '+'Upzap'}}
     </button>
     <button class="btn btn-sm btn-icon btn-link" (click)="downZap()" [clrLoading]="downzappingNow"
       [disabled]="!ndkProvider.canWriteToNostr || !ndkProvider.appData.downzapRecipients" [title]="
@@ -209,18 +209,17 @@
           ? 'This deposits your downzap amounts to the configured Downzap recipients'
           : 'Setup your downzap recipient in the preferences to downzap notes.'
       ">
-      <cds-icon shape="bolt" direction="up"></cds-icon> {{ downZapTotalMilliSats/1000 | shortNumber }} Downzap
+      <cds-icon shape="bolt" direction="up"></cds-icon> {{ downZapTotalMilliSats/1000 | shortNumber }}{{isMobileScreen?'':' '+'Downzap'}}
     </button>
     <button *ngIf="!showingComments" class="btn btn-sm btn-icon btn-link" title="Show Comments"
       (click)="showComments()">
-      <cds-icon shape="chat-bubble"></cds-icon> {{ replies.length>0 ? replies.length :'' }}
-      Comment{{replies.length>1?'s':''}}
+      <cds-icon shape="chat-bubble"></cds-icon> {{ replies.length>0 ? replies.length :'' }}{{isMobileScreen?'':' '+'Comment'}}{{isMobileScreen?'':replies.length>1?'s':''}}
     </button>
     <button *ngIf="showingComments" class="btn btn-sm btn-icon btn-link" title="Hide Comments" (click)="hideComments()">
-      <cds-icon shape="eye-hide"></cds-icon> {{ replies.length }} Comment{{replies.length==1?'':'s'}}
+      <cds-icon shape="eye-hide"></cds-icon> {{ replies.length }}{{isMobileScreen?'':' '+'Comment'}}{{isMobileScreen?'':replies.length>1?'s':''}}
     </button>
-    <button class="btn btn-sm btn-icon btn-link" (click)="share()">
-      <cds-icon shape="share"></cds-icon> Share
+    <button class="btn btn-sm btn-icon btn-link" (click)="share()" title="Share">
+      <cds-icon shape="share"></cds-icon>{{isMobileScreen?'':' '+'Share'}}
     </button>
     <clr-dropdown>
       <button class="btn btn-sm btn-outline-primary" clrDropdownTrigger>
