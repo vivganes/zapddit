@@ -11,12 +11,17 @@ import { Router } from '@angular/router';
 export class LoginPageComponent {
 
   ndkProvider:NdkproviderService;
+  notices:string[] = [];
 
   constructor(ndkProvider:NdkproviderService, private router:Router){
     this.ndkProvider = ndkProvider;
   }
 
   ngOnInit(){
+    this.ndkProvider.notice$.subscribe((message)=>{
+      this.notices.push(message);
+    })
+
     this.ndkProvider.loginCompleteEmitter.subscribe((complete: boolean) => {
       this.router.navigateByUrl('/feed');
     })

@@ -104,6 +104,10 @@ html{
   transform: translate(-50%, -50%);
 }
 
+.monospace{
+  font-family: monospace;
+}
+
 .card-text{
 font-size:var(--cds-global-typography-message-font-size);
 font-weight:var(--cds-global-typography-message-font-weight);

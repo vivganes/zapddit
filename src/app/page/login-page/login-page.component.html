@@ -1,8 +1,15 @@
 <div *ngIf="ndkProvider.loggingIn" class="clr-row clr-justify-content-center">
   <div class="clr-col-12 clr-col-md-8">
     <div align="center" class="clr-row clr-justify-content-center">
-      <span class="spinner spinner-md" translate>Logging in...</span>
+      <div>
+        <span class="spinner spinner-md" translate>Logging in...</span>
+      </div>
     </div>
+    <div align="center" class="clr-row clr-justify-content-center">
+      <ul class="list list-spacer list-unstyled monospace">
+        <li *ngFor="let notice of notices">{{notice}}</li>
+      </ul>
+    </div>    
   </div>
 </div>
 
@@ -11,7 +18,7 @@
     <div class="clr-row">
       <div class="clr-col-lg-6 clr-col-12">
         <div class="card">
-          <h3 class="card-header">{{'Secure Login (Recommended)'|translate}}' 🔐</h3>
+          <h3 class="card-header">{{'Secure Login (Recommended)'|translate}} 🔐</h3>
           <div class="card-block">
             <h4 class="card-title" translate>Nostr Extension</h4>
             <div class="card-text">
