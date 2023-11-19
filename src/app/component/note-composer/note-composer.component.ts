@@ -4,7 +4,7 @@ import { User } from 'src/app/model/user';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { LoginUtil } from 'src/app/util/LoginUtil';
 import { ZappeditdbService } from '../../service/zappeditdb.service';
-import { NDKEvent } from '@nostr-dev-kit/ndk';
+import { NDKEvent, NDKPrivateKeySigner } from '@nostr-dev-kit/ndk';
 import Uploader from 'src/app/util/Uploader';
 import { Community } from 'src/app/model/community';
 import { ObjectCacheService } from 'src/app/service/object-cache.service';
@@ -25,6 +25,9 @@ export class NoteComposerComponent {
 
   static loggedInWithNpub:boolean = false;
   NoteComposerComponent = NoteComposerComponent;
+
+  @Input()
+  isActivated:boolean = false;
 
   @Input()
   isReply:boolean = false;
@@ -51,13 +54,17 @@ export class NoteComposerComponent {
   searchResults$: Observable<any[]> = of([]);
   uploadingNow: boolean = false;
   uploadError?: string;
+  ndkProvider: NdkproviderService;
   private searchTermStream = new Subject<string>();
 
-  constructor(private ndkProvider: NdkproviderService, private objectCache:ObjectCacheService){
-
+  constructor(ndkProvider: NdkproviderService, private objectCache:ObjectCacheService){
+    this.ndkProvider = ndkProvider;
   }
 
   ngOnInit() {
+    if(this.isReply){
+      this.isActivated = true;
+    }
     this.searchTermStream
       .subscribe((value:string) => {
         this.searchResults$ = this.getItems(value);
@@ -66,6 +73,10 @@ export class NoteComposerComponent {
       this.ndkProvider.isLoggedInUsingPubKey$.subscribe(val => {
         NoteComposerComponent.loggedInWithNpub = val;
       })
+  }
+
+  activate(){
+    this.isActivated = true;
   }
 
   getItems(term:string): Observable<User[]> {
