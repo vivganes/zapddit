@@ -107,11 +107,18 @@
         <router-outlet></router-outlet>
       </div>
       <ng-template #notloggedin>
-        <div align="center">
-          <span class="spinner" translate>
-            Loading...
-          </span>
-        </div>        
+        <div class="clr-row clr-justify-content-center">
+          <div align="center">
+            <span class="spinner" translate>
+              Loading...
+            </span>
+          </div>            
+        </div>
+        <div  align="center" class="clr-row clr-justify-content-center">
+          <ul class="list list-spacer list-unstyled monospace">
+            <li *ngFor="let notice of notices">{{notice}}</li>
+          </ul>
+        </div>                
       </ng-template>
     </div>
   </div>

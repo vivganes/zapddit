@@ -107,6 +107,7 @@ export class AppComponent implements OnInit, OnDestroy{
   isMobileScreen:boolean = false;
   codePopupOpened:boolean = false;
   currentLanguage:string;
+  notices:string[] =[];
 
   constructor(private translate: TranslateService, public ndkProvider: NdkproviderService, router: Router,
     private breakpointObserver: BreakpointObserver, private communityService:CommunityService, 
@@ -127,6 +128,10 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit() :void{
+    this.ndkProvider.notice$.subscribe((message)=> {
+      console.log("NOTICE: "+ message);
+      this.notices.push(message);
+    })
 
     var mediaSetting = localStorage.getItem(Constants.SHOWMEDIA);
     if(!mediaSetting){

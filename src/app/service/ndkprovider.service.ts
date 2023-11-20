@@ -13,9 +13,7 @@ import NDK, {
   NDKSubscription,
   NDKSigner,
   NDKPrivateKeySigner,
-  NDKKind,
-  NDKRelay,
-  NDKRelayList
+  NDKKind
 } from '@nostr-dev-kit/ndk';
 import { nip57 } from 'nostr-tools';
 import { bech32 } from '@scure/base';
@@ -27,7 +25,6 @@ import { BehaviorSubject, retry } from 'rxjs';
 import { Community } from '../model/community';
 import { ObjectCacheService } from './object-cache.service';
 import { User } from '../model/user';
-import hashtag from '../util/IntlHashtagLinkifyPlugin';
 import { CommunityCacheService } from './community-cache.service';
 import NDKCacheAdapterDexie from "@nostr-dev-kit/ndk-cache-dexie";
 
@@ -65,7 +62,7 @@ export class NdkproviderService {
     mutedTopics: '',
     followedCommunities:''
   };
-
+  notice$ = new BehaviorSubject<string>('Initializing zapddit');
   isNip05Verified$ = new BehaviorSubject<boolean>(false);
   fetchingPeopleIFollowFromRelay$ = new BehaviorSubject<boolean>(true);
   fetchingMutedUsersFromRelay$ = new BehaviorSubject<MutedUserMetaData>({ status: true, count: 0 });
@@ -115,6 +112,7 @@ export class NdkproviderService {
           } else {
             this.isNip07 = true;
             this.canWriteToNostr = true;
+            this.notice$.next('Attempting to login from nostr extension')
           }
           this.tryLoginUsingNpub(npubFromLocal);
         }
@@ -259,13 +257,16 @@ export class NdkproviderService {
   }
 
   async tryLoginUsingNpub(npubFromLocal: string) {
+    this.notice$.next('Logging in with npub '+ npubFromLocal);
     this.loggingIn = true;
     this.loginError = undefined;
     if (this.isNip07) {
+      this.notice$.next('Detecting nostr extension');
       while (!window.hasOwnProperty('nostr')) {
         // define the condition as you like
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
+      this.notice$.next('Found nostr extension')
       console.log('Found window nostr');
       this.signer = new NDKNip07Signer();
     }
@@ -283,6 +284,7 @@ export class NdkproviderService {
   }
 
   attemptLoginWithNip07() {
+    this.notice$.next('Attempting login with nostr extension')
     this.loggingIn = true;
     this.canWriteToNostr = true;
     this.resolveNip07Extension();
@@ -291,11 +293,12 @@ export class NdkproviderService {
   private resolveNip07Extension() {
     (async () => {
       console.log('waiting for window.nostr');
+      this.notice$.next('Detecting nostr extension')
       while (!window.hasOwnProperty('nostr')) {
         // define the condition as you like
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
-
+      this.notice$.next('Found nostr extension')
       // do this after window.nostr is available
       this.signer = new NDKNip07Signer();
       this.initializeClientWithSigner();
@@ -354,7 +357,9 @@ export class NdkproviderService {
 
   private async initializeClientWithSigner() {
     try {
+      this.notice$.next('Looking for already logged-in user')
       this.signer?.user().then(async user => {
+        this.notice$.next(`Found user with pubkey ${user.pubkey}`)
         let relayUrls: string[] | undefined = [];
         if(localStorage.getItem(Constants.RELAYSUBS) !== undefined) {
           relayUrls = localStorage.getItem(Constants.RELAYSUBS)?.split(',');
@@ -366,6 +371,7 @@ export class NdkproviderService {
           autoFetchUserMutelist: true };
         this.ndk = new NDK(params);
         await this.ndk.assertSigner();
+        this.notice$.next('Connecting to relays')
         await this.ndk.connect(1000);
         if (user.npub) {
           console.log('Permission granted to read their public key:', user.npub);
