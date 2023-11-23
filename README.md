@@ -1,6 +1,7 @@
 # zapddit
 
-A reddit-style nostr client :)
+A reddit-style nostr client
+
 
  * [reddit Vs. zapddit](#reddit-vs-zapddit)
  * [Screenshot](#screenshot)
