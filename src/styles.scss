@@ -73,6 +73,10 @@ html{
   font-size: x-large!important;
 }
 
+.feed-header-text{
+  font-size: x-large;
+}
+
 .select-feed-type {
   background-color: transparent!important;
 }
@@ -178,6 +182,11 @@ a{
     object-fit:cover;
 }
 
+.community-feed-banner{
+  object-fit: cover;
+  max-height:9rem;
+}
+
 .inline-display{
   display:inline;
 }
@@ -220,6 +229,14 @@ a{
 
 .reply-card{
   margin-left:5px;
+}
+
+.mb-5{
+  margin-bottom: 5px;
+}
+
+.mr-half-rem{
+  margin-right:0.5rem;
 }
 
 .compose-note{

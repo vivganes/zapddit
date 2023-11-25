@@ -35,12 +35,12 @@
 
 <div *ngIf="!isActivated" class="{{ 'clr-row clr-justify-content-center'+ (isReply? ' reply-card' : '') }}">
     <div class="{{ isReply ? 'clr-col-12' :'clr-col-md-8 clr-col-12' }}">
-                <div class="clr-row clr-justify-content-left">
+                <div class="clr-row clr-justify-content-between">
                     <div class="clr-col-md-1 clr-col-2 pt-10">
                         <app-user-pic-and-name [onlyPic]="true" [user]="ndkProvider.currentUser"/>
                     </div>                    
-                    <div class="card clickable clr-col-md-11 clr-col-10 mt-0" (click)="activate()">
-                        <h3 class="card-header">Create new note</h3>
+                    <div class="card clickable clr-col-md-10 clr-col-9 mt-0 mr-half-rem" (click)="activate()">
+                        <h4 class="card-header">Create new note</h4>
                     </div>
                 </div>
                 
