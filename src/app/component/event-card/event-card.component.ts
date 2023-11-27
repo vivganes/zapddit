@@ -130,10 +130,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
     .subscribe((state: BreakpointState) => {
       if (state.matches) {
         this.isMobileScreen = false;
-        console.log("larger than mobile")
       } else {
         this.isMobileScreen = true;
-        console.log("mobile")
       }
     });
 
@@ -156,7 +154,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
         //possible community post
         this.loadingApproval = true;
       }
-    }    
+    }
     this.displayedContent = this.replaceHashStyleMentionsWithComponents();
     this.displayedContent = this.replaceNpubMentionsWithComponents(this.displayedContent)
     this.displayedContent = this.replaceNoteMentionsWithComponents(this.displayedContent)
@@ -205,7 +203,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
       this.approvalEvents = new Set(approvalEventsByMods);
       this.approvedModHexIds = approvalEventsByMods.map((approval)=>{
         return approval.pubkey;
-      })     
+      })
     }
   }
 
@@ -463,7 +461,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
         if(this.community.moderatorHexKeys?.indexOf(currentUserHexPubKey!)>-1){
           this.canModerate = true;
         }
-      }      
+      }
 
       if(!this.showUnapprovedPosts || this.canModerate){
         this.loadingApproval = true;

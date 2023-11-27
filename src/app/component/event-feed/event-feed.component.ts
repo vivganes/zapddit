@@ -1,6 +1,6 @@
 import { Constants } from 'src/app/util/Constants';
-import { Component, EventEmitter, Input, Output, SimpleChanges, OnInit, OnDestroy, OnChanges } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, EventEmitter, Input, Output, SimpleChanges, OnInit, OnDestroy, OnChanges, HostListener } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, RouteReuseStrategy, Router } from '@angular/router';
 import { NDKEvent } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import { TopicService } from 'src/app/service/topic.service';
@@ -10,6 +10,7 @@ import { EventBuffer } from 'src/app/buffer/EventBuffer';
 import { ReverseChrono } from 'src/app/sortlogic/ReverseChrono';
 import { Community } from 'src/app/model/community';
 import { FeedType } from 'src/app/enum/FeedType';
+import { ZapdditRouteReuseStrategy } from 'src/app/util/ZapdditRouteReuseStrategy';
 
 const BUFFER_REFILL_PAGE_SIZE = 100;
 const BUFFER_READ_PAGE_SIZE = 20;
@@ -51,8 +52,11 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   nowShowingUptoIndex:number = 0;
 
   ndkProvider: NdkproviderService;
+  currentUrl:string=''
 
   ngOnInit():void {
+    console.log('Initiating feed');
+
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       if (followedTopics === '') {
         this.followedTopics = [];
@@ -91,6 +95,18 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     })
   }
 
+  setScrollPosition(scrollPos: string) {
+    var parent = document.getElementById('parent-container');
+    try{
+      if(parent!=null){
+        parent.scrollTop = Number(scrollPos);
+      }
+    }catch(ex){
+      if(parent!=null)
+        parent.scrollTop = 0;
+    }
+  }
+
    loadFeedFromBeginning() {
      console.log("Loading feed from beginning")
      this.events?.clear();
@@ -108,10 +124,12 @@ export class EventFeedComponent implements OnInit,OnDestroy{
         this.until = Date.now();
         this.limit = BUFFER_REFILL_PAGE_SIZE;
         this.getEventsAndFillBuffer();
+
+        this.clearSavedComponentState();
   }
 
   constructor(ndkProvider: NdkproviderService, private topicService: TopicService,
-    private route: ActivatedRoute, private router:Router) {
+    private route: ActivatedRoute, private router:Router, private routeStrategy:RouteReuseStrategy) {
     this.ndkProvider = ndkProvider;
     var showUnapprovedPostsFromLocal = localStorage.getItem(Constants.SHOW_UNAPPROVED);
     if (showUnapprovedPostsFromLocal && showUnapprovedPostsFromLocal === 'true') {
@@ -215,7 +233,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
               this.until
             );
           }
-          
+
         }
       }
     }
@@ -414,10 +432,12 @@ export class EventFeedComponent implements OnInit,OnDestroy{
 
   ngOnDestroy(): void {
     this.fetchingPeopleIFollowFromRelaySub.unsubscribe();
+    console.log('init Destroying Feed');
   }
 
   searchFromMobile(){
     let topic = (<HTMLInputElement>document.getElementById('search_input_mobile')).value;
+    this.clearSavedComponentState();
     if(topic && topic !==''){
       topic = topic.toLowerCase();
       if(topic.startsWith('#')){
@@ -425,5 +445,9 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       }
       this.router.navigate(['t', { topic }]);
     }
+  }
+
+  clearSavedComponentState(){
+    (this.routeStrategy as ZapdditRouteReuseStrategy).clearSavedHandle('/feed');
   }
 }
