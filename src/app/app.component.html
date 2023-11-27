@@ -81,7 +81,7 @@
         <cds-icon shape="logout" clrVerticalNavIcon></cds-icon><span class="nav-text">{{ndkProvider.isTryingZapddit ? ('Reset Data'|translate) : ('Logout'|translate)}}</span>
       </a>
       <div class="nav-divider"></div>
-      <label class="nav-header" *ngIf="!sidebarCollapsed">        
+      <label class="nav-header" *ngIf="!sidebarCollapsed">
         {{'Communities'|translate}} <span class="label label-info" translate>BETA</span></label>
       <a title="{{'Recently active communities'|translate}}"  clrVerticalNavLink routerLink="/communities/recently-active" routerLinkActive="active">
         <cds-icon shape="bubble-exclamation" clrVerticalNavIcon></cds-icon><span class="nav-text" translate>Recently active</span>
@@ -100,11 +100,11 @@
       </a>
       <div class="nav-divider"></div>
       <label class="nav-header"*ngIf="!sidebarCollapsed && followedTopics && followedTopics.length > 0" translate>Followed Topics</label>
-      <app-topic *ngFor="let topic of followedTopics" [topic]="topic" [isMobileScreen]="isMobileScreen" [sidebarCollapsed]="sidebarCollapsed"></app-topic>     
+      <app-topic *ngFor="let topic of followedTopics" [topic]="topic" [isMobileScreen]="isMobileScreen" [sidebarCollapsed]="sidebarCollapsed"></app-topic>
     </clr-vertical-nav>
-    <div class="content-area">
+    <div class="content-area" id="parent-container">
       <div *ngIf="isLoggedIn(); else notloggedin">
-        <router-outlet></router-outlet>
+        <router-outlet (attach)="onAttach($event)"></router-outlet>
       </div>
       <ng-template #notloggedin>
         <div class="clr-row clr-justify-content-center">
@@ -112,13 +112,13 @@
             <span class="spinner" translate>
               Loading...
             </span>
-          </div>            
+          </div>
         </div>
         <div  align="center" class="clr-row clr-justify-content-center">
           <ul class="list list-spacer list-unstyled monospace">
             <li *ngFor="let notice of notices">{{notice}}</li>
           </ul>
-        </div>                
+        </div>
       </ng-template>
     </div>
   </div>

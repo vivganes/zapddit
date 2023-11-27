@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject} from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ComponentRef} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 
 import '@cds/core/icon/register.js';
@@ -40,12 +40,12 @@ import {
   connectIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, RouteReuseStrategy, Router } from '@angular/router';
 import { NDKEvent, NDKTag, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import * as linkify from 'linkifyjs';
 import hashtag from './util/IntlHashtagLinkifyPlugin';
 import { Constants } from './util/Constants';
-import { Subscription, BehaviorSubject } from 'rxjs';
+import { Subscription, BehaviorSubject, filter } from 'rxjs';
 import { CommunityService } from './service/community.service';
 import { TopicService } from './service/topic.service';
 import {
@@ -54,6 +54,8 @@ import {
 } from '@angular/cdk/layout';
 import { BtcConnectService } from './service/btc-connect.service';
 import { DOCUMENT } from '@angular/common';
+import { ZapdditRouteReuseStrategy } from './util/ZapdditRouteReuseStrategy';
+import { EventFeedComponent } from './component/event-feed/event-feed.component';
 
 ClarityIcons.addIcons(
   connectIcon,
@@ -108,10 +110,13 @@ export class AppComponent implements OnInit, OnDestroy{
   codePopupOpened:boolean = false;
   currentLanguage:string;
   notices:string[] =[];
+  previousUrl: string | null= null;
+  currentUrl: string | null= null;
 
   constructor(private translate: TranslateService, public ndkProvider: NdkproviderService, router: Router,
-    private breakpointObserver: BreakpointObserver, private communityService:CommunityService, 
-    private topicService:TopicService, private btcConnectService:BtcConnectService, @Inject(DOCUMENT) private document: Document) {
+    private breakpointObserver: BreakpointObserver, private communityService:CommunityService,
+    private topicService:TopicService, private btcConnectService:BtcConnectService, @Inject(DOCUMENT) private document: Document,
+    private routeStrategy:RouteReuseStrategy) {
     translate.setDefaultLang('en');
 
     var language = localStorage.getItem(Constants.LANGUAGE);
@@ -128,6 +133,8 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit() :void{
+    window.addEventListener('scroll', this.scrollEvent, true);
+
     this.ndkProvider.notice$.subscribe((message)=> {
       console.log("NOTICE: "+ message);
       this.notices.push(message);
@@ -153,7 +160,7 @@ export class AppComponent implements OnInit, OnDestroy{
             this.setFollowedTopicsFromString(res.join(','));
           })
     })
-    
+
 
     this.followedTopicsEmitterSub =  this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       this.setFollowedTopicsFromString(followedTopics);
@@ -172,14 +179,28 @@ export class AppComponent implements OnInit, OnDestroy{
     .subscribe((state: BreakpointState) => {
       if (state.matches) {
         this.isMobileScreen = false;
-        console.log("larger than mobile")
       } else {
         this.isMobileScreen = true;
-        console.log("mobile")
       }
     });
   }
 
+  scrollEvent = (event: any): void => {
+    if(this.currentUrl === '/feed'){
+      const scrollTop = event.srcElement.scrollTop;
+      sessionStorage.setItem('feedPageScrollPos',scrollTop);
+    }
+  }
+
+  onAttach(component:any){
+    if (component instanceof EventFeedComponent)
+    {
+      var scrollPos = sessionStorage.getItem('feedPageScrollPos');
+      if(scrollPos){
+        component.setScrollPosition(scrollPos);
+      }
+    }
+  }
 
   private setFollowedTopicsFromString(followedTopics: string) {
     if (followedTopics === '') {
@@ -215,6 +236,7 @@ export class AppComponent implements OnInit, OnDestroy{
 
   search() {
     let topic = (<HTMLInputElement>document.getElementById('search_input')).value;
+    this.clearSavedComponentState();
     if(topic && topic !==''){
       topic = topic.toLowerCase();
       if(topic.startsWith('#')){
@@ -222,6 +244,10 @@ export class AppComponent implements OnInit, OnDestroy{
       }
       this.router.navigate(['t', { topic }]);
     }
+  }
+
+  clearSavedComponentState(){
+    (this.routeStrategy as ZapdditRouteReuseStrategy).clearSavedHandle('/feed');
   }
 
   isLoggingIn(){
@@ -243,6 +269,7 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy():void{
+    window.removeEventListener('scroll', this.scrollEvent, true);
     this.followedTopicsEmitterSub.unsubscribe();
     this.isNip05VerifiedForAuthorSub.unsubscribe();
   }
