@@ -448,6 +448,6 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   }
 
   clearSavedComponentState(){
-    (this.routeStrategy as ZapdditRouteReuseStrategy).clearSavedHandle('/feed');
+    (this.routeStrategy as ZapdditRouteReuseStrategy).clearSavedHandle(Constants.FEED_ROUTE);
   }
 }

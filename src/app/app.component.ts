@@ -135,6 +135,14 @@ export class AppComponent implements OnInit, OnDestroy{
   ngOnInit() :void{
     window.addEventListener('scroll', this.scrollEvent, true);
 
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd))
+      .subscribe(event =>
+     {
+        this.currentUrl = (event as NavigationEnd).url;
+        console.log('scroll '+ this.currentUrl);
+     });
+
     this.ndkProvider.notice$.subscribe((message)=> {
       console.log("NOTICE: "+ message);
       this.notices.push(message);
@@ -186,8 +194,10 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   scrollEvent = (event: any): void => {
-    if(this.currentUrl === '/feed'){
+    console.log('scroll '+event)
+    if(this.currentUrl === Constants.FEED_ROUTE || this.currentUrl ===  Constants.INDEX_ROUTE){
       const scrollTop = event.srcElement.scrollTop;
+      console.log('scroll '+scrollTop)
       sessionStorage.setItem('feedPageScrollPos',scrollTop);
     }
   }
@@ -247,7 +257,7 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   clearSavedComponentState(){
-    (this.routeStrategy as ZapdditRouteReuseStrategy).clearSavedHandle('/feed');
+    (this.routeStrategy as ZapdditRouteReuseStrategy).clearSavedHandle(Constants.FEED_ROUTE);
   }
 
   isLoggingIn(){

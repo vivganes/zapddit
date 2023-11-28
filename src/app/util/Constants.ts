@@ -19,4 +19,6 @@ export class Constants {
   public static readonly SHOW_UNAPPROVED = 'showUnapproved';
   public static readonly RELAYSUBS = 'subscribedRelays';
   public static readonly DEFAULT_FEED_IS_COMMUNITY = 'defaultFeedIsCommunity';
+  public static readonly INDEX_ROUTE:string='/'
+  public static readonly FEED_ROUTE:string='/feed'
 }
