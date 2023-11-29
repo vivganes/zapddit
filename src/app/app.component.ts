@@ -101,7 +101,7 @@ export class AppComponent implements OnInit, OnDestroy{
   private router: Router;
   sidebarCollapsed: false;
   followedTopics: string[] = [];
-  darkTheme: boolean = false;
+  darkTheme: boolean = true;
   wizardIsOpen: boolean = false;
   isNip05Verified:boolean = false;
   isNip05VerifiedForAuthorSub:Subscription = new Subscription();
@@ -161,7 +161,7 @@ export class AppComponent implements OnInit, OnDestroy{
       }
     }
     else {
-      this.setTheme(false);
+      this.setTheme(true);
     }
     this.ndkProvider.loginCompleteEmitter.subscribe((loginComplete:boolean)=>{
       this.topicService.fetchFollowedTopics().then(res=>{
