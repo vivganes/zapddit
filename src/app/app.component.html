@@ -25,8 +25,18 @@
       </a>
       <clr-dropdown>
         <button class="nav-icon" clrDropdownTrigger aria-label="toggle settings menu">
-            <cds-icon shape="user" solid></cds-icon>
-            <cds-icon shape="angle" direction="down"></cds-icon>
+          <img
+          *ngIf="ndkProvider.currentUserProfile?.image"
+          [src]="ndkProvider.currentUserProfile?.image"
+          onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'"
+          class="header-profile-image"
+          alt="profile" />
+          <img
+          *ngIf="!(ndkProvider.currentUserProfile?.image)"
+          src="https://robohash.org/7OG.png?set=set2&size=150x150"
+          class="header-profile-image"
+          alt="profile" />
+          <cds-icon shape="angle" direction="down"></cds-icon>
         </button>
         <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
             <a *ngIf="ndkProvider.isTryingZapddit" routerLink="/login" clrDropdownItem translate>Login</a>
