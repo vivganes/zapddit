@@ -194,10 +194,8 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   scrollEvent = (event: any): void => {
-    console.log('scroll '+event)
     if(this.currentUrl === Constants.FEED_ROUTE || this.currentUrl ===  Constants.INDEX_ROUTE){
       const scrollTop = event.srcElement.scrollTop;
-      console.log('scroll '+scrollTop)
       sessionStorage.setItem('feedPageScrollPos',scrollTop);
     }
   }

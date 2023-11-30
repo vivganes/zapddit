@@ -264,7 +264,9 @@ export class NdkproviderService {
       this.notice$.next('Detecting nostr extension');
       while (!window.hasOwnProperty('nostr')) {
         // define the condition as you like
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => {
+          setTimeout(resolve, 1000)
+        });
       }
       this.notice$.next('Found nostr extension')
       console.log('Found window nostr');

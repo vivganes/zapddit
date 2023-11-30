@@ -93,6 +93,8 @@
     </div>
   </div>    
 </ng-template>
+<app-note-composer *ngIf="ndkProvider.canWriteToNostr && !loadingCommunityDetails && (feedType === feedTypeOptions[1] ? community: true)" [currentTag]="tag" (postedEventEmitter)="addEventToFeed($event)" [currentCommunity]="community"></app-note-composer>
+
 <div *ngIf="(feedType === feedTypeOptions[0]) && !tag && !community && (!followedTopics || followedTopics?.length == 0) && (!events || events.size== 0)" class="clr-row clr-justify-content-center">
   <div class="clr-col-12 clr-col-md-8">
       <div class="card">            
@@ -122,7 +124,6 @@
       </div>
   </div>    
 </div>
-<app-note-composer *ngIf="ndkProvider.canWriteToNostr && !loadingCommunityDetails && (feedType === feedTypeOptions[1] ? community: true)" [currentTag]="tag" (postedEventEmitter)="addEventToFeed($event)" [currentCommunity]="community"></app-note-composer>
 <div align="center" *ngIf="(!loadingEvents) && ((feedType === feedTypeOptions[0] && (tag || ndkProvider.appData.followedTopics!=='')) || (feedType === feedTypeOptions[1] && (community || ndkProvider.appData.followedCommunities!==''))) && (!events || (events && events.size == 0))">
   <div align="center" class="alert alert-info clr-col-12 clr-col-md-8" role="alert">
     <div class="alert-items">
