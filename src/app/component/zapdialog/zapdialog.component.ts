@@ -5,6 +5,7 @@ import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import QRCodeStyling from 'qr-code-styling';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Constants } from 'src/app/util/Constants';
+import { Community } from 'src/app/model/community';
 
 @Component({
   selector: 'app-zapdialog',
@@ -30,6 +31,9 @@ export class ZapdialogComponent implements OnInit {
 
   @Input()
   authorNpub:string|undefined;
+
+  @Input()
+  community?:Community;
 
   @Output()
   onClose = new EventEmitter<boolean>();
@@ -70,11 +74,15 @@ export class ZapdialogComponent implements OnInit {
     if(this.event){
       this.event.id = this.eventHexId!;
     }
-    if(this.type==='upzap'){
-      await this.upZap();
-    }else{
-      await this.downZap();
-    }
+    if(this.community){
+      await this.zapCommunityMods();
+    } else {
+      if(this.type==='upzap'){
+        await this.upZap();
+      }else{
+        await this.downZap();
+      }
+    }    
   }
 
   async upZap() {
@@ -138,6 +146,32 @@ export class ZapdialogComponent implements OnInit {
       this.errorMsg = e.message;
     }finally{
       this.zappingNow = false;
+    }
+  }
+
+  async zapCommunityMods(){
+    const zapValue = this.zapValue;
+    const mods = this.community?.moderatorHexKeys;
+    if(mods){
+      for (const mod of mods){
+        try{
+          const modUser = this.ndkProvider.ndk?.getUser({pubkey: mod})
+          const invoice = await modUser?.zap((zapValue*1000)/mods.length,'Great job with n/'+this.community?.name,[],this.ndkProvider.ndk?.signer)
+          if(window.hasOwnProperty('webln')){
+            //@ts-ignore
+            if(window.webln.connected){
+              //@ts-ignore
+              const result = await window.webln.sendPayment(invoice);
+              if(!result?.preimage) {
+                throw new Error('Payment failed for '+modUser?.profile?.name+'. Please try again');
+              }
+            }
+          } 
+        }catch(e){
+          console.error(e);
+        }         
+      }
+      this.zapDoneClicked();
     }
   }
 

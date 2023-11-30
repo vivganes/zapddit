@@ -20,6 +20,8 @@ const BUFFER_READ_PAGE_SIZE = 20;
   styleUrls: ['./event-feed.component.scss'],
 })
 export class EventFeedComponent implements OnInit,OnDestroy{
+
+
   until: number | undefined = Date.now();
   limit: number | undefined = BUFFER_REFILL_PAGE_SIZE;
   loadingEvents: boolean = false;
@@ -27,6 +29,7 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   reachedEndOfFeed : boolean = false;
   peopleIFollowLoadedFromRelay:boolean=false;
   fetchingPeopleIFollowFromRelaySub:Subscription=new Subscription();
+  weblnEnabled?:boolean = false;
 
   feedTypeOptions=[
     FeedType.TOPICS_FEED,
@@ -52,10 +55,17 @@ export class EventFeedComponent implements OnInit,OnDestroy{
   nowShowingUptoIndex:number = 0;
 
   ndkProvider: NdkproviderService;
-  currentUrl:string=''
+  currentUrl:string=''; 
+  showZapDialog: boolean = false;
 
   ngOnInit():void {
     console.log('Initiating feed');
+    if(window.hasOwnProperty('webln')){
+      //@ts-ignore
+      if(window.webln.connected){
+        this.weblnEnabled = true;
+      }
+    }
 
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       if (followedTopics === '') {
@@ -128,6 +138,14 @@ export class EventFeedComponent implements OnInit,OnDestroy{
         this.clearSavedComponentState();
   }
 
+  onZapDialogClose($event: any) {
+    this.showZapDialog= false;
+  }
+
+  onZapComplete($event: any) {
+    this.showZapDialog = false;
+  }
+
   constructor(ndkProvider: NdkproviderService, private topicService: TopicService,
     private route: ActivatedRoute, private router:Router, private routeStrategy:RouteReuseStrategy) {
     this.ndkProvider = ndkProvider;
@@ -191,6 +209,11 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     return FeedType;
   }
 
+  async zapMods(){
+    if(this.community){
+      this.showZapDialog = true;      
+    }
+  }
 
   async getEventsAndFillBuffer() {
     this.loadingEvents = true;

@@ -9,17 +9,11 @@
   </h3>
   <div class="modal-body">
     <div class="center">
-    <img *ngIf="imageUrl" alt="{{'Profile picture'|translate}}"
-      [src]="imageUrl" class="card-media-image pointer-cursor" title="{{'Open in Snort'|translate}}" />
-    <img alt="temp avatar" *ngIf="imageUrl == undefined"
-      class="card-media-image pointer-cursor" src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
-      title="{{'Open in Snort'|translate}}" />
+    <app-user-pic-and-name *ngIf="community === undefined" npub="authorNpub"></app-user-pic-and-name>
+    <span *ngIf="community !== undefined">
+      <app-user-pic-and-name *ngFor="let mod of community.moderatorHexKeys;" [hexKey]="mod"></app-user-pic-and-name>
+    </span>
     </div>
-
-    <div class="center" *ngIf="authorNpub">
-      {{authorNpub}}
-    </div>
-
     <div class="pt-5 mt-12">
       <div class="clr-row sats-center" >
         <button class="btn btn-primary-outline" (click)="setSats(21)">21 ⚡</button>
@@ -57,9 +51,12 @@
         </span>
       </div>
     </div>
-    <button class="btn btn-lg btn-primary" [clrLoading]="zappingNow" (click)="initiateZap()" [disabled]="disableZap">
+    <button *ngIf="community === undefined" class="btn btn-lg btn-primary" [clrLoading]="zappingNow" (click)="initiateZap()" [disabled]="disableZap">
       {{type==='upzap'?('Upzap '|translate) :('Downzap '|translate) }} <cds-icon shape="bolt" direction="down" *ngIf="type==='upzap'"></cds-icon>
       <cds-icon shape="bolt" direction="up" *ngIf="type==='downzap'"></cds-icon>
+    </button>
+    <button *ngIf="community !== undefined" class="btn btn-lg btn-primary" [clrLoading]="zappingNow" (click)="initiateZap()">
+      <cds-icon shape="bolt" direction="down"></cds-icon> {{'Zap mods'|translate}}
     </button>
   </div>
 </clr-modal>

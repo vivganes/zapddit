@@ -28,6 +28,9 @@
   </div>
 </ng-template>
 <ng-template [ngIf]="community !== undefined && tag === undefined">
+  <app-zapdialog *ngIf="weblnEnabled && showZapDialog" [show]="showZapDialog"
+  (onClose)="onZapDialogClose($event)" [community]="community" (onUpzapDone)="onZapComplete($event)"></app-zapdialog>
+
   <div class="clr-row clr-justify-content-center mb-5">
     <div class="clr-col-md-8 clr-col-12">
       <div class="card">
@@ -36,12 +39,7 @@
         </div>
         <div class="card-block">
           <div class="card-title">
-            <span>
-              <img *ngIf="community?.image" (click)="openCommunityPage()" alt="{{'Community image'|translate}}"
-                    src="{{ community.image }}" class="community-image pointer-cursor" title="{{'Browse'|translate}}" />
-              <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
-                    class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
-                    title="Browse" /> 
+            <span>             
               <span class="break-words-overflow feed-header-text"> n/{{community.name}}</span>
             </span>
             <span>
@@ -53,7 +51,9 @@
                     class="community-image pointer-cursor" src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100"
                     title="{{'Open in Snort'|translate}}" />
               <span class="break-words-overflow"> {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}</span>
-              <span>&nbsp;<cds-icon class="alert-icon" shape="info-circle" (click)="showingCommunityInfo = true" title="{{'Show community details'|translate}}"></cds-icon>
+              <span>&nbsp;
+                <cds-icon class="alert-icon" shape="info-circle" (click)="showingCommunityInfo = true" title="{{'Show community details'|translate}}"></cds-icon>
+                <button class="btn btn-sm btn-icon btn-primary" (click)="zapMods()"><cds-icon shape="bolt" solid="true"></cds-icon>Zap Mods</button>
               </span>
             </span>  
           </div>
