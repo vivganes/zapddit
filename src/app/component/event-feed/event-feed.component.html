@@ -53,7 +53,7 @@
               <span class="break-words-overflow"> {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}</span>
               <span>&nbsp;
                 <cds-icon class="alert-icon" shape="info-circle" (click)="showingCommunityInfo = true" title="{{'Show community details'|translate}}"></cds-icon>
-                <button class="btn btn-sm btn-icon btn-primary" (click)="zapMods()"><cds-icon shape="bolt" solid="true"></cds-icon>Zap Mods</button>
+                <button *ngIf="weblnEnabled" class="btn btn-sm btn-icon btn-primary" (click)="zapMods()"><cds-icon shape="bolt" solid="true"></cds-icon>Zap Mods</button>
               </span>
             </span>  
           </div>
