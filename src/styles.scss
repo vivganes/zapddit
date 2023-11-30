@@ -81,6 +81,10 @@ html{
   background-color: transparent!important;
 }
 
+.option-feed-type {
+  background-color: var(--clr-dropdown-bg-color) ;
+}
+
 .note-image {
   border-radius: 10px;
   display: block;
@@ -145,6 +149,10 @@ letter-spacing:var(--cds-global-typography-message-letter-spacing);
   font-weight: bold!important;
   font-size:xx-large!important;
   overflow-x: visible;
+}
+
+.larger-text{
+  font-size: larger;
 }
 
 .event-loading-spinner{

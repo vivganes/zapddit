@@ -80,8 +80,8 @@
     <div class="clr-col-12 clr-col-md-8">
       <clr-select-container>
         <select  id="select-full" title="{{'Feed type'|translate}}" clrSelect name="options" [(ngModel)]="feedType" (ngModelChange)="onChangeFeedType($event)" class="giant-text-in-select select-feed-type">
-          <option [value]="feedTypeOptions[0]">#️⃣ {{'Topics Feed'|translate}}</option>
-          <option [value]="feedTypeOptions[1]">🫂 {{'Communities Feed'|translate}} - BETA</option>
+          <option [value]="feedTypeOptions[0]" class="option-feed-type">#️⃣ {{'Topics Feed'|translate}}</option>
+          <option [value]="feedTypeOptions[1]" class="option-feed-type">🫂 {{'Communities Feed'|translate}} - BETA</option>
         </select>
       </clr-select-container>      
       <div class="clr-control-container ml-5">
