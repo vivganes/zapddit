@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, SecurityContext, AfterContentInit } from '@angular/core';
+import { Inject, Component, ElementRef, Input, ViewChild, Renderer2, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, SecurityContext, AfterContentInit } from '@angular/core';
 import { NDKEvent, NDKKind, NDKTag, NDKUser, NDKUserProfile } from '@nostr-dev-kit/ndk';
 import { NdkproviderService } from 'src/app/service/ndkprovider.service';
 import linkifyHtml from 'linkify-html';
@@ -15,6 +15,7 @@ import {
   BreakpointObserver,
   BreakpointState
 } from '@angular/cdk/layout';
+import { DOCUMENT } from '@angular/common';
 
 const MENTION_REGEX = /(#\[(\d+)\])/gi;
 const NOSTR_NPUB_REGEX = /nostr:(npub[\S]*)/gi;
@@ -112,7 +113,7 @@ export class EventCardComponent implements OnInit, OnDestroy{
   constructor(ndkProvider: NdkproviderService, private renderer: Renderer2,
     private dbService: ZappeditdbService, private router:Router, public domSanitizer:DomSanitizer,
       private clipboard: Clipboard, private changeDetector:ChangeDetectorRef,
-      private breakpointObserver: BreakpointObserver) {
+      private breakpointObserver: BreakpointObserver, @Inject(DOCUMENT) private document: Document,) {
     this.ndkProvider = ndkProvider;
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA)
     if(mediaSettings!=null || mediaSettings!=undefined || mediaSettings!=''){
@@ -777,4 +778,18 @@ export class EventCardComponent implements OnInit, OnDestroy{
   ngOnDestroy(): void {
     this.fetchingMutedUsersFromRelaySub.unsubscribe();
   }
+
+  handleCommentExpandCollapse(e:Event){
+    if(!this.showingComments){
+      this.showComments()
+    }else
+      this.hideComments();
+
+    e.stopPropagation()
+  }
+
+  getTheme():string{
+    return this.document.body.getAttribute('cds-theme')??'dark';
+  }
 }
+
