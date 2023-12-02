@@ -13,7 +13,7 @@
         title="{{'Browse'|translate}}" />
     <span class="break-words-overflow"> n/{{community.name}} <span class="smaller-text">of </span>
     <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="{{'Profile picture'|translate}}"
-        src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="{{'Open in Snort'|translate}}" 
+        src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="{{'Open in Snort'|translate}}"
         onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'" />
     <img alt="{{'temp avatar'|translate}}" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
         class="community-image pointer-cursor" src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100"
@@ -23,16 +23,16 @@
   </div>
   <div class="card-header approval-header" *ngIf="!loadingApproval && canModerate && (!approvalEvents || approvalEvents?.size===0)">
     <span class="approval-header-text">
-      {{'This note is awaiting moderator approval'|translate}} 
+      {{'This note is awaiting moderator approval'|translate}}
       <button class="btn btn-sm btn-success"
       (click)="approveNote()" translate> Approve
       </button>
     </span>
   </div>
-  <div class="card-block"> 
+  <div class="card-block">
     <div class="card-media-block">
       <img *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" alt="{{'Profile picture'|translate}}"
-        src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" title="{{'Open in Snort'|translate}}" 
+        src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" title="{{'Open in Snort'|translate}}"
         onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'"/>
       <img alt="{{'temp avatar'|translate}}" (click)="openAuthorInSnort()" *ngIf="authorWithProfile?.profile?.image == undefined"
         class="card-media-image pointer-cursor" src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
@@ -110,10 +110,10 @@
         <div class="clr-col-6" *ngIf="hasMedia() && !canLoadMedia" class="click-to-load">
           <div class="img-container">
             <img alt="image" class="note-image" imageLoader (click)="clickToLoadMedia()" height="300px"
-            src="{{ '/assets/blur'+ blurImageId+'.png' }}" />            
+            src="{{ '/assets/blur'+ blurImageId+'.png' }}" />
             <div class="text-img-overlay-centered card-text" (click)="clickToLoadMedia()"><cds-icon shape="info-circle" solid="true" size="md" class="card-text"></cds-icon>Media is hidden because you don't follow this person. Click to see media.
               You can change this behavior from preferences.</div>
-          </div>          
+          </div>
         </div>
       </div>
       <div *ngIf="hasMedia() && canLoadMedia">
@@ -204,11 +204,11 @@
       ">
       <cds-icon shape="bolt" direction="up"></cds-icon> {{ downZapTotalMilliSats/1000 | shortNumber }}{{isMobileScreen?'':' '+'Downzap'}}
     </button>
-    <button *ngIf="!showingComments" class="btn btn-sm btn-icon btn-link" title="Show Comments"
+    <button *ngIf="isMobileScreen && !showingComments" class="btn btn-sm btn-icon btn-link" title="Show Comments"
       (click)="showComments()">
       <cds-icon shape="chat-bubble"></cds-icon> {{ replies.length>0 ? replies.length :'' }}{{isMobileScreen?'':' '+'Comment'}}{{isMobileScreen?'':replies.length>1?'s':''}}
     </button>
-    <button *ngIf="showingComments" class="btn btn-sm btn-icon btn-link" title="Hide Comments" (click)="hideComments()">
+    <button *ngIf="isMobileScreen && showingComments" class="btn btn-sm btn-icon btn-link" title="Hide Comments" (click)="hideComments()">
       <cds-icon shape="eye-hide"></cds-icon> {{ replies.length }}{{isMobileScreen?'':' '+'Comment'}}{{isMobileScreen?'':replies.length>1?'s':''}}
     </button>
     <button class="btn btn-sm btn-icon btn-link" (click)="share()" title="Share">
@@ -230,18 +230,30 @@
   </div>
 </div>
 <ng-template [ngIf]="showingComments">
-  <div class="reply-container">
-    <ng-template [ngIf]="!loadingRelatedEvents">
-      <div *ngFor="let replyEvent of replies" class="clr-row reply-card">
-        <div class="clr-col-12 clr-col-md-12">
-          <app-event-card [event]="replyEvent" [showingComments]="false" />
+  <div class="reply-container" id="reply-container" (click)="handleCommentExpandCollapse($event)">
+      <cds-icon shape="minus-circle" *ngIf="showingComments && replies.length>0" class="{{getTheme()==='dark'?'collapse-icon-dark':'collapse-icon-light'}}"></cds-icon>
+      <ng-template [ngIf]="!loadingRelatedEvents">
+        <div *ngFor="let replyEvent of replies" class="clr-row reply-card link-comment-parent-line">
+          <div class="reply-count"></div>
+          <div class="clr-col-12 clr-col-md-12">
+            <app-event-card [event]="replyEvent" [showingComments]="false" />
+          </div>
         </div>
-      </div>
-    </ng-template>
+      </ng-template>
     <app-note-composer *ngIf="ndkProvider.canWriteToNostr" [isReply]="true" [parentEvent]="event" [parentEventId]="hexEventId"
       (postedEventEmitter)="addReply($event)"></app-note-composer>
   </div>
 </ng-template>
+
+<ng-template [ngIf]="!showingComments&& replies.length>0">
+  <div class="reply-count-parent" (click)="handleCommentExpandCollapse($event)">
+    <div class="reply-count">
+    </div>
+    <div class="ml-5"><cds-icon  *ngIf="!showingComments && replies.length>0" shape="plus-circle" ></cds-icon></div>
+    <div class="pl-5" *ngIf="!showingComments && replies.length>0" >{{ replies.length>0 ? replies.length :'' }} Comment{{replies.length>1?'s':''}}</div>
+  </div>
+</ng-template>
+
 <app-zapdialog [authorName]="(authorWithProfile?.profile?.displayName) ?
   authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name"
   [imageUrl]="authorWithProfile?.profile?.image" *ngIf="showZapDialog" [show]="showZapDialog"

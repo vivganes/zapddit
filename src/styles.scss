@@ -294,6 +294,28 @@ a{
   border-left-color: var(--clr-btn-primary-border-color,hsl(198, 65%, 57%));
 }
 
+.reply-count{
+  float:left;
+  width:35px;
+  height:35px;
+  border-width:1px;
+  border-style:solid;
+  margin:-2px 0 0 0px;
+  border-color: #00000000 #00000000 var(--clr-btn-primary-border-color,hsl(198, 65%, 57%)) var(--clr-btn-primary-border-color,hsl(198, 65%, 57%)) ;
+  border-bottom-left-radius:10px
+}
+
+.reply-count-parent{
+  display: flex;
+  align-content: flex-end !important;
+  align-items: flex-end;
+  z-index: 10000;
+}
+
+.link-comment-parent-line{
+  display: block; margin-left: -1px;
+}
+
 mention-list > ul{
   visibility:visible!important;
 }
@@ -527,4 +549,18 @@ label[for="sats-for-zaps"]
 
 .approval-header-text{
   font-size: 0.71rem !important;
+}
+
+.pl-5{
+  padding-left: 5px;
+}
+
+.collapse-icon-dark{
+  background-color: var(--cds-global-color-blue-1000);
+  margin-left: -8px;
+}
+
+.collapse-icon-light{
+  background-color: var(--cds-global-color-gray-0);
+  margin-left: -8px;
 }
