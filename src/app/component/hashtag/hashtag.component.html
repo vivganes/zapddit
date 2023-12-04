@@ -1,1 +1,1 @@
-<a class="hashtag-link pointer-cursor" (click)="navigateToNewTopic($event)">#{{topic}}</a>
+<a class="hashtag-link pointer-cursor" (click)="navigateToNewTopic($event)" (auxclick)="navigateToNewTopic($event)" (mousedown)="onMouseDown($event)">#{{topic}}</a>
