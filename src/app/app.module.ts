@@ -7,6 +7,8 @@ import "@getalby/bitcoin-connect";
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
+import { ToastService, AngularToastifyModule } from 'angular-toastify'; 
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -93,13 +95,13 @@ const componentParsers: Array<HookParserEntry> = [
           deps: [HttpClient]
       }
   }), 
-  InViewportModule, LayoutModule, FormsModule, ReactiveFormsModule, MentionModule, AppRoutingModule, BrowserAnimationsModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
+  InViewportModule, LayoutModule, FormsModule, ReactiveFormsModule, MentionModule, AppRoutingModule, BrowserAnimationsModule, AngularToastifyModule, ClarityModule, ClipboardModule, ServiceWorkerModule.register('ngsw-worker.js', {
   enabled: !isDevMode(),
   // Register the ServiceWorker as soon as the application is stable
   // or after 30 seconds (whichever comes first).
   registrationStrategy: 'registerWhenStable:30000'
 })],
-  providers: [],
+  providers: [ToastService],
   bootstrap: [AppComponent],
   schemas:[CUSTOM_ELEMENTS_SCHEMA]
 })

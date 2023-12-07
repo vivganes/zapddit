@@ -33,6 +33,7 @@ export class PreferencesPageComponent {
   changeDetector: ChangeDetectorRef;
   mutedTopics:string[]=[];
   currentLanguage:string;
+  zapSplitPercentage:number=0.5;
 
   relayUrls: string[] | undefined;
   relays: Relay[];
@@ -65,14 +66,22 @@ export class PreferencesPageComponent {
 
   async ngOnInit() {
     var language = localStorage.getItem(Constants.LANGUAGE);
-    if (language != null || language != undefined || language != '') {
+    if (language != null && language != undefined && language != '') {
       this.currentLanguage = language as string;
       this.translate.use(this.currentLanguage || 'en')
     } else {
       this.currentLanguage = 'en';
     }
+    var zapSplitPercentageText = localStorage.getItem(Constants.ZAP_SPLIT_PERCENTAGE);
+    if (zapSplitPercentageText !== null && zapSplitPercentageText !== undefined && zapSplitPercentageText !== '') {
+      this.zapSplitPercentage = parseFloat(zapSplitPercentageText!);
+    } else {
+      this.zapSplitPercentage = 0.5;
+      localStorage.setItem(Constants.ZAP_SPLIT_PERCENTAGE,"0.5");
+    }
+
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA);
-    if (mediaSettings != null || mediaSettings != undefined || mediaSettings != '') {
+    if (mediaSettings != null && mediaSettings != undefined && mediaSettings != '') {
       this.loadContentFromPeopleIFollow = Boolean(JSON.parse(mediaSettings!));
     }
     var hideNonZapReactionsFromLocal = localStorage.getItem(Constants.HIDE_NONZAP_REACTIONS);
@@ -102,6 +111,10 @@ export class PreferencesPageComponent {
     })
 
     await this.getRelayList();
+  }
+
+  zapSplitPercentageChange(newPercentage:number){
+    localStorage.setItem(Constants.ZAP_SPLIT_PERCENTAGE, ""+newPercentage);
   }
 
   downZapRecipientChange(evt:any){

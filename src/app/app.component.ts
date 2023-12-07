@@ -57,6 +57,7 @@ import { BtcConnectService } from './service/btc-connect.service';
 import { DOCUMENT } from '@angular/common';
 import { ZapdditRouteReuseStrategy } from './util/ZapdditRouteReuseStrategy';
 import { EventFeedComponent } from './component/event-feed/event-feed.component';
+import { ToastService } from 'angular-toastify';
 
 ClarityIcons.addIcons(
   connectIcon,
@@ -118,7 +119,7 @@ export class AppComponent implements OnInit, OnDestroy{
   constructor(private translate: TranslateService, public ndkProvider: NdkproviderService, router: Router,
     private breakpointObserver: BreakpointObserver, private communityService:CommunityService,
     private topicService:TopicService, private btcConnectService:BtcConnectService, @Inject(DOCUMENT) private document: Document,
-    private routeStrategy:RouteReuseStrategy) {
+    private routeStrategy:RouteReuseStrategy, private _toastService: ToastService) {
     translate.setDefaultLang('en');
 
     var language = localStorage.getItem(Constants.LANGUAGE);
@@ -150,6 +151,7 @@ export class AppComponent implements OnInit, OnDestroy{
       this.notices.push(message);
     })
 
+   
     var mediaSetting = localStorage.getItem(Constants.SHOWMEDIA);
     if(!mediaSetting){
       localStorage.setItem(Constants.SHOWMEDIA,'true');
@@ -165,10 +167,11 @@ export class AppComponent implements OnInit, OnDestroy{
     else {
       this.setTheme(true);
     }
-    this.ndkProvider.loginCompleteEmitter.subscribe((loginComplete:boolean)=>{
+    this.ndkProvider.loginCompleteEmitter.subscribe((loginComplete:boolean)=>{      
+      this.showZapSplitToastIfNecessary();  
       this.topicService.fetchFollowedTopics().then(res=>{
             this.setFollowedTopicsFromString(res.join(','));
-          })
+      })
     })
 
 
@@ -193,12 +196,30 @@ export class AppComponent implements OnInit, OnDestroy{
         this.isMobileScreen = true;
       }
     });
+
   }
 
   scrollEvent = (event: any): void => {
     if(this.currentUrl === Constants.FEED_ROUTE || this.currentUrl ===  Constants.INDEX_ROUTE){
       const scrollTop = event.srcElement.scrollTop;
       sessionStorage.setItem('feedPageScrollPos',scrollTop);
+    }
+  }
+
+  private showZapSplitToastIfNecessary() {
+    var zapSplitPercentageText = localStorage.getItem(Constants.ZAP_SPLIT_PERCENTAGE);
+    if (zapSplitPercentageText !== null && zapSplitPercentageText !== undefined && zapSplitPercentageText !== '') {
+      //some value is there. no need to show toast.
+      if (zapSplitPercentageText === "0.5") {
+        this.translate.get('A default Zap split of 0.5% has been configured for zapddit developers, you can disable it at any time in Preferences').subscribe((res: string) => {
+          this._toastService.info(res);
+        });
+      }
+    } else {
+      localStorage.setItem(Constants.ZAP_SPLIT_PERCENTAGE, "0.5");
+      this.translate.get('A default Zap split of 0.5% has been configured for zapddit developers, you can disable it at any time in Preferences').subscribe((res: string) => {
+        this._toastService.info(res);
+      });    
     }
   }
 

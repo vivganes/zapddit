@@ -91,13 +91,19 @@ export class ZapdialogComponent implements OnInit {
         if (this.event) {
         if(this.canvas && this.canvas?.nativeElement)
           this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
-        const invoice = await this.ndkProvider.zapRequest(this.zapValue, this.event!);
-        this.invoice = invoice;
+        
         if(window.hasOwnProperty('webln')){
           //@ts-ignore
           if(window.webln.connected){
-            //@ts-ignore
-            const result = await window.webln.sendPayment(this.invoice);
+            const zapSplitPercentage = this.getZapSplitPercentageFromLocalStorage(); 
+            let zapForEvent = this.zapValue;
+            let zapForDevs = 0
+            if(zapSplitPercentage > 0){
+              zapForDevs = Math.ceil((zapSplitPercentage/100) * this.zapValue);
+              zapForEvent = this.zapValue - zapForDevs
+              this.zapUser(Constants.ZAPDDIT_PUBKEY,zapForDevs,zapSplitPercentage,false);
+            }
+            const result = await this.sendWebLnZapForEvent(zapForEvent);
             if(!result?.preimage) {
               throw new Error('Payment failed. Please try again');
             } else {
@@ -106,6 +112,8 @@ export class ZapdialogComponent implements OnInit {
             return;
           }
         }
+        const invoice = await this.ndkProvider.zapRequest(this.zapValue, this.event!);
+        this.invoice = invoice;
         this.openQRDialog(invoice);
       }
     }catch(e:any){
@@ -115,23 +123,52 @@ export class ZapdialogComponent implements OnInit {
     }
   }
 
+  private getZapSplitPercentageFromLocalStorage(){
+    var zapSplitPercentageText = localStorage.getItem(Constants.ZAP_SPLIT_PERCENTAGE);
+    try{
+      if (zapSplitPercentageText !== null && zapSplitPercentageText !== undefined && zapSplitPercentageText !== '') {
+        return parseFloat(zapSplitPercentageText!);
+       } 
+    }
+    catch(e){
+      console.error(e);
+    }    
+    localStorage.setItem(Constants.ZAP_SPLIT_PERCENTAGE,"0.5");
+    return 0.5;   
+  }
+
+  private async sendWebLnZapForEvent(zapValue:number) {
+    const invoice = await this.ndkProvider.zapRequest(zapValue, this.event!);
+    //@ts-ignore
+    const result = await window.webln.sendPayment(invoice);
+    return result;
+  }
+
   async downZap() {
     this.zappingNow = true;
     try{
       if (this.event) {
         if(this.canvas && this.canvas?.nativeElement)
           this.renderer.setProperty(this.canvas?.nativeElement, 'innerHTML', '');
-        const invoice = await this.ndkProvider.downZapRequest(this.zapValue,
-            this.event,
-            await this.ndkProvider.getNdkUserFromNpub(this.ndkProvider.appData.downzapRecipients),
-            '-'
-          );
-          this.invoice = invoice;
+        
           if(window.hasOwnProperty('webln')){
             //@ts-ignore
             if(window.webln.connected){
+              const zapSplitPercentage = this.getZapSplitPercentageFromLocalStorage(); 
+              let zapForEvent = this.zapValue;
+              let zapForDevs = 0
+              if(zapSplitPercentage > 0){
+                zapForDevs = Math.ceil((zapSplitPercentage/100) * this.zapValue);
+                zapForEvent = this.zapValue - zapForDevs;                
+                this.zapUser(Constants.ZAPDDIT_PUBKEY,zapForDevs,zapSplitPercentage,false);
+              }
+              const invoice = await this.ndkProvider.downZapRequest(zapForEvent,
+                this.event,
+                await this.ndkProvider.getNdkUserFromNpub(this.ndkProvider.appData.downzapRecipients),
+                '-'
+              );
               //@ts-ignore
-              const result = await window.webln.sendPayment(this.invoice);
+              const result = await window.webln.sendPayment(invoice);
               if(!result?.preimage) {
                 throw new Error('Payment failed. Please try again');
               } else {
@@ -140,7 +177,13 @@ export class ZapdialogComponent implements OnInit {
               return;
             }
           }
-          this.openQRDialog(invoice);
+          const invoice = await this.ndkProvider.downZapRequest(this.zapValue,
+            this.event,
+            await this.ndkProvider.getNdkUserFromNpub(this.ndkProvider.appData.downzapRecipients),
+            '-'
+          );
+          this.invoice = invoice;
+          this.openQRDialog(this.invoice);
       }
     }catch(e:any){
       this.errorMsg = e.message;
@@ -155,23 +198,28 @@ export class ZapdialogComponent implements OnInit {
     if(mods){
       for (const mod of mods){
         try{
-          const modUser = this.ndkProvider.ndk?.getUser({pubkey: mod})
-          const invoice = await modUser?.zap((zapValue*1000)/mods.length,'Great job with n/'+this.community?.name,[],this.ndkProvider.ndk?.signer)
-          if(window.hasOwnProperty('webln')){
-            //@ts-ignore
-            if(window.webln.connected){
-              //@ts-ignore
-              const result = await window.webln.sendPayment(invoice);
-              if(!result?.preimage) {
-                throw new Error('Payment failed for '+modUser?.profile?.name+'. Please try again');
-              }
-            }
-          } 
+          await this.zapUser(mod, zapValue/mods.length,undefined,true); 
         }catch(e){
           console.error(e);
         }         
       }
       this.zapDoneClicked();
+    }
+  }
+
+  private async zapUser(pubkey: string, zapValue: number, zapSplitPercentage:any, forCommunity:boolean) {
+    const modUser = this.ndkProvider.ndk?.getUser({ pubkey: pubkey });
+    let message = forCommunity? ('Great job with n/' + this.community?.name) :`Zap split ${zapSplitPercentage}% for zapddit`;
+    const invoice = await modUser?.zap((zapValue * 1000), message, [], this.ndkProvider.ndk?.signer);
+    if (window.hasOwnProperty('webln')) {
+      //@ts-ignore
+      if (window.webln.connected) {
+        //@ts-ignore
+        const result = await window.webln.sendPayment(invoice);
+        if (!result?.preimage) {
+          throw new Error('Payment failed for ' + modUser?.profile?.name + '. Please try again');
+        }
+      }
     }
   }
 
