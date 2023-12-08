@@ -9,8 +9,7 @@
     "test": "ng test",
     "build:prod": "ng build --configuration production --base-href=/",
     "test:headless": "ng test --watch=false --browsers=ChromeHeadless",
-    "i18n:init": "ngx-translate-extract --input ./src --output ./src/assets/i18n/en.json --key-as-default-value --replace --format json",
-    "i18n:extract": "ngx-translate-extract --input ./src --output ./src/assets/i18n{/ta,/jp}.json --null-as-default-value --clean --format json"
+    "i18n:extract": "ngx-translate-extract --input ./src --output ./src/assets/i18n/en.json --key-as-default-value --replace --format json"
   },
   "private": true,
   "dependencies": {
