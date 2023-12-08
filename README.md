@@ -2,6 +2,7 @@
 
 A reddit-style nostr client
 
+[![Crowdin](https://badges.crowdin.net/zapddit/localized.svg)](https://crowdin.com/project/zapddit)
 
  * [reddit Vs. zapddit](#reddit-vs-zapddit)
  * [Screenshot](#screenshot)
