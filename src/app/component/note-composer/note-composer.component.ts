@@ -47,6 +47,9 @@ export class NoteComposerComponent {
   @Output()
   postedEventEmitter:  EventEmitter<NDKEvent> = new EventEmitter<NDKEvent>();
 
+  @Output()
+  clickEventEmitter:EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
+
   @ViewChild('noteText')
   noteText?: ElementRef<HTMLInputElement>;
   isSendingNote:boolean = false;
@@ -225,6 +228,13 @@ export class NoteComposerComponent {
     return noteMentionMatches.map(noteMention => {
       return LoginUtil.bech32ToHex(noteMention[1])
     });
+  }
+
+  onComposeClick(event:MouseEvent){
+    console.log('reply clicked');
+    event.stopImmediatePropagation();
+    event.stopPropagation();
+    this.clickEventEmitter.emit(event);
   }
 
 }
