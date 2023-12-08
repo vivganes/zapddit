@@ -783,7 +783,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
     if(!this.showingComments){
       this.showComments()
     }else
-      this.hideComments();
+      if(this.replies.length>0)
+        this.hideComments();
 
     e.stopPropagation()
   }
