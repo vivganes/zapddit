@@ -6,16 +6,16 @@
 
 <div class="card" *ngIf="!(!loadingApproval && !canModerate && !mutedAuthor && (showUnapprovedPosts?false:approvalEvents?.size===0))" #parent>
   <div *ngIf="community && !hideCommunityHeader" class="card-header note-community-header">
-    <img *ngIf="community?.image" (click)="openCommunityPage()" alt="{{'Community image'|translate}}"
+    <img imageLoader *ngIf="community?.image" (click)="openCommunityPage()" alt="{{'Community image'|translate}}"
         src="{{ community.image }}" class="community-image pointer-cursor" title="{{'Browse'|translate}}" />
-    <img alt="{{'temp community avatar'|translate}}" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
+    <img imageLoader alt="{{'temp community avatar'|translate}}" (click)="openCommunityPage()" *ngIf="community?.image == undefined"
         class="community-image pointer-cursor" src="https://robohash.org/{{ community.name }}.png?size=100x100"
         title="{{'Browse'|translate}}" />
     <span class="break-words-overflow"> n/{{community.name}} <span class="smaller-text">of </span>
-    <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="{{'Profile picture'|translate}}"
+    <img imageLoader *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="{{'Profile picture'|translate}}"
         src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="{{'Open in Snort'|translate}}"
         onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'" />
-    <img alt="{{'temp avatar'|translate}}" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
+    <img imageLoader alt="{{'temp avatar'|translate}}" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
         class="community-image pointer-cursor" src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100"
         title="{{'Open in Snort'|translate}}" />
     {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName : (community.creatorProfile?.name ? community.creatorProfile?.name : community.creatorHexKey | abbreviateId)}}
@@ -31,10 +31,10 @@
   </div>
   <div class="card-block">
     <div class="card-media-block">
-      <img *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" alt="{{'Profile picture'|translate}}"
+      <img imageLoader *ngIf="authorWithProfile?.profile?.image" (click)="openAuthorInSnort()" alt="{{'Profile picture'|translate}}"
         src="{{ authorWithProfile?.profile?.image }}" class="card-media-image pointer-cursor" title="{{'Open in Snort'|translate}}"
         onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'"/>
-      <img alt="{{'temp avatar'|translate}}" (click)="openAuthorInSnort()" *ngIf="authorWithProfile?.profile?.image == undefined"
+      <img imageLoader alt="{{'temp avatar'|translate}}" (click)="openAuthorInSnort()" *ngIf="authorWithProfile?.profile?.image === undefined"
         class="card-media-image pointer-cursor" src="https://robohash.org/{{ event?.pubkey }}.png?size=100x100"
         title="{{'Open in Snort'|translate}}" />
       <div class="card-media-description">

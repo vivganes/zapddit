@@ -2,7 +2,7 @@
 (inViewportAction)="onShowInViewPort($event)"
 >
     <div class="card">
-        <div *ngIf= "showHeaderImage" class="card-img">
+        <div *ngIf="showHeaderImage" class="card-img">
             <img *ngIf="community.image" (click)="openCommunityPage()" alt="{{'Community image'|translate}}" src="{{ community.image }}"
             class="community-banner pointer-cursor" title="{{'Browse'| translate}} n/{{community.name}}" />
         <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community.image == undefined"
@@ -11,17 +11,17 @@
         </div>
         <div class="card-header">
             <span class="break-words-overflow"> n/{{community.name}} <span class="smaller-text">of </span></span>
-            <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="Profile picture"
+            <img imageLoader *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="Profile picture"
                 onerror="this.onerror=null; this.src='https\://robohash.org/unknown.png?size=100x100'"
                 src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="Open in Snort" />
-            <img alt="temp avatar" (click)="openCommunityCreatorInSnort()"
+            <img imageLoader alt="temp avatar" (click)="openCommunityCreatorInSnort()"
                 *ngIf="community?.creatorProfile?.image == undefined" class="community-image pointer-cursor"
                 src="https://robohash.org/{{ community.creatorHexKey }}.png?size=100x100" title="Open in Snort" />
             <span class="break-words-overflow"> {{community.creatorProfile?.displayName ? community.creatorProfile?.displayName :
             (community.creatorProfile?.name ? community.creatorProfile?.name : (community.creatorHexKey | abbreviateId))}}</span>
         </div>
         <div class="card-block">
-            <div *ngIf="lastActive" class="card-text break-words-overflow">                
+            <div *ngIf="lastActive" class="card-text break-words-overflow">
                 <span class="badge badge-purple">
                     {{'Active'|translate}} {{lastActive | formatTimestamp }}
                   </span>
@@ -50,7 +50,7 @@
                 <div class="card-media-block">
                     {{'n/'+id.split(':')[2]}}
                 </div>
-                <div *ngIf="lastActive" class="card-text break-words-overflow">                
+                <div *ngIf="lastActive" class="card-text break-words-overflow">
                     <span class="badge badge-purple">
                         {{'Active'|translate}} {{lastActive | formatTimestamp }}
                       </span>
@@ -60,6 +60,6 @@
                 <span class="spinner spinner-md" translate>Loading community...</span>
             </div>
           </div>
-       
+
 </div>
 <app-create-community *ngIf="ndkProvider.canWriteToNostr" [show]="showEditCommunity" (onEditComplete)="editFinished($event)" (onClose)="popupClosed($event)"  [newCommunity]="community!" [editMode]="true"></app-create-community>
