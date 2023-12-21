@@ -1,0 +1,58 @@
+$snowflakes: 40;
+
+%snowflake {
+	display: block;
+	color: #fff;
+	position: absolute;
+	top: -1em;
+	
+	&:before {
+		display: block;
+		content: '❄';
+	}
+}
+
+@mixin snowflake($nth) {
+	snowflake {
+		@extend %snowflake;
+		&:nth-of-type(#{$nth}) {
+			font-size: 2vmin + random();
+			left: 100vw * random();
+			will-change: transform, top;
+			$delay: 3s + 4 * random();
+			$fall-duration: 10s + 4 * random();
+			$shake-duration: 15s + 4 * random();
+			animation: snowflake-fall $fall-duration linear $delay infinite normal,
+				snowflake-shake $shake-duration ease-in-out $delay infinite alternate,
+				snowflake-wind-w $fall-duration linear $delay infinite normal;			
+		}
+	}	
+}
+
+html, body {
+	height: 100%;
+    overflow: hidden;
+
+}
+
+@keyframes snowflake-fall {
+	0% {top: -1em}
+	100% {top: 100vh}
+}
+
+@keyframes snowflake-shake {
+	0% {transform: translateX(0)}
+	33% {transform: translateX(-10vh)}
+	100% {transform: translateX(10vh)}
+}
+
+@keyframes snowflake-wind-w {
+	0% {transform: translateX(0)}
+	100% {transform: translateX(20vw)}
+}
+
+snowflakes {
+	@for $i from 1 through $snowflakes {
+		@include snowflake($i);
+	}	
+}
