@@ -199,17 +199,17 @@
     <button class="btn btn-sm btn-icon btn-link" (click)="downZap()" [clrLoading]="downzappingNow"
       [disabled]="!ndkProvider.canWriteToNostr || !ndkProvider.appData.downzapRecipients" [title]="
         ndkProvider.appData.downzapRecipients
-          ? 'This deposits your downzap amounts to the configured Downzap recipients'
-          : 'Setup your downzap recipient in the preferences to downzap notes.'
+          ? ('This deposits your downzap amounts to the configured Downzap recipients'|translate)
+          : ('Setup your downzap recipient in the preferences to downzap notes.'|translate)
       ">
       <cds-icon shape="bolt" direction="up"></cds-icon> {{ downZapTotalMilliSats/1000 | shortNumber }}{{isMobileScreen?'':' '+'Downzap'}}
     </button>
     <button *ngIf="isMobileScreen && !showingComments" class="btn btn-sm btn-icon btn-link" title="{{'Show Comments'|translate}}"
       (click)="showComments()">
-      <cds-icon shape="chat-bubble"></cds-icon> {{ replies.length>0 ? replies.length :'' }}{{isMobileScreen?'':' '+'Comment'}}{{isMobileScreen?'':replies.length>1?'s':''}}
+      <cds-icon shape="chat-bubble"></cds-icon> {{ replies.length>0 ? replies.length :'' }}{{isMobileScreen?'':' '+('Comment'|translate)}}{{isMobileScreen?'':replies.length>1?'s':''}}
     </button>
     <button *ngIf="isMobileScreen && showingComments" class="btn btn-sm btn-icon btn-link" title="{{'Hide Comments'|translate}}" (click)="hideComments()">
-      <cds-icon shape="eye-hide"></cds-icon> {{ replies.length }}{{isMobileScreen?'':' '+'Comment'}}{{isMobileScreen?'':replies.length>1?'s':''}}
+      <cds-icon shape="eye-hide"></cds-icon> {{ replies.length }}{{isMobileScreen?'':' '+('Comment'|translate)}}{{isMobileScreen?'':replies.length>1?'s':''}}
     </button>
     <button class="btn btn-sm btn-icon btn-link" (click)="share()" title="{{'Share'|translate}}">
       <cds-icon shape="share"></cds-icon>{{isMobileScreen?'':' '+'Share'}}
@@ -220,11 +220,11 @@
         <cds-icon shape="angle" direction="down"></cds-icon>
       </button>
       <clr-dropdown-menu clrPosition="top-left" *clrIfOpen>
-        <div *ngIf="approvedModHexIds.length>0" clrDropdownItem (click)="showingApprovers = true">Show approvers</div>
-        <div clrDropdownItem (click)="openInSnort()">Open in Snort</div>
-        <div clrDropdownItem (click)="copyNoteHexIdToClipboard()">Copy Hex ID</div>
-        <div *ngIf="!community" clrDropdownItem (click)="copyNote1IdToClipboard()">Copy note1 ID</div>
-        <div clrDropdownItem (click)="copyEventJson()">Copy Event JSON</div>
+        <div *ngIf="approvedModHexIds.length>0" clrDropdownItem (click)="showingApprovers = true" translate>Show approvers</div>
+        <div clrDropdownItem (click)="openInSnort()" translate>Open in Snort</div>
+        <div clrDropdownItem (click)="copyNoteHexIdToClipboard()" translate>Copy Hex ID</div>
+        <div *ngIf="!community" clrDropdownItem (click)="copyNote1IdToClipboard()" translate>Copy note1 ID</div>
+        <div clrDropdownItem (click)="copyEventJson()" translate>Copy Event JSON</div>
       </clr-dropdown-menu>
     </clr-dropdown>
   </div>
@@ -268,6 +268,6 @@
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="showingApprovers= false">Ok</button>
+        <button type="button" class="btn btn-primary" (click)="showingApprovers= false" translate>Ok</button>
     </div>
 </clr-modal>
