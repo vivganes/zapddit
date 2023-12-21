@@ -12,6 +12,7 @@
           <label translate translate>Display language</label>
           <clr-combobox [(ngModel)]="currentLanguage" (ngModelChange)="updateLanguage()" name="language" required placeholder="{{'Select a language'|translate}}">
             <clr-options>
+              <clr-option clrValue="de">Deutsch</clr-option>
               <clr-option clrValue="en">English</clr-option> 
               <clr-option clrValue="fa">فارسی</clr-option>   
               <clr-option clrValue="fi">Suomi</clr-option> 
