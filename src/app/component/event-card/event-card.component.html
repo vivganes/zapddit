@@ -42,40 +42,40 @@
           class="card-media-title break-words-overflow pointer-cursor bold-text" title="{{'Open in Snort'|translate}}"
           (click)="openAuthorInSnort()"> {{ (authorWithProfile?.profile?.displayName) ?
           authorWithProfile?.profile?.displayName:authorWithProfile?.profile?.name }}
-          <span *ngIf="isNIP05Verified" title="Verified" class="badge badge-purple">✓ <span class="clr-sr-only">NIP-05 verified</span></span>
+          <span *ngIf="isNIP05Verified" title="{{'Verified'|translate}}" class="badge badge-purple">✓ <span class="clr-sr-only" translate>NIP-05 verified</span></span>
           <span class="follow-ml8 card-media-title">
             <ng-template
               [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress"
-                (click)="follow($event)">
+                (click)="follow($event)" translate>
                 Follow
               </button>
             </ng-template>
             <ng-template
               [ngIf]="amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress"
-                (click)="unFollow($event)">
+                (click)="unFollow($event)" translate>
                 Unfollow
               </button>
             </ng-template>
           </span>
         </span>
         <span *ngIf="!authorWithProfile?.profile?.name && !authorWithProfile?.profile?.displayName"
-          class="card-media-title break-anywhere-overflow pointer-cursor" title="Open in Snort"
+          class="card-media-title break-anywhere-overflow pointer-cursor" title="{{'Open in Snort'|translate}}"
           (click)="openAuthorInSnort()"> {{ event?.pubkey | abbreviateId }}
-          <span *ngIf="isNIP05Verified" title="Verified" class="badge badge-purple">✓ <span class="clr-sr-only">NIP-05 verified</span></span>
+          <span *ngIf="isNIP05Verified" title="{{'Verified'|translate}}" class="badge badge-purple">✓ <span class="clr-sr-only" translate>NIP-05 verified</span></span>
           <span class="follow-ml8 card-media-title">
             <ng-template
               [ngIf]="!amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress"
-                (click)="follow($event)">
+                (click)="follow($event)" translate>
                 Follow
               </button>
             </ng-template>
             <ng-template
               [ngIf]="amIFollowingtheAuthor && loggedInWithNsec && notTheLoggedInUser && peopleIFollowLoadedFromRelay">
               <button *ngIf="ndkProvider.canWriteToNostr" class="btn btn-sm" [disabled]="eventInProgress"
-                (click)="unFollow($event)">
+                (click)="unFollow($event)" translate>
                 Unfollow
               </button>
             </ng-template>
@@ -111,8 +111,8 @@
           <div class="img-container">
             <img alt="image" class="note-image" imageLoader (click)="clickToLoadMedia()" height="300px"
             src="{{ '/assets/blur'+ blurImageId+'.png' }}" />
-            <div class="text-img-overlay-centered card-text" (click)="clickToLoadMedia()"><cds-icon shape="info-circle" solid="true" size="md" class="card-text"></cds-icon>Media is hidden because you don't follow this person. Click to see media.
-              You can change this behavior from preferences.</div>
+            <div class="text-img-overlay-centered card-text" (click)="clickToLoadMedia()"><cds-icon shape="info-circle" solid="true" size="md" class="card-text"></cds-icon>{{'Media is hidden because you don't follow this person. Click to see media.
+              You can change this behavior from preferences.' | translate}}</div>
           </div>
         </div>
       </div>
@@ -165,7 +165,7 @@
     </div>
     <div class="clr-row clr-justify-content-center clr-align-items-center">
       <div class="clr-col-12" align="center" *ngIf="displayShowMoreButton">
-        <button type="button" aria-label="Show More" (click)="showMore()" class="show-more-button btn btn-primary">
+        <button type="button" aria-label="Show More" (click)="showMore()" class="show-more-button btn btn-primary" translate>
           Show More
         </button>
       </div>
@@ -177,7 +177,7 @@
             <div class="alert-icon-wrapper">
               <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
             </div>
-            <span class="alert-text">Copied!</span>
+            <span class="alert-text" translate>Copied!</span>
           </div>
         </div>
       </div>
@@ -204,14 +204,14 @@
       ">
       <cds-icon shape="bolt" direction="up"></cds-icon> {{ downZapTotalMilliSats/1000 | shortNumber }}{{isMobileScreen?'':' '+'Downzap'}}
     </button>
-    <button *ngIf="isMobileScreen && !showingComments" class="btn btn-sm btn-icon btn-link" title="Show Comments"
+    <button *ngIf="isMobileScreen && !showingComments" class="btn btn-sm btn-icon btn-link" title="{{'Show Comments'|translate}}"
       (click)="showComments()">
       <cds-icon shape="chat-bubble"></cds-icon> {{ replies.length>0 ? replies.length :'' }}{{isMobileScreen?'':' '+'Comment'}}{{isMobileScreen?'':replies.length>1?'s':''}}
     </button>
-    <button *ngIf="isMobileScreen && showingComments" class="btn btn-sm btn-icon btn-link" title="Hide Comments" (click)="hideComments()">
+    <button *ngIf="isMobileScreen && showingComments" class="btn btn-sm btn-icon btn-link" title="{{'Hide Comments'|translate}}" (click)="hideComments()">
       <cds-icon shape="eye-hide"></cds-icon> {{ replies.length }}{{isMobileScreen?'':' '+'Comment'}}{{isMobileScreen?'':replies.length>1?'s':''}}
     </button>
-    <button class="btn btn-sm btn-icon btn-link" (click)="share()" title="Share">
+    <button class="btn btn-sm btn-icon btn-link" (click)="share()" title="{{'Share'|translate}}">
       <cds-icon shape="share"></cds-icon>{{isMobileScreen?'':' '+'Share'}}
     </button>
     <clr-dropdown>
@@ -259,11 +259,11 @@
   [imageUrl]="authorWithProfile?.profile?.image" *ngIf="showZapDialog" [show]="showZapDialog"
   (onClose)="onClose($event)" [event]="event" [eventHexId]="hexEventId" (onUpzapDone)="onUpzapComplete($event)" [type]="type"></app-zapdialog>
 <clr-modal [(clrModalOpen)]="showingApprovers" [clrModalSize]="'lg'">
-    <h3 class="modal-title">Approvals Received</h3>
+    <h3 class="modal-title" translate>Approvals Received</h3>
     <div class="modal-body">
-        <h3>Approvers</h3>
+        <h3 translate>Approvers</h3>
         <p *ngFor="let key of approvedModHexIds"><app-user-pic-and-name [hexKey]="key"></app-user-pic-and-name></p>
-        <h3>Note Content</h3>
+        <h3 translate>Note Content</h3>
         <p>{{this.event?.content}}</p>
 
     </div>
