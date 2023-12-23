@@ -11,7 +11,7 @@
 	"Moderating communities": "Communities moderieren",
 	"Login": "Anmelden",
 	"Profile": "Profil",
-	"Preferences": "Präferenzen",
+	"Preferences": "Einstellungen",
 	"NIP-05 verified": "NIP-05 verifiziert",
 	"My Feed": "Mein Feed",
 	"BETA": "BETA",
@@ -19,7 +19,7 @@
 	"Search": "Suche",
 	"Joined": "Beigetreten",
 	"Created by me": "Von mir erstellt",
-	"Moderating": "Moderiere",
+	"Moderating": "Moderieren",
 	"Followed Topics": "Gefolgte Themen",
 	"Loading...": "Lädt...",
 	"Community image": "Community-Bild",
@@ -265,5 +265,5 @@
 	"All your settings are saved within browser's local storage and cleared when you logout.": "Alle Einstellungen werden nur lokal bei dir im Browser gespeichert und beim Abmelden wieder gelöscht.",
 	"Try without an account": "Ohne Account ausprobieren",
 	"We are opensource!": "Wir sind Open-Source!",
-	"A default Zap split of 0.5% has been configured for zapddit developers, you can disable it at any time in Preferences": "A default Zap split of 0.5% has been configured for zapddit developers, you can disable it at any time in Preferences"
+	"A default Zap split of 0.5% has been configured for zapddit developers, you can disable it at any time in Preferences": "Standardmäßig werden 0,5% aller Zaps an Zapddit-Entwickler geteilt. Das kannst du jederzeit in den Einstellungen deaktivieren"
 }
