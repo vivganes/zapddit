@@ -8,6 +8,7 @@ import { ProfileComponent } from './component/profile/profile.component';
 import { CommunityListComponent } from './page/community-list/community-list.component';
 import { LoginPageComponent } from './page/login-page/login-page.component';
 import { ZapdditRouteReuseStrategy } from './util/ZapdditRouteReuseStrategy';
+import { HomeFeedComponent } from './component/event-feed/home-feed.component';
 
 const routes: Routes = [
   { path: 't/:topic', component: EventFeedComponent },
@@ -16,7 +17,7 @@ const routes: Routes = [
   { path: 'n/:noteid', component: SinglePostComponent },
   { path: '',   redirectTo: '/feed', pathMatch: 'full' }, // redirect to `first-component`
   { path: 'preferences', component: PreferencesPageComponent},
-  { path: 'feed', component: EventFeedComponent, data:{ reuseComponent:true} },
+  { path: 'feed', component: HomeFeedComponent, data:{ reuseComponent:true} },
   { path: 'communities/discover', component: CommunityListComponent },
   { path: 'communities/joined', component: CommunityListComponent },
   { path: 'communities/own', component: CommunityListComponent },

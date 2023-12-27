@@ -46,6 +46,7 @@ import { UserPicAndNameComponent } from './component/user-pic-and-name/user-pic-
 import { CreateCommunityComponent } from './component/create-community/create-community.component';
 import { NewLineToBrPipe } from './pipe/newLineToBr.pipe';
 import { InViewportModule } from 'ng-in-viewport';
+import { HomeFeedComponent } from './component/event-feed/home-feed.component';
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
   {component: UserMentionComponent},
@@ -58,6 +59,7 @@ const componentParsers: Array<HookParserEntry> = [
     AppComponent,
     UserprofileComponent,
     EventFeedComponent,
+    HomeFeedComponent,
     EventCardComponent,
     SinglePostComponent,
     ShortNumberPipe,
