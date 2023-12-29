@@ -204,11 +204,11 @@
       ">
       <cds-icon shape="bolt" direction="up"></cds-icon> {{ downZapTotalMilliSats/1000 | shortNumber }}{{isMobileScreen?'':' '+'Downzap'}}
     </button>
-    <button *ngIf="isMobileScreen && !showingComments" class="btn btn-sm btn-icon btn-link" title="{{'Show Comments'|translate}}"
+    <button *ngIf="!showingComments" class="btn btn-sm btn-icon btn-link" title="{{'Show Comments'|translate}}"
       (click)="showComments()">
       <cds-icon shape="chat-bubble"></cds-icon> {{ replies.length>0 ? replies.length :'' }}{{isMobileScreen?'':' '+('Comment'|translate)}}{{isMobileScreen?'':replies.length>1?'s':''}}
     </button>
-    <button *ngIf="isMobileScreen && showingComments" class="btn btn-sm btn-icon btn-link" title="{{'Hide Comments'|translate}}" (click)="hideComments()">
+    <button *ngIf="showingComments" class="btn btn-sm btn-icon btn-link" title="{{'Hide Comments'|translate}}" (click)="hideComments()">
       <cds-icon shape="eye-hide"></cds-icon> {{ replies.length }}{{isMobileScreen?'':' '+('Comment'|translate)}}{{isMobileScreen?'':replies.length>1?'s':''}}
     </button>
     <button class="btn btn-sm btn-icon btn-link" (click)="share()" title="{{'Share'|translate}}">
