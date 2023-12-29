@@ -11,7 +11,7 @@ export class ZapSplitUtil{
         return {
             developers: [{
                 hexKey: Constants.ZAPDDIT_PUBKEY,
-                percentage: 0.05
+                percentage: 0.5
             }],
             translators: translatorZapSplitEntries
         }
@@ -41,7 +41,7 @@ export class ZapSplitUtil{
 
     static getZapSplitEntriesForTranslators(language: string) {
         const translatorPubKeys = this.findTranslators(language);
-        const defaultZapSplitForTranslators = 0.05;
+        const defaultZapSplitForTranslators = 0.5;
         const zapSplitPerTranslator = defaultZapSplitForTranslators / translatorPubKeys.length;
         const translatorZapSplitEntries: HexKeyWithSplitPercentage[] = translatorPubKeys.map((t) => {
             return { hexKey: t, percentage: zapSplitPerTranslator };
