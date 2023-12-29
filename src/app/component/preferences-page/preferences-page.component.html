@@ -125,7 +125,7 @@
   </clr-accordion-panel>
 
   <clr-accordion-panel *ngIf="!ndkProvider.isTryingZapddit">
-    <clr-accordion-title>{{'Support zapddit devs'|translate}} <cds-icon shape="heart" solid="true" size="md"></cds-icon></clr-accordion-title>
+    <clr-accordion-title>{{'Support the Creators'|translate}} <cds-icon shape="heart" solid="true" size="md"></cds-icon></clr-accordion-title>
       <clr-accordion-content *clrIfExpanded>
         <div class="alert alert-info" role="alert">
           <div class="alert-items">
@@ -140,10 +140,18 @@
           </div>
         </div>
         <form clrForm>
-          <clr-range-container [clrRangeHasProgress]="true">
-            <label>Percentage of split</label>
-            <input type="range" min="0" max="100" step="0.5" clrRange [(ngModel)]="zapSplitPercentage" (ngModelChange)="zapSplitPercentageChange($event)" name="zapSplitPercentage" />
-            <clr-control-helper>{{zapSplitPercentage}} {{'% of sats from your zaps will go to zapddit developers'|translate}}</clr-control-helper>
+          <h4>Developers</h4>
+          <clr-range-container *ngFor="let developer of zapSplitConfig?.developers" [clrRangeHasProgress]="true">
+            <label><app-user-pic-and-name hexKey="{{developer.hexKey}}"/></label>
+            <input type="range" min="0" max="100" step="0.5" clrRange [(ngModel)]="developer.percentage" (ngModelChange)="zapSplitPercentageChange()" name="zapSplitPercentage" />
+            <clr-control-helper>{{developer.percentage}} {{'% of sats from your zaps will go to this developer'|translate}}</clr-control-helper>
+          </clr-range-container>
+
+          <h4 *ngIf="zapSplitConfig!.translators!.length>0">Translators</h4>
+          <clr-range-container *ngFor="let translator of zapSplitConfig?.translators" [clrRangeHasProgress]="true">
+            <label><app-user-pic-and-name hexKey="{{translator.hexKey}}"/></label>
+            <input type="range" min="0" max="100" step="0.5" clrRange [(ngModel)]="translator.percentage" (ngModelChange)="zapSplitPercentageChange()" name="zapSplitPercentage" />
+            <clr-control-helper>{{translator.percentage}} {{'% of sats from your zaps will go to this translator'|translate}}</clr-control-helper>
           </clr-range-container>
           </form>       
       </clr-accordion-content>

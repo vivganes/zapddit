@@ -58,6 +58,7 @@ import { DOCUMENT } from '@angular/common';
 import { ZapdditRouteReuseStrategy } from './util/ZapdditRouteReuseStrategy';
 import { EventFeedComponent } from './component/event-feed/event-feed.component';
 import { ToastService } from 'angular-toastify';
+import { ZapSplitUtil } from './util/ZapSplitUtil';
 
 ClarityIcons.addIcons(
   connectIcon,
@@ -208,16 +209,24 @@ export class AppComponent implements OnInit, OnDestroy{
 
   private showZapSplitToastIfNecessary() {
     var zapSplitPercentageText = localStorage.getItem(Constants.ZAP_SPLIT_PERCENTAGE);
-    if (zapSplitPercentageText !== null && zapSplitPercentageText !== undefined && zapSplitPercentageText !== '') {
+    var zapSplitConfigText = localStorage.getItem(Constants.ZAP_SPLIT_CONFIG);
+    if (zapSplitConfigText !== null && zapSplitConfigText !== undefined && zapSplitConfigText !== '') {
+      //zap split config already exists. No need to do anything.
+      localStorage.removeItem(Constants.ZAP_SPLIT_PERCENTAGE)
+    }
+    else if (zapSplitPercentageText !== null && zapSplitPercentageText !== undefined && zapSplitPercentageText !== '') {
       //some value is there. no need to show toast.
-      if (zapSplitPercentageText === "0.5") {
-        this.translate.get('A default Zap split of 0.5% has been configured for zapddit developers, you can disable it at any time in Preferences').subscribe((res: string) => {
-          this._toastService.info(res);
-        });
-      }
+      //migrate to new zap split config format
+      const zapSplitConfig = ZapSplitUtil.prepareDefaultZapSplitConfig();
+      const zapdditDev = zapSplitConfig.developers.filter((d)=> d.hexKey === Constants.ZAPDDIT_PUBKEY)
+      zapdditDev[0].percentage = Number.parseFloat(zapSplitPercentageText);
+      console.log(zapSplitConfig);
+      localStorage.setItem(Constants.ZAP_SPLIT_CONFIG, JSON.stringify(zapSplitConfig));
+      localStorage.removeItem(Constants.ZAP_SPLIT_PERCENTAGE)
     } else {
-      localStorage.setItem(Constants.ZAP_SPLIT_PERCENTAGE, "0.5");
-      this.translate.get('A default Zap split of 0.5% has been configured for zapddit developers, you can disable it at any time in Preferences').subscribe((res: string) => {
+      const zapSplitConfig = ZapSplitUtil.prepareDefaultZapSplitConfig();
+      localStorage.setItem(Constants.ZAP_SPLIT_CONFIG, JSON.stringify(zapSplitConfig));
+      this.translate.get('A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences').subscribe((res: string) => {
         this._toastService.info(res);
       });    
     }

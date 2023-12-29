@@ -15,6 +15,7 @@ export class Constants {
   public static readonly SHOWMEDIA = 'loadMediaContentOnlyForPeopleIFollow';
   public static readonly LANGUAGE = 'language';
   public static readonly ZAP_SPLIT_PERCENTAGE = 'zapSplitPercentage';
+  public static readonly ZAP_SPLIT_CONFIG = 'zapSplitConfig';
   public static readonly FOLLOWERS_FROM_RELAY = 'loadingFollowersFromRelay';
   public static readonly HIDE_NONZAP_REACTIONS = 'hideNonZapReactions';
   public static readonly SHOW_UNAPPROVED = 'showUnapproved';
