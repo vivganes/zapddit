@@ -6,6 +6,8 @@ import QRCodeStyling from 'qr-code-styling';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Constants } from 'src/app/util/Constants';
 import { Community } from 'src/app/model/community';
+import { ZapSplitUtil } from 'src/app/util/ZapSplitUtil';
+import { HexKeyWithSplitPercentage } from 'src/app/model/ZapSplitConfig';
 
 @Component({
   selector: 'app-zapdialog',
@@ -95,14 +97,8 @@ export class ZapdialogComponent implements OnInit {
         if(window.hasOwnProperty('webln')){
           //@ts-ignore
           if(window.webln.connected){
-            const zapSplitPercentage = this.getZapSplitPercentageFromLocalStorage(); 
             let zapForEvent = this.zapValue;
-            let zapForDevs = 0
-            if(zapSplitPercentage > 0){
-              zapForDevs = Math.ceil((zapSplitPercentage/100) * this.zapValue);
-              zapForEvent = this.zapValue - zapForDevs
-              this.zapUser(Constants.ZAPDDIT_PUBKEY,zapForDevs,zapSplitPercentage,false);
-            }
+            zapForEvent = this.executeZapSplits(zapForEvent);
             const result = await this.sendWebLnZapForEvent(zapForEvent);
             if(!result?.preimage) {
               throw new Error('Payment failed. Please try again');
@@ -123,18 +119,41 @@ export class ZapdialogComponent implements OnInit {
     }
   }
 
-  private getZapSplitPercentageFromLocalStorage(){
-    var zapSplitPercentageText = localStorage.getItem(Constants.ZAP_SPLIT_PERCENTAGE);
+  private executeZapSplits(zapForEvent: number) {
+    let zapSplitConfig = this.getZapSplitConfigFromLocalStorage();
+    zapSplitConfig = ZapSplitUtil.validateZapSplitConfig(zapSplitConfig);
+
+    //zap devs
+    zapSplitConfig.developers.forEach((d:HexKeyWithSplitPercentage) => {
+      if(d.percentage > 0){
+        const zapForDev = Math.ceil((d.percentage / 100) * this.zapValue);
+        zapForEvent = this.zapValue - zapForDev;
+        this.zapUser(d.hexKey, zapForDev, d.percentage, false);
+      }
+    })
+
+    //zap translators
+    zapSplitConfig.translators.forEach((t:HexKeyWithSplitPercentage) => {
+      if(t.percentage > 0){
+        const zapForTranslator = Math.ceil((t.percentage / 100) * this.zapValue);
+        zapForEvent = this.zapValue - zapForTranslator;
+        this.zapUser(t.hexKey, zapForTranslator, t.percentage, false);
+      }
+    })
+    
+    return zapForEvent;
+  }
+
+  private getZapSplitConfigFromLocalStorage(){
+    var zapSplitConfigText = localStorage.getItem(Constants.ZAP_SPLIT_CONFIG);
     try{
-      if (zapSplitPercentageText !== null && zapSplitPercentageText !== undefined && zapSplitPercentageText !== '') {
-        return parseFloat(zapSplitPercentageText!);
+      if (zapSplitConfigText !== null && zapSplitConfigText !== undefined && zapSplitConfigText !== '') {
+        return JSON.parse(zapSplitConfigText!);
        } 
     }
     catch(e){
       console.error(e);
-    }    
-    localStorage.setItem(Constants.ZAP_SPLIT_PERCENTAGE,"0.5");
-    return 0.5;   
+    }  
   }
 
   private async sendWebLnZapForEvent(zapValue:number) {
@@ -154,14 +173,8 @@ export class ZapdialogComponent implements OnInit {
           if(window.hasOwnProperty('webln')){
             //@ts-ignore
             if(window.webln.connected){
-              const zapSplitPercentage = this.getZapSplitPercentageFromLocalStorage(); 
               let zapForEvent = this.zapValue;
-              let zapForDevs = 0
-              if(zapSplitPercentage > 0){
-                zapForDevs = Math.ceil((zapSplitPercentage/100) * this.zapValue);
-                zapForEvent = this.zapValue - zapForDevs;                
-                this.zapUser(Constants.ZAPDDIT_PUBKEY,zapForDevs,zapSplitPercentage,false);
-              }
+              zapForEvent = this.executeZapSplits(zapForEvent);
               const invoice = await this.ndkProvider.downZapRequest(zapForEvent,
                 this.event,
                 await this.ndkProvider.getNdkUserFromNpub(this.ndkProvider.appData.downzapRecipients),

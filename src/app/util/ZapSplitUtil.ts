@@ -1,3 +1,4 @@
+import { ToastService } from "angular-toastify";
 import ZapSplitConfig, { HexKeyWithSplitPercentage } from "../model/ZapSplitConfig";
 import { Constants } from "./Constants";
 import { Translators } from "./Translators";
@@ -14,6 +15,27 @@ export class ZapSplitUtil{
             }],
             translators: translatorZapSplitEntries
         }
+    }
+
+    static validateZapSplitConfig(zapSplitConfig:ZapSplitConfig):ZapSplitConfig{
+        //validate if percentage totals greater than 100%
+        let devPercentageTotal = 0;
+        zapSplitConfig.developers.forEach((d) => {
+            devPercentageTotal += d.percentage;
+        });
+
+        let translatorTotal = 0;
+        zapSplitConfig.translators.forEach((t) => {
+            translatorTotal += t.percentage
+        });
+
+        if(devPercentageTotal + translatorTotal > 100){
+            new ToastService().warn('Zap Split configuration was invalid.  We have reset this to default.  You can change this from Preferences.');
+            const resetConfig = ZapSplitUtil.prepareDefaultZapSplitConfig();
+            localStorage.setItem(Constants.ZAP_SPLIT_CONFIG, JSON.stringify(resetConfig))
+            return resetConfig;
+        } 
+        return zapSplitConfig;
 
     }
 

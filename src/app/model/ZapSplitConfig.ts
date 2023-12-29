@@ -6,7 +6,7 @@ export default interface ZapSplitConfig{
 
 export interface HexKeyWithSplitPercentage{
     hexKey: string;
-    percentage: Number
+    percentage: number
 }
 
 
