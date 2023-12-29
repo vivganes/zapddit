@@ -9,6 +9,8 @@ import { Constants } from '../../util/Constants';
 import { LoginUtil } from 'src/app/util/LoginUtil';
 import { Relay } from "../../model";
 import { TranslateService } from '@ngx-translate/core';
+import ZapSplitConfig from 'src/app/model/ZapSplitConfig';
+import { ZapSplitUtil } from 'src/app/util/ZapSplitUtil';
 
 @Component({
   selector: 'app-preferences-page',
@@ -33,7 +35,7 @@ export class PreferencesPageComponent {
   changeDetector: ChangeDetectorRef;
   mutedTopics:string[]=[];
   currentLanguage:string;
-  zapSplitPercentage:number=0.5;
+  zapSplitConfig?:ZapSplitConfig;
 
   relayUrls: string[] | undefined;
   relays: Relay[];
@@ -62,6 +64,12 @@ export class PreferencesPageComponent {
   updateLanguage(){
     this.translate.use(this.currentLanguage)
     localStorage.setItem(Constants.LANGUAGE, this.currentLanguage)
+    if(this.zapSplitConfig){    
+      this.zapSplitConfig.translators = ZapSplitUtil.getZapSplitEntriesForTranslators(this.currentLanguage);
+    } else {
+      this.zapSplitConfig = ZapSplitUtil.prepareDefaultZapSplitConfig();
+    }
+    localStorage.setItem(Constants.ZAP_SPLIT_CONFIG, JSON.stringify(this.zapSplitConfig))
   }
 
   async ngOnInit() {
@@ -72,12 +80,11 @@ export class PreferencesPageComponent {
     } else {
       this.currentLanguage = 'en';
     }
-    var zapSplitPercentageText = localStorage.getItem(Constants.ZAP_SPLIT_PERCENTAGE);
-    if (zapSplitPercentageText !== null && zapSplitPercentageText !== undefined && zapSplitPercentageText !== '') {
-      this.zapSplitPercentage = parseFloat(zapSplitPercentageText!);
+    var zapSplitConfigText = localStorage.getItem(Constants.ZAP_SPLIT_CONFIG);
+    if (zapSplitConfigText !== null && zapSplitConfigText !== undefined && zapSplitConfigText !== '') {
+      this.zapSplitConfig = JSON.parse(zapSplitConfigText!);
     } else {
-      this.zapSplitPercentage = 0.5;
-      localStorage.setItem(Constants.ZAP_SPLIT_PERCENTAGE,"0.5");
+      this.zapSplitConfig = ZapSplitUtil.prepareDefaultZapSplitConfig();
     }
 
     var mediaSettings = localStorage.getItem(Constants.SHOWMEDIA);
@@ -113,8 +120,8 @@ export class PreferencesPageComponent {
     await this.getRelayList();
   }
 
-  zapSplitPercentageChange(newPercentage:number){
-    localStorage.setItem(Constants.ZAP_SPLIT_PERCENTAGE, ""+newPercentage);
+  zapSplitPercentageChange(){
+    localStorage.setItem(Constants.ZAP_SPLIT_CONFIG, ""+JSON.stringify(this.zapSplitConfig));
   }
 
   downZapRecipientChange(evt:any){
