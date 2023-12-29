@@ -158,9 +158,10 @@
 	"npub of the recipient": "npub ของผู้รับ",
 	"Hide non-zap options for upvote and downvote": "ซ่อนตัวเลือก upvote and downvote ที่ไม่ใช้ Zaps",
 	"Hide Non Zap Reactions": "ซ่อนปุ่ม Reactions ที่ไม่ใช้ Zaps",
-	"Support zapddit devs": "สนับสนุนผู้พัฒนา zapddit",
+	"Support the Creators": "Support the Creators",
 	"This feature works only when you have Bitcoin Connect enabled in your preferences": "คุณสามารถใช้ฟีเจอร์นี้เมื่อเปิดทำการเชื่อมกระเป๋า Bitcoin Connect ในหน้าการตั้งค่า",
-	"% of sats from your zaps will go to zapddit developers": "% ของ sats จาก zaps ของคุณที่จะแบ่งไปยังผู้พัฒนา",
+	"% of sats from your zaps will go to this developer": "% of sats from your zaps will go to this developer",
+	"% of sats from your zaps will go to this translator": "% of sats from your zaps will go to this translator",
 	"Set Communities Feed as your default feed": "ตั้งให้ฟีดของชุมชนเป็นหน้าแรก",
 	"#Hashtag to mute": "แฮชแทคที่ไม่อยากเห็น",
 	"Unmute": "เปิดการมองเห็น",
@@ -265,5 +266,5 @@
 	"All your settings are saved within browser's local storage and cleared when you logout.": "การตั้งค่าทั้งหมดของคุณจะถูกเก็บไว้ในเบราว์เซอร์ และจะถูกลบไปเมื่อออกจากระบบ",
 	"Try without an account": "ลองโดยไม่ต้องใช้บัญชี",
 	"We are opensource!": "เราคือ opensource!",
-	"A default Zap split of 0.5% has been configured for zapddit developers, you can disable it at any time in Preferences": "ได้กำหนดแบ่ง zap split จำนวน 0.5% ให้กับผู้พัฒนา zapddit คุณสามารถปิดการแบ่ง zap ในหน้าการตั้งค่า"
+	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences"
 }
