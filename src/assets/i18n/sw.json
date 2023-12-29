@@ -158,9 +158,10 @@
 	"npub of the recipient": "npub ya mpokeaji",
 	"Hide non-zap options for upvote and downvote": "Ficha chaguo zisizo za zap kwa kupigia kura juu na chini",
 	"Hide Non Zap Reactions": "Ficha Rejeshi Zisizo za Zap",
-	"Support zapddit devs": "Nunga mkono waendelezaji wa zapddit",
+	"Support the Creators": "Support the Creators",
 	"This feature works only when you have Bitcoin Connect enabled in your preferences": "Kipengele hiki kinafanya kazi tu wakati unapokuwa na Bitcoin Connect imehakishwa kwenye mapendeleo yako",
-	"% of sats from your zaps will go to zapddit developers": "% ya sats kutoka kwa zaps zako itakwenda kwa waendelezaji wa zapddit",
+	"% of sats from your zaps will go to this developer": "% of sats from your zaps will go to this developer",
+	"% of sats from your zaps will go to this translator": "% of sats from your zaps will go to this translator",
 	"Set Communities Feed as your default feed": "Weka Mlisho wa Jumuiya kama mlisho wako wa msingi",
 	"#Hashtag to mute": "#Hashtag ya kuzima sauti",
 	"Unmute": "Washa Sauti",
@@ -265,5 +266,5 @@
 	"All your settings are saved within browser's local storage and cleared when you logout.": "Mipangilio yote yako hufanyiwa uhifadhi kwenye uhifadhi wa ndani wa kivinjari na huondolewa unapojitoka.",
 	"Try without an account": "Jaribu bila akaunti",
 	"We are opensource!": "Tuko wazi chanzo!",
-	"A default Zap split of 0.5% has been configured for zapddit developers, you can disable it at any time in Preferences": "Sehemu ya Zaps ya asili ya 0.5% imewekwa kwa watengenezaji wa zapddit, unaweza kuidisable wakati wowote kwenye Mapendeleo"
+	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences"
 }
