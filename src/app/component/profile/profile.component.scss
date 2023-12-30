@@ -29,7 +29,7 @@ textarea{
 
 .avatar-image {
   max-height: 100px;
-  border-radius: 50%;
+  clip-path: circle();
   margin-right: 3px;
 }
 

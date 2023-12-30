@@ -27,18 +27,8 @@
         <cds-icon shape="moon" solid></cds-icon>
       </a>
       <clr-dropdown>
-        <button class="nav-icon" clrDropdownTrigger aria-label="toggle settings menu">
-          <img
-          *ngIf="ndkProvider.currentUserProfile?.image"
-          [src]="ndkProvider.currentUserProfile?.image"
-          onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'"
-          class="header-profile-image"
-          alt="profile" />
-          <img
-          *ngIf="!(ndkProvider.currentUserProfile?.image)"
-          src="https://robohash.org/7OG.png?set=set2&size=150x150"
-          class="header-profile-image"
-          alt="profile" />
+        <button class="nav-text" clrDropdownTrigger aria-label="toggle settings menu">
+          <app-user-pic-and-name [npub]="ndkProvider.currentUserNpub"/>
           <cds-icon shape="angle" direction="down"></cds-icon>
         </button>
         <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
@@ -58,26 +48,6 @@
   <div class="content-container">
     <app-onboarding-wizard [open]="wizardIsOpen" (openChange)="wizardIsOpen = !wizardIsOpen"></app-onboarding-wizard>
     <clr-vertical-nav [clrVerticalNavCollapsible]="true" [(clrVerticalNavCollapsed)]="sidebarCollapsed" *ngIf="isLoggedIn()" [clr-nav-level]="1" class="custom-scroll-bar">
-      <label class="nav-header" *ngIf="!sidebarCollapsed">
-        <img
-          *ngIf="ndkProvider.currentUserProfile?.image"
-          [src]="ndkProvider.currentUserProfile?.image"
-          onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'"
-          class="header-profile-image"
-          alt="profile" />
-          <img
-          *ngIf="!(ndkProvider.currentUserProfile?.image)"
-          src="https://robohash.org/7OG.png?set=set2&size=150x150"
-          class="header-profile-image"
-          alt="profile" />
-          <span class="profile-name" *ngIf="!ndkProvider.currentUserProfile && ndkProvider.currentUserNpub!=null">{{ ndkProvider.currentUserNpub.substring(0,14)+'...' }}</span>
-          <span class="profile-name" *ngIf="ndkProvider.currentUserProfile  && !ndkProvider.currentUserProfile?.displayName && !ndkProvider.currentUserProfile?.name && ndkProvider.currentUserNpub!=null">{{ ndkProvider.currentUserNpub.substring(0,14)+'...' }}</span>
-          <span class="profile-name"  *ngIf="ndkProvider.currentUserProfile?.displayName">{{ ndkProvider.currentUserProfile?.displayName }}</span>
-          <span class="profile-name" *ngIf="ndkProvider.currentUserProfile?.name">@{{ ndkProvider.currentUserProfile?.name }}</span>
-          <span *ngIf="isNip05Verified" title="Verified" class="badge badge-purple ml-5">✓ <span class="clr-sr-only" translate>NIP-05 verified</span></span>
-      </label>
-      <div class="nav-divider" *ngIf="!sidebarCollapsed"></div>
-
       <a *ngIf="ndkProvider.isTryingZapddit" title="My Feed" clrVerticalNavLink routerLink="/login" routerLinkActive="active">
         <cds-icon shape="key" clrVerticalNavIcon></cds-icon><span class="nav-text" translate>Login</span>
       </a>

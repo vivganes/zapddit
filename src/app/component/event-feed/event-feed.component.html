@@ -35,7 +35,8 @@
     <div class="clr-col-md-8 clr-col-12">
       <div class="card">
         <div class="card-img">
-          <img class="community-feed-banner" src="{{ community.image }}" alt="{{'Community image'|translate}}" />
+          <img imageLoader class="community-feed-banner" src="{{ community.image }}" alt="{{'Community image'|translate}}"
+          onerror="this.onerror=null; this.src='/assets/community-banner-1.png';"  />
         </div>
         <div class="card-block">
           <div class="card-title">
@@ -44,7 +45,7 @@
             </span>
             <span>
               <span translate> of </span> 
-              <img *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="{{'Profile picture'|translate}}"
+              <img imageLoader *ngIf="community?.creatorProfile?.image" (click)="openCommunityCreatorInSnort()" alt="{{'Profile picture'|translate}}"
                     src="{{ community.creatorProfile?.image }}" class="community-image pointer-cursor" title="{{'Open in Snort'|translate}}"
                     onerror="this.onerror=null; this.src='https\://robohash.org/user.png?size=100x100'" />
               <img alt="temp avatar" (click)="openCommunityCreatorInSnort()" *ngIf="community?.creatorProfile?.image == undefined"
@@ -124,14 +125,14 @@
       </div>
   </div>    
 </div>
-<div align="center" *ngIf="(!loadingEvents) && ((feedType === feedTypeOptions[0] && (tag || ndkProvider.appData.followedTopics!=='')) || (feedType === feedTypeOptions[1] && (community || ndkProvider.appData.followedCommunities!==''))) && (!events || (events && events.size == 0))">
+<div align="center" *ngIf="(!loadingEvents) && (!loadingCommunityDetails) && ((feedType === feedTypeOptions[0] && (tag || ndkProvider.appData.followedTopics!=='')) || (feedType === feedTypeOptions[1] && (community || ndkProvider.appData.followedCommunities!==''))) && (!events || (events && events.size == 0))">
   <div align="center" class="alert alert-info clr-col-12 clr-col-md-8" role="alert">
     <div class="alert-items">
       <div class="alert-item static clr-justify-content-center">
         <div class="alert-icon-wrapper">
           <cds-icon class="alert-icon" shape="info-circle"></cds-icon>
         </div>
-        <span class="alert-text"> {{'No notes for you'|translate}} 🥲   It is possible that you could have muted topics from the preferences menu.
+        <span class="alert-text"> {{'No notes for you'|translate}} 🥲   {{'It is possible that you could have muted topics from the preferences menu.'|translate}}
         </span>
       </div>
     </div>

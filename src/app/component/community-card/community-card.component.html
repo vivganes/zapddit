@@ -3,8 +3,9 @@
 >
     <div class="card">
         <div *ngIf="showHeaderImage" class="card-img">
-            <img *ngIf="community.image" (click)="openCommunityPage()" alt="{{'Community image'|translate}}" src="{{ community.image }}"
-            class="community-banner pointer-cursor" title="{{'Browse'| translate}} n/{{community.name}}" />
+            <img imageLoader *ngIf="community.image" (click)="openCommunityPage()" alt="{{'Community image'|translate}}" src="{{ community.image }}"
+            class="community-banner pointer-cursor" title="{{'Browse'| translate}} n/{{community.name}}" 
+            onerror="this.onerror=null; this.src='/assets/community-banner-1.png';"/>
         <img alt="temp community avatar" (click)="openCommunityPage()" *ngIf="community.image == undefined"
             class="community-banner pointer-cursor" src="/assets/community-banner-1.png"
             title="Browse n/{{community.name}}" />

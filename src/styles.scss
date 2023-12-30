@@ -17,6 +17,8 @@ html{
   --clr-header-search-border-hover:transparent;
   --clr-header-search-border-active:transparent;
   --clr-header-search-input-font-size:1.3rem;
+  --clr-accordion-title-font-size: 0.85rem;
+  --clr-vertical-nav-item-font-size: var(--cds-global-typography-font-size-5);  
 }
 
 ::-webkit-scrollbar {
@@ -245,7 +247,7 @@ a{
 }
 
 .mr-half-rem{
-  margin-right:0.5rem;
+  padding-right:0.5rem;
 }
 
 .compose-note{
