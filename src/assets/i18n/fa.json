@@ -158,9 +158,10 @@
 	"npub of the recipient": "npub کلید عمومی گیرنده",
 	"Hide non-zap options for upvote and downvote": "گزینه های غیر زپ را برای رای مخالف و موافق پنهان کن",
 	"Hide Non Zap Reactions": "واکنش های غیر زپ را پنهان کن",
-	"Support zapddit devs": "حمایت از توسعه دهندگان زپدیت",
+	"Support the Creators": "Support the Creators",
 	"This feature works only when you have Bitcoin Connect enabled in your preferences": "این ویزگی فقط در صورت فعال بودن اتصال بیتکوین تنظیمات کار می کند",
-	"% of sats from your zaps will go to zapddit developers": "% از ساتوشی زپ های شما به توسعه دهندگان زپدیت می رسد",
+	"% of sats from your zaps will go to this developer": "% of sats from your zaps will go to this developer",
+	"% of sats from your zaps will go to this translator": "% of sats from your zaps will go to this translator",
 	"Set Communities Feed as your default feed": "خبرنامه انجمن ها را به عنوان خبرنامه پیش فرض خود تنظیم کنید",
 	"#Hashtag to mute": "#هشتگ های پیشنهادی برای خموش کردن",
 	"Unmute": "ناخموش",
@@ -265,5 +266,5 @@
 	"All your settings are saved within browser's local storage and cleared when you logout.": "تمام تنظیمات شما در انبار محلی مرورگر ذخیره و پس از خروج پاک می شود.",
 	"Try without an account": "بدون حساب کاربری امتحان کنید",
 	"We are opensource!": "ما منبع-باز هستیم!",
-	"A default Zap split of 0.5% has been configured for zapddit developers, you can disable it at any time in Preferences": "یک تقسیم زپ پیش فرض به میزان 0.5% به نفع توسعه دهندگان در نظر گرفته شده است، می توانید هر زمان آن را در ترجیحات غیر فعال کنید"
+	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences"
 }

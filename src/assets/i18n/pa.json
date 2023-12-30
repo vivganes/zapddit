@@ -158,9 +158,10 @@
 	"npub of the recipient": "npub of the recipient",
 	"Hide non-zap options for upvote and downvote": "Hide non-zap options for upvote and downvote",
 	"Hide Non Zap Reactions": "Hide Non Zap Reactions",
-	"Support zapddit devs": "Support zapddit devs",
+	"Support the Creators": "Support the Creators",
 	"This feature works only when you have Bitcoin Connect enabled in your preferences": "This feature works only when you have Bitcoin Connect enabled in your preferences",
-	"% of sats from your zaps will go to zapddit developers": "% of sats from your zaps will go to zapddit developers",
+	"% of sats from your zaps will go to this developer": "% of sats from your zaps will go to this developer",
+	"% of sats from your zaps will go to this translator": "% of sats from your zaps will go to this translator",
 	"Set Communities Feed as your default feed": "Set Communities Feed as your default feed",
 	"#Hashtag to mute": "#Hashtag to mute",
 	"Unmute": "Unmute",
@@ -265,5 +266,5 @@
 	"All your settings are saved within browser's local storage and cleared when you logout.": "All your settings are saved within browser's local storage and cleared when you logout.",
 	"Try without an account": "Try without an account",
 	"We are opensource!": "We are opensource!",
-	"A default Zap split of 0.5% has been configured for zapddit developers, you can disable it at any time in Preferences": "A default Zap split of 0.5% has been configured for zapddit developers, you can disable it at any time in Preferences"
+	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences"
 }
