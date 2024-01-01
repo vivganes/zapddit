@@ -20,10 +20,17 @@ const TURISMO = '06830f6cb5925bd82cca59bda848f0056666dff046c5382963a997a234da40c
 // German translators
 const FLOBSTR = '4b6147b45bbde75c2ce4cf93444675945c47f41ffd51e3446287bbd56ba668d2';
 
+// Spanish translators
+const LOU = '18e3af1edeecb70542eb7e000cf5c43ea0d6d3b79ebb64c8e2c98b341d42e5df';
+
 export const Translators: TranslatorsForLanguage[] = [
     {
         language: 'de',
         translatorPubKeys: [FLOBSTR]
+    },
+    {
+        language: 'es',
+        translatorPubKeys: [LOU]
     },    
     {
         language: 'fa',
