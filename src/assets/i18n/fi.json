@@ -81,7 +81,7 @@
 	"Communities Feed": "Yhteisöjen syöte",
 	"Feed type": "Syötteen tyyppi",
 	"No notes for you": "Ei viestejä sinulle",
-	"It is possible that you could have muted topics from the preferences menu.": "It is possible that you could have muted topics from the preferences menu.",
+	"It is possible that you could have muted topics from the preferences menu.": "On mahdollista, että olet voinut mykistää aiheita asetusvalikosta.",
 	"Yaay! You reached the end of feed": "Jee! Saavutit syötteen lopun",
 	"of": " ",
 	"Show unmoderated feed": "Näytä moderoimaton syöte",
@@ -159,10 +159,10 @@
 	"npub of the recipient": "vastaanottajan npub",
 	"Hide non-zap options for upvote and downvote": "Piilota ei-zap-vaihtoehdot ylös- ja alasäänille",
 	"Hide Non Zap Reactions": "Piilota ei-Zap-reaktiot",
-	"Support the Creators": "Support the Creators",
+	"Support the Creators": "Tue kehittäjiä",
 	"This feature works only when you have Bitcoin Connect enabled in your preferences": "Tämä ominaisuus toimii vain, kun sinulla on Bitcoin Connect käytössä asetuksissasi",
-	"% of sats from your zaps will go to this developer": "% of sats from your zaps will go to this developer",
-	"% of sats from your zaps will go to this translator": "% of sats from your zaps will go to this translator",
+	"% of sats from your zaps will go to this developer": "% zappiesi satseista menee kehittäjälle",
+	"% of sats from your zaps will go to this translator": "% zappiesi satseista menee kääntäjälle",
 	"Set Communities Feed as your default feed": "Aseta Yhteisöjen syöte oletussyötteeksi",
 	"#Hashtag to mute": "#tunniste mykistettäväksi",
 	"Unmute": "Poista mykistys",
@@ -267,5 +267,5 @@
 	"All your settings are saved within browser's local storage and cleared when you logout.": "Kaikki asetuksesi tallennetaan selaimen paikalliseen tallennustilaan ja ne poistetaan, kun kirjaudut ulos.",
 	"Try without an account": "Kokeile ilman tiliä",
 	"We are opensource!": "Olemme avointa lähdekoodia!",
-	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences"
+	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "Oletusarvoinen zap-jako on määritetty tukemaan kehittäjiä ja kääntäjiä, voit poistaa sen käytöstä milloin tahansa asetuksista"
 }
