@@ -111,8 +111,8 @@
           <div class="img-container">
             <img alt="image" class="note-image" imageLoader (click)="clickToLoadMedia()" height="300px"
             src="{{ '/assets/blur'+ blurImageId+'.png' }}" />
-            <div class="text-img-overlay-centered card-text" (click)="clickToLoadMedia()"><cds-icon shape="info-circle" solid="true" size="md" class="card-text"></cds-icon>{{'Media is hidden because you don't follow this person. Click to see media.
-              You can change this behavior from preferences.' | translate}}</div>
+            <div class="text-img-overlay-centered card-text" (click)="clickToLoadMedia()" translate><cds-icon shape="info-circle" solid="true" size="md" class="card-text"></cds-icon>Media is hidden because you don't follow this person. Click to see media.
+              You can change this behavior from preferences.</div>
           </div>
         </div>
       </div>
