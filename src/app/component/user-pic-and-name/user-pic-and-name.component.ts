@@ -66,7 +66,8 @@ export class UserPicAndNameComponent {
   }
 
   openAuthorInSnort(){
-    window.open('https://snort.social/p/'+this.user?.npub,'_blank')
+    if(this.user?.npub)
+      window.open('https://snort.social/p/'+this.user?.npub,'_blank')
   }
 
   onDeleteIconClicked(evt:any){
