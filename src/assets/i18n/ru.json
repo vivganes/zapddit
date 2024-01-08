@@ -267,5 +267,6 @@
 	"All your settings are saved within browser's local storage and cleared when you logout.": "Все ваши настройки сохраняются в локальном хранилище браузера и очищаются при выходе.",
 	"Try without an account": "Попробуйте без аккаунта",
 	"We are opensource!": "Мы с открытым исходным кодом!",
-	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "Для поддержки разработчиков и переводчиков по умолчанию настроено разделение Zap, которое можно отключить в любой момент в разделе \"Параметры\"."
+	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "Для поддержки разработчиков и переводчиков по умолчанию настроено разделение Zap, которое можно отключить в любой момент в разделе \"Параметры\".",
+  "Media is hidden because you don't follow this person. Click to see media. You can change this behavior from preferences.":"Media is hidden because you don't follow this person. Click to see media. You can change this behavior from preferences."
 }

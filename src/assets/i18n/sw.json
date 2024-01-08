@@ -267,5 +267,6 @@
 	"All your settings are saved within browser's local storage and cleared when you logout.": "Mipangilio yote yako hufanyiwa uhifadhi kwenye uhifadhi wa ndani wa kivinjari na huondolewa unapojitoka.",
 	"Try without an account": "Jaribu bila akaunti",
 	"We are opensource!": "Tuko wazi chanzo!",
-	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "Mgawanyiko chaguomsingi wa Zap umesanidiwa ili kusaidia wasanidi programu na watafsiri, unaweza kuuzima wakati wowote katika Mapendeleo"
+	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "Mgawanyiko chaguomsingi wa Zap umesanidiwa ili kusaidia wasanidi programu na watafsiri, unaweza kuuzima wakati wowote katika Mapendeleo",
+  "Media is hidden because you don't follow this person. Click to see media. You can change this behavior from preferences.":"Media is hidden because you don't follow this person. Click to see media. You can change this behavior from preferences."
 }
