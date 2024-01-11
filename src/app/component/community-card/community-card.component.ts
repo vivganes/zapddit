@@ -47,7 +47,9 @@ export class CommunityCardComponent {
           self.fetchCreatorProfile();
         }
       })
-    }    
+    }else{  // required to set the join/leave based on the list of communities that are joined
+        this.setIsFollowed();
+    }
   }
 
   onShowInViewPort({ target, visible }: { target: Element; visible: boolean }): void{
@@ -77,7 +79,7 @@ export class CommunityCardComponent {
     if(this.community!== undefined && !this.community?.followersHexKeys){
       const followers = await this.ndkProvider.fetchFollowersForCommunity(this.community?.id!)
       this.community.followersHexKeys = followers;
-    }    
+    }
   }
 
   popupClosed(evt:any){
