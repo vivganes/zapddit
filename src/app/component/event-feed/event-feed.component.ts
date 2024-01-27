@@ -67,6 +67,10 @@ export class EventFeedComponent implements OnInit,OnDestroy{
       }
     }
 
+    this.ndkProvider.reloadFeedEmitter.subscribe((reloadNow: boolean )=> {
+      this.loadFeedFromBeginning();
+    })
+
     this.ndkProvider.followedTopicsEmitter.subscribe((followedTopics: string) => {
       if (followedTopics === '') {
         this.followedTopics = [];

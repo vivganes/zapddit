@@ -86,6 +86,7 @@ export class NdkproviderService {
   canWriteToNostr: boolean = false;
   @Output()
   launchOnboardingWizard: EventEmitter<boolean> = new EventEmitter<boolean>();
+  reloadFeedEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(private dbService: ZappeditdbService,
     private objectCache: ObjectCacheService,

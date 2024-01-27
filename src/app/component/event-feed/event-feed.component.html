@@ -23,6 +23,9 @@
             </button>
           </ng-template>
         </ng-template>
+        <button type="button" class="btn btn-icon btn-outline btn-sm" aria-label="refresh" (click)="loadFeedFromBeginning()">
+          <cds-icon shape="refresh"></cds-icon>
+        </button>
       </h3>
     </div>
   </div>
@@ -55,6 +58,9 @@
               <span>&nbsp;
                 <cds-icon class="alert-icon" shape="info-circle" (click)="showingCommunityInfo = true" title="{{'Show community details'|translate}}"></cds-icon>
                 <button *ngIf="weblnEnabled" class="btn btn-sm btn-icon btn-primary" (click)="zapMods()"><cds-icon shape="bolt" solid="true"></cds-icon>Zap Mods</button>
+                &nbsp; <button type="button" class="btn btn-icon btn-outline btn-sm" aria-label="refresh" (click)="loadFeedFromBeginning()">
+                  <cds-icon shape="refresh"></cds-icon>
+                </button>
               </span>
             </span>  
           </div>
@@ -79,12 +85,21 @@
 <ng-template [ngIf]="(tag ===undefined && community === undefined) && !loadingCommunityDetails" #homefeedHeader>
   <div class="clr-row clr-justify-content-center">
     <div class="clr-col-12 clr-col-md-8">
-      <clr-select-container>
-        <select  id="select-full" title="{{'Feed type'|translate}}" clrSelect name="options" [(ngModel)]="feedType" (ngModelChange)="onChangeFeedType($event)" class="giant-text-in-select select-feed-type">
-          <option [value]="feedTypeOptions[0]" class="option-feed-type">#️⃣ {{'Topics Feed'|translate}}</option>
-          <option [value]="feedTypeOptions[1]" class="option-feed-type">🫂 {{'Communities Feed'|translate}} - BETA</option>
-        </select>
-      </clr-select-container>      
+      <div class="clr-row">
+        <div class="clr-col">
+          <clr-select-container class="less-top-margin-feed-type">
+            <select  id="select-full" title="{{'Feed type'|translate}}" clrSelect name="options" [(ngModel)]="feedType" (ngModelChange)="onChangeFeedType($event)" class="giant-text-in-select select-feed-type">
+              <option [value]="feedTypeOptions[0]" class="option-feed-type">#️⃣ {{'Topics Feed'|translate}}</option>
+              <option [value]="feedTypeOptions[1]" class="option-feed-type">🫂 {{'Communities Feed'|translate}} - BETA</option>
+            </select>
+          </clr-select-container>
+        </div>
+        <div class="clr-col">    
+          <button type="button" class="btn btn-icon btn-outline btn-sm" aria-label="refresh" (click)="loadFeedFromBeginning()">
+            <cds-icon shape="refresh"></cds-icon>
+          </button>
+        </div>
+      </div>  
       <div class="clr-control-container ml-5">
         <div class="clr-toggle-wrapper" *ngIf="feedType === feedTypeOptions[1]">
           <input type="checkbox" id="toggle1" name="toggle-full" [(ngModel)]="showUnapprovedPosts" (ngModelChange)="loadFeedFromBeginning()" class="clr-toggle"  />

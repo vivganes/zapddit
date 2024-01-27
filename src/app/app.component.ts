@@ -38,7 +38,8 @@ import {
   arrowIcon,
   bubbleExclamationIcon,
   bitcoinIcon,
-  connectIcon
+  connectIcon,
+  refreshIcon
 } from '@cds/core/icon';
 import { NdkproviderService } from './service/ndkprovider.service';
 import { ActivatedRoute, NavigationEnd, RouteReuseStrategy, Router } from '@angular/router';
@@ -93,7 +94,8 @@ ClarityIcons.addIcons(
   paperclipIcon,
   wandIcon,
   downloadCloudIcon,
-  uploadCloudIcon
+  uploadCloudIcon,
+  refreshIcon
 );
 @Component({
   selector: 'app-root',
