@@ -267,6 +267,6 @@
 	"All your settings are saved within browser's local storage and cleared when you logout.": "Alle Einstellungen werden nur lokal bei dir im Browser gespeichert und beim Abmelden wieder gelöscht.",
 	"Try without an account": "Ohne Account ausprobieren",
 	"We are opensource!": "Wir sind Open-Source!",
-	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences",
-	"Media is hidden because you don't follow this person. Click to see media. You can change this behavior from preferences.": "Media is hidden because you don't follow this person. Click to see media. You can change this behavior from preferences."
+	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "Eine Standard-Zap-Aufteilung wurde so konfiguriert, dass Entwickler und Übersetzer unterstützt werden. Du kannst es jederzeit in den Einstellungen deaktivieren",
+	"Media is hidden because you don't follow this person. Click to see media. You can change this behavior from preferences.": "Medium wurden ausgeblendet, weil du dieser Person nicht folgst. Klicke hier, um es zu sehen. Du kannst dieses Verhalten in den Einstellungen ändern."
 }
