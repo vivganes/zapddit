@@ -81,7 +81,7 @@
 	"Communities Feed": "Communities-Feed",
 	"Feed type": "Feed-Typ",
 	"No notes for you": "Keine Notizen für dich",
-	"It is possible that you could have muted topics from the preferences menu.": "It is possible that you could have muted topics from the preferences menu.",
+	"It is possible that you could have muted topics from the preferences menu.": "Es ist möglich, dass du Themen in den Einstellungen stumm geschaltet hast?",
 	"Yaay! You reached the end of feed": "Yaay! Du hast das Ende des Feeds erreicht",
 	"of": "von",
 	"Show unmoderated feed": "Unmoderierten Feed anzeigen",
@@ -159,10 +159,10 @@
 	"npub of the recipient": "npub des Empfängers",
 	"Hide non-zap options for upvote and downvote": "Nicht-Zap-Optionen für Up- und Downvote ausblenden",
 	"Hide Non Zap Reactions": "Nicht-Zap-Reaktionen ausblenden",
-	"Support the Creators": "Support the Creators",
+	"Support the Creators": "Unterstütze die Ersteller",
 	"This feature works only when you have Bitcoin Connect enabled in your preferences": "Dieses Feature funktioniert nur, wenn Bitcoin Connect in den Einstellungen aktiviert ist",
-	"% of sats from your zaps will go to this developer": "% of sats from your zaps will go to this developer",
-	"% of sats from your zaps will go to this translator": "% of sats from your zaps will go to this translator",
+	"% of sats from your zaps will go to this developer": "% der Sats deiner Zaps gehen an diesen Entwickler",
+	"% of sats from your zaps will go to this translator": "% der Sats deiner Zaps gehen an diesen Übersetzer",
 	"Set Communities Feed as your default feed": "Communities-Feed als Standard-Feed festlegen",
 	"#Hashtag to mute": "#Hashtag stumm stellen",
 	"Unmute": "Stumm stellen aufheben",
@@ -267,6 +267,6 @@
 	"All your settings are saved within browser's local storage and cleared when you logout.": "Alle Einstellungen werden nur lokal bei dir im Browser gespeichert und beim Abmelden wieder gelöscht.",
 	"Try without an account": "Ohne Account ausprobieren",
 	"We are opensource!": "Wir sind Open-Source!",
-	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences",
-	"Media is hidden because you don't follow this person. Click to see media. You can change this behavior from preferences.": "Media is hidden because you don't follow this person. Click to see media. You can change this behavior from preferences."
+	"A default Zap split has been configured to support developers and translators, you can disable it at any time in Preferences": "Eine Standard-Zap-Aufteilung wurde so konfiguriert, dass Entwickler und Übersetzer unterstützt werden. Du kannst es jederzeit in den Einstellungen deaktivieren",
+	"Media is hidden because you don't follow this person. Click to see media. You can change this behavior from preferences.": "Medium wurden ausgeblendet, weil du dieser Person nicht folgst. Klicke hier, um es zu sehen. Du kannst dieses Verhalten in den Einstellungen ändern."
 }
