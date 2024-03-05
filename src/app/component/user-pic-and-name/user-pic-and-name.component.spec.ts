@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { UserPicAndNameComponent } from './user-pic-and-name.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { AbbreviateIdPipe } from 'src/app/pipe/abbreviateId.pipe';
 
 describe('UserPicAndNameComponent', () => {
   let component: UserPicAndNameComponent;
@@ -8,7 +9,8 @@ describe('UserPicAndNameComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ UserPicAndNameComponent ]
+      declarations: [ UserPicAndNameComponent, AbbreviateIdPipe ],
+      imports: [TranslateModule.forRoot()]
     })
     .compileComponents();
 

@@ -3,13 +3,15 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { ClarityModule } from '@clr/angular';
 import { CommonTestingModule } from './testing/CommonTestingModule';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AppComponent', () => {
   CommonTestingModule.setUpTestBed(AppComponent)
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule,ClarityModule],
+      imports: [RouterTestingModule,ClarityModule, 
+      TranslateModule.forRoot()],
       declarations: [AppComponent],
     }).compileComponents();
   });

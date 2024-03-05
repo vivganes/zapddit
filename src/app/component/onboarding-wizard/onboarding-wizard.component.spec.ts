@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OnboardingWizardComponent } from './onboarding-wizard.component';
 import { CommonTestingModule } from 'src/app/testing/CommonTestingModule';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('OnboardingWizardComponent', () => {
   CommonTestingModule.setUpTestBed(OnboardingWizardComponent)
@@ -11,7 +12,8 @@ describe('OnboardingWizardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OnboardingWizardComponent ]
+      declarations: [ OnboardingWizardComponent ],
+      imports: [TranslateModule.forRoot()]
     })
     .compileComponents();
 

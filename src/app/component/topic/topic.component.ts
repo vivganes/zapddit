@@ -1,12 +1,11 @@
 import { Component,Input } from '@angular/core';
 import { TopicService } from '../../service/topic.service';
-import { Constants } from 'src/app/util/Constants';
 import { NdkproviderService } from '../../service/ndkprovider.service';
 
 @Component({
   selector: 'app-topic',
   templateUrl: './topic.component.html',
-  styleUrls: ['./topic.component.scss']
+  styleUrls: ['./topic.component.scss'],
 })
 export class TopicComponent {
   hideElement:boolean = true;
