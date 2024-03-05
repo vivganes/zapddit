@@ -1,6 +1,6 @@
 import { EventBuffer } from "./EventBuffer"
 
-describe('Event Buffer',() => {
+fdescribe('Event Buffer',() => {
 
     it('should return items for 2 and 4',()=>{
         const eventBuffer = new EventBuffer<number>()

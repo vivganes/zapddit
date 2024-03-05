@@ -20,7 +20,7 @@ export class UserPicAndNameComponent {
   user?:NDKUser;
 
   @Input()
-  picOnly:boolean = false;
+  onlyPic:boolean = false;
 
   @Input()
   showClickableDeleteIcon:boolean = false;

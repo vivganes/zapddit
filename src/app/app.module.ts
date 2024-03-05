@@ -105,7 +105,7 @@ const componentParsers: Array<HookParserEntry> = [
 })],
   providers: [ToastService],
   bootstrap: [AppComponent],
-  schemas:[CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
+  schemas:[CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {}
 
