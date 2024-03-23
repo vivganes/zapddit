@@ -47,6 +47,7 @@ import { CreateCommunityComponent } from './component/create-community/create-co
 import { NewLineToBrPipe } from './pipe/newLineToBr.pipe';
 import { InViewportModule } from 'ng-in-viewport';
 import { HomeFeedComponent } from './component/event-feed/home-feed.component';
+import { ClickStopPropagation } from './directive/ClickStopPropagation';
 const componentParsers: Array<HookParserEntry> = [
   {component: HashtagComponent},
   {component: UserMentionComponent},
@@ -76,6 +77,7 @@ const componentParsers: Array<HookParserEntry> = [
     ContactCardComponent,
     OnboardingWizardComponent,
     ImageLoaderDirective,
+    ClickStopPropagation,
     ProfileComponent,
     TopicComponent,
     CommunityListComponent,

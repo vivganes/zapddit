@@ -163,8 +163,8 @@ export class EventCardComponent implements OnInit, OnDestroy{
     this.displayedContent = this.displayedContent?.replace('\n','<br/>')
     this.linkifiedContent = this.linkifyContent(this.displayedContent)
     this.getAuthor();
-    this.getCommunity();
     this.getRelatedEventsAndSegregate();
+    this.getCommunity();
     this.getImageUrls();
     this.getVideoUrls();
     this.getOnlineVideoUrls();

@@ -4,7 +4,7 @@
   </span>
 </div>
 
-<div class="card" *ngIf="!(!loadingApproval && !canModerate && !mutedAuthor && (showUnapprovedPosts?false:approvalEvents?.size===0))" #parent>
+<div click-stop-propagation class="card" *ngIf="!(!loadingApproval && !canModerate && !mutedAuthor && (showUnapprovedPosts?false:approvalEvents?.size===0))" #parent>
   <div *ngIf="community && !hideCommunityHeader" class="card-header note-community-header">
     <img imageLoader *ngIf="community?.image" (click)="openCommunityPage()" alt="{{'Community image'|translate}}"
         src="{{ community.image }}" class="community-image pointer-cursor" title="{{'Browse'|translate}}" />

@@ -1542,8 +1542,7 @@ export class NdkproviderService {
       if (this.currentUser?.pubkey) {
         author = this.currentUser.pubkey;
       }
-      const relayListFromNdk =  await this.ndk?.activeUser?.relayList();
-      const relayEntriesFromNdk = relayListFromNdk?.relays;
+      const relayEntriesFromNdk =  await this.ndk?.activeUser?.relayUrls;
       if(relayEntriesFromNdk){
         for (let i = 0; i<relayEntriesFromNdk.length; i++){
           relays.push(new Relay(relayEntriesFromNdk[i],relayEntriesFromNdk[i]))
