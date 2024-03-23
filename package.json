@@ -26,7 +26,7 @@
     "@clr/angular": "16.2.0",
     "@clr/ui": "16.2.0",
     "@fractalsoftware/random-avatar-generator": "^1.0.11",
-    "@getalby/bitcoin-connect": "^2.3.1",
+    "@getalby/bitcoin-connect": "^3.2.2",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
     "@noble/curves": "^1.1.0",
