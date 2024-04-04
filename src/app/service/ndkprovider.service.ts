@@ -149,6 +149,8 @@ export class NdkproviderService {
     this.ndk = new NDK({
       cacheAdapter: dexieAdapter,
       explicitRelayUrls: explicitRelayUrls,
+      outboxRelayUrls: [ "wss://purplepag.es" ],
+      enableOutboxModel: true
     });
     await this.ndk.connect(1000);
     this.loggedIn = true;
@@ -242,7 +244,9 @@ export class NdkproviderService {
       cacheAdapter: dexieAdapter,
       explicitRelayUrls: explicitRelayUrls,
       autoConnectUserRelays: true,
-      autoFetchUserMutelist: true
+      autoFetchUserMutelist: true,
+      outboxRelayUrls: [ "wss://purplepag.es" ],
+      enableOutboxModel: true
     });
     await this.ndk.connect(1000);
     this.loggedIn = true;
@@ -278,7 +282,9 @@ export class NdkproviderService {
       cacheAdapter: dexieAdapter, signer: this.signer, 
       explicitRelayUrls: explicitRelayUrls,
       autoConnectUserRelays: true,
-      autoFetchUserMutelist: true
+      autoFetchUserMutelist: true,
+      outboxRelayUrls: [ "wss://purplepag.es" ],
+      enableOutboxModel: true
      };
     this.ndk = new NDK(params);
 
@@ -371,7 +377,10 @@ export class NdkproviderService {
           cacheAdapter: dexieAdapter, signer: this.signer, 
           explicitRelayUrls: relayUrls ? relayUrls : explicitRelayUrls,
           autoConnectUserRelays: true,
-          autoFetchUserMutelist: true };
+          autoFetchUserMutelist: true,
+          outboxRelayUrls: [ "wss://purplepag.es" ],
+          enableOutboxModel: true
+        };
         this.ndk = new NDK(params);
         await this.ndk.assertSigner();
         this.notice$.next('Connecting to relays')
@@ -410,7 +419,10 @@ export class NdkproviderService {
         cacheAdapter: dexieAdapter, signer: this.signer,
          explicitRelayUrls: relayUrls,
          autoConnectUserRelays: true,
-         autoFetchUserMutelist: true };
+         autoFetchUserMutelist: true,
+         outboxRelayUrls: [ "wss://purplepag.es" ],
+         enableOutboxModel: true
+        };
       const newNDK = new NDK(newNDKParams);
       if (this.isNip07) {
         await newNDK.assertSigner();
@@ -540,7 +552,9 @@ export class NdkproviderService {
       signer: this.signer,
       explicitRelayUrls: relayTags.map((tag) => tag[1]),
       autoConnectUserRelays: true,
-      autoFetchUserMutelist: true
+      autoFetchUserMutelist: true,
+      outboxRelayUrls: [ "wss://purplepag.es" ],
+      enableOutboxModel: true
     })
     newNdk.connect(1000).then(()=>{
       this.ndk = newNdk;
