@@ -9,7 +9,7 @@ export default class Uploader {
     formData.append('fileToUpload', file);
     formData.append('submit', 'Upload');
 
-    const response = await fetch('https://nostr.build/api/upload/android.php', {
+    const response = await fetch('https://nostr.build/api/v2/upload/files', {
       headers: {
         accept: 'application/json',
       },
@@ -18,12 +18,14 @@ export default class Uploader {
     });
     if (response.ok) {
       const data = await response.json();
+      console.log(data);
       return {
-        url: new URL(data).toString(),
+        url: new URL(data.data[0].url).toString(),
       };
     }
     return {
       error: 'Upload failed',
     };
   }
+
 }

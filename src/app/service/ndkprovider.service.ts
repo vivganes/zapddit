@@ -149,7 +149,6 @@ export class NdkproviderService {
     this.ndk = new NDK({
       cacheAdapter: dexieAdapter,
       explicitRelayUrls: explicitRelayUrls,
-      outboxRelayUrls: [ "wss://purplepag.es" ],
       enableOutboxModel: true
     });
     await this.ndk.connect(1000);
@@ -245,7 +244,6 @@ export class NdkproviderService {
       explicitRelayUrls: explicitRelayUrls,
       autoConnectUserRelays: true,
       autoFetchUserMutelist: true,
-      outboxRelayUrls: [ "wss://purplepag.es" ],
       enableOutboxModel: true
     });
     await this.ndk.connect(1000);
@@ -283,7 +281,6 @@ export class NdkproviderService {
       explicitRelayUrls: explicitRelayUrls,
       autoConnectUserRelays: true,
       autoFetchUserMutelist: true,
-      outboxRelayUrls: [ "wss://purplepag.es" ],
       enableOutboxModel: true
      };
     this.ndk = new NDK(params);
@@ -378,7 +375,6 @@ export class NdkproviderService {
           explicitRelayUrls: relayUrls ? relayUrls : explicitRelayUrls,
           autoConnectUserRelays: true,
           autoFetchUserMutelist: true,
-          outboxRelayUrls: [ "wss://purplepag.es" ],
           enableOutboxModel: true
         };
         this.ndk = new NDK(params);
@@ -420,7 +416,6 @@ export class NdkproviderService {
          explicitRelayUrls: relayUrls,
          autoConnectUserRelays: true,
          autoFetchUserMutelist: true,
-         outboxRelayUrls: [ "wss://purplepag.es" ],
          enableOutboxModel: true
         };
       const newNDK = new NDK(newNDKParams);
@@ -553,7 +548,6 @@ export class NdkproviderService {
       explicitRelayUrls: relayTags.map((tag) => tag[1]),
       autoConnectUserRelays: true,
       autoFetchUserMutelist: true,
-      outboxRelayUrls: [ "wss://purplepag.es" ],
       enableOutboxModel: true
     })
     newNdk.connect(1000).then(()=>{
