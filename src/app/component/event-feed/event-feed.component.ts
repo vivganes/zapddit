@@ -285,7 +285,8 @@ export class EventFeedComponent implements OnInit,OnDestroy{
     if (this.ndkProvider.appData.mutedTopics && this.ndkProvider.appData.mutedTopics !== '') {
           mutedTopicsArr = this.ndkProvider.appData.mutedTopics.split(',');
     }
-    this.events = new Set([...fetchedEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr)));
+    const filteredEvents = [...fetchedEvents].filter(HashTagFilter.notHashTags(mutedTopicsArr))
+    this.events = new Set(filteredEvents);
   }
 
   addEventToFeed(postedEvent: NDKEvent){

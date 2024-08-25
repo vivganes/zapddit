@@ -43,7 +43,6 @@ export class UserPicAndNameComponent {
       if(this.hexKey){
         this.populateUser();
       }else if(this.npub){
-        console.log("pic and name "+this.npub)
         this.populateUserUsingNpub();
       }
     }
