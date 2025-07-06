@@ -496,7 +496,7 @@ export class NdkproviderService {
     if (community) {
       tags.push(['a',community.id!])
       tags.push(['k','1'])
-      ndkEvent.kind = 4549;
+      ndkEvent.kind = 1111;
     }
     ndkEvent.tags = tags;
     if (this.currentUser) {
@@ -927,7 +927,7 @@ export class NdkproviderService {
 
   async fetchEventsFromCommunityUnmoderated(community: Community, limit?: number, since?: number, until?: number):Promise<Set<NDKEvent> | undefined> {
     //@ts-ignore
-    const filter: NDKFilter = { kinds: [1,4549], '#a': [community.id!], limit: limit, since: since, until: until };
+    const filter: NDKFilter = { kinds: [1,4549,1111], '#a': [community.id!], limit: limit, since: since, until: until };
     return this.ndk?.fetchEvents(filter,{});
   }
 
@@ -946,7 +946,7 @@ export class NdkproviderService {
       id = LoginUtil.bech32ToHex(id);
     }
     //@ts-ignore
-    const filter: NDKFilter = { kinds: [1,4549], ids: [id] };
+    const filter: NDKFilter = { kinds: [1,4549,1111], ids: [id] };
     return this.ndk?.fetchEvent(filter,{});
   }
 
@@ -1000,7 +1000,7 @@ export class NdkproviderService {
     until?: number
   ): Promise<Set<NDKEvent> | undefined> {
     //@ts-ignore
-    const filter: NDKFilter = { kinds: [1,  4549], '#a': followedCommunities, limit: limit, since: since, until: until };
+    const filter: NDKFilter = { kinds: [1,  4549, 1111], '#a': followedCommunities, limit: limit, since: since, until: until };
     return this.ndk?.fetchEvents(filter);
   }
 
